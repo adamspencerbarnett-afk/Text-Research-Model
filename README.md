@@ -2,6 +2,8 @@
 
 *Research concept and direction by Adam Barnett · September 15, 2026.*
 
+![Barnett's Model research overview](barnetts-model-research-overview.png)
+
 **V1 Experimental** is a compact research system that translates controlled natural-language problems into typed events, then answers them with either a small learned reasoning core or an exact executor. The project studies a focused question: can explicit semantic structure improve accuracy and reasoning reliability when model size and local compute are limited?
 
 The current answer is promising within a narrow domain. The system is very accurate on several synthetic accounting and ordering tasks, and the full text-to-program path is covered by 108 automated tests. It is not a general-purpose language model, a chatbot, or evidence of broad intelligence. One of three preservation screens still fails the hardest wording and combined-change program gates, and the reserved final evaluation remains unopened.
@@ -12,16 +14,21 @@ The current answer is promising within a narrow domain. The system is very accur
 
 The central experiment is an explicit separation of language interpretation from reasoning:
 
-```mermaid
-flowchart LR
-    A[Controlled text] --> B[Surface normalization]
-    B --> C[Learned semantic parser]
-    C --> D[Typed event program]
-    D --> E{Answer path}
-    E -->|parsed| F[Small learned core]
-    E -->|executor| G[Exact state update / graph traversal]
-    F --> H[Answer]
-    G --> H
+```text
+Controlled text
+      |
+      v
+Surface normalization
+      |
+      v
+Learned semantic parser
+      |
+      v
+Typed event program
+      |
+      +-- parsed ----> Small learned core --------------------+
+      |                                                       |
+      +-- executor --> Exact state update / graph traversal --+--> Answer
 ```
 
 The parser reads visible words, first-mention entity identities, word order, and integer literals. It predicts rows with five fields:
