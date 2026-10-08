@@ -22,7 +22,13 @@ jobs:
       - name: Check dependency consistency
         run: python -m pip check
       - name: Run semantic regression suite
-        run: python -B -m unittest discover -s scripts -p "test_semantic_v1.py" -v
+        shell: bash
+        run: |
+          set -o pipefail
+          python -B -m unittest discover -s scripts -p "test_semantic_v1.py" -v 2>&1 | tee test-output.txt
+      - name: Report failing tests as annotations
+        if: failure()
+        run: python .github/scripts/annotate_test_failures.py test-output.txt
       - name: Check command-line entry points
         run: |
           python -B scripts/semantic_model.py --help
