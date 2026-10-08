@@ -1,0 +1,321 @@
+{
+  "corpus": {
+    "train_books": 48,
+    "train_bytes": 45045381,
+    "heldout_books": [
+      "Heart-of-Darkness_219",
+      "The-Adventures-of-Sherlock-Holmes_1661",
+      "The-Prince_1232"
+    ],
+    "heldout_bytes": 1055087,
+    "ood_bytes": {
+      "repo_docs_markdown": 89365,
+      "repo_python_code": 484809
+    }
+  },
+  "machine": {
+    "python": "3.13.16",
+    "cpu": "x86_64",
+    "cores": 2
+  },
+  "configs": {
+    "bytes": {
+      "kind": "bytes",
+      "vocab": 256,
+      "phrases": 0,
+      "case_flags": false,
+      "fit_seconds": 0.0,
+      "heldout_ids_per_kb": 1000.0,
+      "ood_ids_per_kb": {
+        "repo_docs_markdown": 1000.0,
+        "repo_python_code": 1000.0
+      },
+      "train_ids_per_kb": 1000.0,
+      "ngram_bits_per_byte": {
+        "1": 4.5004,
+        "2": 3.5683,
+        "3": 2.8934
+      },
+      "ngram_best_bits_per_byte": 2.8934
+    },
+    "bpe_32k": {
+      "kind": "bpe",
+      "vocab": 32768,
+      "phrases": 0,
+      "case_flags": false,
+      "fit_seconds": 10.9,
+      "heldout_ids_per_kb": 253.9,
+      "ood_ids_per_kb": {
+        "repo_docs_markdown": 270.4,
+        "repo_python_code": 367.6
+      },
+      "words": 194557,
+      "single_id_share": 0.951767348386334,
+      "ids_per_word": 1.071639673720298,
+      "train_ids_per_kb": 259.1,
+      "ngram_bits_per_byte": {
+        "1": 2.502,
+        "2": 1.9143,
+        "3": 1.8656
+      },
+      "ngram_best_bits_per_byte": 1.8656
+    },
+    "whole_words_32k": {
+      "kind": "whole",
+      "vocab": 32768,
+      "phrases": 0,
+      "case_flags": true,
+      "fit_seconds": 0.1,
+      "heldout_ids_per_kb": 285.0,
+      "ood_ids_per_kb": {
+        "repo_docs_markdown": 350.0,
+        "repo_python_code": 454.1
+      },
+      "words": 194557,
+      "single_id_share": 0.9696644171116948,
+      "ids_per_word": 1.135965295517509,
+      "train_ids_per_kb": 285.0,
+      "ngram_bits_per_byte": {
+        "1": 2.5844,
+        "2": 1.9645,
+        "3": 1.8728
+      },
+      "ngram_best_bits_per_byte": 1.8728
+    },
+    "v0_32k_plain": {
+      "kind": "v0",
+      "vocab": 32768,
+      "phrases": 0,
+      "case_flags": false,
+      "fit_seconds": 16.4,
+      "dictionary_hash": "d30c1d55031b4a57",
+      "heldout_ids_per_kb": 254.3,
+      "ood_ids_per_kb": {
+        "repo_docs_markdown": 271.4,
+        "repo_python_code": 375.3
+      },
+      "words": 194557,
+      "single_id_share": 0.9496599968132732,
+      "ids_per_word": 1.0739937396238635,
+      "native_encode_mb_s": 112.5,
+      "native_decode_mb_s": 301.4,
+      "native_round_trip": true,
+      "train_ids_per_kb": 259.7,
+      "ngram_bits_per_byte": {
+        "1": 2.5072,
+        "2": 1.9118,
+        "3": 1.865
+      },
+      "ngram_best_bits_per_byte": 1.865
+    },
+    "v0_8k": {
+      "kind": "v0",
+      "vocab": 8192,
+      "phrases": 0,
+      "case_flags": true,
+      "fit_seconds": 14.7,
+      "dictionary_hash": "44de7d18071dd6ce",
+      "heldout_ids_per_kb": 296.2,
+      "ood_ids_per_kb": {
+        "repo_docs_markdown": 332.6,
+        "repo_python_code": 428.9
+      },
+      "words": 194557,
+      "single_id_share": 0.8684293034946057,
+      "ids_per_word": 1.1965439434201801,
+      "native_encode_mb_s": 83.2,
+      "native_decode_mb_s": 268.9,
+      "native_round_trip": true,
+      "train_ids_per_kb": 303.4,
+      "ngram_bits_per_byte": {
+        "1": 2.7487,
+        "2": 1.9841,
+        "3": 1.8529
+      },
+      "ngram_best_bits_per_byte": 1.8529
+    },
+    "v0_16k": {
+      "kind": "v0",
+      "vocab": 16384,
+      "phrases": 0,
+      "case_flags": true,
+      "fit_seconds": 15.2,
+      "dictionary_hash": "6059b0f5ecc778fc",
+      "heldout_ids_per_kb": 280.3,
+      "ood_ids_per_kb": {
+        "repo_docs_markdown": 300.9,
+        "repo_python_code": 399.2
+      },
+      "words": 194557,
+      "single_id_share": 0.9220279917967485,
+      "ids_per_word": 1.1102658860899377,
+      "native_encode_mb_s": 95.5,
+      "native_decode_mb_s": 280.9,
+      "native_round_trip": true,
+      "train_ids_per_kb": 286.9,
+      "ngram_bits_per_byte": {
+        "1": 2.6193,
+        "2": 1.9501,
+        "3": 1.8537
+      },
+      "ngram_best_bits_per_byte": 1.8537
+    },
+    "v0_32k": {
+      "kind": "v0",
+      "vocab": 32768,
+      "phrases": 0,
+      "case_flags": true,
+      "fit_seconds": 16.0,
+      "dictionary_hash": "40df2ca5d5bbf466",
+      "heldout_ids_per_kb": 270.6,
+      "ood_ids_per_kb": {
+        "repo_docs_markdown": 277.9,
+        "repo_python_code": 371.4
+      },
+      "words": 194557,
+      "single_id_share": 0.9589220639709699,
+      "ids_per_word": 1.0578750700308908,
+      "native_encode_mb_s": 105.5,
+      "native_decode_mb_s": 281.7,
+      "native_round_trip": true,
+      "train_ids_per_kb": 277.2,
+      "ngram_bits_per_byte": {
+        "1": 2.5325,
+        "2": 1.937,
+        "3": 1.8594
+      },
+      "ngram_best_bits_per_byte": 1.8594
+    },
+    "v0_64k": {
+      "kind": "v0",
+      "vocab": 65536,
+      "phrases": 0,
+      "case_flags": true,
+      "fit_seconds": 17.6,
+      "dictionary_hash": "6e4627586c94e757",
+      "heldout_ids_per_kb": 265.1,
+      "ood_ids_per_kb": {
+        "repo_docs_markdown": 263.4,
+        "repo_python_code": 355.1
+      },
+      "words": 194557,
+      "single_id_share": 0.9799441808827233,
+      "ids_per_word": 1.028145993205076,
+      "native_encode_mb_s": 111.1,
+      "native_decode_mb_s": 271.9,
+      "native_round_trip": true,
+      "train_ids_per_kb": 272.4,
+      "ngram_bits_per_byte": {
+        "1": 2.4785,
+        "2": 1.9387,
+        "3": 1.8698
+      },
+      "ngram_best_bits_per_byte": 1.8698
+    },
+    "v0_32k_phrases": {
+      "kind": "v0",
+      "vocab": 32768,
+      "phrases": 4096,
+      "case_flags": true,
+      "fit_seconds": 48.0,
+      "dictionary_hash": "da5d571d538a6845",
+      "heldout_ids_per_kb": 207.6,
+      "ood_ids_per_kb": {
+        "repo_docs_markdown": 260.0,
+        "repo_python_code": 340.9
+      },
+      "words": 194557,
+      "single_id_share": 0.9527336461808108,
+      "ids_per_word": 1.066294196559363,
+      "native_encode_mb_s": 59.3,
+      "native_decode_mb_s": 335.7,
+      "native_round_trip": true,
+      "train_ids_per_kb": 206.6,
+      "ngram_bits_per_byte": {
+        "1": 2.3995,
+        "2": 1.9444,
+        "3": 1.948
+      },
+      "ngram_best_bits_per_byte": 1.9444
+    },
+    "v0_64k_phrases": {
+      "kind": "v0",
+      "vocab": 65536,
+      "phrases": 8192,
+      "case_flags": true,
+      "fit_seconds": 51.2,
+      "dictionary_hash": "0cffe0fd343b80d4",
+      "heldout_ids_per_kb": 193.9,
+      "ood_ids_per_kb": {
+        "repo_docs_markdown": 238.9,
+        "repo_python_code": 316.9
+      },
+      "words": 194557,
+      "single_id_share": 0.9765621386020549,
+      "ids_per_word": 1.0323761159968543,
+      "native_encode_mb_s": 60.7,
+      "native_decode_mb_s": 332.6,
+      "native_round_trip": true,
+      "train_ids_per_kb": 193.7,
+      "ngram_bits_per_byte": {
+        "1": 2.3215,
+        "2": 1.9647,
+        "3": 1.9786
+      },
+      "ngram_best_bits_per_byte": 1.9647
+    },
+    "v0_32k_plain_phrases": {
+      "kind": "v0",
+      "vocab": 32768,
+      "phrases": 4096,
+      "case_flags": false,
+      "fit_seconds": 45.4,
+      "dictionary_hash": "8bec6308f6d8ab66",
+      "heldout_ids_per_kb": 185.2,
+      "ood_ids_per_kb": {
+        "repo_docs_markdown": 253.5,
+        "repo_python_code": 343.3
+      },
+      "words": 194557,
+      "single_id_share": 0.943661754652878,
+      "ids_per_word": 1.0829988126872845,
+      "native_encode_mb_s": 59.9,
+      "native_decode_mb_s": 415.1,
+      "native_round_trip": true,
+      "train_ids_per_kb": 183.9,
+      "ngram_bits_per_byte": {
+        "1": 2.3433,
+        "2": 1.9205,
+        "3": 1.9598
+      },
+      "ngram_best_bits_per_byte": 1.9205
+    },
+    "v0_64k_plain_phrases": {
+      "kind": "v0",
+      "vocab": 65536,
+      "phrases": 8192,
+      "case_flags": false,
+      "fit_seconds": 45.9,
+      "dictionary_hash": "783d1fea1766ee0f",
+      "heldout_ids_per_kb": 169.8,
+      "ood_ids_per_kb": {
+        "repo_docs_markdown": 230.6,
+        "repo_python_code": 316.9
+      },
+      "words": 194557,
+      "single_id_share": 0.9698237534501457,
+      "ids_per_word": 1.0440179484675443,
+      "native_encode_mb_s": 58.5,
+      "native_decode_mb_s": 414.4,
+      "native_round_trip": true,
+      "train_ids_per_kb": 168.7,
+      "ngram_bits_per_byte": {
+        "1": 2.2544,
+        "2": 1.9457,
+        "3": 1.9931
+      },
+      "ngram_best_bits_per_byte": 1.9457
+    }
+  },
+  "python_reference_encode_mb_s": 4.4
+}

@@ -32,6 +32,13 @@ jobs:
         run: |
           set -o pipefail
           python -B -m unittest discover -s scripts -p "test_semantic_v1.py" -v 2>&1 | tee test-output.txt
+      - name: Run Compiler v0 encoder suite
+        if: success() || failure()
+        shell: bash
+        run: |
+          set -o pipefail
+          g++ --version | head -1 || echo "no g++: native parity tests will be skipped"
+          python -B -m unittest compiler/test_compiler_v0.py -v 2>&1 | tee -a test-output.txt
       - name: Report failing tests as annotations
         if: failure()
         run: python .github/scripts/annotate_test_failures.py test-output.txt
