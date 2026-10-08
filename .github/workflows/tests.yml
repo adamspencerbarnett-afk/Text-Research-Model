@@ -9,8 +9,14 @@ permissions:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
     timeout-minutes: 20
+    env:
+      PYTHONUTF8: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -30,6 +36,7 @@ jobs:
         if: failure()
         run: python .github/scripts/annotate_test_failures.py test-output.txt
       - name: Check command-line entry points
+        shell: bash
         run: |
           python -B scripts/semantic_model.py --help
           python -B scripts/semantic_experiment.py --help
