@@ -1,5 +1,9 @@
 # Master Plan
 
+## Encoder research track
+
+The repository now carries a second line of work beside V1: Compiler v0, a stateless single-pass text encoder with one frozen dictionary (`compiler/`). Its review and the phased plan for the next experiments (corpus and encoder fixes, the neural learnability ladder, lookup-table models, factorized IDs, the number channel, multi-unit prediction and a learned-chunking benchmark) are in [`docs/ENCODER_RESEARCH_PLAN.md`](docs/ENCODER_RESEARCH_PLAN.md). The V1 plan below is unchanged.
+
 ## Current status
 
 V1 Experimental is the active semantic compiler and reasoning baseline. It accepts controlled natural language, predicts typed event programs, and answers through either a 346-parameter learned core or exact execution. The selected lexical attachment parser has 919,045 parameters and a 91-entry vocabulary.

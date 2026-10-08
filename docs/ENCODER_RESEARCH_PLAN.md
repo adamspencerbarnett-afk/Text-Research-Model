@@ -1,0 +1,273 @@
+# Encoder research: repository review and plan for the next phases
+
+*Prepared from the state of the repository on 8 October 2026. Research concept and direction by Adam Barnett.*
+
+This document reviews the repository as it stands after the Compiler v0 work and lays out the next phases of the encoder research. It is the working plan for the branch; the broader rationale and the reading list are in the research-plan doc on Claude Docs ("Encoded-Text Model Research Plan"). The V1 semantic system keeps its own plan in [`MASTER_PLAN.md`](../MASTER_PLAN.md).
+
+## 1. Summary
+
+- **Compiler v0 is sound.** The 19 contract tests pass here (Python 3.13, g++ 13.3) and on both CI platforms. Every configuration round-trips exactly and the C++ encoder matches the Python reference byte for byte. Plain v0 matches an in-house BPE at 32k entries on both sequence length and n-gram structure, while being stateless, global and about 25× faster than the Python reference.
+- **Nothing is merged.** `main` still holds only the zip, README and LICENSE. All real work sits on `unpack-project` (the unpacked V1 project plus CI) and `encoder-v0` (the encoder). No pull request exists. CI is red on Ubuntu because of six V1 tests with Windows-recorded initialization hashes, not because of the encoder.
+- **The measurement so far is a proxy.** The n-gram score cannot rank encodings that differ in unit size, so the phrase question (27–33% shorter sequences for a 3–4% worse proxy) is open until a neural model is trained. That neural comparison, Track A, is still the first experiment.
+- **Four encoder weaknesses were measured during this review**, none of them visible in the earlier results: hard-wrapped Gutenberg lines strip the leading space from about 12% of words; punctuation clusters cost one ID per byte; UTF-8 punctuation costs three IDs per character; and case flags cost a sequence position for what is really an attribute of a word. Section 2.3 has the numbers and section 4 (Phase 0) the fixes to test.
+- **The sandbox can now install from PyPI**, so the earlier blocker on PyTorch is gone: PyTorch installed and trained a test model on CPU during this review (details in 2.5). A calibration of the Phase 1 model shape shows the 32k output layer is about 87% of a training step at width 128, which moves the factorized output of Track C up in priority. The repository is public, so GitHub Actions runners are free compute for the Track A ladder.
+- **Plan in one line:** Phase 0 fixes the corpus, the encoder's measured weaknesses and the tooling; Phase 1 runs the neural learnability ladder (Track A) and picks the encoder; Phases 2–5 then spend parameters on tables (B), factorize the IDs (C), add the number channel and multi-unit prediction (D, E), and benchmark against learned chunking (F).
+
+## 2. Repository review
+
+### 2.1 Branches, CI and open items
+
+| Branch | Head | Contents | State |
+| --- | --- | --- | --- |
+| `main` | `0cfd5c8` | README, LICENSE, `barnetts-model-v1-experimental.zip` | Unchanged since the upload |
+| `unpack-project` | `e45db6d` | V1 scripts, checkpoints, docs, results, CI on Ubuntu and Windows with failure annotations | 3 commits ahead of `main` |
+| `encoder-v0` | `0c19ab3` | `unpack-project` plus `compiler/` and `results/compiler_v0_initial.json` | 4 commits ahead of `main` |
+| `claude/gracious-hypatia-hk74hn` | this commit | `encoder-v0` plus this plan | Working branch for this session |
+
+- **CI.** Four workflow runs, all red on `ubuntu-latest` and green on `windows-latest`. The failing step is the V1 semantic suite: the test that pins lexical initialization hashes recorded them on Windows and PyTorch's CPU initialization differs by platform. The Compiler v0 suite passes on both runners. The fix is a decision for Adam (section 6): record per-platform hashes, or run that one test on Windows only.
+- **No pull request** has been opened for either branch. Merging `encoder-v0` into `main` (it already contains `unpack-project`) would make the encoder visible from the default branch and let README links resolve.
+- **The TC0 draft files** (`compiler/CMakeLists.txt`, `tc0.h`, `tc0.py`, `tc0_cli.cpp`, `test_tc0.py`) were never committed. They existed only in the previous session's container and are not in this fresh clone. If Adam has copies, they can still go on a branch of their own; otherwise they are gone.
+- **The 45 MB corpus** is not in the repository (`data/` is ignored) and must be rebuilt with `compiler/experiments/prepare_books.py`, which clones from GITenberg. Cloning works from this environment.
+
+### 2.2 Compiler v0: what is solid
+
+- The specification lives in one place, the module docstring of `compiler/compiler_v0.py`, and the C++ header points to it. The scanner rules, ID layout and both file formats are short enough to hold in one's head.
+- Losslessness is by construction (byte IDs 0–255 as the fallback) and is tested on all 256 byte values, random input and adversarial strings.
+- The dictionary is a canonical text file whose FNV-1a hash travels in every ID file, and decoding with the wrong dictionary is rejected in both implementations. This is the discipline the V1 lexicon already used.
+- Fitting is deterministic (sorted inputs, tie-broken heaps), so a dictionary can be regenerated from the same corpus and the hash checked.
+- The native encoder is simple: one open-addressing table per entry kind, a bounded lookahead for phrases, no allocation per unit. 112 MB/s encode and 300 MB/s decode on one core is enough that encoding will never be the bottleneck of training or inference.
+- The experiment script records the machine, corpus sizes, fit times and dictionary hashes alongside every number, which is the right habit.
+
+### 2.3 Findings that change the plan
+
+The numbers below come from the two held-out books that could be re-fetched quickly (Heart of Darkness, 211 KB UTF-8; The Adventures of Sherlock Holmes, 563 KB from the Latin-1 source), cleaned exactly as `prepare_books.py` cleans them.
+
+**F1. Hard line wraps split the vocabulary in two.** Gutenberg texts are wrapped at 44–63 bytes per line. A word that starts a line has no leading space, so it is a bare unit and needs its own dictionary entry (`the` as well as `" the"`).
+
+| Book | Words | Bare words | …of which line-initial | Newline units (share of all units) |
+| --- | ---: | ---: | ---: | ---: |
+| Heart of Darkness | 39,080 | 4,657 (11.9%) | 2,873 | 3,099 (6.0%) |
+| Sherlock Holmes | 105,925 | 12,264 (11.6%) | 7,790 | 10,079 (7.2%) |
+
+About two thirds of bare words are line-initial, so roughly 7% of all words get a rarer, duplicate ID purely because of the 1990s file format, and 6–7% of all units are newline runs that a model trained on modern text would almost never see. Text the model will meet in use is not hard-wrapped. **Fix:** unwrap paragraphs in corpus preparation (join single newlines inside a paragraph into a space, keep blank-line paragraph breaks) and record both corpus variants. The remaining bare words (after quotes, brackets and dashes) are legitimate.
+
+**F2. Punctuation clusters cost one ID per byte.** Every non-letter byte is its own unit and pieces need units of at least two bytes, so `."`, `?"`, `,"` and `--` can never become one ID without the phrase table. ASCII punctuation is 16.4–16.5% of all units in both books. Runs of two or more punctuation bytes would save 2.3–2.4% of all IDs if a run were one unit (1,253 and 3,234 IDs in the two books; the top runs are `--`, `."`, `?"`, `,"`, `.'`, `...`). BPE merges these for free; v0 should too. **Fix to test:** a scanner rule making a run of ASCII punctuation one unit, so pieces can be learned for it.
+
+**F3. UTF-8 punctuation costs three IDs per character.** Non-ASCII characters are split into single bytes, so a curly quote or an em dash is three IDs. In the UTF-8 copy of Heart of Darkness this is 1.3% of all units (684 byte IDs for 228 characters, nearly all `“`). The Latin-1-sourced Sherlock text has almost none, which is why the earlier results did not show it. Modern text uses curly quotes and dashes everywhere. **Fix to test:** a scanner rule making a valid UTF-8 multibyte sequence one unit (invalid sequences stay single bytes, so the encoder stays lossless).
+
+**F4. Case flags are the right idea in the wrong place.** `CAP` + `" the"` keeps one ID for "the" and "The", which is what Tracks B and C want, but costs a sequence position, which is why the initial tests turned the flags off (6% longer sequences for no proxy gain). The flag is an attribute of the word, not a unit of text. **Fix to test:** fold the flag in the training loader: a `CAP`/`UPPER` ID and the word that follows become one model token with two fields (word, case), and the model embeds it as the sum of a word vector and a case vector. The file format does not change; sequence length equals plain v0; the word vector is shared across cases. This is the first instance of the structured-ID idea (Track C) and it costs nothing on the encoder side.
+
+**F5. Phrase IDs trade away ID stability.** A phrase entry turns `" of the"` into one ID, so `" the"` has a different representation depending on the word before it. Track A must still measure phrases, because they are the cheapest way to shorten sequences. But Tracks B and C build on the assumption that a word's ID is stable, so they should start from plain v0, and phrase-level information should enter the model through hashed n-gram input tables (Track B) or multi-unit prediction (Track E), which keep the sequence stable.
+
+**F6. The BPE baseline is in-house.** `BPEBaseline` learns merges with the same pair-merge code on the same scanner units. That is a fair like-for-like control, but the research claim ("matches standard BPE") needs an external anchor. `tiktoken` installs from PyPI here; the GPT-2 50k and `cl100k_base` encodings should be added to the ladder as reference points for IDs per KB and for the neural comparison.
+
+**F7. The corpus is small for a neural comparison.** 45 MB is about 11.4M plain v0 IDs. A model with 3M non-embedding parameters sees that in one pass in a reasonable time; a 25M-parameter model, the size the earlier plan named, would be badly under-trained on it (the usual guide is about 20 training tokens per parameter). Phase 1 therefore uses a 1–4M-parameter core on the 45 MB corpus, and Phase 2 needs the larger corpus (200 MB–1 GB) before it can say anything about 64k–256k vocabularies.
+
+**F8. Held-out contamination by author.** The Adventures of Sherlock Holmes is held out, but A Study in Scarlet and The Hound of the Baskervilles are in training. The other two held-out books have no author overlap. Keep the set, but add one held-out book whose author is absent from training, and report per-book bits per byte so the effect is visible.
+
+**F9. Out-of-domain cost is large and expected.** Dictionaries fitted on novels need 231–278 IDs per KB on the repository's Markdown and 317–375 on its Python code, against 170–254 on books. Any real training dictionary must be fitted on the same mix of text the model will see. Decide the mix (section 6) before fitting the Phase 1 dictionaries, or state plainly that Phase 1 is a books-only study.
+
+### 2.4 Smaller code notes
+
+None of these block anything; they are recorded so they are not rediscovered.
+
+- `read_ids` returns a Python list. For training, read the ID file with `numpy.fromfile(path, dtype="<u2", offset=24)` after checking the header; a small loader module should do that and verify the dictionary hash (Phase 0).
+- The Python `Dictionary.parse` rejects a non-canonical dictionary file; the C++ parser accepts it and hashes the raw bytes. The mismatch surfaces as a hash error later rather than at load time. Making C++ re-serialize and compare, or adding a test that both reject the same file, closes the gap.
+- `learn_pieces` stops when the best pair falls below `min_count` (default 2), so no singleton piece is ever created. Good for generalization; worth stating in the README.
+- The ID file has no checksum of its body, only a length check. Fine for research files; add one if ID files are ever shared.
+- The experiment script asserts C++/Python parity on the held-out books for every configuration, which is the strongest check in the suite. Keep that pattern for every new encoder flag.
+- `results/compiler_v0_initial.json` records `cores: 2`; this container now reports 4 cores and 15 GB, so speed numbers from different sessions are not directly comparable. Record the CPU model string as well as the core count.
+
+### 2.5 Environment and compute
+
+- **PyPI is reachable directly** from this container (the proxy's bypass list includes `pypi.org` and `files.pythonhosted.org`), so `pip install` works; `numpy` and `tiktoken` wheels downloaded without trouble. `download.pytorch.org` is still blocked (HTTP 403 from the proxy), so the small CPU-only PyTorch wheel is not available. The PyPI wheel for `torch` 2.14.1 is the CUDA build (555 MB plus CUDA libraries). An install of it was started during this review; the outcome is recorded at the end of this section.
+- **GitHub Actions is free compute for this public repository.** A `workflow_dispatch` workflow can run the Track A ladder as a matrix, one encoding per job (4 vCPU, 16 GB, 6-hour limit per job), upload each result JSON as an artifact and aggregate them in a final job. This parallelizes the ladder and removes the dependency on the sandbox's lifetime.
+- **Adam's machine** is the third option. The V1 README notes training can use CUDA when available. A single consumer GPU would run the whole Phase 1 ladder in an evening.
+- Sandbox resources at review time: 4 cores, 15 GB RAM, about 30 GB free disk, Python 3.13.16, NumPy 2.5.3, g++ 13.3.
+
+**PyTorch install result:** the PyPI wheel installed in 4 min 40 s and imports and trains on CPU (`torch` 2.14.1+cu130, 4 threads, CUDA reported unavailable). Disk cost 5.3 GB (site-packages grew from 0.5 GB to 5.8 GB), leaving about 22 GB free. So Track A can run in the sandbox at CPU scale; the calibration below says which runs should go elsewhere.
+
+**Calibration of the Phase 1 model shape** (random IDs, batch 8, context 256, AdamW, fp32, CPU, 4 threads, mean of 6 steps after warm-up):
+
+| Shape | Non-embedding params | Total params | Seconds per step | IDs per second | One pass over 45 MB of text |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| bytes, width 128, 4 layers | 0.79M | 0.86M | 0.19 | 11,000 | 1.1 h (45M IDs) |
+| v0 32k, width 128, 4 layers | 0.79M | 5.02M | 1.46 | 1,400 | 2.3 h (11.4M IDs) |
+| v0 32k, width 256, 4 layers | 3.16M | 11.61M | 3.89 | 530 | 6.0 h (11.4M IDs) |
+
+The byte model and the 32k model do the same core work per step, so the 1.27 s difference at width 128 is the embedding and the tied 32k output layer: about 87% of the step. At this scale a 32k vocabulary costs more per pass over the same text than bytes do, despite the sequence being four times shorter. Two consequences for the plan: the 32k runs belong on Actions (in parallel) or a GPU while the sandbox takes the byte and small-vocabulary runs, and the factorized output layer of Track C is the main speed lever for small models, so its output half moves up in priority (Phase 3). The Phase 1 "equal compute" budget is therefore defined in IDs processed, with wall-clock reported beside it.
+
+## 3. The question being tested
+
+The thesis has two halves and the plan keeps them apart so that each can fail on its own.
+
+1. **A tiny deterministic encoder is enough.** One stateless pass with one frozen dictionary keeps as much learnable structure as a learned tokenizer, produces shorter sequences, and is fast enough to be invisible. Track A tests this.
+2. **Capacity can live in tables.** Given stable IDs, most of a model's parameters can sit in lookup tables (large input vocabularies, hashed n-gram tables, factorized embeddings, product-key memories) while a small compute core does the rest, so the model has many parameters but few FLOPs per step. Tracks B and C test this.
+
+Speed is a constraint on both halves: the encoder must stay single-pass, and every table design is judged at matched step time, not just matched bits per byte.
+
+The reading of "a smaller model with far more parameters" as "small core plus large tables" is still unconfirmed by Adam (the open comment thread on the research-plan doc). The plan proceeds on that reading and flags it in section 6.
+
+## 4. Phases
+
+Each phase ends with a written result file in `results/` and a short entry in this document's log (section 8). A phase starts only when the one before it has produced its result, except where noted as parallel.
+
+### Phase 0: foundations (one to two sessions)
+
+Goal: remove the known distortions before any neural number is recorded, so that Phase 1 measures the encoder and not the corpus.
+
+**0.1 Housekeeping**
+- Open the pull request merging `encoder-v0` into `main` once Adam decides the CI question (section 6).
+- Add `compiler/requirements-research.txt` (numpy, torch, tiktoken) separate from the V1 `requirements.txt`, and a `SessionStart` hook or setup note so a new cloud session is ready without rediscovery.
+- Record the environment facts of 2.5 in `compiler/README.md`.
+
+**0.2 Corpus v1**
+- Extend `prepare_books.py` with paragraph unwrapping (F1) as an option, and write both variants (`books45-wrapped`, `books45-unwrapped`) with a manifest: book list, bytes, SHA-256 of each prepared file.
+- Add one held-out book with no author in training (F8).
+- Add a larger split for later phases: a few hundred more GITenberg books to reach 200–300 MB, with the same manifest. Keep the 45 MB set as the fast corpus for all Phase 0 and Phase 1 work.
+- Decide the domain mix (F9) with Adam; if books only, say so in every result file.
+
+**0.3 Encoder v0.1 candidates**
+Each candidate is a dictionary-level flag, so v0 dictionaries remain valid and every new dictionary has a new hash. Each is measured on the fast corpus with the existing `initial_tests.py` measures (IDs per KB on held-out and out-of-domain text, single-ID word share, the n-gram proxy, C++ speed and parity) before it is allowed into the Phase 1 ladder.
+- **U8:** valid UTF-8 multibyte sequences become one unit (F3).
+- **PUNCT:** runs of ASCII punctuation become one unit, up to a fixed maximum length (F2).
+- **Loader-side case folding:** no encoder change; the training loader merges `CAP`/`UPPER` with the following word into a (word, case) token (F4). Measured in Phase 1, since it only exists inside the model.
+- Promotion rule: a candidate enters the ladder if it cuts held-out IDs per KB by at least 2% without worsening the n-gram proxy by more than 1%, with all contract and parity tests passing. Candidates are also combined (U8+PUNCT) and the combination is measured as its own configuration.
+- Not in scope for v0.1: digits (Track D), non-ASCII letters (Track F's comparison will show the cost), and any change to the ID file format.
+
+**0.4 Training loader**
+- `compiler/loader.py`: memory-mapped reading of `.ids` files with header and hash checks, fixed-length window sampling by ID count and by original byte span, the case-folding transform, and a byte-count side array so bits per byte can be computed exactly for any encoding. Unit tests against `read_ids`.
+- An `encode_corpus.py` step that writes the training and held-out ID files for every configuration with the C++ tool and records the dictionary hash, IDs and bytes per file.
+
+**0.5 Compute path**
+- A `track_a.yml` workflow (`workflow_dispatch`, matrix over configurations) that builds the corpus, fits or downloads the dictionary, trains one model and uploads `results/track_a/<config>-<seed>.json`. First run with a 50-step budget to calibrate seconds per step on the runner (the sandbox numbers are in 2.5), then set the real budget from that.
+
+Exit criterion for Phase 0: the corpus manifest, the v0.1 measurements and a calibrated seconds-per-step number for each configuration are committed.
+
+### Phase 1: Track A, the neural learnability ladder (two to four sessions, mostly waiting on runs)
+
+Question: does a stateless dictionary encoder keep learnability while shortening sequences, and how does it compare with standard BPE and with raw bytes?
+
+**Fixed model.** One decoder-only Transformer for every encoding: 4 layers, width 128, 4 heads, feed-forward width 512, pre-norm, learned positions, tied input and output embeddings, no dropout. That is about 0.8M non-embedding parameters; the embedding adds 0.03M for bytes and 4.2M for a 32k vocabulary. Report both counts. If the calibration in 0.5 shows headroom, the same ladder is repeated at width 256 (3.2M non-embedding).
+
+**Fixed data.** The same raw text for every encoding: the 45 MB unwrapped corpus for training, two training books withheld as validation for learning-rate choice and early stopping, and the held-out books for the final score only. Dictionaries and BPE merges are fitted on the training split only, as now.
+
+**Configurations.** Raw bytes; in-house BPE 32k; GPT-2 BPE (tiktoken, 50k) as the external anchor; v0 32k plain; v0 32k plain with phrases; v0 64k plain; v0 32k with loader-side case folding; every v0.1 candidate that passed 0.3; and lzma-compressed bytes as the negative control (expected to learn nothing beyond the compressor's own rate, which closes the "train on compressed bytes" question for good).
+
+**Two budgets, both reported.**
+- *Equal bytes:* every model sees the same training bytes (two passes over the corpus). The byte model takes about four times more steps than v0, which is the honest cost of bytes.
+- *Equal compute:* every model gets the same number of training tokens (IDs) at the same batch size and context length (256 IDs), so the shorter encodings see more text in the same time.
+Curves of validation bits per byte against bytes seen and against wall-clock go into the result file, not just the end points.
+
+**Measures.** Bits per original byte on each held-out book and on the out-of-domain files (−log2 p summed over IDs, divided by the raw byte count, so every encoding is on one scale); IDs per KB; training seconds per 1M bytes; greedy generation speed in bytes per second for 1,000 steps on CPU; peak RAM. Two seeds for bytes, in-house BPE, v0 plain and v0 phrases; one seed for the rest; report mean and range.
+
+**Gates (as proposed in the research-plan doc, to be agreed before the runs).**
+- Plain v0 within 1% of in-house BPE bits per byte at equal bytes. (Expected, given the proxy.)
+- A v0 configuration within 3% of BPE bits per byte while producing at least 15% fewer IDs. This is the phrase question, and it may fail; a clean failure is a result.
+- Loader-side case folding no worse than plain v0 in bits per byte at the same sequence length. If it wins, structured IDs (Track C) move up the order.
+- The lzma control learns no better than the compressor's own rate.
+
+**Compute estimate** (from the calibration in 2.5). At width 128 and 256-ID context, one pass over the corpus is about 11.4M IDs for v0 and 45M for bytes. Measured on the 4-core sandbox: 1.1 h per pass for the byte model and 2.3 h per pass for a 32k-vocabulary model, so the two-pass equal-bytes budget is about 2 h and 5 h respectively, and the width-256 repeat is 12 h per 32k run. The ladder of nine configurations with the extra seeds is roughly 60 CPU-hours at width 128. Run it as a parallel matrix on Actions (one job per configuration and seed, each under the 6-hour limit) or on a GPU, where the whole ladder is an evening. The sandbox is for the calibration, the byte runs and the smoke tests.
+
+**Output.** `results/track_a_ladder.json`, a short write-up in this document, and the decision: which encoder configuration Phases 2–5 build on.
+
+### Phase 2: Track B, big tables and a small core (three to five sessions)
+
+Question: can lookup parameters stand in for compute? Starts from the Phase 1 winner (expected: plain v0 or v0 with U8+PUNCT, with loader-side case folding if it held).
+
+Four table designs, each a separate experiment against the same fixed core (the Phase 1 model, or its width-256 sibling), judged on bits per byte at matched step time and RAM:
+
+- **B1. Input vocabulary scaling.** 16k, 32k, 64k, 128k dictionaries with the core fixed. Needs the 200–300 MB corpus so the large tables see enough data; report the share of entries seen fewer than 100 times, which is the undertraining risk. Over-Tokenized Transformer predicts a log-linear gain.
+- **B2. Hashed n-gram input tables.** Hash the previous 2 and 3 IDs into tables of 1M, 4M and 16M rows of small width, sum them into the input embedding (Engram-style). Tables live in CPU RAM; measure step time with the table on and off. This is the clearest form of "parameters without FLOPs".
+- **B3. Exact n-gram tables with a neural residual.** The Witten-Bell tables that already exist in `initial_tests.py` become part of the model: the n-gram distribution is an input to the output layer (as log-probabilities or a learned mixture), and the network learns the residual. Cheap to build, directly tests whether a large exact table can carry what the small core would otherwise have to learn, and gives an interpretable split between table knowledge and network knowledge.
+- **B4. Spelling-aware embeddings.** Compute each dictionary entry's embedding from hashed byte n-grams of its spelling plus a learned per-entry vector (fastText-style), so rare entries and byte fallbacks share parameters. This attacks the undertrained-row problem that every large table has, and ties the byte fallback to the words it spells.
+
+Gate: a table design matches or beats the gain from doubling the core's width at no more than 10% extra step time. Output: `results/track_b.json` and the design choice for the "many parameters, still fast" model.
+
+### Phase 3: Track C, structured IDs and a factorized output (two to three sessions)
+
+Question: does predicting (group, member) instead of one flat softmax make each step cheaper without hurting quality, and does the same structure help the input side?
+
+- Input side first, because Phase 1 already tests the simplest case (word, case). Extend to (group, member) from the B3F2 word-ending grouping, frequency bands, and k-means clusters of the Phase 1 embeddings.
+- Output side: two-level softmax over the same groupings against the flat softmax. The calibration in 2.5 measured the embedding and flat 32k output layer at about 87% of the training step at width 128 (1.27 s of 1.46 s), so this is where both training and generation speed are won for small models. A two-level output over 32k entries touches about 2 × 181 logits per step instead of 32,768.
+- Gate: within 1% of flat bits per byte with the output layer at least twice as fast at 64k entries or more.
+
+### Phase 4: Tracks D and E (parallel with Phase 3)
+
+- **D. Numeric side channel.** Digits are single bytes today. Compare digit IDs, a `NUM` slot plus the V1 scalar channel, and an xVal-style scaled embedding, on the V1 accounting and ordering tasks (already in `scripts/semantic_tasks.py`) and on prose with numbers. Gate: better exact answers on unseen number ranges with no loss in bits per byte on prose. This is the one track that touches the V1 code, and it is where the two halves of the repository meet.
+- **E. Multi-unit prediction.** Add 2–4 extra prediction heads to the Phase 1 winner and use them for self-speculative decoding. Measure units accepted per step and generated bytes per second. Gate: at least 1.8× generated bytes per second at equal bits per byte. Phrases from Track A, if they failed the quality gate, are re-examined here as a prediction-time device rather than an encoding device.
+
+### Phase 5: Track F, learned chunking as the benchmark (one to two sessions, lowest priority)
+
+Train a SpaceByte-style model (bytes with a word-boundary patching rule) at the Phase 1 budget and compare with the fixed encoder on the same measures. This is a yardstick for what the fixed dictionary gives up, especially on non-English and code, not a candidate replacement unless it wins clearly. BLT- or H-Net-style chunking is attempted only if SpaceByte comes close.
+
+## 5. Shared measurement protocol
+
+Every result file in `results/` from Phase 1 onward records:
+
+- the dictionary hash (or tokenizer name and version), the corpus manifest hash and the split used;
+- model configuration and both parameter counts (non-embedding and total);
+- training budget in bytes seen and in IDs seen, wall-clock, seconds per step, peak RAM, device and CPU model string;
+- bits per original byte per held-out file and per out-of-domain file, plus the validation curve;
+- IDs per KB on the same files, generation speed in bytes per second, and the round-trip check on every file;
+- seeds, and the mean and range across them.
+
+Rules carried over from the V1 discipline: fit dictionaries and tokenizers on the training split only; held-out books are scored once per configuration; development choices use the validation books; every number states what it is a proxy for.
+
+## 6. Decisions needed from Adam
+
+1. **Reading of the goal.** Is "a smaller model with far more parameters" correctly read as a small compute core plus large lookup tables (the open comment on the research-plan doc)? Phase 2 is built on that reading.
+2. **CI fix for the merge.** Per-platform pinned hashes in the V1 test, or run that test on Windows only. Then the pull request from `encoder-v0` to `main` can go up.
+3. **Compute.** GitHub Actions (free, parallel, 6 hours per job), a GPU on Adam's machine, or the sandbox at CPU scale. The plan assumes Actions for the ladder and the sandbox for everything else; a GPU would let Phase 1 run at width 256 and Phase 2 at the larger corpus.
+4. **Corpus mix.** Books only for Phases 1–2, or books plus code, Markdown and reference text. This decides what the dictionaries are fitted on.
+5. **TC0 draft files.** Do copies exist? If so, they go on their own branch; if not, the earlier offer is void.
+6. **Track order after Phase 1.** The default is B then C, with D and E alongside C. If the number channel matters more to the V1 line of work, D can move ahead of B.
+
+## 7. Risks
+
+- **The n-gram proxy may have misled on phrases in either direction.** Longer units are rarer, which hurts any count-based model more than a neural one. Phase 1 is designed so that a clean phrase failure is still a usable result (Track E picks the idea up as a decoding device).
+- **Small corpus, small model.** Phase 1 results at 1–4M parameters and 45 MB may not transfer to larger scales. The equal-bytes and equal-compute budgets, and the width-256 repeat, are there to show whether the ordering of encodings is stable as scale grows. Phase 2 needs the bigger corpus before anything about 64k+ vocabularies is believed.
+- **Table designs can look good at matched FLOPs and bad at matched wall-clock**, because random memory access is the real cost. Every Phase 2 number is reported at measured step time, with the table in CPU RAM as it would be in use.
+- **Lock-in.** Once a model is trained, its dictionary cannot change without retraining the embeddings. The hash discipline makes this visible; B4's spelling-aware embeddings are the hedge, since they can embed an entry the model never saw.
+- **Scope creep toward the V1 system.** Track D is the one deliberate contact point. Everything else stays in `compiler/` and `results/`.
+- **Sandbox lifetime.** Containers are reclaimed; anything not pushed is lost (the TC0 files are the example). Every session ends with a push, and long runs go to Actions, where artifacts survive.
+
+## 8. Log
+
+- **2026-10-08.** Review of `encoder-v0` and the earlier results; measurements F1–F3 on two held-out books; PyTorch installed in the sandbox and the Phase 1 model shape timed on CPU; plan written. No model was trained to completion and no result in `results/` changed.
+
+## Appendix A: initial results, for reference
+
+From `results/compiler_v0_initial.json` (48 training books, 45.0 MB; held-out 1.06 MB; Witten-Bell n-gram orders 1–3 on the encoded training split; C++ speed best of 5 on 2 cores).
+
+| Configuration | Held-out IDs/KB | Markdown IDs/KB | Python IDs/KB | Best n-gram bits/byte | Encode MB/s | Decode MB/s |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| bytes | 1000.0 | 1000.0 | 1000.0 | 2.893 | | |
+| BPE 32k (in-house) | 253.9 | 270.4 | 367.6 | 1.866 | | |
+| whole words 32k, case flags | 285.0 | 350.0 | 454.1 | 1.873 | | |
+| v0 32k plain | 254.3 | 271.4 | 375.3 | 1.865 | 112.5 | 301.4 |
+| v0 8k, case flags | 296.2 | 332.6 | 428.9 | 1.853 | 83.2 | 268.9 |
+| v0 16k, case flags | 280.3 | 300.9 | 399.2 | 1.854 | 95.5 | 280.9 |
+| v0 32k, case flags | 270.6 | 277.9 | 371.4 | 1.859 | 105.5 | 281.7 |
+| v0 64k, case flags | 265.1 | 263.4 | 355.1 | 1.870 | 111.1 | 271.9 |
+| v0 32k + 4k phrases, case flags | 207.6 | 260.0 | 340.9 | 1.944 | 59.3 | 335.7 |
+| v0 64k + 8k phrases, case flags | 193.9 | 238.9 | 316.9 | 1.965 | 60.7 | 332.6 |
+| v0 32k plain + 4k phrases | 185.2 | 253.5 | 343.3 | 1.921 | 59.9 | 415.1 |
+| v0 64k plain + 8k phrases | 169.8 | 230.6 | 316.9 | 1.946 | 58.5 | 414.4 |
+
+Python reference encoder: 4.4 MB/s. Fitting: 15–18 s without phrases, 45–51 s with phrases.
+
+## Appendix B: commands
+
+```bash
+# tests (19 contract tests, C++ parity included when g++ is present)
+python -B -m unittest compiler/test_compiler_v0.py -v
+
+# corpus and the initial measurements
+python compiler/experiments/prepare_books.py DATA
+g++ -O2 -std=c++17 -o cv0 compiler/native/cv0.cpp
+python compiler/experiments/initial_tests.py DATA WORK --native ./cv0
+
+# the two review measurements (F1–F3) were made with the scanner on cleaned held-out
+# books; the scripts are small and will be folded into initial_tests.py in Phase 0
+```

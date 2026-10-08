@@ -57,6 +57,10 @@ g++ -O2 -std=c++17 -o cv0 compiler/native/cv0.cpp
 python compiler/experiments/initial_tests.py DATA WORK --native ./cv0
 ```
 
+## Plan
+
+The review of this encoder and the phased plan for the next experiments are in [`docs/ENCODER_RESEARCH_PLAN.md`](../docs/ENCODER_RESEARCH_PLAN.md).
+
 ## Limits of v0
 
 - Letters are ASCII only. Other scripts and accented letters fall back to UTF-8 bytes (2–3 IDs per character).
