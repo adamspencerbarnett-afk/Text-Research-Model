@@ -131,6 +131,7 @@ def main() -> int:
     ap.add_argument("--max-train", type=int, default=0); ap.add_argument("--out", default="results/m2_qa.json"); ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--self-context-p", type=float, default=0.0, help="share of training windows whose context is the exchange itself, to teach copying from memory")
     ap.add_argument("--copy-bias", type=float, default=0.0, help="generation-time bonus (in nats) on codes that appear in the retrieved answer: the soft form of answering from evidence")
+    ap.add_argument("--device", default="cpu", help="cpu, cuda or cuda:N")
     ap.add_argument("--save", default=None, help="save the core's weights here after training")
     a = ap.parse_args()
     torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
@@ -168,7 +169,8 @@ def main() -> int:
     say(f"M1 built: {ngrams[0].contexts:,} bigram and {ngrams[1].contexts:,} trigram contexts")
     sep = enc.encode(b"\n\n")[0]
     PAD = 0
-    model = train_lm.LM(enc, 128, 4, 4, a.ctx, 0, None, (2,), ngrams)
+    dev = torch.device(a.device)
+    model = train_lm.LM(enc, 128, 4, 4, a.ctx, 0, None, (2,), ngrams).to(dev)
     dense = [p for n, p in model.named_parameters()]
     opt = torch.optim.AdamW([{"params": [p for p in dense if p.dim() >= 2], "weight_decay": 0.1},
                              {"params": [p for p in dense if p.dim() < 2], "weight_decay": 0.0}], lr=1e-3, betas=(0.9, 0.95))
@@ -184,7 +186,7 @@ def main() -> int:
 
     def batch(idx):
         xs, ms = zip(*(sample(i) for i in idx))
-        x = torch.from_numpy(np.stack(xs)); m = torch.from_numpy(np.stack(ms))
+        x = torch.from_numpy(np.stack(xs)).to(dev); m = torch.from_numpy(np.stack(ms)).to(dev)
         return x[:, :-1], x[:, 1:], m[:, 1:]
 
     @torch.no_grad()
@@ -197,7 +199,7 @@ def main() -> int:
             seq = np.concatenate([nb, sep, own])[:a.ctx + 1]
             if len(seq) < 3:
                 continue
-            x = torch.from_numpy(seq[None, :-1]); y = torch.from_numpy(seq[None, 1:])
+            x = torch.from_numpy(seq[None, :-1]).to(dev); y = torch.from_numpy(seq[None, 1:]).to(dev)
             scored = seq[len(nb) + len(sep):]                       # the exchange's own codes, each predicted
             nll = model.nll(x, y)[0, len(nb) + len(sep) - 1:]
             bits += float(nll.sum()) / math.log(2); nbytes += float(enc.lens[scored].sum())
@@ -224,19 +226,19 @@ def main() -> int:
         if not use_m1:
             model.ngrams = []
         nb = codes_of(context_exchange)[-a.neighbor_codes:] if context_exchange is not None else np.array([], dtype=np.int64)
-        bias = torch.zeros(enc.vocab)
+        bias = torch.zeros(enc.vocab, device=dev)
         if copy_bias and context_exchange is not None:
             ans_codes = enc.encode(mem.exchanges[context_exchange][1])[0]
             bias[torch.from_numpy(np.unique(ans_codes))] = copy_bias
         seq = [int(t) for t in np.concatenate([nb, sep, enc.encode(render(q, None))[0]])]
         start = len(seq)
         for _ in range(n_tokens):
-            x = torch.tensor([seq[-a.ctx:]])
+            x = torch.tensor([seq[-a.ctx:]], device=dev)
             h = model.hidden(x)[:, -1]
-            logits = (model.mixed_logits(h, x.numpy()) + bias) / temperature
+            logits = (model.mixed_logits(h, x.cpu().numpy()) + bias) / temperature
             kth = torch.topk(logits, top_k).values[..., -1, None]
             logits = logits.masked_fill(logits < kth, float("-inf"))
-            seq.append(torch.multinomial(F.softmax(logits, -1), 1, generator=gen).item())
+            seq.append(torch.multinomial(F.softmax(logits, -1).cpu(), 1, generator=gen).item())
         out = enc.decode(seq[start:]).split(b"\nUser:")[0].split(b"User:")[0].strip()
         model.ngrams = saved; model.train(); return out
 
@@ -289,7 +291,7 @@ def main() -> int:
     pol = [r["retrieved_answer_f1_vs_ref"] if r["sim"] >= 0.5 else r["f1"] for r in para_rows + unseen_rows]
     results["groups"]["heldout_policy_retrieved_if_similar_else_generated"] = {"n": len(pol), "f1": round(float(np.mean(pol)), 4) if pol else None}
     if a.save:
-        torch.save({"state_dict": model.state_dict(), "args": vars(a)}, a.save)
+        torch.save({"state_dict": {k: v.cpu() for k, v in model.state_dict().items()}, "args": vars(a)}, a.save)
     results["samples"]["paraphrase"] = para_rows[:6]; results["samples"]["unseen"] = unseen_rows[:6]
     # 4. learning by adding: new pairs into M2 only, then asked at once (memory path and network path).
     for q, ans in add_x:

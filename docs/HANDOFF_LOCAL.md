@@ -38,6 +38,13 @@ python -B -m unittest compiler/test_compiler_v0.py compiler/experiments/test_lad
 
 All tests must pass before any experiment.
 
+Windows notes (from the first local session, 9 October): install the CUDA wheel with
+`pip install torch --index-url https://download.pytorch.org/whl/cu128`; the plain `torch` wheel is
+CPU-only. The native tool is `data\cv0.exe` and the scripts need its **absolute** path in
+`--native`. The parity tests need `g++` on the PATH (`winget install BrechtSanders.WinLibs.POSIX.UCRT`);
+MSVC's `cl` builds the tool but the test suite does not look for it. Adam's source files live in
+`C:\Users\adams\OneDrive\Desktop\Text Files\core_12` (the 100-book file and the enwik prefix).
+
 ## 5. Rebuild the data (corpora are not in git; manifests with SHA-256 are in `results/`)
 
 ```bash

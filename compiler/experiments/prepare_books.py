@@ -60,11 +60,11 @@ def main(out: str) -> int:
             continue
         best = sorted(texts, key=lambda p: (not p.endswith("-0.txt"), not p.endswith("-8.txt"), -os.path.getsize(p)))[0]
         split = "heldout" if name in HELD_OUT else "train"
-        (Path(out) / split / f"{name}.txt").write_text(clean(best), encoding="utf-8")
+        (Path(out) / split / f"{name}.txt").write_bytes((clean(best)).encode("utf-8"))
     md = sorted(glob.glob(str(REPO / "docs" / "*.md"))) + [str(REPO / n) for n in ("MASTER_PLAN.md", "MASTER_LOG.md", "README.md")]
     py = sorted(glob.glob(str(REPO / "scripts" / "*.py")))
-    (Path(out) / "ood" / "repo_docs_markdown.txt").write_text("".join(Path(p).read_text(encoding="utf-8") + "\n" for p in md), encoding="utf-8")
-    (Path(out) / "ood" / "repo_python_code.txt").write_text("".join(Path(p).read_text(encoding="utf-8") + "\n" for p in py), encoding="utf-8")
+    (Path(out) / "ood" / "repo_docs_markdown.txt").write_bytes(("".join(Path(p).read_text(encoding="utf-8") + "\n" for p in md)).encode("utf-8"))
+    (Path(out) / "ood" / "repo_python_code.txt").write_bytes(("".join(Path(p).read_text(encoding="utf-8") + "\n" for p in py)).encode("utf-8"))
     print(f"prepared {len(BOOKS) - len(missing)} books; missing: {', '.join(missing) or 'none'}")
     return 0
 

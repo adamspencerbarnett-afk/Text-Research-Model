@@ -37,9 +37,9 @@ def main() -> int:
     for split in ("train", "heldout", "ood"):
         (out / split).mkdir(parents=True, exist_ok=True)
     cut = int(len(rows) * 0.98)
-    (out / "train" / "qa_train.txt").write_text("".join(render(r) for r in rows[:cut]), encoding="utf-8")
-    (out / "heldout" / "qa_heldout.txt").write_text("".join(render(r) for r in rows[cut:]), encoding="utf-8")
-    (out / "ood" / "qa_sample.txt").write_text("".join(render(r) for r in rows[cut:cut + 50]), encoding="utf-8")
+    (out / "train" / "qa_train.txt").write_bytes(("".join(render(r) for r in rows[:cut])).encode("utf-8"))
+    (out / "heldout" / "qa_heldout.txt").write_bytes(("".join(render(r) for r in rows[cut:])).encode("utf-8"))
+    (out / "ood" / "qa_sample.txt").write_bytes(("".join(render(r) for r in rows[cut:cut + 50])).encode("utf-8"))
     sizes = {p.name: p.stat().st_size for p in out.glob("*/*.txt")}
     print(f"{len(rows)} exchanges -> {sizes}")
     return 0

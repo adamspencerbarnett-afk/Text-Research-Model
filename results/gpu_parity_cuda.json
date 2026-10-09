@@ -1,0 +1,301 @@
+{
+ "ladder": "ladder1",
+ "budget_s": 7200.0,
+ "seed": 1,
+ "corpus": {
+  "train_books": 48,
+  "train_bytes": 45045381,
+  "heldout": [
+   "Heart-of-Darkness_219",
+   "The-Adventures-of-Sherlock-Holmes_1661",
+   "The-Prince_1232"
+  ],
+  "ood": [
+   "repo_docs_markdown",
+   "repo_python_code"
+  ]
+ },
+ "configs": {
+  "v0_8k_ng64": {
+   "encoding": {
+    "name": "v0_8k_plain",
+    "vocab": 8192,
+    "groups": 0,
+    "members": 0,
+    "dictionary": "runs\\par_cuda\\v0_8k_plain.cv0d",
+    "dictionary_hash": "9967d692c6bafc80",
+    "entries": 7934,
+    "phrases": 0,
+    "case_flags": false,
+    "max_phrase_units": 1
+   },
+   "model": {
+    "width": 128,
+    "layers": 4,
+    "heads": 4,
+    "ctx": 256,
+    "batch": 16,
+    "peak_lr": 0.001,
+    "table_rows": 0,
+    "table_orders": [],
+    "params": {
+     "core": 791296,
+     "embedding": 1081344,
+     "output_heads": 405,
+     "table": 0,
+     "total": 1873045
+    },
+    "ngram_tables": [
+     {
+      "order": 2,
+      "contexts": 7989,
+      "topk": 64,
+      "entries": 397914,
+      "build_s": 0.8
+     },
+     {
+      "order": 3,
+      "contexts": 1075527,
+      "topk": 64,
+      "entries": 4074351,
+      "build_s": 2.1
+     }
+    ]
+   },
+   "training": {
+    "budget_s": 7200.0,
+    "max_steps": 1500,
+    "train_s": 49.3,
+    "steps": 1500,
+    "tokens_seen": 6144000,
+    "bytes_seen": 21259383,
+    "tokens_per_s": 124508.2,
+    "bytes_per_s": 430821.6,
+    "final_train_bits_per_token": 5.9081,
+    "train_tokens": 12745331,
+    "valid_tokens": 260109,
+    "valid_bytes": 920527,
+    "patience": 0,
+    "min_delta": 0.002,
+    "stop_reason": "budget",
+    "stopped_early": false,
+    "history": [
+     {
+      "train_s": 49.3,
+      "step": 1500,
+      "tokens_seen": 6144000,
+      "bytes_seen": 21259383,
+      "train_bits_per_token": 5.9081,
+      "quick_bits_per_byte": 1.6462,
+      "lr": 0.00010000098696007933
+     }
+    ]
+   },
+   "eval": {
+    "validation": {
+     "bytes": 920527,
+     "tokens": 260109,
+     "bits_per_byte": 1.8291
+    },
+    "heldout": {
+     "Heart-of-Darkness_219": {
+      "bytes": 211025,
+      "tokens": 61192,
+      "ids_per_kb": 290.0,
+      "bits_per_byte": 1.8625,
+      "bits_per_token": 6.4232,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.3619,
+        "bits_share": 0.3581,
+        "bits_per_byte": 1.8429
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2884,
+        "bits_share": 0.273,
+        "bits_per_byte": 1.7633
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.3497,
+        "bits_share": 0.3689,
+        "bits_per_byte": 1.9648
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0735,
+        "bits_share": 0.1568,
+        "bits_per_byte": 3.9709
+       },
+       "type_word": {
+        "byte_share": 0.9244,
+        "bits_share": 0.8419,
+        "bits_per_byte": 1.6964
+       },
+       "type_other": {
+        "byte_share": 0.002,
+        "bits_share": 0.0013,
+        "bits_per_byte": 1.1565
+       }
+      }
+     },
+     "The-Adventures-of-Sherlock-Holmes_1661": {
+      "bytes": 562531,
+      "tokens": 160338,
+      "ids_per_kb": 285.0,
+      "bits_per_byte": 1.7536,
+      "bits_per_token": 6.1524,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.3884,
+        "bits_share": 0.3711,
+        "bits_per_byte": 1.6752
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2925,
+        "bits_share": 0.2848,
+        "bits_per_byte": 1.7076
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.319,
+        "bits_share": 0.3441,
+        "bits_per_byte": 1.8913
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0671,
+        "bits_share": 0.1434,
+        "bits_per_byte": 3.7495
+       },
+       "type_word": {
+        "byte_share": 0.9234,
+        "bits_share": 0.8535,
+        "bits_per_byte": 1.621
+       },
+       "type_other": {
+        "byte_share": 0.0095,
+        "bits_share": 0.0031,
+        "bits_per_byte": 0.5618
+       }
+      }
+     },
+     "The-Prince_1232": {
+      "bytes": 281531,
+      "tokens": 77046,
+      "ids_per_kb": 273.7,
+      "bits_per_byte": 1.8858,
+      "bits_per_token": 6.8908,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.3582,
+        "bits_share": 0.3197,
+        "bits_per_byte": 1.6834
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2892,
+        "bits_share": 0.3123,
+        "bits_per_byte": 2.0367
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.3527,
+        "bits_share": 0.368,
+        "bits_per_byte": 1.9676
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0581,
+        "bits_share": 0.1377,
+        "bits_per_byte": 4.4735
+       },
+       "type_word": {
+        "byte_share": 0.9351,
+        "bits_share": 0.8556,
+        "bits_per_byte": 1.7255
+       },
+       "type_other": {
+        "byte_share": 0.0069,
+        "bits_share": 0.0067,
+        "bits_per_byte": 1.8398
+       }
+      }
+     }
+    },
+    "heldout_overall": {
+     "bytes": 1055087,
+     "tokens": 298576,
+     "ids_per_kb": 283.0,
+     "bits_per_byte": 1.8107
+    },
+    "ood": {
+     "repo_docs_markdown": {
+      "bytes": 192415,
+      "tokens": 69898,
+      "ids_per_kb": 363.3,
+      "bits_per_byte": 3.4795,
+      "bits_per_token": 9.5784
+     },
+     "repo_python_code": {
+      "bytes": 484809,
+      "tokens": 208415,
+      "ids_per_kb": 429.9,
+      "bits_per_byte": 4.1862,
+      "bits_per_token": 9.7379
+     }
+    },
+    "ood_overall": {
+     "bytes": 677224,
+     "tokens": 278313,
+     "ids_per_kb": 411.0,
+     "bits_per_byte": 3.9854
+    }
+   },
+   "seed": 1,
+   "generation": {
+    "prompt": "We went to the park",
+    "tokens": 200,
+    "bytes": 594,
+    "seconds": 1.88,
+    "tokens_per_s": 106.5,
+    "bytes_per_s": 316.3,
+    "note": "sliding context, no KV cache, cuda",
+    "sample": ",\nand I had left their natives\n  He is a\nlanguage approaches.\nHe was as if she\nwas a tune, \"and as she could.\n\n\u2019t believe it in the town. \u201d\n\n\u2019s not a few minutes later,\nas they do not\ndivined, as the old man,\nsnake\u201d\n\n\u2019s name! She would not have been taken, if not, to be on the other side of the\ncause, or that I\nshoulders, that he himself, and that he was not to have the goodness of 3rdialogues, and then\nthey were found for\nall, but\nthe young ladies went on, to make more than I thought I.\u201cThey\u201cI know why. The whole business that he was\nvery much, she asked me\nwith the others"
+   },
+   "machine": {
+    "python": "3.12.10",
+    "torch": "2.11.0+cu128",
+    "threads": 22,
+    "cpu": "Intel64 Family 6 Model 79 Stepping 1, GenuineIntel",
+    "cores": 44,
+    "device": "cuda",
+    "gpu": "NVIDIA GeForce RTX 3090"
+   },
+   "config": "v0_8k_ng64"
+  }
+ }
+}

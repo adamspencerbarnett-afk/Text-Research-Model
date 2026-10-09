@@ -95,7 +95,7 @@ def main() -> int:
     for name in sorted(EXTRA_HELD_OUT):
         text = fetch_book(name)
         if text:
-            (v1 / "heldout" / f"{name}.txt").write_text(text, encoding="utf-8"); have.add(name)
+            (v1 / "heldout" / f"{name}.txt").write_bytes((text).encode("utf-8")); have.add(name)
             print(f"held-out: {name} ({len(text)/1e3:.0f} KB)", flush=True)
     curated = [l.strip() for l in open(a.curated)] if a.curated else []
     rows = [l.rstrip("\n").split("\t") for l in open(a.repo_list, encoding="utf-8", errors="replace")]

@@ -71,7 +71,7 @@ def mix_ngram(x: torch.Tensor, order: int, rows: int, pad: int) -> torch.Tensor:
     B, T = x.shape
     a = x.clone()
     for k in range(1, order):
-        shifted = torch.cat([torch.full((B, k), pad, dtype=x.dtype), x[:, :-k]], dim=1)
+        shifted = torch.cat([torch.full((B, k), pad, dtype=x.dtype, device=x.device), x[:, :-k]], dim=1)
         a = (a * 1000003 + shifted) * 2654435761
         a = a ^ (a >> 21) ^ (a >> 42)
     return a & (rows - 1)
@@ -110,7 +110,7 @@ class NgramTable:
         self.totals = totals.astype(np.float32)
         self.contexts = len(self.keys)
 
-    def features(self, x: np.ndarray):
+    def features(self, x: np.ndarray, device=None):
         """For a (B, T) token array: follower ids (B, T, K), their counts (B, T, K) and the
         context's total count (B, T); -1 / 0 where the context is unseen or incomplete."""
         B, T = x.shape
@@ -126,7 +126,8 @@ class NgramTable:
         ids = np.where(found[..., None], self.ids[pos], -1)
         counts = np.where(found[..., None], self.counts[pos], 0.0).astype(np.float32)
         totals = np.where(found, self.totals[pos], 0.0).astype(np.float32)
-        return torch.from_numpy(ids), torch.from_numpy(counts), torch.from_numpy(totals)
+        out = torch.from_numpy(ids), torch.from_numpy(counts), torch.from_numpy(totals)
+        return tuple(t.to(device) for t in out) if device is not None else out
 
 
 def table_features(counts, totals, loo: float, ids=None, y=None):
@@ -211,11 +212,11 @@ class LM(nn.Module):
         else:
             e = self.emb(x)
         if self.table is not None:
-            prev = torch.cat([torch.full((B, 1), self.vocab, dtype=x.dtype), x[:, :-1]], dim=1)
+            prev = torch.cat([torch.full((B, 1), self.vocab, dtype=x.dtype, device=x.device), x[:, :-1]], dim=1)
             e = e + self.table(mix_bigram(prev, x, self.table_rows))
         for o, t in self.tables.items():
             e = e + t(mix_ngram(x, int(o), self.table_rows, self.vocab))
-        return e + self.pos(torch.arange(T))
+        return e + self.pos(torch.arange(T, device=x.device))
 
     def hidden(self, x):
         h = self.embed(x)
@@ -245,7 +246,7 @@ class LM(nn.Module):
         # seen once "predicts" its follower perfectly and the model learns to over-trust counts.
         loo = 1.0 if self.training else 0.0
         for table in self.ngrams:
-            ids, counts, totals = table.features(x.numpy())
+            ids, counts, totals = table.features(x.cpu().numpy(), y.device)
             c_target = (counts * (ids == y[..., None])).sum(-1)
             kept = counts.sum(-1)
             c_target = (c_target - loo * (c_target > 0)).clamp_min(0.0)
@@ -264,7 +265,7 @@ class LM(nn.Module):
         p = [F.softmax(logits, -1)]
         confs = []
         for table in self.ngrams:
-            ids, counts, totals = table.features(x_last_np)
+            ids, counts, totals = table.features(x_last_np, h_last.device)
             dense = torch.zeros_like(p[0])
             ok = ids[:, -1] >= 0
             probs = counts[:, -1] / counts[:, -1].sum(-1, keepdim=True).clamp_min(1.0)
@@ -283,14 +284,14 @@ class LM(nn.Module):
             if top_k:
                 kth = torch.topk(logits, top_k).values[..., -1, None]
                 logits = logits.masked_fill(logits < kth, float("-inf"))
-            return torch.multinomial(F.softmax(logits, -1), 1, generator=gen).item()
+            return torch.multinomial(F.softmax(logits, -1).cpu(), 1, generator=gen).item()
 
         if self.coords:
             g = pick(self.head_g(h).masked_fill(~self.valid_group, float("-inf")))
-            lm = self.head_m(torch.cat([h, self.emb_g(torch.tensor([g]))], -1))
+            lm = self.head_m(torch.cat([h, self.emb_g(torch.tensor([g], device=h.device))], -1))
             m = pick(lm.masked_fill(~self.valid[g], float("-inf")))
             return g * self.M + m
-        return pick(self.mixed_logits(h, x.numpy()))
+        return pick(self.mixed_logits(h, x.cpu().numpy()))
 
 
 # --------------------------------------------------------------------------- evaluation
@@ -299,6 +300,7 @@ class LM(nn.Module):
 def total_bits(model: LM, tokens: np.ndarray, batch: int = 64) -> tuple[float, int]:
     """Sum of -log2 p over every token but the first, with the context reset every ctx tokens."""
     model.eval()
+    dev = next(model.parameters()).device
     ctx, n = model.ctx, len(tokens)
     starts = list(range(0, n - 1, ctx))
     bits, predicted = 0.0, 0
@@ -321,8 +323,8 @@ def total_bits(model: LM, tokens: np.ndarray, batch: int = 64) -> tuple[float, i
             xs.append(w[:-1]); ys.append(w[1:]); counts.append((take, tail))
         if not xs:
             continue
-        x = torch.from_numpy(np.stack(xs)); y = torch.from_numpy(np.stack(ys))
-        nll = model.nll(x, y)
+        x = torch.from_numpy(np.stack(xs)).to(dev); y = torch.from_numpy(np.stack(ys)).to(dev)
+        nll = model.nll(x, y).cpu()
         for row, (take, tail) in zip(nll, counts):
             part = row[-take:] if tail else row[:take]
             bits += float(part.sum()) / LN2
@@ -335,6 +337,7 @@ def total_bits(model: LM, tokens: np.ndarray, batch: int = 64) -> tuple[float, i
 def token_bits(model: LM, tokens: np.ndarray, batch: int = 64) -> np.ndarray:
     """-log2 p for every token but the first (context reset every ctx tokens), aligned to tokens[1:]."""
     model.eval()
+    dev = next(model.parameters()).device
     ctx, n = model.ctx, len(tokens)
     out = np.zeros(n - 1, dtype=np.float64)
     starts = list(range(0, n - 1, ctx))
@@ -353,7 +356,7 @@ def token_bits(model: LM, tokens: np.ndarray, batch: int = 64) -> np.ndarray:
             if len(w) < ctx + 1:
                 w = np.pad(w, (0, ctx + 1 - len(w)))
             xs.append(w[:-1]); ys.append(w[1:]); spans.append((s, take, tail))
-        nll = model.nll(torch.from_numpy(np.stack(xs)), torch.from_numpy(np.stack(ys))).numpy() / LN2
+        nll = model.nll(torch.from_numpy(np.stack(xs)).to(dev), torch.from_numpy(np.stack(ys)).to(dev)).cpu().numpy() / LN2
         for row, (s, take, tail) in zip(nll, spans):
             if tail:
                 out[s + ctx - take:s + ctx] = row[-take:]
@@ -416,7 +419,7 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
         work: Path, budget_s: float, width=128, layers=4, heads=4, ctx=256, batch=16, lr=1e-3,
         table_rows=0, seed=1, eval_every_s=120.0, quick_bytes=150_000, prompt=b"We went to the park",
         gen_tokens=200, log=print, save_path=None, table_orders=(2,), ngram_orders=(), ngram_topk=16,
-        valid_share=0.02, patience=0, min_delta=0.002, keep_model=False) -> dict:
+        valid_share=0.02, patience=0, min_delta=0.002, keep_model=False, device="cpu", max_steps=0) -> dict:
     """Train for up to ``budget_s`` seconds of training time.
 
     The last ``valid_share`` of the training stream is held back as the validation split: it
@@ -439,7 +442,7 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
         ngram_info.append({"order": order, "contexts": table.contexts, "topk": ngram_topk,
                            "entries": int((table.ids >= 0).sum()), "build_s": round(time.perf_counter() - t0, 1)})
         log(f"[{enc.name}] {order}-gram table: {table.contexts:,} contexts, {ngram_info[-1]['entries']:,} entries ({ngram_info[-1]['build_s']}s)")
-    model = LM(enc, width, layers, heads, ctx, table_rows, valid, table_orders, ngrams)
+    model = LM(enc, width, layers, heads, ctx, table_rows, valid, table_orders, ngrams).to(device)
     dense = [p for n, p in model.named_parameters() if not n.startswith("table")]
     sparse = [p for n, p in model.named_parameters() if n.startswith("table")]
     decay = [p for p in dense if p.dim() >= 2]
@@ -470,12 +473,12 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
     history, next_eval = [], eval_every_s
     best_quick, bad_evals, stop_reason = float("inf"), 0, "budget"
     model.train()
-    while train_time < budget_s:
+    while train_time < budget_s and not (max_steps and step >= max_steps):
         t0 = time.perf_counter()
         idx = rng.integers(0, n - ctx - 1, size=batch)
         win = train_tokens[idx[:, None] + offsets_base]
-        x = torch.from_numpy(win[:, :-1]); y = torch.from_numpy(win[:, 1:])
-        cur_lr = lr_at(train_time / budget_s, step)
+        x = torch.from_numpy(win[:, :-1]).to(device); y = torch.from_numpy(win[:, 1:]).to(device)
+        cur_lr = lr_at(step / max_steps if max_steps else train_time / budget_s, step)
         for o in opts:
             for g in o.param_groups:
                 g["lr"] = cur_lr
@@ -492,7 +495,7 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
         bpt = loss.item() / LN2
         ema = bpt if ema is None else 0.98 * ema + 0.02 * bpt
         train_time += time.perf_counter() - t0
-        if train_time >= next_eval or train_time >= budget_s:
+        if train_time >= next_eval or train_time >= budget_s or (max_steps and step >= max_steps):
             qbits, _ = total_bits(model, q_tokens)
             row = {"train_s": round(train_time, 1), "step": step, "tokens_seen": tokens_seen, "bytes_seen": bytes_seen,
                    "train_bits_per_token": round(ema, 4), "quick_bits_per_byte": round(qbits / q_bytes, 4), "lr": cur_lr}
@@ -513,7 +516,7 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
                                                       "batch": batch, "peak_lr": lr, "table_rows": table_rows,
                                                       "table_orders": list(model.table_orders), "params": counts,
                                                       "ngram_tables": ngram_info},
-              "training": {"budget_s": budget_s, "train_s": round(train_time, 1), "steps": step, "tokens_seen": tokens_seen,
+              "training": {"budget_s": budget_s, "max_steps": max_steps, "train_s": round(train_time, 1), "steps": step, "tokens_seen": tokens_seen,
                            "bytes_seen": bytes_seen, "tokens_per_s": round(tokens_seen / train_time, 1),
                            "bytes_per_s": round(bytes_seen / train_time, 1), "final_train_bits_per_token": round(ema, 4),
                            "train_tokens": int(n), "valid_tokens": int(len(valid_tokens)), "valid_bytes": int(valid_lens.sum()),
@@ -544,22 +547,23 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
     model.eval()
     t0 = time.perf_counter()
     for _ in range(gen_tokens):
-        x = torch.tensor([seq[-ctx:]])
+        x = torch.tensor([seq[-ctx:]], device=device)
         seq.append(model.sample_next(x, gen, 0.8, 40))
     gen_s = time.perf_counter() - t0
     out = enc.decode(seq[len(p_tokens):])
     result["generation"] = {"prompt": prompt.decode("utf-8", "replace"), "tokens": gen_tokens, "bytes": len(out),
                             "seconds": round(gen_s, 2), "tokens_per_s": round(gen_tokens / gen_s, 1),
-                            "bytes_per_s": round(len(out) / gen_s, 1), "note": "sliding context, no KV cache, CPU",
+                            "bytes_per_s": round(len(out) / gen_s, 1), "note": f"sliding context, no KV cache, {device}",
                             "sample": out[:600].decode("utf-8", "replace")}
     log(f"[{enc.name}] generated {len(out)} bytes in {gen_s:.1f}s ({len(out)/gen_s:.0f} B/s): {out[:160]!r}")
     result["machine"] = {"python": platform.python_version(), "torch": torch.__version__, "threads": torch.get_num_threads(),
-                         "cpu": platform.processor() or platform.machine(), "cores": os.cpu_count()}
+                         "cpu": platform.processor() or platform.machine(), "cores": os.cpu_count(), "device": str(device),
+                         "gpu": torch.cuda.get_device_name(device) if str(device).startswith("cuda") else None}
     if save_path:
         # Weights plus what chat.py needs to rebuild the encoder; a hashed table is left out when
         # it is large, since it is for the speed and capacity measurement, not for talking. The
         # n-gram tables are not stored: chat.py rebuilds them from the training text (--data).
-        state = {k: v for k, v in model.state_dict().items() if not (k.startswith("table") and table_rows > 1 << 16)}
+        state = {k: v.cpu() for k, v in model.state_dict().items() if not (k.startswith("table") and table_rows > 1 << 16)}
         torch.save({"encoding": enc.describe(), "model": result["model"], "state_dict": state,
                     "ngram_orders": list(ngram_orders), "ngram_topk": ngram_topk}, save_path)
     if keep_model:
@@ -597,6 +601,8 @@ def main(argv=None) -> int:
     ap.add_argument("--min-delta", type=float, default=0.002, help="improvement in validation bits/byte that counts")
     ap.add_argument("--seed", type=int, default=1); ap.add_argument("--eval-every", type=float, default=120)
     ap.add_argument("--threads", type=int, default=0)
+    ap.add_argument("--device", default="cpu", help="cpu, cuda or cuda:N")
+    ap.add_argument("--max-steps", type=int, default=0, help="stop after this many steps and run the LR schedule over them (0: time budget only)")
     a = ap.parse_args(argv)
     if a.threads:
         torch.set_num_threads(a.threads)
@@ -612,7 +618,7 @@ def main(argv=None) -> int:
                  a.batch, a.lr, a.table_rows, a.seed, a.eval_every,
                  table_orders=tuple(int(o) for o in a.table_orders.split(",")),
                  ngram_orders=tuple(int(o) for o in a.ngram_orders.split(",") if o), ngram_topk=a.ngram_topk,
-                 valid_share=a.valid_share, patience=a.patience, min_delta=a.min_delta)
+                 valid_share=a.valid_share, patience=a.patience, min_delta=a.min_delta, device=a.device, max_steps=a.max_steps)
     result["args"] = vars(a)
     Path(a.out).write_text(json.dumps(result, indent=1))
     return 0

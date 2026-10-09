@@ -44,7 +44,7 @@ def main(v1: str, books: str, enwik: str, v2: str) -> int:
         if len(body) < 100_000:
             dropped.append(fname); continue
         name = re.sub(r"[^A-Za-z0-9.]+", "-", title).strip("-") + f"_{book_id or 'x'}"
-        (v2p / "train" / f"{name}.txt").write_text(body, encoding="utf-8")
+        (v2p / "train" / f"{name}.txt").write_bytes((body).encode("utf-8"))
         known_ids.add(book_id); added.append(name)
     wiki = Path(enwik).read_bytes()
     (v2p / "ood" / "enwik_head_2MiB.txt").write_bytes(wiki[:2 << 20])
