@@ -130,6 +130,8 @@ def main() -> int:
     ap.add_argument("--neighbor-codes", type=int, default=110); ap.add_argument("--eval-n", type=int, default=200)
     ap.add_argument("--max-train", type=int, default=0); ap.add_argument("--out", default="results/m2_qa.json"); ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--self-context-p", type=float, default=0.0, help="share of training windows whose context is the exchange itself, to teach copying from memory")
+    ap.add_argument("--copy-bias", type=float, default=0.0, help="generation-time bonus (in nats) on codes that appear in the retrieved answer: the soft form of answering from evidence")
+    ap.add_argument("--save", default=None, help="save the core's weights here after training")
     a = ap.parse_args()
     torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
     work = Path(a.work); work.mkdir(parents=True, exist_ok=True)
@@ -216,16 +218,25 @@ def main() -> int:
             say(f"{train_time:6.0f}s step {step:5d} train {float(loss)/math.log(2):.3f} b/code  valid {v:.4f} b/byte"); next_eval += 60
 
     @torch.no_grad()
-    def answer(q: bytes, context_exchange: int | None, n_tokens=80, temperature=0.5, top_k=10, use_m1=True):
+    def answer(q: bytes, context_exchange: int | None, n_tokens=80, temperature=0.5, top_k=10, use_m1=True, copy_bias=0.0):
         model.eval(); gen = torch.Generator().manual_seed(a.seed)
         saved = model.ngrams
         if not use_m1:
             model.ngrams = []
         nb = codes_of(context_exchange)[-a.neighbor_codes:] if context_exchange is not None else np.array([], dtype=np.int64)
+        bias = torch.zeros(enc.vocab)
+        if copy_bias and context_exchange is not None:
+            ans_codes = enc.encode(mem.exchanges[context_exchange][1])[0]
+            bias[torch.from_numpy(np.unique(ans_codes))] = copy_bias
         seq = [int(t) for t in np.concatenate([nb, sep, enc.encode(render(q, None))[0]])]
         start = len(seq)
         for _ in range(n_tokens):
-            seq.append(model.sample_next(torch.tensor([seq[-a.ctx:]]), gen, temperature, top_k))
+            x = torch.tensor([seq[-a.ctx:]])
+            h = model.hidden(x)[:, -1]
+            logits = (model.mixed_logits(h, x.numpy()) + bias) / temperature
+            kth = torch.topk(logits, top_k).values[..., -1, None]
+            logits = logits.masked_fill(logits < kth, float("-inf"))
+            seq.append(torch.multinomial(F.softmax(logits, -1), 1, generator=gen).item())
         out = enc.decode(seq[start:]).split(b"\nUser:")[0].split(b"User:")[0].strip()
         model.ngrams = saved; model.train(); return out
 
@@ -234,6 +245,9 @@ def main() -> int:
                "exact": round(float(np.mean([r["exact"] for r in rows])), 4) if rows else None}
         if rows and "f1_no_m1" in rows[0]:
             out["f1_no_m1"] = round(float(np.mean([r["f1_no_m1"] for r in rows])), 4)
+        if rows and "f1_bias" in rows[0]:
+            out["f1_bias"] = round(float(np.mean([r["f1_bias"] for r in rows])), 4)
+            out["exact_bias"] = round(float(np.mean([r["exact_bias"] for r in rows])), 4)
         return out
 
     results = {"setup": vars(a) | {"train_exchanges": len(train_x), "eval": len(eval_x), "added": len(add_x), "distinct_keys": len(mem.exact)},
@@ -246,9 +260,10 @@ def main() -> int:
         hit = mem.exact_hit(q)
         mem_rows.append({"f1": f1(mem.exchanges[hit][1], ref) if hit is not None else 0.0, "exact": float(hit is not None and mem.exchanges[hit][1] == ref)})
         if len(net_rows) < 60:
-            out = answer(q, hit); out2 = answer(q, hit, use_m1=False)
+            out = answer(q, hit); out2 = answer(q, hit, use_m1=False); out3 = answer(q, hit, copy_bias=a.copy_bias)
             net_rows.append({"q": q.decode("utf-8", "replace")[:80], "a": out.decode("utf-8", "replace")[:160], "f1": f1(out, ref), "exact": float(out == ref),
-                             "a_no_m1": out2.decode("utf-8", "replace")[:160], "f1_no_m1": f1(out2, ref)})
+                             "a_no_m1": out2.decode("utf-8", "replace")[:160], "f1_no_m1": f1(out2, ref),
+                             "a_bias": out3.decode("utf-8", "replace")[:160], "f1_bias": f1(out3, ref), "exact_bias": float(out3 == ref)})
     results["groups"]["seen_memory_path"] = score(mem_rows)
     results["groups"]["seen_network_with_own_exchange_in_context"] = score(net_rows)
     results["samples"]["seen_network"] = net_rows[:6]
@@ -258,9 +273,10 @@ def main() -> int:
         r = mem.retrieve(q, 1)
         sim = r[0][0] if r else 0.0
         nb = r[0][1] if r else None
-        out = answer(q, nb); out2 = answer(q, nb, use_m1=False)
+        out = answer(q, nb); out2 = answer(q, nb, use_m1=False); out3 = answer(q, nb, copy_bias=a.copy_bias)
         row = {"q": q.decode("utf-8", "replace")[:80], "a": out.decode("utf-8", "replace")[:160], "f1": f1(out, ref), "exact": float(out == ref),
                "a_no_m1": out2.decode("utf-8", "replace")[:160], "f1_no_m1": f1(out2, ref),
+               "a_bias": out3.decode("utf-8", "replace")[:160], "f1_bias": f1(out3, ref), "exact_bias": float(out3 == ref),
                "sim": round(sim, 3), "f1_vs_retrieved": f1(out, mem.exchanges[nb][1]) if nb is not None else 0.0,
                "retrieved_answer_f1_vs_ref": f1(mem.exchanges[nb][1], ref) if nb is not None else 0.0}
         (para_rows if sim >= 0.5 else unseen_rows).append(row)
@@ -270,6 +286,10 @@ def main() -> int:
     results["groups"]["paraphrase_network_with_nearest"] = score(para_rows) | {"retrieved_answer_f1_vs_ref": round(float(np.mean([r["retrieved_answer_f1_vs_ref"] for r in para_rows])), 4) if para_rows else None}
     results["groups"]["unseen_network_with_nearest"] = score(unseen_rows) | {"retrieved_answer_f1_vs_ref": round(float(np.mean([r["retrieved_answer_f1_vs_ref"] for r in unseen_rows])), 4) if unseen_rows else None}
     results["groups"]["heldout_network_without_memory"] = score(nomem_rows)
+    pol = [r["retrieved_answer_f1_vs_ref"] if r["sim"] >= 0.5 else r["f1"] for r in para_rows + unseen_rows]
+    results["groups"]["heldout_policy_retrieved_if_similar_else_generated"] = {"n": len(pol), "f1": round(float(np.mean(pol)), 4) if pol else None}
+    if a.save:
+        torch.save({"state_dict": model.state_dict(), "args": vars(a)}, a.save)
     results["samples"]["paraphrase"] = para_rows[:6]; results["samples"]["unseen"] = unseen_rows[:6]
     # 4. learning by adding: new pairs into M2 only, then asked at once (memory path and network path).
     for q, ans in add_x:
@@ -279,9 +299,10 @@ def main() -> int:
         hit = mem.exact_hit(q)
         add_mem.append({"f1": f1(mem.exchanges[hit][1], ref) if hit is not None else 0.0, "exact": float(hit is not None and mem.exchanges[hit][1] == ref)})
         if len(add_net) < 60:
-            out = answer(q, hit); out2 = answer(q, hit, use_m1=False)
+            out = answer(q, hit); out2 = answer(q, hit, use_m1=False); out3 = answer(q, hit, copy_bias=a.copy_bias)
             add_net.append({"q": q.decode("utf-8", "replace")[:80], "a": out.decode("utf-8", "replace")[:160], "f1": f1(out, ref), "exact": float(out == ref),
-                            "a_no_m1": out2.decode("utf-8", "replace")[:160], "f1_no_m1": f1(out2, ref)})
+                            "a_no_m1": out2.decode("utf-8", "replace")[:160], "f1_no_m1": f1(out2, ref),
+                            "a_bias": out3.decode("utf-8", "replace")[:160], "f1_bias": f1(out3, ref), "exact_bias": float(out3 == ref)})
     results["groups"]["added_memory_path"] = score(add_mem)
     results["groups"]["added_network_with_added_exchange_in_context"] = score(add_net)
     results["samples"]["added_network"] = add_net[:6]
