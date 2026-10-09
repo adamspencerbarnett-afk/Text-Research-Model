@@ -38,6 +38,10 @@ python -B -m unittest compiler/test_compiler_v0.py compiler/experiments/test_lad
 
 All tests must pass before any experiment.
 
+`run_model.py` at the root is Adam's own entry point: a menu, folder and model popups, settings
+at the top, models saved beside the dataset. It calls the same harness, so keep it working
+when the harness changes.
+
 Windows notes (from the first local session, 9 October): install the CUDA wheel with
 `pip install torch --index-url https://download.pytorch.org/whl/cu128`; the plain `torch` wheel is
 CPU-only. The native tool is `data\cv0.exe` and the scripts need its **absolute** path in

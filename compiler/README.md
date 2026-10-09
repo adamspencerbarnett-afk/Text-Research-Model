@@ -54,6 +54,19 @@ python -B -m unittest compiler/test_compiler_v0.py -v
 python -B -m unittest compiler/experiments/test_ladder.py -v
 ```
 
+## Run it yourself (menu, popups, GPU)
+
+```bash
+python run_model.py            # from the repository root
+```
+
+Option 1 asks for a folder in a popup and trains on every `.txt` file in it (the last file is
+held out for scoring; or use `train/`, `heldout/`, `ood/` subfolders). The model, its result
+JSON and the dictionary are saved in `models/` inside that folder. Option 2 asks for a `.pt`
+file and opens a chat; the encoder and the count tables are rebuilt from the dataset the model
+was trained on. Every knob (model size, encoding, tables, budget, device, sampling) is in the
+`SETTINGS` block at the top of the script. `--train DIR` and `--chat MODEL.pt` skip the menu.
+
 ## Train and talk (needs PyTorch)
 
 ```bash

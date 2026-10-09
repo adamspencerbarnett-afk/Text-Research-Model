@@ -531,6 +531,8 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
 
     train_counts = np.bincount(train_tokens, minlength=enc.vocab) if not enc.groups else None
     for split, paths in eval_sets.items():
+        if not paths:
+            continue
         rows = {Path(p).stem: eval_file(model, enc, p, work, train_counts, classes=(split == "heldout")) for p in paths}
         result["eval"][split] = rows
         tb = sum(r["bits_per_byte"] * r["bytes"] for r in rows.values())
