@@ -257,6 +257,25 @@ The idea: a plain 3-gram count model beat every 10-minute neural model, so make 
 
 What happened: the counts gave an immediate head start (at one minute the n-gram model was already where plain words got to after four), then learning stalled (2.25, 2.22, 2.24, 2.22 on the validation slice at minutes 1 to 4), and out-of-domain text got much worse (5.20 against 4.23). With the input tables as well it was worse still. **Cause:** the tables were counted on the same text the model trains on. During training, a trigram context seen once in the corpus "predicts" its next word with probability 1, because that very occurrence is in the count, so the mixture head learns to trust rare contexts far more than they deserve on unseen text, and the network, shielded by the tables, gets little gradient to learn with. On held-out books the tables are right less often, on Markdown and code hardly ever, and the over-trust shows up directly. **Fix:** leave-one-out counting during training (subtract the current occurrence from the table's count before the model sees it), so the table looks to the training step the way it will look on new text. Implemented and re-screened below.
 
+### Ladder 2d, second attempt: n-gram tables with leave-one-out counting (9 October, 4-minute runs)
+
+Same two configurations, same budget, with the current occurrence removed from the counts during training (`results/ladder2d_ngram_loo.json`). The best results of the whole programme so far, in four minutes:
+
+| Configuration | Learned params | Validation at 60 / 120 / 180 / 240 s | Held-out bits/byte | Out-of-domain | Talk-back bytes/s |
+| --- | ---: | --- | ---: | ---: | ---: |
+| v0 8k words, no table (reference) | 1.9M | 2.547 / 2.342 / 2.292 / 2.276 | 2.189 | 4.23 | 686 |
+| v0 8k + hashed input tables (reference) | 270M | 2.591 / 2.320 / 2.245 / 2.223 | 2.140 | 4.28 | 560 |
+| v0 8k + exact n-gram output tables, leave-one-out | 1.9M | 2.022 / 1.973 / 1.956 / 1.949 | **1.881** | **4.04** | 606 |
+| both kinds of table, leave-one-out | 270M | 2.040 / 1.973 / 1.943 / 1.933 | **1.870** | 4.08 | 602 |
+
+- *The stall is gone and the head start stayed.* The curves now fall throughout, and the model is better out of domain than plain words (4.04 against 4.23), where the first attempt was far worse (5.20). Leave-one-out was the whole difference.
+- *Four minutes beat every ten-minute run.* 1.881 and 1.870 against 1.913 for the best 600 s configuration, with 1.9M learned parameters in the first case. The count tables (3.3M entries, built in four seconds, no training) carry what the small core would otherwise spend its minutes learning, and the core learns the rest: the mixture head decides, per position, how far to trust each table.
+- *Both kinds of table together are best, but only just* (1.870 against 1.881), and at 140× the parameters; the exact tables do most of the work.
+- *Against the plain 3-gram count model* (1.865 on the same held-out books, fitted on all 45 MB), the hybrid is within 0.3% after four minutes with a 0.79M-parameter core; the 600 s side-by-side below shows whether it passes it.
+- *Why this fits the thesis:* the knowledge is in a table that is looked up, not computed, and it is exact rather than learned; the compute core stays tiny. The table scales with data for free (it is counts), and it can be rebuilt without retraining the core, which no learned table can.
+
+Open questions it raises: the mixture currently uses only the 16 most frequent followers per context (the rest fall to the network); top-k, orders beyond 3, and skip-grams are the next knobs, and the tables need the larger corpus to show their real reach.
+
 
 ## 4. Phases
 
@@ -387,6 +406,7 @@ Rules carried over from the V1 discipline: fit dictionaries and tokenizers on th
 ## 8. Log
 
 - **2026-10-08.** Review of `encoder-v0` and the earlier results; measurements F1–F3 on two held-out books; PyTorch installed in the sandbox and the Phase 1 model shape timed on CPU; plan written. No model was trained to completion and no result in `results/` changed.
+- **2026-10-09, ladder 2d, second attempt.** Leave-one-out counting fixed the stall (`results/ladder2d_ngram_loo.json`): 1.881 bits per byte in four minutes with the exact n-gram tables alone (1.9M learned parameters), 1.870 with both table kinds, the best results so far; better out of domain than plain words. Validation split and plateau early stopping added to the harness; standard BPE baseline added for the one-time traditional comparison; learning-curve chart script added (`plot_curves.py`).
 - **2026-10-09, ladder 2d.** Exact n-gram output tables, first attempt (`results/ladder2d_ngram.json`): head start then stall, and much worse out of domain, because the counts include the training occurrence itself. Leave-one-out counting added; re-screen follows.
 - **2026-10-09, ladder 2c.** Second seed for the key pair (0.2–0.6% spread at 4 minutes) and a 4-gram table (no gain at 45 MB). Exact n-gram output tables implemented (`_ng` configurations); their screen follows.
 - **2026-10-09, control.** Width-256 core without tables (`results/control_v0_8k_w256.json`): 2.003 bits per byte at 600 s against 2.007 at width 128 and 1.913 with tables; 37% fewer steps and 33% slower talk-back. Tables beat a quadrupled core on quality and speed; Track B gate passed.
