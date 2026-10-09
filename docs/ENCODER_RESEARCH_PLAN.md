@@ -219,7 +219,15 @@ First use of the 4-minute screening budget (`results/ladder2b_screen.json`). Big
 3. *Hash alone trails plain words by 1.2% at 4 minutes*, as it did by 1.5% at 10. The gap is small and consistent. The likely cause is rare words: in the dictionary a rare word is spelled from shared pieces, in the hash encoder it is one code seen a handful of times.
 4. *The dictionary with tables stays the best configuration* at 4 minutes as at 10, and the 4-minute screen reproduced the 10-minute ordering, so the screening budget holds.
 
-Still owed for the table story: the bigger-core control (v0 8k at width 256, no table, 600 s), running as this is written. If doubling the width buys more than the tables' 4–5% in the same minutes, the tables are the cheaper way to add parameters but not the better way to spend time at this scale; if it buys less, the thesis gains its strongest point yet.
+The bigger-core control settles the table story at this scale (`results/control_v0_8k_w256.json`): v0 8k words, no table, width 256 instead of 128 (core 3.16M parameters instead of 0.79M, total 5.3M), 600 s.
+
+| Where the parameters go | Total params | Held-out bits/byte at 600 s | At 10 MB of text | Steps | Train IDs/s | Talk-back bytes/s |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| core at width 128, no table | 1.9M | 2.007 | 2.167 | 1,277 | 8,715 | 732 |
+| core at width 256, no table | 5.3M | 2.003 | 2.114 | 809 | 5,517 | 494 |
+| width 128 + bigram and trigram tables | 270M | **1.913** | **2.072** | 1,168 | 7,970 | 759 |
+
+Quadrupling the core's parameters bought nothing at equal time (2.003 against 2.007): the wider core learns 2.4% more per byte of text but runs 37% fewer steps, and it answers 33% slower. The tables bought 4.7% at equal time and 2% more than the wider core at equal text, at a 9% step cost and no loss of talk-back speed. The Track B gate ("tables match or beat the gain from doubling the core at no more than 10% extra step time") is passed, against a core that was quadrupled rather than doubled. At this scale, parameters are better spent in tables than in the compute path, for both quality and speed.
 
 
 ## 4. Phases
@@ -351,6 +359,7 @@ Rules carried over from the V1 discipline: fit dictionaries and tokenizers on th
 ## 8. Log
 
 - **2026-10-08.** Review of `encoder-v0` and the earlier results; measurements F1–F3 on two held-out books; PyTorch installed in the sandbox and the Phase 1 model shape timed on CPU; plan written. No model was trained to completion and no result in `results/` changed.
+- **2026-10-09, control.** Width-256 core without tables (`results/control_v0_8k_w256.json`): 2.003 bits per byte at 600 s against 2.007 at width 128 and 1.913 with tables; 37% fewer steps and 33% slower talk-back. Tables beat a quadrupled core on quality and speed; Track B gate passed.
 - **2026-10-09, later still.** Ladder 2b screen, 4 minutes per run (`results/ladder2b_screen.json`): bigram+trigram tables help words by 2.2%, hash codes by 1.4%, bytes by about 7%; bytes with tables still trails plain words by 5.7%; hash alone trails words by 1.2%. Width-256 control queued.
 - **2026-10-09, later.** Ladder 2a, table scaling (`results/ladder2a.json`): tables of 2^18 to 2^22 rows all help by 3.4–4.7% at 5–13% step cost; rows scale weakly at 45 MB of data; a trigram table beside the bigram beats quadrupling the bigram rows. Screening budget set to 4 minutes per idea on the evidence of both ladders. Earlier in the day a configuration-name bug cost an hour (ladder 2a crashed at launch and the watcher did not notice); fixed and tested.
 - **2026-10-09.** Adam's steer (section 3a). Training harness, encoding interface, hash coordinate encoder, chat tool and tests added. Ladder 1 run: six encodings, 600 s each, results in `results/ladder1.json` and section 3a. Headline: compiled text beats bytes by 8% at equal compute and talks back 2.5× faster; a 134M-parameter hashed bigram table on a 1.9M-parameter model is the best configuration at 13% step cost; the dictionary-free hash encoder is within 1.5% of the fitted dictionary; phrase IDs lose 2.5–4% and are dropped as a sequence device.

@@ -1,0 +1,180 @@
+{
+ "encoding": {
+  "name": "v0_8k_plain",
+  "vocab": 8192,
+  "groups": 0,
+  "members": 0,
+  "dictionary": "data/work/v0_8k_plain.cv0d",
+  "dictionary_hash": "9967d692c6bafc80",
+  "entries": 7934,
+  "phrases": 0,
+  "case_flags": false,
+  "max_phrase_units": 1
+ },
+ "model": {
+  "width": 256,
+  "layers": 4,
+  "heads": 4,
+  "ctx": 256,
+  "batch": 16,
+  "peak_lr": 0.001,
+  "table_rows": 0,
+  "table_orders": [],
+  "params": {
+   "core": 3155456,
+   "embedding": 2162688,
+   "output_heads": 0,
+   "table": 0,
+   "total": 5318144
+  }
+ },
+ "training": {
+  "budget_s": 600.0,
+  "train_s": 600.7,
+  "steps": 809,
+  "tokens_seen": 3313664,
+  "bytes_seen": 11466774,
+  "tokens_per_s": 5516.6,
+  "bytes_per_s": 19090.0,
+  "final_train_bits_per_token": 6.7991,
+  "history": [
+   {
+    "train_s": 120.1,
+    "step": 158,
+    "tokens_seen": 647168,
+    "bytes_seen": 2237120,
+    "train_bits_per_token": 8.5186,
+    "quick_bits_per_byte": 2.3403,
+    "lr": 0.0009149294130078184
+   },
+   {
+    "train_s": 240.1,
+    "step": 319,
+    "tokens_seen": 1306624,
+    "bytes_seen": 4521086,
+    "train_bits_per_token": 7.4077,
+    "quick_bits_per_byte": 2.2434,
+    "lr": 0.0006904088634370949
+   },
+   {
+    "train_s": 360.1,
+    "step": 482,
+    "tokens_seen": 1974272,
+    "bytes_seen": 6829539,
+    "train_bits_per_token": 7.0538,
+    "quick_bits_per_byte": 2.1641,
+    "lr": 0.0004121121209323839
+   },
+   {
+    "train_s": 480.4,
+    "step": 647,
+    "tokens_seen": 2650112,
+    "bytes_seen": 9169165,
+    "train_bits_per_token": 6.8777,
+    "quick_bits_per_byte": 2.1227,
+    "lr": 0.00018636548291569677
+   },
+   {
+    "train_s": 600.7,
+    "step": 809,
+    "tokens_seen": 3313664,
+    "bytes_seen": 11466774,
+    "train_bits_per_token": 6.7991,
+    "quick_bits_per_byte": 2.0984,
+    "lr": 0.0001000000311236026
+   }
+  ]
+ },
+ "eval": {
+  "heldout": {
+   "Heart-of-Darkness_219": {
+    "bytes": 211025,
+    "tokens": 61192,
+    "ids_per_kb": 290.0,
+    "bits_per_byte": 2.0836,
+    "bits_per_token": 7.1857
+   },
+   "The-Adventures-of-Sherlock-Holmes_1661": {
+    "bytes": 562531,
+    "tokens": 160338,
+    "ids_per_kb": 285.0,
+    "bits_per_byte": 1.9547,
+    "bits_per_token": 6.8578
+   },
+   "The-Prince_1232": {
+    "bytes": 281531,
+    "tokens": 77046,
+    "ids_per_kb": 273.7,
+    "bits_per_byte": 2.04,
+    "bits_per_token": 7.4545
+   }
+  },
+  "heldout_overall": {
+   "bytes": 1055087,
+   "tokens": 298576,
+   "ids_per_kb": 283.0,
+   "bits_per_byte": 2.0032
+  },
+  "ood": {
+   "repo_docs_markdown": {
+    "bytes": 123663,
+    "tokens": 43022,
+    "ids_per_kb": 347.9,
+    "bits_per_byte": 3.5428,
+    "bits_per_token": 10.1838
+   },
+   "repo_python_code": {
+    "bytes": 484809,
+    "tokens": 208415,
+    "ids_per_kb": 429.9,
+    "bits_per_byte": 4.1228,
+    "bits_per_token": 9.5905
+   }
+  },
+  "ood_overall": {
+   "bytes": 608472,
+   "tokens": 251437,
+   "ids_per_kb": 413.2,
+   "bits_per_byte": 4.0049
+  }
+ },
+ "seed": 1,
+ "generation": {
+  "prompt": "We went to the park",
+  "tokens": 200,
+  "bytes": 701,
+  "seconds": 1.42,
+  "tokens_per_s": 140.8,
+  "bytes_per_s": 493.5,
+  "note": "sliding context, no KV cache, CPU",
+  "sample": " and\nand I had given me, with a large a short, and\nthe road, but he had been, and made a black, was the end, and\na little in her to him in a sudden as to a large, and\nher and his hands and he never was some other, and I had never\nas they felt all atd his daughter, as well, and went\nwith a few minutes, there, and on that I could be too I had a\nw, who had been to be, and that I saw the\nwas at his face that I had only at the morning, and when she had\nthe way to have been a moment \u201ca\u00e1sov and then was that the\nwith a few years of the other of the road, and that I was just had been\nand the room t"
+ },
+ "machine": {
+  "python": "3.13.16",
+  "torch": "2.14.1+cu130",
+  "threads": 4,
+  "cpu": "x86_64",
+  "cores": 4
+ },
+ "args": {
+  "encoding": "v0",
+  "dict": "data/work/v0_8k_plain.cv0d",
+  "native": "data/cv0",
+  "hash_map": null,
+  "data": "data",
+  "work": "data/work",
+  "out": "results/control_v0_8k_w256.json",
+  "budget": 600.0,
+  "width": 256,
+  "layers": 4,
+  "heads": 4,
+  "ctx": 256,
+  "batch": 16,
+  "lr": 0.001,
+  "table_rows": 0,
+  "table_orders": "2",
+  "seed": 1,
+  "eval_every": 120.0,
+  "threads": 0
+ }
+}
