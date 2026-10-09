@@ -50,6 +50,133 @@ def words_of(text: bytes) -> list[bytes]:
     return [u.strip(b" ").lower() for u in cv.scan(text) if u.strip(b" ").isalpha()]
 
 
+FOLD_KEYS = False   # set by --fold-keys: inflections folded in the question key
+
+
+def fold(w: bytes) -> bytes:
+    """A deterministic stem for the key: common English inflections stripped when the stem stays
+    at least four letters, so "describes", "described" and "describing" share one key word."""
+    for suffix, repl in ((b"ies", b"y"), (b"ing", b""), (b"ed", b""), (b"es", b""), (b"ly", b""), (b"s", b"")):
+        if w.endswith(suffix) and len(w) - len(suffix) >= 4:
+            return w[:-len(suffix)] + repl
+    return w
+
+
+class V2LM(train_lm.LM):
+    """The research core plus the two Design v2 sources that read the retrieved exchange.
+
+    ``copy_head``: a learned pointer. Attention from the state at each position to the states
+    of the retrieved span predicts the code that follows the attended position, so copying a
+    passage is a walk along it; its confidence is the top weight and the entropy of the weights.
+    ``evidence``: the local tables conditioned on the retrieved exchange, concretely a bigram
+    table counted over the retrieved span only (code -> next code), with log(1 + count) as the
+    confidence. Both enter the trust head as extra sources beside the network and the global
+    tables; the mixture is per code, as before. ``src`` marks the retrieved span in the window.
+    """
+
+    def __init__(self, enc, width, layers, heads, ctx, ngrams, copy_head=False, evidence=False):
+        super().__init__(enc, width, layers, heads, ctx, 0, None, (2,), ngrams)
+        self.copy_head, self.evidence = copy_head, evidence
+        n_src = 1 + len(self.ngrams) + copy_head + evidence
+        n_conf = 3 * len(self.ngrams) + 2 * copy_head + 1 * evidence
+        self.mix_head = torch.nn.Linear(width + n_conf, n_src)
+        torch.nn.init.normal_(self.mix_head.weight, std=0.02); torch.nn.init.zeros_(self.mix_head.bias)
+        if copy_head:
+            self.copy_q, self.copy_k = torch.nn.Linear(width, width, bias=False), torch.nn.Linear(width, width, bias=False)
+            torch.nn.init.normal_(self.copy_q.weight, std=0.02); torch.nn.init.normal_(self.copy_k.weight, std=0.02)
+
+    def _span(self, x, src):
+        """Positions j whose follower j+1 is inside the retrieved span, and the follower codes."""
+        follow = src & torch.cat([src[:, 1:], torch.zeros_like(src[:, :1])], 1)
+        x_next = torch.cat([x[:, 1:], torch.full_like(x[:, :1], -1)], 1)
+        return follow, x_next
+
+    def extra_parts(self, h, x, src, y=None):
+        """Probability of the targets (or dense distributions when y is None) and confidence
+        features from the copy head and the evidence table."""
+        B, Tq, D = h.shape
+        T = x.shape[1]
+        follow, x_next = self._span(x, src)
+        causal = torch.ones(Tq, T, dtype=torch.bool, device=x.device).tril(T - Tq)   # query t may use j <= t
+        allowed = follow[:, None, :] & causal[None]
+        parts, confs = [], []
+        if self.copy_head:
+            scores = (self.copy_q(h) @ self.copy_k(h if Tq == T else self._keys).transpose(1, 2)) / math.sqrt(D)
+            scores = scores.masked_fill(~allowed, float("-inf"))
+            attn = torch.softmax(scores, -1).nan_to_num(0.0)
+            if y is not None:
+                parts.append((attn * (x_next[:, None, :] == y[..., None])).sum(-1))
+            else:
+                dense = torch.zeros(B, Tq, self.vocab, device=h.device)
+                dense.scatter_add_(-1, x_next.clamp_min(0)[:, None, :].expand(B, Tq, T), attn * allowed)
+                parts.append(dense)
+            top = attn.max(-1).values
+            confs += [top, -(attn * torch.log2(attn.clamp_min(1e-9))).sum(-1)]
+        if self.evidence:
+            cur = x[:, -Tq:]
+            same = (cur[:, :, None] == x[:, None, :]) & allowed
+            cnt = same.sum(-1).float()
+            if y is not None:
+                hit = (same & (x_next[:, None, :] == y[..., None])).sum(-1).float()
+                parts.append(hit / cnt.clamp_min(1.0))
+            else:
+                dense = torch.zeros(B, Tq, self.vocab, device=h.device)
+                dense.scatter_add_(-1, x_next.clamp_min(0)[:, None, :].expand(B, Tq, T), same.float())
+                parts.append(dense / cnt.clamp_min(1.0)[..., None])
+            confs.append(torch.log1p(cnt))
+        return parts, confs
+
+    def nll(self, x, y, src=None):
+        if src is None:
+            src = torch.zeros_like(x, dtype=torch.bool)
+        h = self.hidden(x)
+        logits = h @ self.emb.weight.T
+        logp_net = F.log_softmax(logits, -1).gather(-1, y[..., None])[..., 0]
+        p_parts, confs = [logp_net.exp()], []
+        loo = 1.0 if self.training else 0.0
+        for table in self.ngrams:
+            ids, counts, totals = table.features(x)
+            c_target = (counts * (ids == y[..., None])).sum(-1)
+            kept = counts.sum(-1)
+            c_target = (c_target - loo * (c_target > 0)).clamp_min(0.0)
+            kept = (kept - loo * (totals > 0)).clamp_min(0.0)
+            p_parts.append(torch.where(kept > 0, c_target / kept.clamp_min(1.0), torch.zeros_like(kept)))
+            confs.extend(train_lm.table_features(counts, totals, loo, ids, y))
+        parts, extra = self.extra_parts(h, x, src, y)
+        p_parts += parts; confs += extra
+        mix = F.softmax(self.mix_head(torch.cat([h] + [c[..., None] for c in confs], -1)), -1)
+        p = (mix * torch.stack(p_parts, -1)).sum(-1)
+        return -torch.log(p.clamp_min(1e-9))
+
+    def mixed_logits(self, h_last, x, src=None):
+        """Full next-code log-probabilities at the last position; ``h_last`` is (B, D) and the
+        copy head needs every state of the window, so ``hidden_all`` must be called first."""
+        logits = h_last @ self.emb.weight.T
+        if not self.ngrams:                       # the "network alone" ablation, as in the base class
+            return logits
+        p, confs = [F.softmax(logits, -1)], []
+        for table in self.ngrams:
+            ids, counts, totals = table.features(x, h_last.device)
+            dense = torch.zeros_like(p[0])
+            ok = ids[:, -1] >= 0
+            probs = counts[:, -1] / counts[:, -1].sum(-1, keepdim=True).clamp_min(1.0)
+            dense.scatter_add_(-1, ids[:, -1].clamp_min(0), probs * ok)
+            p.append(dense)
+            confs.extend(f[:, -1] for f in train_lm.table_features(counts, totals, 0.0))
+        if src is None:
+            src = torch.zeros_like(x, dtype=torch.bool)
+        parts, extra = self.extra_parts(h_last[:, None, :], x, src)
+        p += [d[:, 0] for d in parts]; confs += [c[:, 0] for c in extra]
+        mix = F.softmax(self.mix_head(torch.cat([h_last] + [c[..., None] for c in confs], -1)), -1)
+        return torch.log((mix[..., None] * torch.stack(p, 1)).sum(1).clamp_min(1e-9))
+
+    def hidden_all(self, x):
+        """Hidden states of the whole window, kept for the copy head's keys; returns the last."""
+        h = self.hidden(x)
+        self._keys = h
+        return h[:, -1]
+
+
 class ExchangeMemory:
     """Key: content-word set of the question. Value: the exchange. Exact and nearest lookup."""
 
@@ -62,7 +189,8 @@ class ExchangeMemory:
 
     @staticmethod
     def key_of(question: bytes) -> frozenset:
-        return frozenset(w for w in words_of(question) if w.decode("latin-1") not in STOP and len(w) > 1)
+        words = (w for w in words_of(question) if w.decode("latin-1") not in STOP and len(w) > 1)
+        return frozenset(fold(w) for w in words) if FOLD_KEYS else frozenset(words)
 
     def add(self, question: bytes, answer: bytes) -> int:
         k = self.key_of(question)
@@ -131,9 +259,16 @@ def main() -> int:
     ap.add_argument("--max-train", type=int, default=0); ap.add_argument("--out", default="results/m2_qa.json"); ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--self-context-p", type=float, default=0.0, help="share of training windows whose context is the exchange itself, to teach copying from memory")
     ap.add_argument("--copy-bias", type=float, default=0.0, help="generation-time bonus (in nats) on codes that appear in the retrieved answer: the soft form of answering from evidence")
-    ap.add_argument("--device", default="cpu", help="cpu, cuda or cuda:N")
+    ap.add_argument("--device", default="cpu", help="cpu, cuda or cuda:N"); ap.add_argument("--threads", type=int, default=0)
+    ap.add_argument("--copy-head", action="store_true", help="learned pointer over the retrieved exchange as a trust-head source")
+    ap.add_argument("--evidence", action="store_true", help="bigram table counted over the retrieved exchange as a trust-head source")
+    ap.add_argument("--fold-keys", action="store_true", help="fold inflections in the question key")
     ap.add_argument("--save", default=None, help="save the core's weights here after training")
     a = ap.parse_args()
+    global FOLD_KEYS
+    FOLD_KEYS = a.fold_keys
+    if a.threads:
+        torch.set_num_threads(a.threads)
     torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
     work = Path(a.work); work.mkdir(parents=True, exist_ok=True)
     say = lambda m: print(time.strftime("%H:%M:%S"), m, flush=True)
@@ -170,7 +305,9 @@ def main() -> int:
     sep = enc.encode(b"\n\n")[0]
     PAD = 0
     dev = torch.device(a.device)
-    model = train_lm.LM(enc, 128, 4, 4, a.ctx, 0, None, (2,), ngrams).to(dev)
+    model = V2LM(enc, 128, 4, 4, a.ctx, ngrams, a.copy_head, a.evidence).to(dev)
+    say(f"core: {model.param_counts()['total']:,} learned parameters, sources: network, 2 tables"
+        + (", copy head" if a.copy_head else "") + (", evidence table" if a.evidence else ""))
     dense = [p for n, p in model.named_parameters()]
     opt = torch.optim.AdamW([{"params": [p for p in dense if p.dim() >= 2], "weight_decay": 0.1},
                              {"params": [p for p in dense if p.dim() < 2], "weight_decay": 0.0}], lr=1e-3, betas=(0.9, 0.95))
@@ -182,12 +319,20 @@ def main() -> int:
         nb = codes_of(src)[-a.neighbor_codes:] if src is not None else np.array([], dtype=np.int64)
         seq = np.concatenate([nb, sep, own])[:a.ctx + 1]
         mask = np.zeros(a.ctx + 1, dtype=np.float32); mask[len(nb) + len(sep):len(seq)] = 1.0
-        return np.pad(seq, (0, a.ctx + 1 - len(seq)), constant_values=PAD), mask
+        src = np.zeros(a.ctx + 1, dtype=bool); src[:len(nb)] = True        # the retrieved span
+        return np.pad(seq, (0, a.ctx + 1 - len(seq)), constant_values=PAD), mask, src
 
     def batch(idx):
-        xs, ms = zip(*(sample(i) for i in idx))
+        xs, ms, ss = zip(*(sample(i) for i in idx))
         x = torch.from_numpy(np.stack(xs)).to(dev); m = torch.from_numpy(np.stack(ms)).to(dev)
-        return x[:, :-1], x[:, 1:], m[:, 1:]
+        s = torch.from_numpy(np.stack(ss)).to(dev)
+        return x[:, :-1], x[:, 1:], m[:, 1:], s[:, :-1]
+
+    def span_mask(seq_len: int, nb_len: int) -> torch.Tensor:
+        """Which positions of the window seq[-ctx:] belong to the retrieved span."""
+        offset = max(0, seq_len - a.ctx)
+        n = min(seq_len, a.ctx)
+        return (torch.arange(n, device=dev) + offset < nb_len)[None]
 
     @torch.no_grad()
     def valid_bpb(exchanges, n=120):
@@ -201,7 +346,7 @@ def main() -> int:
                 continue
             x = torch.from_numpy(seq[None, :-1]).to(dev); y = torch.from_numpy(seq[None, 1:]).to(dev)
             scored = seq[len(nb) + len(sep):]                       # the exchange's own codes, each predicted
-            nll = model.nll(x, y)[0, len(nb) + len(sep) - 1:]
+            nll = model.nll(x, y, span_mask(len(seq) - 1, len(nb)))[0, len(nb) + len(sep) - 1:]
             bits += float(nll.sum()) / math.log(2); nbytes += float(enc.lens[scored].sum())
         model.train(); return bits / max(1, nbytes)
 
@@ -209,8 +354,8 @@ def main() -> int:
     model.train()
     while train_time < a.budget:
         t = time.perf_counter()
-        x, y, m = batch(rng.integers(0, len(train_x), size=a.batch))
-        nll = model.nll(x, y)
+        x, y, m, s = batch(rng.integers(0, len(train_x), size=a.batch))
+        nll = model.nll(x, y, s)
         loss = (nll * m).sum() / m.sum().clamp_min(1.0)
         opt.zero_grad(set_to_none=True); loss.backward(); torch.nn.utils.clip_grad_norm_(dense, 1.0); opt.step()
         step += 1; train_time += time.perf_counter() - t
@@ -234,8 +379,8 @@ def main() -> int:
         start = len(seq)
         for _ in range(n_tokens):
             x = torch.tensor([seq[-a.ctx:]], device=dev)
-            h = model.hidden(x)[:, -1]
-            logits = (model.mixed_logits(h, x) + bias) / temperature
+            h = model.hidden_all(x)
+            logits = (model.mixed_logits(h, x, span_mask(len(seq), len(nb))) + bias) / temperature
             kth = torch.topk(logits, top_k).values[..., -1, None]
             logits = logits.masked_fill(logits < kth, float("-inf"))
             seq.append(torch.multinomial(F.softmax(logits, -1).cpu(), 1, generator=gen).item())
