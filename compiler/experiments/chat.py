@@ -32,7 +32,8 @@ def load(path: str, native: str | None = None):
     else:
         enc = LE.V0Dict(info["dictionary"], native)
     valid = np.fromiter(enc.reverse.keys(), dtype=np.int64, count=len(enc.reverse)) if isinstance(enc, LE.HashCodes) else None
-    model = train_lm.LM(enc, shape["width"], shape["layers"], shape["heads"], shape["ctx"], shape["table_rows"], valid)
+    model = train_lm.LM(enc, shape["width"], shape["layers"], shape["heads"], shape["ctx"], shape["table_rows"], valid,
+                        tuple(shape.get("table_orders", [2])))
     missing, unexpected = model.load_state_dict(ck["state_dict"], strict=False)
     if unexpected or any(not k.startswith("table") for k in missing):
         raise ValueError(f"checkpoint does not match the model: missing {missing}, unexpected {unexpected}")

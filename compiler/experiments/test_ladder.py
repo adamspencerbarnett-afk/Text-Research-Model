@@ -127,11 +127,14 @@ class HarnessTests(unittest.TestCase):
             held = work / "held.txt"; held.write_bytes(OTHER * 30)
             sets = {"heldout": [str(held)]}
             h = LE.HashCodes(256, 256); h.fit([TEXT])
-            for enc, table in ((LE.Bytes(), 0), (h, 0), (LE.Bytes(), 1 << 8)):
+            for enc, table, orders in ((LE.Bytes(), 0, (2,)), (h, 0, (2,)), (LE.Bytes(), 1 << 8, (2,)),
+                                       (LE.Bytes(), 1 << 8, (2, 3))):
                 tokens, lens = enc.encode(TEXT)
                 r = self.tl.run(enc, tokens, lens, sets, work, budget_s=1.0, width=16, layers=1, heads=2, ctx=16,
                                 batch=4, table_rows=table, eval_every_s=0.5, quick_bytes=64, gen_tokens=5,
-                                log=lambda *_: None)
+                                log=lambda *_: None, table_orders=orders)
+                if table:
+                    self.assertEqual(r["model"]["params"]["table"], table * 16 * len(orders))
                 self.assertGreater(r["training"]["steps"], 0)
                 self.assertGreater(r["eval"]["heldout_overall"]["bits_per_byte"], 0)
                 self.assertEqual(r["generation"]["tokens"], 5)

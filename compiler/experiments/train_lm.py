@@ -65,11 +65,23 @@ def mix_bigram(prev: torch.Tensor, cur: torch.Tensor, rows: int) -> torch.Tensor
     return a & (rows - 1)
 
 
+def mix_ngram(x: torch.Tensor, order: int, rows: int, pad: int) -> torch.Tensor:
+    """Hash the n-gram ending at each position (the current token and order-1 before it) to a
+    table row. Positions near the start use ``pad`` for the missing history."""
+    B, T = x.shape
+    a = x.clone()
+    for k in range(1, order):
+        shifted = torch.cat([torch.full((B, k), pad, dtype=x.dtype), x[:, :-k]], dim=1)
+        a = (a * 1000003 + shifted) * 2654435761
+        a = a ^ (a >> 21) ^ (a >> 42)
+    return a & (rows - 1)
+
+
 class LM(nn.Module):
     INVALID = -30.0  # logit given to a (group, member) code that no unit in training maps to
 
     def __init__(self, enc: LE.Encoding, width: int, layers: int, heads: int, ctx: int, table_rows: int = 0,
-                 valid_codes=None):
+                 valid_codes=None, table_orders=(2,)):
         super().__init__()
         self.ctx, self.coords = ctx, enc.groups > 0
         self.vocab = enc.vocab
@@ -91,10 +103,15 @@ class LM(nn.Module):
         self.pos = nn.Embedding(ctx, width)
         self.blocks = nn.ModuleList(Block(width, heads) for _ in range(layers))
         self.ln_f = nn.LayerNorm(width)
-        self.table_rows = table_rows
-        self.table = nn.Embedding(table_rows, width, sparse=True) if table_rows else None
-        if self.table is not None:
-            nn.init.zeros_(self.table.weight)
+        self.table_rows, self.table_orders = table_rows, tuple(table_orders) if table_rows else ()
+        # One hashed n-gram table per order, summed into the input embedding: many parameters,
+        # one lookup each per token. ``table`` keeps the bigram table's name for old checkpoints.
+        self.table = nn.Embedding(table_rows, width, sparse=True) if table_rows and 2 in self.table_orders else None
+        self.tables = nn.ModuleDict({str(o): nn.Embedding(table_rows, width, sparse=True)
+                                     for o in self.table_orders if o != 2}) if table_rows else nn.ModuleDict()
+        for t in [self.table] + list(self.tables.values()):
+            if t is not None:
+                nn.init.zeros_(t.weight)
         for m in self.modules():
             if isinstance(m, nn.Linear):
                 nn.init.normal_(m.weight, std=0.02)
@@ -108,7 +125,7 @@ class LM(nn.Module):
         core = n(self.blocks) + n([self.ln_f])
         emb = n([self.pos]) + (n([self.emb_g, self.emb_m]) if self.coords else n([self.emb]))
         out = n([self.head_g, self.head_m]) if self.coords else 0   # tied output costs nothing extra
-        table = n([self.table]) if self.table is not None else 0
+        table = (n([self.table]) if self.table is not None else 0) + n(self.tables.values())
         return {"core": core, "embedding": emb, "output_heads": out, "table": table,
                 "total": core + emb + out + table}
 
@@ -121,6 +138,8 @@ class LM(nn.Module):
         if self.table is not None:
             prev = torch.cat([torch.full((B, 1), self.vocab, dtype=x.dtype), x[:, :-1]], dim=1)
             e = e + self.table(mix_bigram(prev, x, self.table_rows))
+        for o, t in self.tables.items():
+            e = e + t(mix_ngram(x, int(o), self.table_rows, self.vocab))
         return e + self.pos(torch.arange(T))
 
     def hidden(self, x):
@@ -214,18 +233,19 @@ def eval_file(model: LM, enc: LE.Encoding, path: str, work: Path) -> dict:
 def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval_sets: dict[str, list[str]],
         work: Path, budget_s: float, width=128, layers=4, heads=4, ctx=256, batch=16, lr=1e-3,
         table_rows=0, seed=1, eval_every_s=120.0, quick_bytes=150_000, prompt=b"We went to the park",
-        gen_tokens=200, log=print, save_path=None) -> dict:
+        gen_tokens=200, log=print, save_path=None, table_orders=(2,)) -> dict:
     torch.manual_seed(seed)
     rng = np.random.default_rng(seed)
     valid = np.fromiter(enc.reverse.keys(), dtype=np.int64, count=len(enc.reverse)) if isinstance(enc, LE.HashCodes) else None
-    model = LM(enc, width, layers, heads, ctx, table_rows, valid)
+    model = LM(enc, width, layers, heads, ctx, table_rows, valid, table_orders)
     dense = [p for n, p in model.named_parameters() if not n.startswith("table")]
+    sparse = [p for n, p in model.named_parameters() if n.startswith("table")]
     decay = [p for p in dense if p.dim() >= 2]
     no_decay = [p for p in dense if p.dim() < 2]
     opts = [torch.optim.AdamW([{"params": decay, "weight_decay": 0.1}, {"params": no_decay, "weight_decay": 0.0}],
                               lr=lr, betas=(0.9, 0.95))]
-    if model.table is not None:
-        opts.append(torch.optim.SparseAdam(list(model.table.parameters()), lr=lr))
+    if sparse:
+        opts.append(torch.optim.SparseAdam(sparse, lr=lr))
     counts = model.param_counts()
     log(f"[{enc.name}] params {counts}  train tokens {len(train_tokens):,}  budget {budget_s:.0f}s")
 
@@ -277,7 +297,7 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
 
     result = {"encoding": enc.describe(), "model": {"width": width, "layers": layers, "heads": heads, "ctx": ctx,
                                                       "batch": batch, "peak_lr": lr, "table_rows": table_rows,
-                                                      "params": counts},
+                                                      "table_orders": list(model.table_orders), "params": counts},
               "training": {"budget_s": budget_s, "train_s": round(train_time, 1), "steps": step, "tokens_seen": tokens_seen,
                            "bytes_seen": bytes_seen, "tokens_per_s": round(tokens_seen / train_time, 1),
                            "bytes_per_s": round(bytes_seen / train_time, 1), "final_train_bits_per_token": round(ema, 4),
@@ -342,6 +362,7 @@ def main(argv=None) -> int:
     ap.add_argument("--layers", type=int, default=4); ap.add_argument("--heads", type=int, default=4)
     ap.add_argument("--ctx", type=int, default=256); ap.add_argument("--batch", type=int, default=16)
     ap.add_argument("--lr", type=float, default=1e-3); ap.add_argument("--table-rows", type=int, default=0)
+    ap.add_argument("--table-orders", default="2", help="comma-separated n-gram orders for the hashed tables")
     ap.add_argument("--seed", type=int, default=1); ap.add_argument("--eval-every", type=float, default=120)
     ap.add_argument("--threads", type=int, default=0)
     a = ap.parse_args(argv)
@@ -356,7 +377,8 @@ def main(argv=None) -> int:
         enc = LE.HashCodes.load(a.hash_map)
     tokens, lens = load_training(enc, a.data, work)
     result = run(enc, tokens, lens, eval_sets_from(a.data), work, a.budget, a.width, a.layers, a.heads, a.ctx,
-                 a.batch, a.lr, a.table_rows, a.seed, a.eval_every)
+                 a.batch, a.lr, a.table_rows, a.seed, a.eval_every,
+                 table_orders=tuple(int(o) for o in a.table_orders.split(",")))
     result["args"] = vars(a)
     Path(a.out).write_text(json.dumps(result, indent=1))
     return 0

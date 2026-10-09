@@ -63,16 +63,25 @@ def fit_hash(groups: int, members: int, train_paths: list[str], work: Path) -> P
     return path
 
 
-def make_encoding(name: str, train_paths: list[str], work: Path, native: str | None) -> tuple[LE.Encoding, int]:
+def make_encoding(name: str, train_paths: list[str], work: Path, native: str | None):
+    """Return (encoding, table_rows, table_orders) for a configuration name.
+
+    ``v0_8k_table`` is the 2^20-row bigram table; ``v0_8k_table22`` has 2^22 rows and
+    ``v0_8k_table22_tri`` adds a trigram table of the same size.
+    """
     if name == "bytes":
-        return LE.Bytes(), 0
+        return LE.Bytes(), 0, (2,)
     if name.startswith("hash"):
         g, m = (int(x) for x in name[4:].split("x"))
-        return LE.HashCodes.load(str(fit_hash(g, m, train_paths, work))), 0
-    table = 0
-    if name.endswith("_table"):
-        name, table = "v0_8k_plain", 1 << 20
-    return LE.V0Dict(str(fit_dictionary(name, train_paths, work)), native), table
+        return LE.HashCodes.load(str(fit_hash(g, m, train_paths, work))), 0, (2,)
+    table, orders = 0, (2,)
+    if "_table" in name:
+        base, spec = name.split("_table", 1)
+        orders = (2, 3) if spec.endswith("_tri") else (2,)
+        spec = spec.removesuffix("_tri")
+        table = 1 << (int(spec) if spec else 20)
+        name = base
+    return LE.V0Dict(str(fit_dictionary(name, train_paths, work)), native), table, orders
 
 
 def main() -> int:
@@ -96,12 +105,13 @@ def main() -> int:
         if name in results["configs"]:
             say(f"{name}: already done, skipping")
             continue
-        enc, table = make_encoding(name, train_paths, work, a.native)
+        enc, table, orders = make_encoding(name, train_paths, work, a.native)
         t0 = time.time()
         tokens, lens = train_lm.load_training(enc, a.data, work)
         say(f"{name}: {len(tokens):,} training tokens ({time.time() - t0:.0f}s to encode)")
         r = train_lm.run(enc, tokens, lens, eval_sets, work, a.budget, table_rows=table, seed=a.seed,
-                         eval_every_s=a.eval_every, log=say, save_path=str(work / f"ladder1_{name}.pt"))
+                         eval_every_s=a.eval_every, log=say, save_path=str(work / f"ladder1_{name}.pt"),
+                         table_orders=orders)
         r["config"] = name
         (work / f"ladder1_{name}.json").write_text(json.dumps(r, indent=1))
         results["configs"][name] = r
