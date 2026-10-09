@@ -242,6 +242,21 @@ Quadrupling the core's parameters bought nothing at equal time (2.003 against 2.
 - *Seed noise is small.* Two seeds differ by 0.2–0.6% at 4 minutes, with step counts that differ by up to 12% between runs on this shared machine. The table gain (2.2–3.0%) and the gap between compiled text and bytes (5–8%) are well outside it; the 1.2–1.5% gap between the dictionary and the hash encoder is at its edge and still needs a confirming seed.
 - *A 4-gram table adds nothing at this data size* (2.140 with it, 2.140 and 2.127 without), while adding 134M parameters and a lookup. At 13M training tokens almost every 4-gram context is seen once. Orders beyond 3 wait for the larger corpus.
 
+### Ladder 2d: exact n-gram tables at the output, first attempt (9 October, 4-minute runs)
+
+The idea: a plain 3-gram count model beat every 10-minute neural model, so make the counts part of the model. For every bigram and trigram context in the training text the table keeps its 16 most frequent followers; at each position the network predicts how much to trust itself, the bigram table and the trigram table, and the loss is the mixed probability of the true next code. The tables hold 3.3M follower entries built in four seconds; they are counts, not parameters. `results/ladder2d_ngram.json`.
+
+| Configuration | Learned params | bits/byte at 60 s | at 240 s | Out-of-domain | MB seen |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| v0 8k words, no table | 1.9M | 2.547* | 2.189 | 4.23 | 7.1 |
+| v0 8k + hashed input tables | 270M | 2.591* | 2.140 | 4.28 | 6.4 |
+| v0 8k + exact n-gram output tables | 1.9M | 2.252* | 2.140 | 5.20 | 9.9 |
+| both | 270M | 2.248* | 2.155 | 5.37 | 9.4 |
+
+\* validation slice; the other columns are the full held-out set.
+
+What happened: the counts gave an immediate head start (at one minute the n-gram model was already where plain words got to after four), then learning stalled (2.25, 2.22, 2.24, 2.22 on the validation slice at minutes 1 to 4), and out-of-domain text got much worse (5.20 against 4.23). With the input tables as well it was worse still. **Cause:** the tables were counted on the same text the model trains on. During training, a trigram context seen once in the corpus "predicts" its next word with probability 1, because that very occurrence is in the count, so the mixture head learns to trust rare contexts far more than they deserve on unseen text, and the network, shielded by the tables, gets little gradient to learn with. On held-out books the tables are right less often, on Markdown and code hardly ever, and the over-trust shows up directly. **Fix:** leave-one-out counting during training (subtract the current occurrence from the table's count before the model sees it), so the table looks to the training step the way it will look on new text. Implemented and re-screened below.
+
 
 ## 4. Phases
 
@@ -372,6 +387,7 @@ Rules carried over from the V1 discipline: fit dictionaries and tokenizers on th
 ## 8. Log
 
 - **2026-10-08.** Review of `encoder-v0` and the earlier results; measurements F1–F3 on two held-out books; PyTorch installed in the sandbox and the Phase 1 model shape timed on CPU; plan written. No model was trained to completion and no result in `results/` changed.
+- **2026-10-09, ladder 2d.** Exact n-gram output tables, first attempt (`results/ladder2d_ngram.json`): head start then stall, and much worse out of domain, because the counts include the training occurrence itself. Leave-one-out counting added; re-screen follows.
 - **2026-10-09, ladder 2c.** Second seed for the key pair (0.2–0.6% spread at 4 minutes) and a 4-gram table (no gain at 45 MB). Exact n-gram output tables implemented (`_ng` configurations); their screen follows.
 - **2026-10-09, control.** Width-256 core without tables (`results/control_v0_8k_w256.json`): 2.003 bits per byte at 600 s against 2.007 at width 128 and 1.913 with tables; 37% fewer steps and 33% slower talk-back. Tables beat a quadrupled core on quality and speed; Track B gate passed.
 - **2026-10-09, later still.** Ladder 2b screen, 4 minutes per run (`results/ladder2b_screen.json`): bigram+trigram tables help words by 2.2%, hash codes by 1.4%, bytes by about 7%; bytes with tables still trails plain words by 5.7%; hash alone trails words by 1.2%. Width-256 control queued.

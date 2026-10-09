@@ -1,0 +1,357 @@
+{
+ "ladder": "ladder1",
+ "budget_s": 240.0,
+ "seed": 1,
+ "corpus": {
+  "train_books": 48,
+  "train_bytes": 45045381,
+  "heldout": [
+   "Heart-of-Darkness_219",
+   "The-Adventures-of-Sherlock-Holmes_1661",
+   "The-Prince_1232"
+  ],
+  "ood": [
+   "repo_docs_markdown",
+   "repo_python_code"
+  ]
+ },
+ "configs": {
+  "v0_8k_ng": {
+   "encoding": {
+    "name": "v0_8k_plain",
+    "vocab": 8192,
+    "groups": 0,
+    "members": 0,
+    "dictionary": "data/work/v0_8k_plain.cv0d",
+    "dictionary_hash": "9967d692c6bafc80",
+    "entries": 7934,
+    "phrases": 0,
+    "case_flags": false,
+    "max_phrase_units": 1
+   },
+   "model": {
+    "width": 128,
+    "layers": 4,
+    "heads": 4,
+    "ctx": 256,
+    "batch": 16,
+    "peak_lr": 0.001,
+    "table_rows": 0,
+    "table_orders": [],
+    "params": {
+     "core": 791296,
+     "embedding": 1081344,
+     "output_heads": 393,
+     "table": 0,
+     "total": 1873033
+    },
+    "ngram_tables": [
+     {
+      "order": 2,
+      "contexts": 7992,
+      "topk": 16,
+      "entries": 120174,
+      "build_s": 2.2
+     },
+     {
+      "order": 3,
+      "contexts": 1088256,
+      "topk": 16,
+      "entries": 3206090,
+      "build_s": 3.4
+     }
+    ]
+   },
+   "training": {
+    "budget_s": 240.0,
+    "train_s": 240.0,
+    "steps": 701,
+    "tokens_seen": 2871296,
+    "bytes_seen": 9937139,
+    "tokens_per_s": 11963.2,
+    "bytes_per_s": 41403.1,
+    "final_train_bits_per_token": 4.9915,
+    "history": [
+     {
+      "train_s": 60.1,
+      "step": 176,
+      "tokens_seen": 720896,
+      "bytes_seen": 2494937,
+      "train_bits_per_token": 5.3108,
+      "quick_bits_per_byte": 2.2521,
+      "lr": 0.0008692817481379206
+     },
+     {
+      "train_s": 120.3,
+      "step": 351,
+      "tokens_seen": 1437696,
+      "bytes_seen": 4973176,
+      "train_bits_per_token": 5.055,
+      "quick_bits_per_byte": 2.2223,
+      "lr": 0.0005502708671718775
+     },
+     {
+      "train_s": 180.2,
+      "step": 526,
+      "tokens_seen": 2154496,
+      "bytes_seen": 7455959,
+      "train_bits_per_token": 5.0053,
+      "quick_bits_per_byte": 2.2423,
+      "lr": 0.00023249829505557978
+     },
+     {
+      "train_s": 240.0,
+      "step": 701,
+      "tokens_seen": 2871296,
+      "bytes_seen": 9937139,
+      "train_bits_per_token": 4.9915,
+      "quick_bits_per_byte": 2.2211,
+      "lr": 0.00010000477393271659
+     }
+    ]
+   },
+   "eval": {
+    "heldout": {
+     "Heart-of-Darkness_219": {
+      "bytes": 211025,
+      "tokens": 61192,
+      "ids_per_kb": 290.0,
+      "bits_per_byte": 2.2034,
+      "bits_per_token": 7.5985
+     },
+     "The-Adventures-of-Sherlock-Holmes_1661": {
+      "bytes": 562531,
+      "tokens": 160338,
+      "ids_per_kb": 285.0,
+      "bits_per_byte": 2.0477,
+      "bits_per_token": 7.1842
+     },
+     "The-Prince_1232": {
+      "bytes": 281531,
+      "tokens": 77046,
+      "ids_per_kb": 273.7,
+      "bits_per_byte": 2.2782,
+      "bits_per_token": 8.3249
+     }
+    },
+    "heldout_overall": {
+     "bytes": 1055087,
+     "tokens": 298576,
+     "ids_per_kb": 283.0,
+     "bits_per_byte": 2.1403
+    },
+    "ood": {
+     "repo_docs_markdown": {
+      "bytes": 123663,
+      "tokens": 43022,
+      "ids_per_kb": 347.9,
+      "bits_per_byte": 4.1875,
+      "bits_per_token": 12.0369
+     },
+     "repo_python_code": {
+      "bytes": 484809,
+      "tokens": 208415,
+      "ids_per_kb": 429.9,
+      "bits_per_byte": 5.4613,
+      "bits_per_token": 12.7041
+     }
+    },
+    "ood_overall": {
+     "bytes": 608472,
+     "tokens": 251437,
+     "ids_per_kb": 413.2,
+     "bits_per_byte": 5.2024
+    }
+   },
+   "seed": 1,
+   "generation": {
+    "prompt": "We went to the park",
+    "tokens": 200,
+    "bytes": 585,
+    "seconds": 0.82,
+    "tokens_per_s": 243.8,
+    "bytes_per_s": 713.1,
+    "note": "sliding context, no KV cache, CPU",
+    "sample": ",\nand I had not been so long?\u201d said Miss Tilney's all I\nwas to be\nunhappy that made the same,\nand the\nboards to him in a\nmadness in the night. \u201d\n\n\u2019s not a few minutes later,\nas they felt sure he will\nbear me, what is the\nsnake\u201d\n\n\u2019s all that I would not have been taken, my dear, to be, and that\nthis, that at the door or by a\nman in the morning, and, she had\nbeen in his eyes with\nme.\n\n\"The first time, and they went on to the\nsunny, but\nthe young ladies? Already when I was just going to see.\u201cThey\u201cI cannot bear to be put to flight,\n  The\nlatterly spent whole days, when"
+   },
+   "machine": {
+    "python": "3.13.16",
+    "torch": "2.14.1+cu130",
+    "threads": 4,
+    "cpu": "x86_64",
+    "cores": 4
+   },
+   "config": "v0_8k_ng"
+  },
+  "v0_8k_table20_tri_ng": {
+   "encoding": {
+    "name": "v0_8k_plain",
+    "vocab": 8192,
+    "groups": 0,
+    "members": 0,
+    "dictionary": "data/work/v0_8k_plain.cv0d",
+    "dictionary_hash": "9967d692c6bafc80",
+    "entries": 7934,
+    "phrases": 0,
+    "case_flags": false,
+    "max_phrase_units": 1
+   },
+   "model": {
+    "width": 128,
+    "layers": 4,
+    "heads": 4,
+    "ctx": 256,
+    "batch": 16,
+    "peak_lr": 0.001,
+    "table_rows": 1048576,
+    "table_orders": [
+     2,
+     3
+    ],
+    "params": {
+     "core": 791296,
+     "embedding": 1081344,
+     "output_heads": 393,
+     "table": 268435456,
+     "total": 270308489
+    },
+    "ngram_tables": [
+     {
+      "order": 2,
+      "contexts": 7992,
+      "topk": 16,
+      "entries": 120174,
+      "build_s": 0.8
+     },
+     {
+      "order": 3,
+      "contexts": 1088256,
+      "topk": 16,
+      "entries": 3206090,
+      "build_s": 3.3
+     }
+    ]
+   },
+   "training": {
+    "budget_s": 240.0,
+    "train_s": 240.2,
+    "steps": 663,
+    "tokens_seen": 2715648,
+    "bytes_seen": 9396153,
+    "tokens_per_s": 11305.3,
+    "bytes_per_s": 39116.5,
+    "final_train_bits_per_token": 4.9349,
+    "history": [
+     {
+      "train_s": 60.4,
+      "step": 158,
+      "tokens_seen": 647168,
+      "bytes_seen": 2237120,
+      "train_bits_per_token": 5.336,
+      "quick_bits_per_byte": 2.2482,
+      "lr": 0.0008682514167296719
+     },
+     {
+      "train_s": 120.2,
+      "step": 325,
+      "tokens_seen": 1331200,
+      "bytes_seen": 4605187,
+      "train_bits_per_token": 5.047,
+      "quick_bits_per_byte": 2.232,
+      "lr": 0.0005510954585201686
+     },
+     {
+      "train_s": 180.0,
+      "step": 493,
+      "tokens_seen": 2019328,
+      "bytes_seen": 6985437,
+      "train_bits_per_token": 4.9733,
+      "quick_bits_per_byte": 2.2342,
+      "lr": 0.00023312481490008887
+     },
+     {
+      "train_s": 240.2,
+      "step": 663,
+      "tokens_seen": 2715648,
+      "bytes_seen": 9396153,
+      "train_bits_per_token": 4.9349,
+      "quick_bits_per_byte": 2.2333,
+      "lr": 0.00010000040850487518
+     }
+    ]
+   },
+   "eval": {
+    "heldout": {
+     "Heart-of-Darkness_219": {
+      "bytes": 211025,
+      "tokens": 61192,
+      "ids_per_kb": 290.0,
+      "bits_per_byte": 2.2145,
+      "bits_per_token": 7.637
+     },
+     "The-Adventures-of-Sherlock-Holmes_1661": {
+      "bytes": 562531,
+      "tokens": 160338,
+      "ids_per_kb": 285.0,
+      "bits_per_byte": 2.0567,
+      "bits_per_token": 7.2159
+     },
+     "The-Prince_1232": {
+      "bytes": 281531,
+      "tokens": 77046,
+      "ids_per_kb": 273.7,
+      "bits_per_byte": 2.3056,
+      "bits_per_token": 8.4248
+     }
+    },
+    "heldout_overall": {
+     "bytes": 1055087,
+     "tokens": 298576,
+     "ids_per_kb": 283.0,
+     "bits_per_byte": 2.1547
+    },
+    "ood": {
+     "repo_docs_markdown": {
+      "bytes": 123663,
+      "tokens": 43022,
+      "ids_per_kb": 347.9,
+      "bits_per_byte": 4.3078,
+      "bits_per_token": 12.3828
+     },
+     "repo_python_code": {
+      "bytes": 484809,
+      "tokens": 208415,
+      "ids_per_kb": 429.9,
+      "bits_per_byte": 5.6388,
+      "bits_per_token": 13.1168
+     }
+    },
+    "ood_overall": {
+     "bytes": 608472,
+     "tokens": 251437,
+     "ids_per_kb": 413.2,
+     "bits_per_byte": 5.3683
+    }
+   },
+   "seed": 1,
+   "generation": {
+    "prompt": "We went to the park",
+    "tokens": 200,
+    "bytes": 603,
+    "seconds": 0.93,
+    "tokens_per_s": 215.6,
+    "bytes_per_s": 650.0,
+    "note": "sliding context, no KV cache, CPU",
+    "sample": ",\nand I had not been so long?\u201d said Miss Tilney's all I\nwas to be\nunhappy that made the same,\nand the\nboards to him in a\nmadness in the night. \u201d\n\n\u2019s not a few minutes later,\nas they do not\nd his daughter's the old man,\nwho had as good as another, and the\nsame manner that I would not have been taken, my dear, I cannot, of my own way,\nweight, or that I\nshoulders, that you are, and that he knew not what you have\nbeen an insignificant people who had\nson, the\nsunny, but\nthe young ladies? Already when I was just going to see.\u201cThey\u201cI know all\nthis is an impossibility: it is not a word,\nmy o"
+   },
+   "machine": {
+    "python": "3.13.16",
+    "torch": "2.14.1+cu130",
+    "threads": 4,
+    "cpu": "x86_64",
+    "cores": 4
+   },
+   "config": "v0_8k_table20_tri_ng"
+  }
+ }
+}
