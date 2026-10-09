@@ -50,7 +50,11 @@ model and its users would always speak the same codes.
 6. The gain lives on the middle and rare vocabulary (16.6% and 10.6% better), not on function
    words (0%), and the model loses on words so rare that they are spelled in bytes (8% worse).
 7. 64 followers per context beats 16 by 2.1%; the hashed tables are then nearly redundant.
-8. Protocol lessons: 4-minute screens reproduce the 10-minute ordering; seed noise is 0.2-0.6%;
+8. Learning by reading: one book by an author added to the count tables alone, with no
+   retraining, improved prediction of another book by that author by 0.59%, against 0.02% for
+   an unrelated book of the same size. The tables are a knowledge store the model reads from
+   and that can be updated in seconds.
+9. Protocol lessons: 4-minute screens reproduce the 10-minute ordering; seed noise is 0.2-0.6%;
    the n-gram proxy misleads about phrases; tables counted on the training text must use
    leave-one-out; a watcher must not match its own command line.
 

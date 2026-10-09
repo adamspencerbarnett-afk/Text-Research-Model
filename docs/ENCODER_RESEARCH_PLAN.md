@@ -349,6 +349,18 @@ Corpus v2 (`results/corpus_v2_manifest.json`) is corpus v1 plus 44 books from Ad
 
 **The configuration to carry forward:** the compiler (8k codes) feeding the 0.79M-parameter core, with exact bigram and trigram tables keeping 64 followers per context, leave-one-out counting, and the three-feature trust head. 1.9M learned parameters. Whether to keep a 2^18 hashed table is a 4-minute question for the next session.
 
+### Learning by reading: knowledge added to the tables with no retraining (9 October)
+
+Every Jane Austen book was removed from the 45 MB corpus, the best configuration (exact tables, 64 followers) was trained for 240 s on the rest, and Emma was scored. Then Pride and Prejudice (692 KB, 1.6% of the corpus) was added to the count tables only, the network untouched, and Emma scored again; a control added an unrelated book of similar size (The Secret Garden) instead. `results/learn_by_reading.json`, script `compiler/experiments/learn_by_reading.py`.
+
+| Tables counted on | Bits/byte on Emma |
+| --- | ---: |
+| corpus without Austen | 1.8199 |
+| plus Pride and Prejudice | **1.8092** (−0.59%) |
+| plus The Secret Garden (control) | 1.8195 (−0.02%) |
+
+The model learned by reading: one book by the author, added to the tables in seconds with no gradient step, improved prediction of a different book by her 30 times more than an unrelated book of the same size did. The effect is small in absolute terms because one book is 1.6% of the counts and the author's specific word pairs and triples are a small share of any page; the mechanism works, and it is the one capability a learned table cannot offer. Next: measure the same thing with more of the author's books added, and with the trust head re-tuned (not the core) after the addition.
+
 **Best model, stated plainly.** Text is compiled into 8,192 word-and-piece codes by the deterministic compiler. A 4-layer, width-128 Transformer (0.79M parameters) reads the codes, with two hashed lookup tables (bigram and trigram keys, 2^20 rows each, 268M parameters, one lookup each per code) added to its input. Its output is mixed, per code, with exact bigram and trigram follower counts from the training text (3.3M entries, built in four seconds, rebuilt without retraining), using weights the network predicts from its state and each table's confidence. After 600 s of CPU training: 1.806 bits per byte on unseen books, 3.96 on code and Markdown it was never trained on, about 600 bytes of reply per second on one core.
 
 
@@ -481,6 +493,7 @@ Rules carried over from the V1 discipline: fit dictionaries and tokenizers on th
 ## 8. Log
 
 - **2026-10-08.** Review of `encoder-v0` and the earlier results; measurements F1–F3 on two held-out books; PyTorch installed in the sandbox and the Phase 1 model shape timed on CPU; plan written. No model was trained to completion and no result in `results/` changed.
+- **2026-10-09, learning by reading and Version 1.** Adding one Austen book to the count tables alone improved prediction of another Austen book by 0.59% against 0.02% for an unrelated book; the model learns by reading, without training. Alpaca (52k exchanges) converted to chat text for the talking-bot test. Version 1 frozen in `releases/version1.zip` with `docs/VERSION_1.md`.
 - **2026-10-09, scale check and ladder 3.** Corpus v1 (200 MB) and v2 (233 MB plus a Wikipedia split) built; the 10.9% gain over standard BPE at 45 MB is 9.3% at 200 MB on the same books, and it lives on the middle and rare vocabulary, not on function words; 64 followers per context is the new best setting (1.795 at 4 minutes, 1.9M learned parameters); hashed tables are now nearly redundant; a 1,024-code context cannot be screened at 4 minutes. Phase 3 rewritten as the reasoning phase.
 - **2026-10-09, side-by-side.** One-time comparison at 600 s (`results/side_by_side.json`, figures in `docs/figures/`): standard BPE 8k 2.028; compiler alone 2.007; compiler + exact n-gram tables 1.835; compiler + both kinds of table 1.806, 10.9% better than the traditional model at equal time and 10.5% at equal text, and past the 3-gram count model. Loss formulation unified on the faster form for future runs.
 - **2026-10-09, ladder 2d, second attempt.** Leave-one-out counting fixed the stall (`results/ladder2d_ngram_loo.json`): 1.881 bits per byte in four minutes with the exact n-gram tables alone (1.9M learned parameters), 1.870 with both table kinds, the best results so far; better out of domain than plain words. Validation split and plateau early stopping added to the harness; standard BPE baseline added for the one-time traditional comparison; learning-curve chart script added (`plot_curves.py`).

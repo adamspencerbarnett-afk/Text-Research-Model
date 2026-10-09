@@ -1,0 +1,119 @@
+{
+ "setup": {
+  "author_books_removed": [
+   "Emma_158",
+   "Mansfield-Park_141",
+   "Northanger-Abbey_121",
+   "Persuasion_105",
+   "Pride-and-Prejudice_1342",
+   "Sense-and-Sensibility_161"
+  ],
+  "test": "Emma_158",
+  "add": "Pride-and-Prejudice_1342",
+  "control": "data_v1/train/The-Secret-Garden_113.txt",
+  "budget_s": 240.0,
+  "topk": 64,
+  "train_books": 42
+ },
+ "before": 1.8199,
+ "training": {
+  "budget_s": 240.0,
+  "train_s": 240.0,
+  "steps": 574,
+  "tokens_seen": 2351104,
+  "bytes_seen": 8081411,
+  "tokens_per_s": 9796.2,
+  "bytes_per_s": 33672.4,
+  "final_train_bits_per_token": 6.0412,
+  "train_tokens": 11676124,
+  "valid_tokens": 238289,
+  "valid_bytes": 839924,
+  "patience": 0,
+  "min_delta": 0.002,
+  "stop_reason": "budget",
+  "stopped_early": false,
+  "history": [
+   {
+    "train_s": 60.1,
+    "step": 136,
+    "tokens_seen": 557056,
+    "bytes_seen": 1920847,
+    "train_bits_per_token": 6.3817,
+    "quick_bits_per_byte": 1.7527,
+    "lr": 0.0008696675935877288
+   },
+   {
+    "train_s": 120.1,
+    "step": 282,
+    "tokens_seen": 1155072,
+    "bytes_seen": 3979720,
+    "train_bits_per_token": 6.1505,
+    "quick_bits_per_byte": 1.7272,
+    "lr": 0.000551554279189551
+   },
+   {
+    "train_s": 180.3,
+    "step": 422,
+    "tokens_seen": 1728512,
+    "bytes_seen": 5946769,
+    "train_bits_per_token": 6.0924,
+    "quick_bits_per_byte": 1.7153,
+    "lr": 0.00023244655475001427
+   },
+   {
+    "train_s": 240.0,
+    "step": 574,
+    "tokens_seen": 2351104,
+    "bytes_seen": 8081411,
+    "train_bits_per_token": 6.0412,
+    "quick_bits_per_byte": 1.7096,
+    "lr": 0.00010000526965853055
+   }
+  ]
+ },
+ "model": {
+  "width": 128,
+  "layers": 4,
+  "heads": 4,
+  "ctx": 256,
+  "batch": 16,
+  "peak_lr": 0.001,
+  "table_rows": 0,
+  "table_orders": [],
+  "params": {
+   "core": 791296,
+   "embedding": 1081344,
+   "output_heads": 405,
+   "table": 0,
+   "total": 1873045
+  },
+  "ngram_tables": [
+   {
+    "order": 2,
+    "contexts": 7982,
+    "topk": 64,
+    "entries": 392629,
+    "build_s": 2.6
+   },
+   {
+    "order": 3,
+    "contexts": 1030563,
+    "topk": 64,
+    "entries": 3832935,
+    "build_s": 7.9
+   }
+  ]
+ },
+ "after_adding_author_book": {
+  "book": "Pride-and-Prejudice_1342",
+  "bytes_added": 691960,
+  "bits_per_byte": 1.8092
+ },
+ "after_adding_control_book": {
+  "book": "The-Secret-Garden_113",
+  "bytes_added": 446158,
+  "bits_per_byte": 1.8195
+ },
+ "change_author_pct": -0.59,
+ "change_control_pct": -0.02
+}
