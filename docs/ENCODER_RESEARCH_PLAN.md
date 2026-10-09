@@ -13,6 +13,7 @@ This document reviews the repository as it stands after the Compiler v0 work and
 - **The sandbox can now install from PyPI**, so the earlier blocker on PyTorch is gone: PyTorch installed and trained a test model on CPU during this review (details in 2.5). A calibration of the Phase 1 model shape shows the 32k output layer is about 87% of a training step at width 128, which moves the factorized output of Track C up in priority. The repository is public, so GitHub Actions runners are free compute for the Track A ladder.
 - **Plan in one line:** Phase 0 fixes the corpus, the encoder's measured weaknesses and the tooling; Phase 1 runs the neural learnability ladder (Track A) and picks the encoder; Phases 2–5 then spend parameters on tables (B), factorize the IDs (C), add the number channel and multi-unit prediction (D, E), and benchmark against learned chunking (F).
 - **Updated 9 October (section 3a):** on Adam's steer the work moved from reviewing to running. A training harness now exists, the first ladder of six encodings has been trained, including a dictionary-free equation encoder, and every model is tested by talking back through its own compiler.
+- **Where it stands at the end of 9 October:** the best configuration (compiler + hashed input tables + exact n-gram output tables with leave-one-out counting) is 10.9% better than a traditional BPE-tokenized model with the same core, text and training time, 17% better than raw bytes, and answers twice as fast as the byte model. Details, figures and the one-time side-by-side are in section 3a.
 
 ## 2. Repository review
 
@@ -276,6 +277,35 @@ Same two configurations, same budget, with the current occurrence removed from t
 
 Open questions it raises: the mixture currently uses only the 16 most frequent followers per context (the rest fall to the network); top-k, orders beyond 3, and skip-grams are the next knobs, and the tables need the larger corpus to show their real reach.
 
+### The one-time side-by-side: traditional models against ours (9 October, 600 s)
+
+Adam asked for a single comparison against a model that does not attempt any of this, to be run once. The traditional model is a standard BPE tokenizer (merge-order byte-pair encoding learned on the training text, 8,192 entries, the way GPT-2's own tokenizer was built; GPT-2's vocabulary files themselves sit behind a blocked host) feeding the same 0.79M-parameter Transformer. Raw bytes with the same core is the other traditional point. All runs: same text, same core, 600 s on the same 4-core CPU; the two best configurations and the BPE baseline ran together with the validation split and the plateau stop (`results/side_by_side.json`; the stop did not trigger, every curve was still falling at 600 s).
+
+![Held-out bits per byte at 600 s](figures/side_by_side_bars.png)
+
+| Model | Params | Held-out bits/byte | Against BPE | Out-of-domain | Talk-back bytes/s |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| raw bytes, no tokenizer (traditional) | 0.9M | 2.181 | +7.6% | 4.54 | 293 |
+| standard BPE 8k (traditional) | 1.9M | 2.028 | 0 | 4.01 | 734 |
+| compiler v0 8k, words and pieces | 1.9M | 2.007 | −1.0% | 4.06 | 732 |
+| compiler + hashed input tables | 270M | 1.913 | −5.7% | 4.15 | 759 |
+| compiler + exact n-gram tables | 1.9M | 1.835 | −9.5% | 3.97 | 572 |
+| compiler + both kinds of table | 270M | **1.806** | **−10.9%** | **3.96** | 606 |
+
+![Learning curves on the shared validation split](figures/side_by_side_curves.png)
+
+What the comparison says:
+
+1. *The compiler alone is a wash against a traditional tokenizer* (1.0% better, within what a second seed could move). Its value is not in the codes themselves but in what stable codes allow: the tables.
+2. *The best configuration is 10.9% better than the traditional model at equal time and equal everything else, and 17% better than raw bytes.* It also passes the plain 3-gram count model (1.865) that had beaten every neural run before today. The exact n-gram tables alone, with the same 1.9M learned parameters as the BPE model, are 9.5% better: the gain costs no learned parameters at all, only a count table built in four seconds.
+3. *Equal text, not just equal time.* The n-gram runs got through more text in 600 s (23 MB against 17 MB), partly for a reason that is an implementation detail: the models without n-gram tables used a slower form of the loss (cross-entropy on transposed logits, measured at 356 ms against 202 ms per step for the same mathematics), which has been unified since. Read off the curves at the 16.95 MB the BPE model saw, the n-gram models score 1.676 and 1.654 on the shared validation slice against 1.847 for BPE: 9.3% and 10.5% better at equal text, so the conclusion does not depend on the speed difference.
+4. *Validation agrees with the test.* On the 2% validation split (training authors) the two best models score 1.843 and 1.811; on the held-out books (unseen authors except Doyle) 1.835 and 1.806. No sign of fitting the training authors.
+5. *Speed.* Every compiled model answers 2 to 2.6 times faster than the byte model. The n-gram mixture costs some talk-back speed against plain words (572 to 606 against 732 bytes/s) because the output mixes three distributions per step; that is the next thing to make cheaper, and it is still twice the byte model.
+
+This comparison is not to be repeated; from here the work is improving the best configuration, with these numbers as the reference.
+
+**Best model, stated plainly.** Text is compiled into 8,192 word-and-piece codes by the deterministic compiler. A 4-layer, width-128 Transformer (0.79M parameters) reads the codes, with two hashed lookup tables (bigram and trigram keys, 2^20 rows each, 268M parameters, one lookup each per code) added to its input. Its output is mixed, per code, with exact bigram and trigram follower counts from the training text (3.3M entries, built in four seconds, rebuilt without retraining), using weights the network predicts from its state and each table's confidence. After 600 s of CPU training: 1.806 bits per byte on unseen books, 3.96 on code and Markdown it was never trained on, about 600 bytes of reply per second on one core.
+
 
 ## 4. Phases
 
@@ -406,6 +436,7 @@ Rules carried over from the V1 discipline: fit dictionaries and tokenizers on th
 ## 8. Log
 
 - **2026-10-08.** Review of `encoder-v0` and the earlier results; measurements F1–F3 on two held-out books; PyTorch installed in the sandbox and the Phase 1 model shape timed on CPU; plan written. No model was trained to completion and no result in `results/` changed.
+- **2026-10-09, side-by-side.** One-time comparison at 600 s (`results/side_by_side.json`, figures in `docs/figures/`): standard BPE 8k 2.028; compiler alone 2.007; compiler + exact n-gram tables 1.835; compiler + both kinds of table 1.806, 10.9% better than the traditional model at equal time and 10.5% at equal text, and past the 3-gram count model. Loss formulation unified on the faster form for future runs.
 - **2026-10-09, ladder 2d, second attempt.** Leave-one-out counting fixed the stall (`results/ladder2d_ngram_loo.json`): 1.881 bits per byte in four minutes with the exact n-gram tables alone (1.9M learned parameters), 1.870 with both table kinds, the best results so far; better out of domain than plain words. Validation split and plateau early stopping added to the harness; standard BPE baseline added for the one-time traditional comparison; learning-curve chart script added (`plot_curves.py`).
 - **2026-10-09, ladder 2d.** Exact n-gram output tables, first attempt (`results/ladder2d_ngram.json`): head start then stall, and much worse out of domain, because the counts include the training occurrence itself. Leave-one-out counting added; re-screen follows.
 - **2026-10-09, ladder 2c.** Second seed for the key pair (0.2–0.6% spread at 4 minutes) and a 4-gram table (no gain at 45 MB). Exact n-gram output tables implemented (`_ng` configurations); their screen follows.

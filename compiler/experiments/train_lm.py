@@ -218,9 +218,12 @@ class LM(nn.Module):
             nll_m = F.cross_entropy(lm.transpose(1, 2), my, reduction="none")
             return nll_g + nll_m
         logits = h @ self.emb.weight.T
-        if not self.ngrams:
-            return F.cross_entropy(logits.transpose(1, 2), y, reduction="none")
+        # log_softmax + gather is the same loss as cross_entropy on the transposed logits and
+        # about 1.7x faster on CPU (the transpose makes the logits non-contiguous). The runs up
+        # to and including the side-by-side used the slower form for models without n-gram tables.
         logp_net = F.log_softmax(logits, -1).gather(-1, y[..., None])[..., 0]
+        if not self.ngrams:
+            return -logp_net
         p_parts, confs = [logp_net.exp()], []
         # In training the tables were counted on this very text, so the current occurrence is
         # removed from the count before the model sees it (leave-one-out); otherwise a context
