@@ -104,16 +104,15 @@ class NgramTable:
         rank = np.arange(len(ctx)) - np.repeat(first, sizes)
         keep = rank < topk
         self.ids = np.full((len(self.keys), topk), -1, dtype=np.int64)
-        self.probs = np.zeros((len(self.keys), topk), dtype=np.float32)
+        self.counts = np.zeros((len(self.keys), topk), dtype=np.float32)
         self.ids[row[keep], rank[keep]] = nxt[keep]
-        self.probs[row[keep], rank[keep]] = counts[keep]
-        self.probs /= np.maximum(self.probs.sum(1, keepdims=True), 1)
+        self.counts[row[keep], rank[keep]] = counts[keep]
         self.totals = totals.astype(np.float32)
         self.contexts = len(self.keys)
 
     def features(self, x: np.ndarray):
-        """For a (B, T) token array: follower ids (B, T, K), probabilities (B, T, K) and the
-        context's log(1 + total count) (B, T); zeros where the context is unseen or incomplete."""
+        """For a (B, T) token array: follower ids (B, T, K), their counts (B, T, K) and the
+        context's total count (B, T); -1 / 0 where the context is unseen or incomplete."""
         B, T = x.shape
         key = np.zeros((B, T), dtype=np.int64)
         for j in range(self.k):
@@ -125,9 +124,9 @@ class NgramTable:
         found = (self.keys[pos] == key)
         found[:, :self.k - 1] = False
         ids = np.where(found[..., None], self.ids[pos], -1)
-        probs = np.where(found[..., None], self.probs[pos], 0.0).astype(np.float32)
-        conf = np.where(found, np.log1p(self.totals[pos]), 0.0).astype(np.float32)
-        return torch.from_numpy(ids), torch.from_numpy(probs), torch.from_numpy(conf)
+        counts = np.where(found[..., None], self.counts[pos], 0.0).astype(np.float32)
+        totals = np.where(found, self.totals[pos], 0.0).astype(np.float32)
+        return torch.from_numpy(ids), torch.from_numpy(counts), torch.from_numpy(totals)
 
 
 class LM(nn.Module):
@@ -223,10 +222,18 @@ class LM(nn.Module):
             return F.cross_entropy(logits.transpose(1, 2), y, reduction="none")
         logp_net = F.log_softmax(logits, -1).gather(-1, y[..., None])[..., 0]
         p_parts, confs = [logp_net.exp()], []
+        # In training the tables were counted on this very text, so the current occurrence is
+        # removed from the count before the model sees it (leave-one-out); otherwise a context
+        # seen once "predicts" its follower perfectly and the model learns to over-trust counts.
+        loo = 1.0 if self.training else 0.0
         for table in self.ngrams:
-            ids, probs, conf = table.features(x.numpy())
-            p_parts.append((probs * (ids == y[..., None])).sum(-1))
-            confs.append(conf)
+            ids, counts, totals = table.features(x.numpy())
+            c_target = (counts * (ids == y[..., None])).sum(-1)
+            kept = counts.sum(-1)
+            c_target = (c_target - loo * (c_target > 0)).clamp_min(0.0)
+            kept = (kept - loo * (totals > 0)).clamp_min(0.0)
+            p_parts.append(torch.where(kept > 0, c_target / kept.clamp_min(1.0), torch.zeros_like(kept)))
+            confs.append(torch.log1p((totals - loo * (totals > 0)).clamp_min(0.0)))
         mix = F.softmax(self.mix_head(torch.cat([h] + [c[..., None] for c in confs], -1)), -1)
         p = (mix * torch.stack(p_parts, -1)).sum(-1)
         return -torch.log(p.clamp_min(1e-9))
@@ -239,12 +246,13 @@ class LM(nn.Module):
         p = [F.softmax(logits, -1)]
         confs = []
         for table in self.ngrams:
-            ids, probs, conf = table.features(x_last_np)
+            ids, counts, totals = table.features(x_last_np)
             dense = torch.zeros_like(p[0])
             ok = ids[:, -1] >= 0
-            dense.scatter_add_(-1, ids[:, -1].clamp_min(0), probs[:, -1] * ok)
+            probs = counts[:, -1] / counts[:, -1].sum(-1, keepdim=True).clamp_min(1.0)
+            dense.scatter_add_(-1, ids[:, -1].clamp_min(0), probs * ok)
             p.append(dense)
-            confs.append(conf[:, -1])
+            confs.append(torch.log1p(totals[:, -1]))
         mix = F.softmax(self.mix_head(torch.cat([h_last] + [c[..., None] for c in confs], -1)), -1)
         return torch.log((mix[..., None] * torch.stack(p, 1)).sum(1).clamp_min(1e-9))
 
