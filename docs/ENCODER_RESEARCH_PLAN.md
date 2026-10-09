@@ -202,6 +202,25 @@ What it says:
 
 Next for tables (ladder 2b, 4-minute screens): do the gains stack on the equation encoder (hash codes + tables) and do they rescue the byte model (bytes + tables)? Then more orders rather than more rows, and the bigger corpus.
 
+### Ladder 2b screen: do the tables stack on other encoders? (9 October, 4-minute runs)
+
+First use of the 4-minute screening budget (`results/ladder2b_screen.json`). Bigram and trigram tables of 2^20 rows each, on three base encoders. Numbers are held-out bits per byte at 240 s; they are not comparable with the 600 s tables above, only with each other.
+
+| Base encoder | Without tables | With bigram + trigram tables | Gain |
+| --- | ---: | ---: | ---: |
+| v0 8k words and pieces | 2.189 | **2.140** | 2.2% |
+| hash 4096×4096 (no dictionary) | 2.215 | 2.183 | 1.4% |
+| raw bytes | about 2.49* | 2.314 | about 7% |
+
+\* Bytes alone was not re-run at 240 s; the figure is read off the ladder 1 byte run's validation curve at 240 s (2.553) scaled by that run's validation-to-held-out ratio at 600 s (0.977).
+
+1. *Tables help every encoder, and most where the units carry least.* On bytes the rows act as learned character n-grams, a crude tokenizer inside the model, and buy about 7%. Even so, bytes with 269M parameters of tables stays 5.7% behind plain words with none: at this budget the compiler does work that a table does not replace.
+2. *Tables help the hash encoder least* (1.4% against 2.2%). Whole-word units make far more distinct bigram and trigram types than 8k pieces do, so the hashed rows collide more, and the hash model also gets the fewest steps per second. To test next: larger tables for the hash encoder, or tables keyed on the group coordinate alone, which is coarser.
+3. *Hash alone trails plain words by 1.2% at 4 minutes*, as it did by 1.5% at 10. The gap is small and consistent. The likely cause is rare words: in the dictionary a rare word is spelled from shared pieces, in the hash encoder it is one code seen a handful of times.
+4. *The dictionary with tables stays the best configuration* at 4 minutes as at 10, and the 4-minute screen reproduced the 10-minute ordering, so the screening budget holds.
+
+Still owed for the table story: the bigger-core control (v0 8k at width 256, no table, 600 s), running as this is written. If doubling the width buys more than the tables' 4–5% in the same minutes, the tables are the cheaper way to add parameters but not the better way to spend time at this scale; if it buys less, the thesis gains its strongest point yet.
+
 
 ## 4. Phases
 
@@ -332,6 +351,7 @@ Rules carried over from the V1 discipline: fit dictionaries and tokenizers on th
 ## 8. Log
 
 - **2026-10-08.** Review of `encoder-v0` and the earlier results; measurements F1–F3 on two held-out books; PyTorch installed in the sandbox and the Phase 1 model shape timed on CPU; plan written. No model was trained to completion and no result in `results/` changed.
+- **2026-10-09, later still.** Ladder 2b screen, 4 minutes per run (`results/ladder2b_screen.json`): bigram+trigram tables help words by 2.2%, hash codes by 1.4%, bytes by about 7%; bytes with tables still trails plain words by 5.7%; hash alone trails words by 1.2%. Width-256 control queued.
 - **2026-10-09, later.** Ladder 2a, table scaling (`results/ladder2a.json`): tables of 2^18 to 2^22 rows all help by 3.4–4.7% at 5–13% step cost; rows scale weakly at 45 MB of data; a trigram table beside the bigram beats quadrupling the bigram rows. Screening budget set to 4 minutes per idea on the evidence of both ladders. Earlier in the day a configuration-name bug cost an hour (ladder 2a crashed at launch and the watcher did not notice); fixed and tested.
 - **2026-10-09.** Adam's steer (section 3a). Training harness, encoding interface, hash coordinate encoder, chat tool and tests added. Ladder 1 run: six encodings, 600 s each, results in `results/ladder1.json` and section 3a. Headline: compiled text beats bytes by 8% at equal compute and talks back 2.5× faster; a 134M-parameter hashed bigram table on a 1.9M-parameter model is the best configuration at 13% step cost; the dictionary-free hash encoder is within 1.5% of the fitted dictionary; phrase IDs lose 2.5–4% and are dropped as a sequence device.
 

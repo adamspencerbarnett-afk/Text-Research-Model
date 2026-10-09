@@ -650,6 +650,185 @@
     "cores": 4
    },
    "config": "bytes_table20_tri"
+  },
+  "hash4096x4096": {
+   "encoding": {
+    "name": "hash4096x4096",
+    "vocab": 16777216,
+    "groups": 4096,
+    "members": 4096,
+    "distinct_units": 126005,
+    "codes_used": 125497,
+    "units_lost": 508,
+    "unit_mass_lost": 0.00019580428518476965
+   },
+   "model": {
+    "width": 128,
+    "layers": 4,
+    "heads": 4,
+    "ctx": 256,
+    "batch": 16,
+    "peak_lr": 0.001,
+    "table_rows": 0,
+    "table_orders": [],
+    "params": {
+     "core": 791296,
+     "embedding": 1081344,
+     "output_heads": 1581056,
+     "table": 0,
+     "total": 3453696
+    }
+   },
+   "training": {
+    "budget_s": 240.0,
+    "train_s": 240.4,
+    "steps": 435,
+    "tokens_seen": 1781760,
+    "bytes_seen": 7126449,
+    "tokens_per_s": 7412.0,
+    "bytes_per_s": 29645.7,
+    "final_train_bits_per_token": 8.4607,
+    "history": [
+     {
+      "train_s": 60.0,
+      "step": 112,
+      "tokens_seen": 458752,
+      "bytes_seen": 1838853,
+      "train_bits_per_token": 11.8358,
+      "quick_bits_per_byte": 2.507,
+      "lr": 0.0008707048975262068
+     },
+     {
+      "train_s": 120.4,
+      "step": 220,
+      "tokens_seen": 901120,
+      "bytes_seen": 3609489,
+      "train_bits_per_token": 9.2361,
+      "quick_bits_per_byte": 2.323,
+      "lr": 0.0005524075555547279
+     },
+     {
+      "train_s": 180.4,
+      "step": 327,
+      "tokens_seen": 1339392,
+      "bytes_seen": 5361987,
+      "train_bits_per_token": 8.6329,
+      "quick_bits_per_byte": 2.2739,
+      "lr": 0.0002325402188376089
+     },
+     {
+      "train_s": 240.4,
+      "step": 435,
+      "tokens_seen": 1781760,
+      "bytes_seen": 7126449,
+      "train_bits_per_token": 8.4607,
+      "quick_bits_per_byte": 2.2574,
+      "lr": 0.0001000014330366578
+     }
+    ]
+   },
+   "eval": {
+    "heldout": {
+     "Heart-of-Darkness_219": {
+      "bytes": 211025,
+      "tokens": 51837,
+      "ids_per_kb": 245.6,
+      "bits_per_byte": 2.2454,
+      "bits_per_token": 9.1412,
+      "fidelity": {
+       "bytes": 211025,
+       "exact_share": 0.9870157564269636,
+       "unseen_share": 0.0125861864707973,
+       "collided_share": 0.0003980571022390712
+      }
+     },
+     "The-Adventures-of-Sherlock-Holmes_1661": {
+      "bytes": 562531,
+      "tokens": 140103,
+      "ids_per_kb": 249.1,
+      "bits_per_byte": 2.171,
+      "bits_per_token": 8.7168,
+      "fidelity": {
+       "bytes": 562531,
+       "exact_share": 0.9840755442811152,
+       "unseen_share": 0.01536448657940629,
+       "collided_share": 0.0005599691394785354
+      }
+     },
+     "The-Prince_1232": {
+      "bytes": 281531,
+      "tokens": 61979,
+      "ids_per_kb": 220.1,
+      "bits_per_byte": 2.2792,
+      "bits_per_token": 10.3533,
+      "fidelity": {
+       "bytes": 281531,
+       "exact_share": 0.9566619661777921,
+       "unseen_share": 0.042425168098717374,
+       "collided_share": 0.000912865723490486
+      }
+     }
+    },
+    "heldout_overall": {
+     "bytes": 1055087,
+     "tokens": 253919,
+     "ids_per_kb": 240.7,
+     "bits_per_byte": 2.2148
+    },
+    "ood": {
+     "repo_docs_markdown": {
+      "bytes": 123663,
+      "tokens": 29822,
+      "ids_per_kb": 241.2,
+      "bits_per_byte": 3.9556,
+      "bits_per_token": 16.4031,
+      "fidelity": {
+       "bytes": 123663,
+       "exact_share": 0.8369924714748955,
+       "unseen_share": 0.1619562844181364,
+       "collided_share": 0.0010512441069681312
+      }
+     },
+     "repo_python_code": {
+      "bytes": 484809,
+      "tokens": 151577,
+      "ids_per_kb": 312.7,
+      "bits_per_byte": 4.6916,
+      "bits_per_token": 15.0058,
+      "fidelity": {
+       "bytes": 484809,
+       "exact_share": 0.8373648178973575,
+       "unseen_share": 0.1617337961960277,
+       "collided_share": 0.0009013859066147699
+      }
+     }
+    },
+    "ood_overall": {
+     "bytes": 608472,
+     "tokens": 181399,
+     "ids_per_kb": 298.1,
+     "bits_per_byte": 4.542
+    }
+   },
+   "seed": 1,
+   "generation": {
+    "prompt": "We went to the park",
+    "tokens": 200,
+    "bytes": 748,
+    "seconds": 0.86,
+    "tokens_per_s": 232.7,
+    "bytes_per_s": 870.5,
+    "note": "sliding context, no KV cache, CPU",
+    "sample": " of some\nthe YORK to come by the old man of the\nhis face of the seventies, and thequarriesthe great Doge was on a course for the\nhe has nogalleons that he had been so much and piu he made\nthe first in them at the\nto\nof the house of the leans in\na Galtsin with aquarries visavis were so many time, and doorframe, he\nfor their\ngrandees; I would have been more of the\nhe merman not more; and they were a Juffy of\nhad taken to the room of Signes of his arms.\n\nThe place\nwas a moment, or not not a man had been to be General\nthe same day of the first, and the world, and\n lid, with a little thing was with"
+   },
+   "machine": {
+    "python": "3.13.16",
+    "torch": "2.14.1+cu130",
+    "threads": 4,
+    "cpu": "x86_64",
+    "cores": 4
+   },
+   "config": "hash4096x4096"
   }
  }
 }
