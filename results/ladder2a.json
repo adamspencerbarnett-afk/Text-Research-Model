@@ -1,0 +1,182 @@
+{
+ "ladder": "ladder1",
+ "budget_s": 600.0,
+ "seed": 1,
+ "corpus": {
+  "train_books": 48,
+  "train_bytes": 45045381,
+  "heldout": [
+   "Heart-of-Darkness_219",
+   "The-Adventures-of-Sherlock-Holmes_1661",
+   "The-Prince_1232"
+  ],
+  "ood": [
+   "repo_docs_markdown",
+   "repo_python_code"
+  ]
+ },
+ "configs": {
+  "v0_8k_table18": {
+   "encoding": {
+    "name": "v0_8k_plain",
+    "vocab": 8192,
+    "groups": 0,
+    "members": 0,
+    "dictionary": "data/work/v0_8k_plain.cv0d",
+    "dictionary_hash": "9967d692c6bafc80",
+    "entries": 7934,
+    "phrases": 0,
+    "case_flags": false,
+    "max_phrase_units": 1
+   },
+   "model": {
+    "width": 128,
+    "layers": 4,
+    "heads": 4,
+    "ctx": 256,
+    "batch": 16,
+    "peak_lr": 0.001,
+    "table_rows": 262144,
+    "table_orders": [
+     2
+    ],
+    "params": {
+     "core": 791296,
+     "embedding": 1081344,
+     "output_heads": 0,
+     "table": 33554432,
+     "total": 35427072
+    }
+   },
+   "training": {
+    "budget_s": 600.0,
+    "train_s": 600.1,
+    "steps": 1210,
+    "tokens_seen": 4956160,
+    "bytes_seen": 17152196,
+    "tokens_per_s": 8258.5,
+    "bytes_per_s": 28580.9,
+    "final_train_bits_per_token": 6.4564,
+    "history": [
+     {
+      "train_s": 120.4,
+      "step": 220,
+      "tokens_seen": 901120,
+      "bytes_seen": 3120707,
+      "train_bits_per_token": 8.0877,
+      "quick_bits_per_byte": 2.3103,
+      "lr": 0.0009141354883208326
+     },
+     {
+      "train_s": 240.1,
+      "step": 466,
+      "tokens_seen": 1908736,
+      "bytes_seen": 6602610,
+      "train_bits_per_token": 7.1141,
+      "quick_bits_per_byte": 2.177,
+      "lr": 0.0006898901191153357
+     },
+     {
+      "train_s": 360.3,
+      "step": 713,
+      "tokens_seen": 2920448,
+      "bytes_seen": 10109449,
+      "train_bits_per_token": 6.797,
+      "quick_bits_per_byte": 2.0898,
+      "lr": 0.0004114290283409865
+     },
+     {
+      "train_s": 480.4,
+      "step": 962,
+      "tokens_seen": 3940352,
+      "bytes_seen": 13633126,
+      "train_bits_per_token": 6.5527,
+      "quick_bits_per_byte": 2.0377,
+      "lr": 0.0001861151254830722
+     },
+     {
+      "train_s": 600.1,
+      "step": 1210,
+      "tokens_seen": 4956160,
+      "bytes_seen": 17152196,
+      "train_bits_per_token": 6.4564,
+      "quick_bits_per_byte": 2.0173,
+      "lr": 0.00010000085235539112
+     }
+    ]
+   },
+   "eval": {
+    "heldout": {
+     "Heart-of-Darkness_219": {
+      "bytes": 211025,
+      "tokens": 61192,
+      "ids_per_kb": 290.0,
+      "bits_per_byte": 2.0005,
+      "bits_per_token": 6.8991
+     },
+     "The-Adventures-of-Sherlock-Holmes_1661": {
+      "bytes": 562531,
+      "tokens": 160338,
+      "ids_per_kb": 285.0,
+      "bits_per_byte": 1.8738,
+      "bits_per_token": 6.5742
+     },
+     "The-Prince_1232": {
+      "bytes": 281531,
+      "tokens": 77046,
+      "ids_per_kb": 273.7,
+      "bits_per_byte": 1.9922,
+      "bits_per_token": 7.2799
+     }
+    },
+    "heldout_overall": {
+     "bytes": 1055087,
+     "tokens": 298576,
+     "ids_per_kb": 283.0,
+     "bits_per_byte": 1.9307
+    },
+    "ood": {
+     "repo_docs_markdown": {
+      "bytes": 123663,
+      "tokens": 43022,
+      "ids_per_kb": 347.9,
+      "bits_per_byte": 3.7369,
+      "bits_per_token": 10.7417
+     },
+     "repo_python_code": {
+      "bytes": 484809,
+      "tokens": 208415,
+      "ids_per_kb": 429.9,
+      "bits_per_byte": 4.234,
+      "bits_per_token": 9.8491
+     }
+    },
+    "ood_overall": {
+     "bytes": 608472,
+     "tokens": 251437,
+     "ids_per_kb": 413.2,
+     "bits_per_byte": 4.133
+    }
+   },
+   "seed": 1,
+   "generation": {
+    "prompt": "We went to the park",
+    "tokens": 200,
+    "bytes": 566,
+    "seconds": 0.89,
+    "tokens_per_s": 225.0,
+    "bytes_per_s": 636.8,
+    "note": "sliding context, no KV cache, CPU",
+    "sample": ", and I was very glad of it.\n\u201d said Miss Kible for all his own hand. The time of the\nwish to be, \u201cIt is that he was not, I don\u201d\n\n\u2014the very room he had done this was a few room.\n\n\u201cYes, you will not be an hour, what is better\nnot a few minutes,\u2019s that I am not too long. \u201cNo, your brother's.\u2019s\nthat is, my dear I have only in the morning, or you must not be the\nso soon with the better (if I was quite an unbid or a child.\u2019s not\nwould have been a great-wound,\ufffd be a little.\u201d\n\n\u201cI had all one to be an opportunity of her,\u201d she asked\nI am the most"
+   },
+   "machine": {
+    "python": "3.13.16",
+    "torch": "2.14.1+cu130",
+    "threads": 4,
+    "cpu": "x86_64",
+    "cores": 4
+   },
+   "config": "v0_8k_table18"
+  }
+ }
+}
