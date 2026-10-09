@@ -77,14 +77,74 @@ def mix_ngram(x: torch.Tensor, order: int, rows: int, pad: int) -> torch.Tensor:
     return a & (rows - 1)
 
 
+class NgramTable:
+    """Exact n-gram follower lists for a count-based component at the output.
+
+    For every context of ``order - 1`` tokens seen in training, keeps the ``topk`` most frequent
+    next tokens with their frequencies (renormalised over the kept followers) and the context's
+    total count. Lookup is a binary search over the sorted context keys, so a batch costs
+    little. Flat vocabularies only; tokens must be below 2^21.
+    """
+
+    def __init__(self, tokens: np.ndarray, order: int, topk: int = 16):
+        self.order, self.topk, self.k = order, topk, order - 1
+        n = len(tokens)
+        key = np.zeros(n - self.k, dtype=np.int64)
+        for j in range(self.k):
+            key = (key << 21) + tokens[j:n - self.k + j]
+        pair = (key << 21) + tokens[self.k:]
+        uniq, counts = np.unique(pair, return_counts=True)
+        ctx, nxt = uniq >> 21, uniq & ((1 << 21) - 1)
+        by = np.lexsort((-counts, ctx))
+        ctx, nxt, counts = ctx[by], nxt[by], counts[by]
+        self.keys, first = np.unique(ctx, return_index=True)
+        sizes = np.diff(np.append(first, len(ctx)))
+        totals = np.add.reduceat(counts, first)
+        row = np.repeat(np.arange(len(self.keys)), sizes)
+        rank = np.arange(len(ctx)) - np.repeat(first, sizes)
+        keep = rank < topk
+        self.ids = np.full((len(self.keys), topk), -1, dtype=np.int64)
+        self.probs = np.zeros((len(self.keys), topk), dtype=np.float32)
+        self.ids[row[keep], rank[keep]] = nxt[keep]
+        self.probs[row[keep], rank[keep]] = counts[keep]
+        self.probs /= np.maximum(self.probs.sum(1, keepdims=True), 1)
+        self.totals = totals.astype(np.float32)
+        self.contexts = len(self.keys)
+
+    def features(self, x: np.ndarray):
+        """For a (B, T) token array: follower ids (B, T, K), probabilities (B, T, K) and the
+        context's log(1 + total count) (B, T); zeros where the context is unseen or incomplete."""
+        B, T = x.shape
+        key = np.zeros((B, T), dtype=np.int64)
+        for j in range(self.k):
+            shift = self.k - 1 - j
+            col = np.zeros((B, T), dtype=np.int64)
+            col[:, shift:] = x[:, :T - shift]
+            key = (key << 21) + col
+        pos = np.minimum(np.searchsorted(self.keys, key), len(self.keys) - 1)
+        found = (self.keys[pos] == key)
+        found[:, :self.k - 1] = False
+        ids = np.where(found[..., None], self.ids[pos], -1)
+        probs = np.where(found[..., None], self.probs[pos], 0.0).astype(np.float32)
+        conf = np.where(found, np.log1p(self.totals[pos]), 0.0).astype(np.float32)
+        return torch.from_numpy(ids), torch.from_numpy(probs), torch.from_numpy(conf)
+
+
 class LM(nn.Module):
     INVALID = -30.0  # logit given to a (group, member) code that no unit in training maps to
 
     def __init__(self, enc: LE.Encoding, width: int, layers: int, heads: int, ctx: int, table_rows: int = 0,
-                 valid_codes=None, table_orders=(2,)):
+                 valid_codes=None, table_orders=(2,), ngrams: list | None = None):
         super().__init__()
         self.ctx, self.coords = ctx, enc.groups > 0
         self.vocab = enc.vocab
+        # Exact n-gram follower tables mixed into the output: the model predicts the mixture
+        # weights (network, table 1, table 2, ...) from its hidden state and each table's
+        # confidence, so it learns when to trust counts and when to think.
+        self.ngrams = ngrams or []
+        if self.ngrams and self.coords:
+            raise NotImplementedError("n-gram output tables need a flat vocabulary")
+        self.mix_head = nn.Linear(width + len(self.ngrams), len(self.ngrams) + 1) if self.ngrams else None
         if self.coords:
             self.G, self.M = enc.groups, enc.members
             self.emb_g, self.emb_m = nn.Embedding(self.G, width), nn.Embedding(self.M, width)
@@ -125,6 +185,7 @@ class LM(nn.Module):
         core = n(self.blocks) + n([self.ln_f])
         emb = n([self.pos]) + (n([self.emb_g, self.emb_m]) if self.coords else n([self.emb]))
         out = n([self.head_g, self.head_m]) if self.coords else 0   # tied output costs nothing extra
+        out += n([self.mix_head]) if self.mix_head is not None else 0
         table = (n([self.table]) if self.table is not None else 0) + n(self.tables.values())
         return {"core": core, "embedding": emb, "output_heads": out, "table": table,
                 "total": core + emb + out + table}
@@ -158,7 +219,34 @@ class LM(nn.Module):
             nll_m = F.cross_entropy(lm.transpose(1, 2), my, reduction="none")
             return nll_g + nll_m
         logits = h @ self.emb.weight.T
-        return F.cross_entropy(logits.transpose(1, 2), y, reduction="none")
+        if not self.ngrams:
+            return F.cross_entropy(logits.transpose(1, 2), y, reduction="none")
+        logp_net = F.log_softmax(logits, -1).gather(-1, y[..., None])[..., 0]
+        p_parts, confs = [logp_net.exp()], []
+        for table in self.ngrams:
+            ids, probs, conf = table.features(x.numpy())
+            p_parts.append((probs * (ids == y[..., None])).sum(-1))
+            confs.append(conf)
+        mix = F.softmax(self.mix_head(torch.cat([h] + [c[..., None] for c in confs], -1)), -1)
+        p = (mix * torch.stack(p_parts, -1)).sum(-1)
+        return -torch.log(p.clamp_min(1e-9))
+
+    def mixed_logits(self, h_last, x_last_np):
+        """Full next-token log-probabilities at the last position, with the n-gram mixture."""
+        logits = h_last @ self.emb.weight.T
+        if not self.ngrams:
+            return logits
+        p = [F.softmax(logits, -1)]
+        confs = []
+        for table in self.ngrams:
+            ids, probs, conf = table.features(x_last_np)
+            dense = torch.zeros_like(p[0])
+            ok = ids[:, -1] >= 0
+            dense.scatter_add_(-1, ids[:, -1].clamp_min(0), probs[:, -1] * ok)
+            p.append(dense)
+            confs.append(conf[:, -1])
+        mix = F.softmax(self.mix_head(torch.cat([h_last] + [c[..., None] for c in confs], -1)), -1)
+        return torch.log((mix[..., None] * torch.stack(p, 1)).sum(1).clamp_min(1e-9))
 
     @torch.no_grad()
     def sample_next(self, x, gen: torch.Generator, temperature: float, top_k: int) -> int:
@@ -176,7 +264,7 @@ class LM(nn.Module):
             lm = self.head_m(torch.cat([h, self.emb_g(torch.tensor([g]))], -1))
             m = pick(lm.masked_fill(~self.valid[g], float("-inf")))
             return g * self.M + m
-        return pick(h @ self.emb.weight.T)
+        return pick(self.mixed_logits(h, x.numpy()))
 
 
 # --------------------------------------------------------------------------- evaluation
@@ -233,11 +321,19 @@ def eval_file(model: LM, enc: LE.Encoding, path: str, work: Path) -> dict:
 def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval_sets: dict[str, list[str]],
         work: Path, budget_s: float, width=128, layers=4, heads=4, ctx=256, batch=16, lr=1e-3,
         table_rows=0, seed=1, eval_every_s=120.0, quick_bytes=150_000, prompt=b"We went to the park",
-        gen_tokens=200, log=print, save_path=None, table_orders=(2,)) -> dict:
+        gen_tokens=200, log=print, save_path=None, table_orders=(2,), ngram_orders=(), ngram_topk=16) -> dict:
     torch.manual_seed(seed)
     rng = np.random.default_rng(seed)
     valid = np.fromiter(enc.reverse.keys(), dtype=np.int64, count=len(enc.reverse)) if isinstance(enc, LE.HashCodes) else None
-    model = LM(enc, width, layers, heads, ctx, table_rows, valid, table_orders)
+    ngrams, ngram_info = [], []
+    for order in ngram_orders:
+        t0 = time.perf_counter()
+        table = NgramTable(train_tokens, order, ngram_topk)
+        ngrams.append(table)
+        ngram_info.append({"order": order, "contexts": table.contexts, "topk": ngram_topk,
+                           "entries": int((table.ids >= 0).sum()), "build_s": round(time.perf_counter() - t0, 1)})
+        log(f"[{enc.name}] {order}-gram table: {table.contexts:,} contexts, {ngram_info[-1]['entries']:,} entries ({ngram_info[-1]['build_s']}s)")
+    model = LM(enc, width, layers, heads, ctx, table_rows, valid, table_orders, ngrams)
     dense = [p for n, p in model.named_parameters() if not n.startswith("table")]
     sparse = [p for n, p in model.named_parameters() if n.startswith("table")]
     decay = [p for p in dense if p.dim() >= 2]
@@ -297,7 +393,8 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
 
     result = {"encoding": enc.describe(), "model": {"width": width, "layers": layers, "heads": heads, "ctx": ctx,
                                                       "batch": batch, "peak_lr": lr, "table_rows": table_rows,
-                                                      "table_orders": list(model.table_orders), "params": counts},
+                                                      "table_orders": list(model.table_orders), "params": counts,
+                                                      "ngram_tables": ngram_info},
               "training": {"budget_s": budget_s, "train_s": round(train_time, 1), "steps": step, "tokens_seen": tokens_seen,
                            "bytes_seen": bytes_seen, "tokens_per_s": round(tokens_seen / train_time, 1),
                            "bytes_per_s": round(bytes_seen / train_time, 1), "final_train_bits_per_token": round(ema, 4),
@@ -332,7 +429,7 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
     log(f"[{enc.name}] generated {len(out)} bytes in {gen_s:.1f}s ({len(out)/gen_s:.0f} B/s): {out[:160]!r}")
     result["machine"] = {"python": platform.python_version(), "torch": torch.__version__, "threads": torch.get_num_threads(),
                          "cpu": platform.processor() or platform.machine(), "cores": os.cpu_count()}
-    if save_path:
+    if save_path and not ngrams:
         # Weights plus what chat.py needs to rebuild the encoder; a hashed table is left out when
         # it is large, since it is for the speed and capacity measurement, not for talking.
         state = {k: v for k, v in model.state_dict().items() if not (k.startswith("table") and table_rows > 1 << 16)}
@@ -363,6 +460,8 @@ def main(argv=None) -> int:
     ap.add_argument("--ctx", type=int, default=256); ap.add_argument("--batch", type=int, default=16)
     ap.add_argument("--lr", type=float, default=1e-3); ap.add_argument("--table-rows", type=int, default=0)
     ap.add_argument("--table-orders", default="2", help="comma-separated n-gram orders for the hashed tables")
+    ap.add_argument("--ngram-orders", default="", help="comma-separated orders of exact n-gram output tables, e.g. 2,3")
+    ap.add_argument("--ngram-topk", type=int, default=16)
     ap.add_argument("--seed", type=int, default=1); ap.add_argument("--eval-every", type=float, default=120)
     ap.add_argument("--threads", type=int, default=0)
     a = ap.parse_args(argv)
@@ -378,7 +477,8 @@ def main(argv=None) -> int:
     tokens, lens = load_training(enc, a.data, work)
     result = run(enc, tokens, lens, eval_sets_from(a.data), work, a.budget, a.width, a.layers, a.heads, a.ctx,
                  a.batch, a.lr, a.table_rows, a.seed, a.eval_every,
-                 table_orders=tuple(int(o) for o in a.table_orders.split(",")))
+                 table_orders=tuple(int(o) for o in a.table_orders.split(",")),
+                 ngram_orders=tuple(int(o) for o in a.ngram_orders.split(",") if o), ngram_topk=a.ngram_topk)
     result["args"] = vars(a)
     Path(a.out).write_text(json.dumps(result, indent=1))
     return 0

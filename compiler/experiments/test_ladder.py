@@ -107,6 +107,8 @@ class LadderConfigTests(unittest.TestCase):
         self.assertEqual(ladder1.parse_config("hash4096x4096"), ("hash4096x4096", 0, (2,)))
         self.assertEqual(ladder1.parse_config("hash4096x4096_table20_tri"), ("hash4096x4096", 1 << 20, (2, 3)))
         self.assertEqual(ladder1.parse_config("v0_8k_table20_q4"), ("v0_8k_plain", 1 << 20, (2, 3, 4)))
+        self.assertEqual(ladder1.parse_config_full("v0_8k_ng"), ("v0_8k_plain", 0, (2,), (2, 3)))
+        self.assertEqual(ladder1.parse_config_full("v0_8k_table20_tri_ng"), ("v0_8k_plain", 1 << 20, (2, 3), (2, 3)))
         with self.assertRaises(KeyError):
             ladder1.parse_config("v0_99k_table")
 
@@ -138,18 +140,40 @@ class HarnessTests(unittest.TestCase):
         k = self.tl.mix_bigram(prev, cur, rows)
         self.assertTrue(bool(((k >= 0) & (k < rows)).all()))
 
+    def test_ngram_table_counts_and_lookup(self):
+        import torch
+        tokens = np.array([1, 2, 3, 1, 2, 4, 1, 2, 3, 1, 2, 3, 5], dtype=np.int64)
+        t = self.tl.NgramTable(tokens, order=2, topk=2)
+        row = int(np.searchsorted(t.keys, 2))              # context "2" is followed by 3,4,3,3
+        self.assertEqual(list(t.ids[row]), [3, 4])
+        self.assertAlmostEqual(float(t.probs[row][0]), 0.75)
+        self.assertEqual(float(t.totals[row]), 4.0)
+        ids, probs, conf = t.features(np.array([[1, 2, 9]], dtype=np.int64))
+        self.assertEqual(ids[0, 1].tolist(), [3, 4])        # after "2"
+        self.assertEqual(ids[0, 2].tolist(), [-1, -1])      # "9" never seen
+        self.assertAlmostEqual(float(conf[0, 1]), float(np.log1p(4)))
+        self.assertEqual(float(conf[0, 2]), 0.0)
+        t3 = self.tl.NgramTable(tokens, order=3, topk=4)
+        ids3, probs3, _ = t3.features(np.array([[1, 2, 3]], dtype=np.int64))
+        self.assertEqual(ids3[0, 2].tolist()[0], 1)          # "2 3" is followed by 1 twice, 5 once
+        self.assertAlmostEqual(float(probs3[0, 2][0]), 2 / 3)
+        self.assertEqual(ids3[0, 1].tolist(), [3, 4, -1, -1])  # "1 2" is followed by 3 three times, 4 once
+        self.assertEqual(ids3[0, 0].tolist(), [-1] * 4)      # incomplete context at the window start
+
     def test_short_runs_for_every_model_kind(self):
         with tempfile.TemporaryDirectory() as tmp:
             work = Path(tmp)
             held = work / "held.txt"; held.write_bytes(OTHER * 30)
             sets = {"heldout": [str(held)]}
             h = LE.HashCodes(256, 256); h.fit([TEXT])
-            for enc, table, orders in ((LE.Bytes(), 0, (2,)), (h, 0, (2,)), (LE.Bytes(), 1 << 8, (2,)),
-                                       (LE.Bytes(), 1 << 8, (2, 3))):
+            for enc, table, orders, ngram in ((LE.Bytes(), 0, (2,), ()), (h, 0, (2,), ()), (LE.Bytes(), 1 << 8, (2,), ()),
+                                              (LE.Bytes(), 1 << 8, (2, 3), ()), (LE.Bytes(), 0, (2,), (2, 3))):
                 tokens, lens = enc.encode(TEXT)
                 r = self.tl.run(enc, tokens, lens, sets, work, budget_s=1.0, width=16, layers=1, heads=2, ctx=16,
                                 batch=4, table_rows=table, eval_every_s=0.5, quick_bytes=64, gen_tokens=5,
-                                log=lambda *_: None, table_orders=orders)
+                                log=lambda *_: None, table_orders=orders, ngram_orders=ngram)
+                if ngram:
+                    self.assertEqual([t["order"] for t in r["model"]["ngram_tables"]], [2, 3])
                 if table:
                     self.assertEqual(r["model"]["params"]["table"], table * 16 * len(orders))
                 self.assertGreater(r["training"]["steps"], 0)

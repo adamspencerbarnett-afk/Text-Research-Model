@@ -65,23 +65,31 @@ def fit_hash(groups: int, members: int, train_paths: list[str], work: Path) -> P
 
 def make_encoding(name: str, train_paths: list[str], work: Path, native: str | None):
     """Return (encoding, table_rows, table_orders) for a configuration name; see parse_config."""
-    base, table, orders = parse_config(name)
+    base, table, orders, ngram = parse_config_full(name)
     if base == "bytes":
-        return LE.Bytes(), table, orders
+        return LE.Bytes(), table, orders, ngram
     if base.startswith("hash"):
         g, m = (int(x) for x in base[4:].split("x"))
-        return LE.HashCodes.load(str(fit_hash(g, m, train_paths, work))), table, orders
-    return LE.V0Dict(str(fit_dictionary(base, train_paths, work)), native), table, orders
+        return LE.HashCodes.load(str(fit_hash(g, m, train_paths, work))), table, orders, ngram
+    return LE.V0Dict(str(fit_dictionary(base, train_paths, work)), native), table, orders, ngram
 
 
 def parse_config(name: str) -> tuple[str, int, tuple[int, ...]]:
+    """See parse_config_full; this keeps the three-value form used by the tests."""
+    return parse_config_full(name)[:3]
+
+
+def parse_config_full(name: str) -> tuple[str, int, tuple[int, ...], tuple[int, ...]]:
     """Split a configuration name into (base encoding, table rows, table orders).
 
     The base is ``bytes``, ``hashGxM`` or a dictionary name from DICTS. An optional
     ``_table[N][_tri]`` suffix adds hashed input tables: ``v0_8k_table`` is a 2^20-row bigram
     table on v0_8k_plain, ``v0_8k_table22`` has 2^22 rows, ``hash4096x4096_table20_tri`` puts
     bigram and trigram tables of 2^20 rows each on the hash encoder; ``_q4`` adds a 4-gram table too.
+    A final ``_ng`` adds exact bigram and trigram follower tables mixed into the output.
     """
+    ngram = (2, 3) if name.endswith("_ng") else ()
+    name = name.removesuffix("_ng")
     base, table, orders = name, 0, (2,)
     if "_table" in name:
         base, spec = name.split("_table", 1)
@@ -91,12 +99,12 @@ def parse_config(name: str) -> tuple[str, int, tuple[int, ...]]:
                 orders, spec = o, spec.removesuffix(suffix)
         table = 1 << (int(spec) if spec else 20)
     if base == "bytes" or base.startswith("hash"):
-        return base, table, orders
+        return base, table, orders, ngram
     if base not in DICTS and f"{base}_plain" in DICTS:
         base = f"{base}_plain"
     if base not in DICTS:
         raise KeyError(f"no dictionary configuration for {name!r}")
-    return base, table, orders
+    return base, table, orders, ngram
 
 
 def main() -> int:
@@ -120,13 +128,13 @@ def main() -> int:
         if name in results["configs"]:
             say(f"{name}: already done, skipping")
             continue
-        enc, table, orders = make_encoding(name, train_paths, work, a.native)
+        enc, table, orders, ngram = make_encoding(name, train_paths, work, a.native)
         t0 = time.time()
         tokens, lens = train_lm.load_training(enc, a.data, work)
         say(f"{name}: {len(tokens):,} training tokens ({time.time() - t0:.0f}s to encode)")
         r = train_lm.run(enc, tokens, lens, eval_sets, work, a.budget, table_rows=table, seed=a.seed,
                          eval_every_s=a.eval_every, log=say, save_path=str(work / f"ladder1_{name}.pt"),
-                         table_orders=orders)
+                         table_orders=orders, ngram_orders=ngram)
         r["config"] = name
         (work / f"ladder1_{name}.json").write_text(json.dumps(r, indent=1))
         results["configs"][name] = r
