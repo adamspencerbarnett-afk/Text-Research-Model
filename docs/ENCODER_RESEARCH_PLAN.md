@@ -361,6 +361,25 @@ Every Jane Austen book was removed from the 45 MB corpus, the best configuration
 
 The model learned by reading: one book by the author, added to the tables in seconds with no gradient step, improved prediction of a different book by her 30 times more than an unrelated book of the same size did. The effect is small in absolute terms because one book is 1.6% of the counts and the author's specific word pairs and triples are a small share of any page; the mechanism works, and it is the one capability a learned table cannot offer. Next: measure the same thing with more of the author's books added, and with the trust head re-tuned (not the core) after the addition.
 
+### First talking-bot test: training on question-and-answer text (9 October)
+
+The Alpaca instruction set (52,002 exchanges, 19 MB, non-commercial licence) was rendered as plain text, one exchange per block ("User: ... / Assistant: ..."), and two models were trained on it from scratch for 600 s with the usual validation split: the best configuration (compiler + exact tables, 64 followers) and the compiler alone. Each was then asked ten basic questions through the compiler (`compiler/experiments/ask.py`; answers in `results/qa_answers_ng64.json` and `results/qa_answers_plain.json`).
+
+| Model | Held-out bits/byte on unseen exchanges | Answers |
+| --- | ---: | --- |
+| compiler + exact tables, 64 followers | **1.356** | fluent Alpaca-style prose, the same opening for every question, never about the question |
+| compiler alone | 1.673 | broken fragments and runs of digits, never about the question |
+
+Verbatim, the table model to "What is the capital of France?": *"The first player to the following sentence to add two or more things in the following words is the name of the United States are the most effective ways to conserve water, ..."*; and the same opening to a question that is in its training data ("Give three tips for staying healthy."). The plain model to "What is 2 + 2?": *"199200000 300000107001000005000, 10020.4..."*.
+
+What this shows, and why it is useful rather than merely disappointing:
+
+1. *Prediction and answering are different things.* The tables cut bits per byte on unseen exchanges by 19% against the plain model, the largest table gain measured anywhere, because the answer format and its stock phrases are exactly what counts capture. Neither model answers, because answering needs the question to reach the output, and nothing in the design carries it there.
+2. *The lookup key is the problem.* The exact tables are keyed on the last two or three codes. After "Assistant:" those codes are the same for every question, so the tables hand the trust head the same followers every time, and a 0.79M-parameter core with a 256-code window cannot override them with what the question said. Even a memorised training question is not retrieved, because the key never reaches back to it. This is the "tables memorise surfaces, short memory" limitation stated in the plan, now demonstrated.
+3. *The fix is Phase 3, not more minutes.* For answering, the key must include the question (the structured state channel, or a retrieval key built from the question's codes rather than the last few), and the core must be large enough to carry the question across the window (the GPU run). Digits also need the number channel: the plain model's digit runs are the byte-level number representation failing under a numeric question.
+
+The chat format itself was learned in minutes by both models (turn markers, sentence shapes, closing a turn and opening the next), so the compiler-and-tables pipeline works end to end for conversation; what is missing is the part that makes the answer depend on the question.
+
 **Best model, stated plainly.** Text is compiled into 8,192 word-and-piece codes by the deterministic compiler. A 4-layer, width-128 Transformer (0.79M parameters) reads the codes, with two hashed lookup tables (bigram and trigram keys, 2^20 rows each, 268M parameters, one lookup each per code) added to its input. Its output is mixed, per code, with exact bigram and trigram follower counts from the training text (3.3M entries, built in four seconds, rebuilt without retraining), using weights the network predicts from its state and each table's confidence. After 600 s of CPU training: 1.806 bits per byte on unseen books, 3.96 on code and Markdown it was never trained on, about 600 bytes of reply per second on one core.
 
 
@@ -493,6 +512,7 @@ Rules carried over from the V1 discipline: fit dictionaries and tokenizers on th
 ## 8. Log
 
 - **2026-10-08.** Review of `encoder-v0` and the earlier results; measurements F1–F3 on two held-out books; PyTorch installed in the sandbox and the Phase 1 model shape timed on CPU; plan written. No model was trained to completion and no result in `results/` changed.
+- **2026-10-09, talking-bot test.** Two models trained from scratch on 19 MB of chat-formatted Alpaca text; the table model predicts unseen exchanges 19% better than the plain one (1.356 against 1.674 bits per byte) but neither answers a question: the tables are keyed on the last codes, which are identical after "Assistant:" for every question. Conclusion recorded; fix belongs to Phase 3.
 - **2026-10-09, learning by reading and Version 1.** Adding one Austen book to the count tables alone improved prediction of another Austen book by 0.59% against 0.02% for an unrelated book; the model learns by reading, without training. Alpaca (52k exchanges) converted to chat text for the talking-bot test. Version 1 frozen in `releases/version1.zip` with `docs/VERSION_1.md`.
 - **2026-10-09, scale check and ladder 3.** Corpus v1 (200 MB) and v2 (233 MB plus a Wikipedia split) built; the 10.9% gain over standard BPE at 45 MB is 9.3% at 200 MB on the same books, and it lives on the middle and rare vocabulary, not on function words; 64 followers per context is the new best setting (1.795 at 4 minutes, 1.9M learned parameters); hashed tables are now nearly redundant; a 1,024-code context cannot be screened at 4 minutes. Phase 3 rewritten as the reasoning phase.
 - **2026-10-09, side-by-side.** One-time comparison at 600 s (`results/side_by_side.json`, figures in `docs/figures/`): standard BPE 8k 2.028; compiler alone 2.007; compiler + exact n-gram tables 1.835; compiler + both kinds of table 1.806, 10.9% better than the traditional model at equal time and 10.5% at equal text, and past the 3-gram count model. Loss formulation unified on the faster form for future runs.

@@ -266,6 +266,245 @@
     "cores": 4
    },
    "config": "v0_8k_ng64"
+  },
+  "v0_8k_plain": {
+   "encoding": {
+    "name": "v0_8k_plain",
+    "vocab": 8192,
+    "groups": 0,
+    "members": 0,
+    "dictionary": "data_qa/work/v0_8k_plain.cv0d",
+    "dictionary_hash": "65ad4cc79c66502c",
+    "entries": 7934,
+    "phrases": 0,
+    "case_flags": false,
+    "max_phrase_units": 1
+   },
+   "model": {
+    "width": 128,
+    "layers": 4,
+    "heads": 4,
+    "ctx": 256,
+    "batch": 16,
+    "peak_lr": 0.001,
+    "table_rows": 0,
+    "table_orders": [],
+    "params": {
+     "core": 791296,
+     "embedding": 1081344,
+     "output_heads": 0,
+     "table": 0,
+     "total": 1872640
+    },
+    "ngram_tables": []
+   },
+   "training": {
+    "budget_s": 600.0,
+    "train_s": 600.3,
+    "steps": 1113,
+    "tokens_seen": 4558848,
+    "bytes_seen": 18483917,
+    "tokens_per_s": 7593.8,
+    "bytes_per_s": 30789.0,
+    "final_train_bits_per_token": 6.729,
+    "train_tokens": 4603550,
+    "valid_tokens": 93951,
+    "valid_bytes": 378741,
+    "patience": 4,
+    "min_delta": 0.002,
+    "stop_reason": "budget",
+    "stopped_early": false,
+    "history": [
+     {
+      "train_s": 60.1,
+      "step": 146,
+      "tokens_seen": 598016,
+      "bytes_seen": 2421586,
+      "train_bits_per_token": 9.3538,
+      "quick_bits_per_byte": 2.0394,
+      "lr": 0.0009782133086456823
+     },
+     {
+      "train_s": 120.3,
+      "step": 295,
+      "tokens_seen": 1208320,
+      "bytes_seen": 4894857,
+      "train_bits_per_token": 7.8222,
+      "quick_bits_per_byte": 1.876,
+      "lr": 0.0009141474317199153
+     },
+     {
+      "train_s": 180.3,
+      "step": 431,
+      "tokens_seen": 1765376,
+      "bytes_seen": 7164329,
+      "train_bits_per_token": 7.4058,
+      "quick_bits_per_byte": 1.8003,
+      "lr": 0.0008148275581244387
+     },
+     {
+      "train_s": 242.8,
+      "step": 455,
+      "tokens_seen": 1863680,
+      "bytes_seen": 7562208,
+      "train_bits_per_token": 7.3422,
+      "quick_bits_per_byte": 1.7847,
+      "lr": 0.0006894710101778909
+     },
+     {
+      "train_s": 302.4,
+      "step": 476,
+      "tokens_seen": 1949696,
+      "bytes_seen": 7910408,
+      "train_bits_per_token": 7.3061,
+      "quick_bits_per_byte": 1.7753,
+      "lr": 0.0005512577240156336
+     },
+     {
+      "train_s": 360.0,
+      "step": 511,
+      "tokens_seen": 2093056,
+      "bytes_seen": 8488388,
+      "train_bits_per_token": 7.2519,
+      "quick_bits_per_byte": 1.7592,
+      "lr": 0.00041187283202202796
+     },
+     {
+      "train_s": 420.1,
+      "step": 660,
+      "tokens_seen": 2703360,
+      "bytes_seen": 10957300,
+      "train_bits_per_token": 7.0114,
+      "quick_bits_per_byte": 1.7184,
+      "lr": 0.00028612661947811414
+     },
+     {
+      "train_s": 480.3,
+      "step": 811,
+      "tokens_seen": 3321856,
+      "bytes_seen": 13468464,
+      "train_bits_per_token": 6.8855,
+      "quick_bits_per_byte": 1.6904,
+      "lr": 0.00018612685976815546
+     },
+     {
+      "train_s": 540.1,
+      "step": 959,
+      "tokens_seen": 3928064,
+      "bytes_seen": 15927311,
+      "train_bits_per_token": 6.8108,
+      "quick_bits_per_byte": 1.6739,
+      "lr": 0.00012227602310264476
+     },
+     {
+      "train_s": 600.3,
+      "step": 1113,
+      "tokens_seen": 4558848,
+      "bytes_seen": 18483917,
+      "train_bits_per_token": 6.729,
+      "quick_bits_per_byte": 1.6602,
+      "lr": 0.00010000001654712887
+     }
+    ]
+   },
+   "eval": {
+    "validation": {
+     "bytes": 378741,
+     "tokens": 93951,
+     "bits_per_byte": 1.6851
+    },
+    "heldout": {
+     "qa_heldout": {
+      "bytes": 383751,
+      "tokens": 94238,
+      "ids_per_kb": 245.6,
+      "bits_per_byte": 1.6735,
+      "bits_per_token": 6.8149,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.3182,
+        "bits_share": 0.2642,
+        "bits_per_byte": 1.3894
+       },
+       "freq_101_1000": {
+        "byte_share": 0.3024,
+        "bits_share": 0.3001,
+        "bits_per_byte": 1.6608
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.3794,
+        "bits_share": 0.4357,
+        "bits_per_byte": 1.9221
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0612,
+        "bits_share": 0.1298,
+        "bits_per_byte": 3.5495
+       },
+       "type_word": {
+        "byte_share": 0.9309,
+        "bits_share": 0.8643,
+        "bits_per_byte": 1.554
+       },
+       "type_other": {
+        "byte_share": 0.0079,
+        "bits_share": 0.0059,
+        "bits_per_byte": 1.2341
+       }
+      }
+     }
+    },
+    "heldout_overall": {
+     "bytes": 383751,
+     "tokens": 94238,
+     "ids_per_kb": 245.6,
+     "bits_per_byte": 1.6735
+    },
+    "ood": {
+     "qa_sample": {
+      "bytes": 18651,
+      "tokens": 4251,
+      "ids_per_kb": 227.9,
+      "bits_per_byte": 1.5028,
+      "bits_per_token": 6.5951
+     }
+    },
+    "ood_overall": {
+     "bytes": 18651,
+     "tokens": 4251,
+     "ids_per_kb": 227.9,
+     "bits_per_byte": 1.5028
+    }
+   },
+   "seed": 1,
+   "generation": {
+    "prompt": "We went to the park",
+    "tokens": 200,
+    "bytes": 771,
+    "seconds": 0.82,
+    "tokens_per_s": 244.3,
+    "bytes_per_s": 941.9,
+    "note": "sliding context, no KV cache, CPU",
+    "sample": " and go the day.\n\nUser: Describe the following words in the given text.\nAssistant: An appropriate sentence, a book.\n\nUser: Generate a text is the sentence by the given paragraph.\nThe first sentence:\nAssistant:\n\nUser: Given the most of an example of the given words in a website of the following sentence.\nThe sentence 's of the topic.\nPear of the words to be a product.\nAssistant: A short paragraph.\n\nUser: Identify the sentence to the list of the concept.\nThe word, the numbers the following statement that the first sentence in the number.\nThe book that the correct sentence using the \"\nAssistant: "
+   },
+   "machine": {
+    "python": "3.13.16",
+    "torch": "2.14.1+cu130",
+    "threads": 4,
+    "cpu": "x86_64",
+    "cores": 4
+   },
+   "config": "v0_8k_plain"
   }
  }
 }
