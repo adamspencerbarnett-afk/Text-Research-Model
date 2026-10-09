@@ -97,7 +97,10 @@ class V2LM(train_lm.LM):
         B, Tq, D = h.shape
         T = x.shape[1]
         follow, x_next = self._span(x, src)
-        causal = torch.ones(Tq, T, dtype=torch.bool, device=x.device).tril(T - Tq)   # query t may use j <= t
+        # Query t may point only at j < t: the follower of j = t is the very code being predicted,
+        # so allowing it leaks the target (found with --copy-question, where the span can
+        # contain the current position).
+        causal = torch.ones(Tq, T, dtype=torch.bool, device=x.device).tril(T - Tq - 1)
         allowed = follow[:, None, :] & causal[None]
         parts, confs = [], []
         if self.copy_head:

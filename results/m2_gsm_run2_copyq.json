@@ -1,0 +1,457 @@
+{
+ "setup": {
+  "data": "data_qa_gsm",
+  "work": "runs/m2_gsm",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 600.0,
+  "ctx": 256,
+  "batch": 16,
+  "topk": 64,
+  "neighbor_codes": 110,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/m2_gsm_run2_copyq.json",
+  "seed": 1,
+  "self_context_p": 0.5,
+  "copy_bias": 3.0,
+  "device": "cpu",
+  "threads": 10,
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "copy_question": true,
+  "calculator": false,
+  "save": "runs/m2_gsm/run2.pt",
+  "train_exchanges": 7473,
+  "eval": 659,
+  "added": 660,
+  "distinct_keys": 7460
+ },
+ "training": {
+  "steps": 2185,
+  "train_s": 600.2,
+  "history": [
+   {
+    "train_s": 60.1,
+    "step": 225,
+    "train_bits_per_code": 1.946,
+    "valid_bits_per_byte": 0.6132
+   },
+   {
+    "train_s": 120.0,
+    "step": 455,
+    "train_bits_per_code": 1.789,
+    "valid_bits_per_byte": 0.6024
+   },
+   {
+    "train_s": 180.2,
+    "step": 682,
+    "train_bits_per_code": 1.717,
+    "valid_bits_per_byte": 0.608
+   },
+   {
+    "train_s": 240.0,
+    "step": 892,
+    "train_bits_per_code": 1.387,
+    "valid_bits_per_byte": 0.6057
+   },
+   {
+    "train_s": 300.2,
+    "step": 1112,
+    "train_bits_per_code": 1.692,
+    "valid_bits_per_byte": 0.6383
+   },
+   {
+    "train_s": 360.2,
+    "step": 1322,
+    "train_bits_per_code": 1.353,
+    "valid_bits_per_byte": 0.6099
+   },
+   {
+    "train_s": 420.1,
+    "step": 1537,
+    "train_bits_per_code": 1.334,
+    "valid_bits_per_byte": 0.6055
+   },
+   {
+    "train_s": 480.2,
+    "step": 1756,
+    "train_bits_per_code": 1.137,
+    "valid_bits_per_byte": 0.6142
+   },
+   {
+    "train_s": 540.0,
+    "step": 1967,
+    "train_bits_per_code": 1.25,
+    "valid_bits_per_byte": 0.6804
+   },
+   {
+    "train_s": 600.2,
+    "step": 2185,
+    "train_bits_per_code": 1.352,
+    "valid_bits_per_byte": 0.5747
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.9992,
+   "exact": 0.99
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 60,
+   "f1": 0.5384,
+   "exact": 0.0,
+   "num_exact": 0.0667,
+   "num_exact_bias": 0.1333,
+   "f1_no_m1": 0.1277,
+   "f1_bias": 0.5597,
+   "exact_bias": 0.0
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 2,
+   "f1": 0.3256,
+   "exact": 0.0,
+   "num_exact": 0.0,
+   "num_exact_bias": 0.0,
+   "f1_no_m1": 0.0467,
+   "f1_bias": 0.3848,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.5859
+  },
+  "unseen_network_with_nearest": {
+   "n": 198,
+   "f1": 0.2564,
+   "exact": 0.0,
+   "num_exact": 0.0,
+   "num_exact_bias": 0.0,
+   "f1_no_m1": 0.1249,
+   "f1_bias": 0.1832,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.2433
+  },
+  "heldout_network_without_memory": {
+   "n": 60,
+   "f1": 0.2604,
+   "exact": 0.0,
+   "num_exact": 0.0,
+   "num_exact_bias": 0.0
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.2597
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 1.0,
+   "exact": 1.0
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 60,
+   "f1": 0.4913,
+   "exact": 0.0,
+   "num_exact": 0.0,
+   "num_exact_bias": 0.1333,
+   "f1_no_m1": 0.1185,
+   "f1_bias": 0.5532,
+   "exact_bias": 0.0
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Roger had a 6-hour drive planned out.  He didn't want to listen to music so he d",
+    "a": "Roger +  The second podcasts.  How many minutes will it take a total of 25 minutes long.\nThe total hours of full, Roger and a hours long\nAnswer: 25 hours\nSo he ",
+    "f1": 0.4380952380952381,
+    "exact": 0.0,
+    "a_no_m1": "is the x F, C so is 3(7 so is 3) is for because is for is to the a total is is a sales 7) so is is. by because 7) is a is is is is 3 so 3), is to to a so is to ",
+    "f1_no_m1": 0.17699115044247787,
+    "a_bias": "10 = 45 minutes long 45 minutes long\nSo he has downloaded 450+9005 hours of podcasts downloaded\nHe has 45 hours = 4 hours of second podcasts and his second podc",
+    "f1_bias": 0.5957446808510639,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 1.0
+   },
+   {
+    "q": "It took an alligator named Paul 4 hours to walk from his home at the River Nile ",
+    "a": "It took 4 more hours to the Nile Delta, It Delta, and back, Italy and 2 more hours with 2 more hours for six hours with 2 more hours than that. How many hours d",
+    "f1": 0.5033112582781456,
+    "exact": 0.0,
+    "a_no_m1": "is the x F, C, is 3(7 so is 3) is for is is for is to the a total is is a sales 7) so is is. each because 7) is a is is is is 3x +7)\n4x, is is is a because. is ",
+    "f1_no_m1": 0.16216216216216214,
+    "a_bias": "back is 4 more hours to the Nile Delta, to their home, and since back is 2 more hours for Paul took 2 more hours to their home, Paul took to the Nile.\nAnswer: 2",
+    "f1_bias": 0.5751633986928104,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Max works for a delivery company as a courier. During one working day, he can de",
+    "a": "Max has 35 packages * 7 = 1/7 of the maximum capacity of the maximum number of the maximum time Max delivered only 10 = 28",
+    "f1": 0.4383561643835616,
+    "exact": 0.0,
+    "a_no_m1": "is the because F, C so is 3(7 so is 3) is for the total) 7 because a total is because a total total is a a is is. by because 7) is a is is is is 3 so 7 is the s",
+    "f1_no_m1": 0.11009174311926605,
+    "a_bias": "Max has 35 packages * 7 = 1/7 of the maximum capacity of the maximum number of the maximum capacity, Max delivered only 45 = 28/2 = 1 two other days, Max delive",
+    "f1_bias": 0.6444444444444444,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Mac loves the shape of quarters and is willing to trade money for them, even if ",
+    "a": "Maci lost 20 = $1 because 18 = $7 dimes because 10 = 16 nickels he lost 125 = 45 = $1 = $25 = $20 x 305 dollars, he lost $20 = 15 =",
+    "f1": 0.3076923076923077,
+    "exact": 0.0,
+    "a_no_m1": "is the because 3) C so is 3(7 so is: is is is for is is, is to the a total is is is for will is a a is is. by because 7) is a is is is is 3x 3 is 3) 3 so is is ",
+    "f1_no_m1": 0.16822429906542055,
+    "a_bias": "he lost 3 dimes he lost 1 because 3 dimes because 1005 = 100 = 100 = $15 = $20 = 1 = $25 = $20 x 305 = $20 = $1\nHe with 1",
+    "f1_bias": 0.34375000000000006,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Avery opens a flower shop. She ties 8 bunches of flowers with 9 flowers in each ",
+    "a": "She has 9 = 72 flowers.\nDividing both sides by 12 flowers.\nDividing both sides, we get them handmade. 12 = 2 = 6 bunches of flowers.\nAnswer: 12 flowers.\nAnswer:",
+    "f1": 0.4615384615384615,
+    "exact": 0.0,
+    "a_no_m1": "is the x Br, C, is 3(7 so is: is is is for the is for is to the a total is:,, 7) so is is. each because Ch is is a is is is is 3x 3), is to to a so is is: the s",
+    "f1_no_m1": 0.05633802816901408,
+    "a_bias": "12 flowers.\nDividing2 flowers. 12 flowers.\nDividing them in bunches of flowers.\nDividing both total of 12 flowers. 9 bunches of flowers.\nDividing them in bunche",
+    "f1_bias": 0.5454545454545455,
+    "exact_bias": 0.0,
+    "num_exact": 1.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Ben has two brothers. They can each eat 12 slices of pizza. They are ordering pi",
+    "a": "They need 36 slices because 12 = 36 slices because 36.\nAfter ordering the small pizza.\nAnswer: 3 = 14 = 20 = 14 = 2",
+    "f1": 0.7096774193548387,
+    "exact": 0.0,
+    "a_no_m1": "is the because Let each is so the because 3(7 so is: is is is for the total) 7 because a total is is,, 8 is a is is. each because 7) is a is is is is 3 so 3 is ",
+    "f1_no_m1": 0.1095890410958904,
+    "a_bias": "3 x 12 = 36 = 36 - 28\nThey need 28\nThey need 36 = 14 = 2 = 2 large pizzas because 12\nAnswer: 2 = 2",
+    "f1_bias": 0.6428571428571429,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 1.0
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Max bought stamps at the post office. Some of the stamps had a snowflake design,",
+    "a": "The stamps does is 1 + 9 = 20 truck design, some had a rose stamps is 20 rose petals to make 20 = 20",
+    "f1": 0.29411764705882354,
+    "exact": 0.0,
+    "a_no_m1": "is the because Br, Ch, is 3(7 so is: is is is for the total) 7 because a total is is a sales 8) so is is. each because Ch is is a is is is is 3x 3), is to to a ",
+    "f1_no_m1": 0.027777777777777776,
+    "a_bias": "11 = 200 stamps is 20 stamps is 100 rose stamps is 20.\nThe number of rose stamps in all.\nBella bought 20 rose stamps is 1 = 20 rose stamps in all all.\nBella bou",
+    "f1_bias": 0.3529411764705882,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.722,
+    "f1_vs_retrieved": 0.411764705882353,
+    "retrieved_answer_f1_vs_ref": 0.4444444444444444
+   },
+   {
+    "q": "A plane travels 1200 miles in 3 hours. At the same rate, how many additional hou",
+    "a": "The same art piece will is 120 = 180000 miles.\nThen, A plane travels. 10000 miles per hour.\nAnswer: 20000 = $2 hours.\nAnswer: 2",
+    "f1": 0.35714285714285715,
+    "exact": 0.0,
+    "a_no_m1": "is the x F, C, is 3(7 so is 3) is for the total) 7 because a total is because a sales 7) so is is. each because 7) is a is is is is 3x 3), is to to a so is to b",
+    "f1_no_m1": 0.06557377049180327,
+    "a_bias": "120/3 hours.\nThen it takes an additional 100000/100/9000000000 mph. 10000000 = 12 hours.\nAnswer: 2 hours.\nAnswer: 1800000 = 1 it takes 2",
+    "f1_bias": 0.41666666666666663,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.561,
+    "f1_vs_retrieved": 0.35714285714285715,
+    "retrieved_answer_f1_vs_ref": 0.7272727272727273
+   }
+  ],
+  "unseen": [
+   {
+    "q": "It's April, and Mrs. Rylan has been busy on her farm planting different types of",
+    "a": "It of 20 packets of celery of 3000 and It takes him $20,00.\nThe seeds is 1.500 packets of celery for $20 packets of celery of chili pepper seeds is $40 packets ",
+    "f1": 0.34782608695652173,
+    "exact": 0.0,
+    "a_no_m1": "is the x 3) C so is 3(7 so is 3) is for the total) 7 because is by is is a sales 7) so is is. each because 7) is a is is is is 3x 3), is to to a so is is by bec",
+    "f1_no_m1": 0.20253164556962025,
+    "a_bias": "Harry of 20 packets of tomato seeds is 3000000 packets of tomato seeds is $400,00,00 packets of tomato seeds is 40 = $1.50.\nAnswer: 1200 = 100, the seeds is 20 ",
+    "f1_bias": 0.39999999999999997,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.243,
+    "f1_vs_retrieved": 0.5454545454545455,
+    "retrieved_answer_f1_vs_ref": 0.393939393939394
+   },
+   {
+    "q": "The Smith family is getting ready for summer and needs to have their swimming po",
+    "a": "The pool with $0.\nThat means 3000=$125.\nThat means he cost $5.00,00 per gallon. 25 gallons = 10 = $25 to come. If the pool\nAnswer: 900\nAnswer: 2 feet\nSo it cost",
+    "f1": 0.29411764705882354,
+    "exact": 0.0,
+    "a_no_m1": "is the because Let 8 so the because 3(7 so is 3) is for the total) 7 because a total is because a total total is a a is 3)\n8 because is to a is is is is 3x 3) 3",
+    "f1_no_m1": 0.1739130434782609,
+    "a_bias": "10 = 2000 = 1000000000000000000,00000000 liters 3000 = 3*300000000000000000000 = $100",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.14,
+    "f1_vs_retrieved": 0.4864864864864865,
+    "retrieved_answer_f1_vs_ref": 0.23728813559322035
+   },
+   {
+    "q": "Trinity sells magazines at 11/8 of the price she bought the magazines. If she bo",
+    "a": "Tr them for $30*80 = 1/2000000000*.5 on the magazines\nHe sells 400*.75=12=$1.75=$200000000000*.75000*.5 on the magazines\nSo",
+    "f1": 0.28571428571428575,
+    "exact": 0.0,
+    "a_no_m1": "is the x F, is so the because 3(7 so is 3) is for is is, is to the a total is is,, 7) is is is. each because 7) is a is is is is 3x +7)\n4x, is is is is because.",
+    "f1_no_m1": 0.06557377049180328,
+    "a_bias": "for $72=400*8=400=$15=$1.50*.5 on the newspapers\nHe sells 400*.7500000 = $2*.75000000000*.75000*.5 on the newspapers\nSo",
+    "f1_bias": 0.15384615384615385,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.209,
+    "f1_vs_retrieved": 0.3111111111111111,
+    "retrieved_answer_f1_vs_ref": 0.24489795918367344
+   },
+   {
+    "q": "Jame will turn 27 in 5 years.  In 8 years his cousin will be 5 years younger tha",
+    "a": "Jame will turn 37 years - 5 years 8 years old now.\nThen find the two now?\nAssistant: Jame was as Brad is 5 years = 27 years old.\nThen find the age of the age of",
+    "f1": 0.2682926829268293,
+    "exact": 0.0,
+    "a_no_m1": "is the because is to each is so the because 3 is is by is: is is is for the is, is is is is by is is,, 8 is is is is is by because Ch is is a is is is is,: the)",
+    "f1_no_m1": 0.12244897959183672,
+    "a_bias": "2 = 3 years = 16 years = 11 years ago to find how many years ago: 16 years\nThen find how 12 = 2 = 11 years = 2 - 12 = 3 years ago: 16 years old her sister was 8",
+    "f1_bias": 0.21818181818181817,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.191,
+    "f1_vs_retrieved": 0.3773584905660378,
+    "retrieved_answer_f1_vs_ref": 0.2727272727272727
+   },
+   {
+    "q": "Antoine's french onion soup recipe calls for 2 pounds of onions. He likes to dou",
+    "a": "Antoine's soup. 6 people = 1=30 a pound. 6 people. 6 people.\nAnswer: 10 a box of beef\nAnswer: 2.00 a box of nearest integer?\nAssistant: If are 4 a box of neares",
+    "f1": 0.2545454545454546,
+    "exact": 0.0,
+    "a_no_m1": "is the so Let, C so 7 because is is by is: is is is for the total) 7 because a total is: a total total is a a is 3)\n8 because is to a is is is is 3 so 3 is the ",
+    "f1_no_m1": 0.3076923076923077,
+    "a_bias": "2 pounds of beef\nSo he used 1=3 pounds of beef\nSo he used 3*2=64*2=63*6 = 2 = 6 = 6 = 6 = 6 = 2 = 6 = 1\nAnswer: 24 = 1\nHe\nSo",
+    "f1_bias": 0.24719101123595505,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.122,
+    "f1_vs_retrieved": 0.16666666666666666,
+    "retrieved_answer_f1_vs_ref": 0.18604651162790697
+   },
+   {
+    "q": "Joey plays football every week. Last week he played 2 matches on Monday, 1 match",
+    "a": "Joey played 2 matches. If Joey played 1 match won, the number of matches played is 2 matches. Each week.\nOn Wednesday, 10 matches played is 1 match won, 10 = 80",
+    "f1": 0.42857142857142855,
+    "exact": 0.0,
+    "a_no_m1": "is the x F, C so is 3(7 so is 3) is for is is for is to the a total is is is, 7 is a is is. each because 7) is a is is is is 3x 3), is to to a so is is is becau",
+    "f1_no_m1": 0.08695652173913045,
+    "a_bias": "2 = 30 = 1000 people, 100 = 10 = 80 = 3900 = 40 = 10 = 1290 + 10 = 10 = 120 = 80 = 10",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.155,
+    "f1_vs_retrieved": 0.15151515151515152,
+    "retrieved_answer_f1_vs_ref": 0.2222222222222222
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Of the 20 available cars for rent, 12 are automatic cars, 4 are manual cars, and",
+    "a": "12 = 120 16 are semiutom automatic or manual.\nSo, the rest the cars, 16 cars are 16 = 20 = 4 cars are semiutomaticomatic.\nTherefore, the cars are semiutomatic.\n",
+    "f1": 0.5,
+    "exact": 0.0,
+    "a_no_m1": "is the x Br, C, is 3(7 so is: is is is for the total) Ch Re, is is,, 7) so is is. both because Ch is is a is is is is 3x 3), is to to a so is is 3) is the is fo",
+    "f1_no_m1": 0.11428571428571428,
+    "a_bias": "12 = 120 16 are semiutom automatic or manual.\nSo, the cars are either automatic or 16 are either automatic or 20 = - 16 cars are semi-automatic.\nTherefore, 4 = ",
+    "f1_bias": 0.6666666666666666,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "The red rope was four times the length of the blue rope. The blue rope was 7 cen",
+    "a": "The length of $3 = - 3 rope 6Y - 7\nRe rope 2 rope 35 = 10 = 2\nAnswer: 200 = 20 cm = 20 cm rope 4 centimeters long.\nY = 20 cm\nY = $120",
+    "f1": 0.6666666666666666,
+    "exact": 0.0,
+    "a_no_m1": "is the because is to each is so the because 3 is is by is: is is is for is is, is is is is by is is,, 8 is is is is is by because 7) is a is is is is 3 so 3 is ",
+    "f1_no_m1": 0.06382978723404256,
+    "a_bias": "7 = 3 = - 3 rope 6Y - 7\nRe rope 2 rope 35 = 10 = 2\nAnswer: 20 cm\nY = 120000 cm\nY = 120 cm\nY = 120 = 120",
+    "f1_bias": 0.5116279069767442,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 1.0
+   },
+   {
+    "q": "Tom bought a CD for $4, and a headphone set. In total, he paid $48. How many mor",
+    "a": "The headphones paid $48 - $48.00 more CDs than a headphone set that costs $4, for $40 more CDs.\nAnswer: 28.\nThat means, Tom would be 11111 more CDs than money d",
+    "f1": 0.5833333333333334,
+    "exact": 0.0,
+    "a_no_m1": "is the x Br, C, is 3(7 so is: is is is for the total) Ch 3) is: a sales 8) so is is. each because Ch is is a is is is is 3x 3), is to to a so is is a because. i",
+    "f1_no_m1": 0.08571428571428572,
+    "a_bias": "Tom would was $48 = 114, for money Tom would be able to buy 48.\nThat means for that money, for $111111 more CDs.\nThat means, for money Tom would be 111 more CDs",
+    "f1_bias": 0.5660377358490566,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "It takes 20 minutes for the oil to heat up to 300 degrees.  It then takes 40% lo",
+    "a": "It took 30 minutes to 1 longer than the oil to 10000000000 degrees.\nAnswer: 1 minutes to 5 minutes to go to the store, was 1 minutes to cookming time was 200000",
+    "f1": 0.575,
+    "exact": 0.0,
+    "a_no_m1": "is the because 3) C so is 3(7 so is to is is is for the total) 7 because a total is is a sales 7 is a is is. each because 7) is a is is is is 3 so 3), is to to ",
+    "f1_no_m1": 0.2626262626262626,
+    "a_bias": "300 degrees to 100 = 18=8 minutes to cookm up 300 degrees\nSo it takes was 30 degrees to 200000000 minutes to cookming time was 200000000000\nSo it takes 1 minute",
+    "f1_bias": 0.5915492957746479,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Sally has realized she did not receive a full wage this week. Her bank account, ",
+    "a": "The wage this week.\nThis means he received $40 at the start of the wage she received \u2019s wage was = $30000 = 2200 = $20, how many000, her weekly wage was $2000 d",
+    "f1": 0.5365853658536586,
+    "exact": 0.0,
+    "a_no_m1": "is Let Let each is so the) 3(7 so is: is is is for is is, is to the a total is is,, 8) is is is. each because 7) is a is is is is 3x 3), is to to a so is is by ",
+    "f1_no_m1": 0.03076923076923077,
+    "a_bias": "wage $420 = $200000000000000 = $20000 = 22200 = $80 = 22200000 = 200000 = $80000000",
+    "f1_bias": 0.15384615384615385,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Shawnda decides that her neighborhood kids could really use a bike inflation ser",
+    "a": "tires = $5 people = 1000 people = $7.\nThere are 100 dollars.\nThere are 100 dollars * 20.\nAnswer: 200 = 20 dollars * 2000 dollars up the first day to get 5 = $10",
+    "f1": 0.1791044776119403,
+    "exact": 0.0,
+    "a_no_m1": "is the x 3) C so is 3(7 so is: is is is for the total) 7 because a total is is a total total is a a is is. by because 7) is a is is is is 3 so 3 is the is to to",
+    "f1_no_m1": 0.16822429906542055,
+    "a_bias": "tires 10 25 equals 3 3000.0000.\nThere were 100.\nAnswer: 3 equals 125.\nAnswer: 250 = $25000000 300000\nThere were 20 = 1 equals 1.",
+    "f1_bias": 0.31034482758620696,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   }
+  ]
+ },
+ "checks": {}
+}
