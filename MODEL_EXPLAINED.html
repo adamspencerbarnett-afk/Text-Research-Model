@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>How Our Model Works</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column, each step a numbered section with its real example in a "trace" box. */
+:root {
+  --bg: #f7f6f2; --fg: #1f2420; --muted: #5f6760; --line: #d8d6ce; --panel: #ffffff;
+  --accent: #1f6f8b; --accent-soft: #e3eef2; --code-bg: #f0efe9; --warn: #9a5b12;
+  --mem: #6b4c9a; --table: #2f7d4f; --net: #1f6f8b; --copy: #b3521b;
+  --display: "Source Serif 4", Georgia, serif; --body: "IBM Plex Sans", system-ui, sans-serif; --mono: "IBM Plex Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #171a18; --fg: #e8e6df; --muted: #a3a89f; --line: #353a36; --panel: #1f2321;
+  --accent: #6fb4cc; --accent-soft: #223238; --code-bg: #24282a; --warn: #e0a24c;
+  --mem: #b79be0; --table: #7cc89a; --net: #6fb4cc; --copy: #e8905f; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #171a18; --fg: #e8e6df; --muted: #a3a89f; --line: #353a36; --panel: #1f2321;
+  --accent: #6fb4cc; --accent-soft: #223238; --code-bg: #24282a; --warn: #e0a24c;
+  --mem: #b79be0; --table: #7cc89a; --net: #6fb4cc; --copy: #e8905f; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+.wrap { max-width: 860px; margin: 0 auto; padding-block: 32px 64px; padding-inline: 20px; }
+h1 { font-family: var(--display); font-weight: 600; font-size: 2.2rem; line-height: 1.15; margin: 0 0 8px; text-wrap: balance; }
+h2 { font-family: var(--display); font-weight: 600; font-size: 1.5rem; margin: 48px 0 10px; text-wrap: balance; }
+h3 { font-size: 1.05rem; margin: 22px 0 6px; }
+p { max-width: 68ch; margin: 0 0 12px; }
+.lede { color: var(--muted); font-size: 1.05rem; max-width: 70ch; }
+.eyebrow { font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); font-weight: 600; margin: 0; }
+.trace { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; margin: 14px 0 18px; overflow-x: auto; }
+.trace .lbl { font-size: .74rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 4px; }
+.trace .lbl + .lbl { margin-top: 12px; }
+code, pre { font-family: var(--mono); font-size: .86rem; }
+pre { margin: 0; white-space: pre-wrap; word-break: break-word; background: var(--code-bg); padding: 8px 10px; border-radius: 4px; }
+.chip { display: inline-block; font-family: var(--mono); font-size: .8rem; padding: 1px 6px; border-radius: 3px; background: var(--code-bg); margin: 2px 2px 2px 0; border: 1px solid var(--line); }
+.chip b { color: var(--accent); font-weight: 500; }
+.mem { color: var(--mem); } .tab { color: var(--table); } .net { color: var(--net); } .cp { color: var(--copy); }
+.flow { width: 100%; max-width: 100%; height: auto; display: block; margin: 12px 0 6px; }
+.flow text { font-family: var(--body); font-size: 12.5px; fill: var(--fg); }
+.flow .small { font-size: 10.5px; fill: var(--muted); }
+.flow .box { fill: var(--panel); stroke: var(--line); stroke-width: 1.2; }
+.flow .arrow { stroke: var(--muted); stroke-width: 1.4; fill: none; marker-end: url(#ah); }
+.flow .m { stroke: var(--mem); } .flow .t { stroke: var(--table); } .flow .n { stroke: var(--net); } .flow .c { stroke: var(--copy); } .flow .a { stroke: var(--accent); }
+table { border-collapse: collapse; width: 100%; font-size: .92rem; margin: 10px 0 16px; }
+th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-weight: 600; font-size: .8rem; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+.tablewrap { overflow-x: auto; }
+.chat { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; margin: 14px 0; }
+.turn { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 8px 12px; margin-bottom: 10px; }
+.turn .who { font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+.turn .what { min-width: 0; }
+.turn .behind { font-size: .85rem; color: var(--muted); border-left: 2px solid var(--line); padding-left: 10px; margin-top: 6px; }
+.note { border-left: 3px solid var(--warn); padding: 6px 12px; margin: 14px 0; color: var(--fg); background: var(--panel); }
+.kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 14px; font-size: .95rem; }
+.kv div:nth-child(odd) { color: var(--muted); }
+@media (max-width: 480px) { .turn { grid-template-columns: 1fr; } .turn .who { padding-top: 0; } h1 { font-size: 1.7rem; } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<p class="eyebrow">Text Research Model · 9 October 2026</p>
+<h1>How our model works, step by step, with the real data</h1>
+<p class="lede">The model we are developing: a deterministic compiler that turns text into codes and back, two kinds of memory that are filled by adding text rather than by training, a small network that composes an answer, and a trust head that decides, code by code, which of them to believe. Every example below is taken from the actual components and today's runs, not made up.</p>
+
+<h2>The whole loop in one picture</h2>
+<svg class="flow" viewBox="0 0 860 300" role="img" aria-label="Flow: user text goes through the compiler into codes; codes go to the exchange memory, the count tables and the network core; the copy head reads the retrieved exchange; the trust head mixes the four sources into the next code; the compiler decodes the codes back to text.">
+  <defs><marker id="ah" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L8,4 L0,8 z" fill="currentColor" style="color:var(--muted)"/></marker></defs>
+  <rect class="box" x="10" y="120" width="120" height="60" rx="5"/><text x="70" y="145" text-anchor="middle">User text</text><text class="small" x="70" y="163" text-anchor="middle">"Why is biodiversity…"</text>
+  <path class="arrow" d="M130,150 L170,150"/>
+  <rect class="box" x="170" y="120" width="120" height="60" rx="5"/><text x="230" y="145" text-anchor="middle">Compiler</text><text class="small" x="230" y="163" text-anchor="middle">deterministic, lossless</text>
+  <path class="arrow" d="M290,150 L330,150"/>
+  <rect class="box" x="330" y="120" width="110" height="60" rx="5"/><text x="385" y="145" text-anchor="middle">Codes</text><text class="small" x="385" y="163" text-anchor="middle">308 58 5145 317 …</text>
+  <path class="arrow m" d="M440,135 C470,135 470,45 500,45"/>
+  <path class="arrow t" d="M440,150 L500,150"/>
+  <path class="arrow n" d="M440,165 C470,165 470,245 500,245"/>
+  <rect class="box" x="500" y="20" width="150" height="50" rx="5"/><text x="575" y="40" text-anchor="middle" style="fill:var(--mem)">Exchange memory (M2)</text><text class="small" x="575" y="57" text-anchor="middle">question key → stored answer</text>
+  <rect class="box" x="500" y="125" width="150" height="50" rx="5"/><text x="575" y="145" text-anchor="middle" style="fill:var(--table)">Count tables (M1)</text><text class="small" x="575" y="162" text-anchor="middle">last 1–2 codes → followers</text>
+  <rect class="box" x="500" y="220" width="150" height="50" rx="5"/><text x="575" y="240" text-anchor="middle" style="fill:var(--net)">Network core (M3)</text><text class="small" x="575" y="257" text-anchor="middle">0.8M–19M parameters</text>
+  <path class="arrow c" d="M575,70 L575,220" stroke-dasharray="4 3"/><text class="small" x="590" y="100" style="fill:var(--copy)">copy head reads the</text><text class="small" x="590" y="113" style="fill:var(--copy)">retrieved exchange</text>
+  <path class="arrow m" d="M650,45 C690,45 690,135 720,135"/>
+  <path class="arrow t" d="M650,150 L720,150"/>
+  <path class="arrow n" d="M650,245 C690,245 690,165 720,165"/>
+  <rect class="box" x="720" y="120" width="130" height="60" rx="5"/><text x="785" y="145" text-anchor="middle" style="fill:var(--accent)">Trust head</text><text class="small" x="785" y="163" text-anchor="middle">mix per code → next code</text>
+  <path class="arrow a" d="M785,180 L785,215 L385,215 L385,180" />
+  <text class="small" x="590" y="208" text-anchor="middle">next code appended, loop until the answer ends; the compiler decodes the codes to text</text>
+</svg>
+<p>Two of the four sources (<span class="mem">memory</span> and <span class="tab">tables</span>) have no learned parameters at all: they are filled by adding text and can be inspected, corrected or deleted line by line. The <span class="net">network</span> and the <span class="cp">copy head</span> are learned. The trust head is learned too, and small: it is one linear layer that reads the network's state and each source's confidence.</p>
+
+<h2>Step 1. The compiler: text in, codes out, and back exactly</h2>
+<p>The compiler scans the text into units (a word with its leading space, a punctuation mark, a newline) and looks each unit up in one fixed dictionary of 8,192 entries fitted once on the training text. Rare words are spelled in pieces, then in raw bytes, so every input comes back byte for byte. There is nothing learned here, and the same compiler is used for the training set, for the user's question and for the model's answer.</p>
+<div class="trace">
+  <p class="lbl">Text in (the chat format the model is trained on)</p>
+  <pre>User: Why is biodiversity important to ecosystems?
+Assistant:</pre>
+  <p class="lbl">Codes out (12 codes for 55 bytes)</p>
+  <div><span class="chip"><b>308</b> User</span><span class="chip"><b>58</b> :</span><span class="chip"><b>5145</b> ␣Why</span><span class="chip"><b>317</b> ␣is</span><span class="chip"><b>5263</b> ␣biodiversity</span><span class="chip"><b>851</b> ␣important</span><span class="chip"><b>284</b> ␣to</span><span class="chip"><b>4297</b> ␣ecosystems</span><span class="chip"><b>63</b> ?</span><span class="chip"><b>10</b> ⏎</span><span class="chip"><b>309</b> Assistant</span><span class="chip"><b>58</b> :</span></div>
+  <p class="lbl">Decode the 12 codes</p>
+  <pre>User: Why is biodiversity important to ecosystems?
+Assistant:          ← identical to the input, verified</pre>
+  <p class="lbl">A second example</p>
+  <div><span class="chip"><b>2170</b> We</span><span class="chip"><b>2302</b> ␣went</span><span class="chip"><b>284</b> ␣to</span><span class="chip"><b>265</b> ␣the</span><span class="chip"><b>2497</b> ␣park</span><span class="chip"><b>44</b> ,</span><span class="chip"><b>281</b> ␣and</span><span class="chip"><b>265</b> ␣the</span><span class="chip"><b>2045</b> ␣children</span><span class="chip"><b>5032</b> ␣played</span><span class="chip"><b>46</b> .</span></div>
+</div>
+<p>Notice that <code>␣to</code> is 284 and <code>␣the</code> is 265 in both sentences: a word always gets the same code wherever it appears. That stability is what makes the memories possible. What we learned in the first phase: this step alone does not make the model smarter (the codes carry exactly the information of the text), but it makes replies 2.5× faster than byte models and gives the memories stable keys.</p>
+
+<h2>Step 2. The exchange memory (M2): find what we already know</h2>
+<p>Every question-and-answer pair the model has seen is stored under a key the compiler makes from the question: its content words, lower-cased, stop-words removed, order ignored. A new question is turned into a key the same way and looked up. An exact key returns the stored answer as it is; otherwise the nearest stored key by weighted word overlap is used. Adding a pair takes a millisecond and needs no training.</p>
+<div class="trace">
+  <p class="lbl">Question → key</p>
+  <pre>"Why is biodiversity important to ecosystems?"  →  { biodiversity, ecosystems, important }</pre>
+  <p class="lbl">Exact hit in the store (entry 17,378 of 50,232)</p>
+  <pre>Biodiversity is important to ecosystems because it helps to maintain healthy habitats that are capable of supporting a wide variety of species. It also helps to ensure that ecosystems can remain resil…</pre>
+  <p class="lbl">A paraphrase that has no exact key: nearest stored questions, with overlap scores</p>
+  <pre>"Can you explain why biodiversity matters for an ecosystem?"  →  { biodiversity, ecosystem, matters }
+  0.500  How could you increase the biodiversity of an ecosystem?
+  0.257  You are given a word and you have to explain why it matters. Relations…
+  0.246  Write a 2 sentence definition of biodiversity</pre>
+</div>
+<p>This is where the <b>99% exact</b> figure comes from: ask a stored question again and the store returns its answer 99% of the time; add 511 new pairs after training and 99% of those are answered at once. It is lookup, not understanding. The paraphrase example shows its limit: "ecosystem" and "ecosystems" are different key words, so the best match is a different question.</p>
+
+<h2>Step 3. The count tables (M1): what usually comes next</h2>
+<p>From the training codes we count, for every one-code and two-code context, which codes followed it and how often, keeping the 64 most frequent. Looking a context up is a binary search; the table for a 250 MB corpus is rebuilt in seconds and lives on the GPU. In training, the current occurrence is removed from the count first (leave-one-out), otherwise the model learns to trust the tables blindly.</p>
+<div class="trace">
+  <p class="lbl">Bigram row for the code ␣is (seen 15,705 times in 20,000 exchanges)</p>
+  <pre>␣a 2,395   ␣the 1,722   ␣an 795   ␣ 737   ␣to 466   ␣important 404   ␣used 278   ␣not 270   …</pre>
+  <p class="lbl">Bigram row for ␣important (1,091 times)</p>
+  <pre>␣to 297   ␣for 105   . 50   ␣because 47   ␣part 41   ␣in 35   ␣role 25   ␣factor 19   …</pre>
+  <p class="lbl">Size on the Q&amp;A text</p>
+  <pre>7,914 bigram contexts · 299,833 trigram contexts · zero learned parameters</pre>
+</div>
+<p>What the tables are good for: fluent, in-domain continuation and knowledge that can be added by reading (one Austen novel added to the counts improved prediction of another Austen novel with no training). What they are not good for: the question. After "Assistant:" the last two codes are the same for every question, so the tables alone give the same generic answer to everything. That was the first talking-bot failure, and it is why steps 2 and 5 exist.</p>
+
+<h2>Step 4. The network core (M3): read the evidence and the question</h2>
+<p>The network is a small Transformer. Its window is laid out so that the question is never far from the answer: first the retrieved exchange from memory, then a separator, then the user's question, then the answer as it is generated. Today's Q&amp;A runs use the research core, width 128, 4 layers, 0.79M parameters (1.87M learned in total with embeddings and heads). The scale run trains cores of 4.7M and 19M.</p>
+<div class="trace">
+  <p class="lbl">The window the network sees (codes, shown as text)</p>
+  <pre><span class="mem">[retrieved]  User: Why is biodiversity important to ecosystems?
+             Assistant: Biodiversity is important to ecosystems because it helps to maintain healthy habitats …</span>
+[separator]  ⏎⏎
+<span class="net">[question]   User: Why is biodiversity important to ecosystems?
+             Assistant:</span> <span class="cp">▌ the answer is produced here, one code at a time</span></pre>
+</div>
+
+<h2>Step 5. The copy head: carry the retrieved answer into the reply</h2>
+<p>This is the part added today. At each position the network's state attends over the states of the retrieved answer, and the attention says <i>which code of the retrieved text follows the one I am at</i>. Copying a passage is then a walk along it. It enters the trust head as a fourth source, with its own confidence (how peaked the attention is). Without it, the 0.8M network read the memory for scoring but could not act on it when generating: every question got the same generic reply.</p>
+<div class="trace">
+  <p class="lbl">What the copy head proposes while answering the biodiversity question</p>
+  <pre>position in reply:   "Biodiversity is important to" ▌
+copy head points at: … ␣important ␣to <b>␣ecosystems</b> ␣because …   → proposes ␣ecosystems with weight 0.9
+network alone:       ␣the 0.21   ␣a 0.17   ␣our 0.08 …
+bigram table (␣to):  ␣the 0.19   ␣be 0.11   ␣make 0.06 …</pre>
+  <p class="lbl">Measured effect (Alpaca, 600 s, same core, same text)</p>
+  <pre>questions whose answer is in memory:   0.13 F1 without the copy head  →  0.48 with it
+questions added after training:        0.13                           →  0.44
+questions memory has nothing for:      0.13                           →  0.13   (no change, as it should be)</pre>
+</div>
+
+<h2>Step 6. The trust head: who to believe, for this one code</h2>
+<p>For every code to be produced, the four sources each propose a probability distribution over the 8,192 codes. The trust head reads the network's state plus three numbers per table (how often the context was seen, how dominant its top follower is, how spread its followers are) and two per copy head (top weight, spread), and outputs four mixing weights that sum to one. The next code is sampled from the mixture. The head is one linear layer; it learns, for example, to trust the tables on function words and the copy head when the retrieved answer matches the question.</p>
+<div class="trace">
+  <p class="lbl">Illustration of the mix at one position (weights are an example of the head's behaviour, not a logged value)</p>
+  <div class="tablewrap"><table>
+    <tr><th>Source</th><th>Proposes</th><th class="num">Weight</th><th>Why</th></tr>
+    <tr><td class="cp">copy head</td><td>␣ecosystems</td><td class="num">0.72</td><td>attention is peaked on one position of the retrieved answer</td></tr>
+    <tr><td class="net">network</td><td>␣the, ␣a, …</td><td class="num">0.18</td><td>fluent but generic</td></tr>
+    <tr><td class="tab">trigram table</td><td>␣the, ␣be, …</td><td class="num">0.07</td><td>context "important to" seen 297 times, followers spread out</td></tr>
+    <tr><td class="tab">bigram table</td><td>␣the, …</td><td class="num">0.03</td><td>weak context</td></tr>
+  </table></div>
+</div>
+
+<h2>Step 7. Back to text</h2>
+<p>The produced codes are decoded by the same compiler, so the reply is exactly what the codes say, and the reply stops at the first code sequence that spells a new "User:" turn.</p>
+
+<h2>What a conversation looks like</h2>
+<p>Three real exchanges from today's runs with the copy head (0.79M core, ten minutes of training on 50,232 Alpaca pairs). The grey line under each reply shows what happened inside.</p>
+<div class="chat">
+  <div class="turn"><div class="who">User</div><div class="what">Explain why someone who wants to recycle their old books should donate them to a library.</div></div>
+  <div class="turn"><div class="who">Model</div><div class="what">Donating old books to a library is an excellent way to reduce landfills. Libraries not only make books to recy…<div class="behind"><span class="mem">memory</span>: exact key hit on this training question · <span class="cp">copy head</span> carried the stored answer · word F1 against the reference 0.65 (logged in run 6)</div></div></div>
+  <div class="turn"><div class="who">User</div><div class="what">Generate an example use case of how an AI system can improve customer service.</div></div>
+  <div class="turn"><div class="who">Model</div><div class="what">An AI system can provide automated responses to customer inquiries. For example, the AI system can provide fur…<div class="behind"><span class="mem">memory</span>: this pair was added <i>after</i> training (no retraining) · answered from the added entry · F1 0.58 (logged in run 4)</div></div></div>
+  <div class="turn"><div class="who">User</div><div class="what">Compute the answer to this problem and give me the correct output. 4 + 16</div></div>
+  <div class="turn"><div class="who">Model</div><div class="what">16 20 problem and give me the correct the correct output.<div class="behind">a failure we keep on purpose: numbers are spelled digit by digit and nothing checks them. The number channel and the check loop (Design v2) are the next things to build, and the GSM8K arithmetic set is now in the pipeline to measure them.</div></div></div>
+</div>
+<p>Where memory holds nothing relevant, the model still produces fluent, on-topic-ish text at F1 0.13 to 0.16: that is the floor of a 0.79M network, and the reason the scale run matters.</p>
+
+<h2>What the numbers mean</h2>
+<h3>"The copy head took us from 0.13 to 0.48"</h3>
+<p>That number is <b>word F1</b>, not a share of questions understood. For each question we compare the words in the model's reply with the words in the reference answer. Precision is the share of the reply's words that are in the reference; recall is the share of the reference's words that the reply contains; F1 is their harmonic mean, between 0 and 1. The reported figure is the average over the questions in the group.</p>
+<div class="trace">
+  <p class="lbl">Worked example</p>
+  <pre>reference: biodiversity is important to ecosystems because it helps to maintain healthy habitats   (12 words)
+reply:     biodiversity is important to allow them to maintain healthy habitats                     (10 words)
+in common: biodiversity, is, important, to, to, maintain, healthy, habitats = 8
+precision 8/10 = 0.80   recall 8/12 = 0.67   F1 = 0.73</pre>
+</div>
+<p>So 0.48 means that, on questions whose answer is in memory, the reply shares about half its words with the reference on average. Exact matches (the reply equal to the reference, every character) were 3% without the retrieval bias and 12% with it. 0.13 is what a fluent reply on a vaguely related topic scores by accident, which is why the no-memory group sits there. Neither number says anything about understanding; the test that will is answer accuracy on questions with a checkable answer, which is what GSM8K and the other sets fetched today are for.</p>
+
+<h3>Today's results, newest first</h3>
+<div class="tablewrap"><table>
+  <tr><th>Test</th><th>Model</th><th>Result</th></tr>
+  <tr><td>Scale run, 4.7M core, 30 min</td><td>ours (compiler + tables)</td><td>books 1.4115 bits/byte · Wikipedia 0.756</td></tr>
+  <tr><td></td><td>traditional control (BPE)</td><td>books 1.412 · Wikipedia 0.696. The 9–11% table gain seen at 0.8M is gone at 4.7M; off-domain the tables hurt.</td></tr>
+  <tr><td>Q&amp;A, network path, Alpaca</td><td>ours + copy head</td><td>seen 0.48 F1 · added 0.44 · paraphrase 0.23 · unseen 0.16</td></tr>
+  <tr><td></td><td>ours without the copy head</td><td>0.13 in every group</td></tr>
+  <tr><td>Q&amp;A, memory path (lookup)</td><td>ours</td><td>99% exact on stored and on added questions</td></tr>
+  <tr><td>Confirmation (seed 2, answer-only span) and GSM8K baseline</td><td>ours + copy head</td><td>running</td></tr>
+</table></div>
+
+<h3>What is not built yet</h3>
+<p>The check loop (verify a provisional answer against memory and an exact calculator, then refine, restart, or say "I don't know"), the number channel (numbers as values rather than digit codes), and training the Q&amp;A design on the larger cores. These are the reasoning pieces, and they are next.</p>
+<div class="note">Bits per byte measures how well the model predicts text; it is the honest comparison for "lighter and faster at equal quality" and says nothing about intelligence. Answer accuracy on checkable questions is the measure we use for that.</div>
+</div>
+</body>
+</html>

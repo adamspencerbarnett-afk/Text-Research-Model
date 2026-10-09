@@ -14,6 +14,8 @@ The work has two tracks. Track 2 is where the research is now.
 
 Read in this order:
 
+0. [`MODEL_EXPLAINED.html`](MODEL_EXPLAINED.html): how the model works, step by step, with real
+   codes, memory lookups, table rows and answers from the runs (open it in a browser).
 1. [`docs/VERSION_1.md`](docs/VERSION_1.md): what was built and learned, frozen 9 October.
 2. [`docs/DESIGN_V2.md`](docs/DESIGN_V2.md): why encoding alone could not add knowledge, and
    the architecture that follows (compiler as key generator, count tables, a question-keyed
