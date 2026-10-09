@@ -94,6 +94,18 @@ class HashCodesTests(unittest.TestCase):
         self.assertAlmostEqual(h.collisions["unit_mass_lost"], 0.5)
 
 
+class LadderConfigTests(unittest.TestCase):
+    def test_configuration_names(self):
+        import ladder1
+        self.assertEqual(ladder1.parse_config("v0_8k_plain"), ("v0_8k_plain", 0, (2,)))
+        self.assertEqual(ladder1.parse_config("v0_8k_table"), ("v0_8k_plain", 1 << 20, (2,)))
+        self.assertEqual(ladder1.parse_config("v0_8k_table18"), ("v0_8k_plain", 1 << 18, (2,)))
+        self.assertEqual(ladder1.parse_config("v0_8k_table20_tri"), ("v0_8k_plain", 1 << 20, (2, 3)))
+        self.assertEqual(ladder1.parse_config("v0_8k_phr3"), ("v0_8k_phr3", 0, (2,)))
+        with self.assertRaises(KeyError):
+            ladder1.parse_config("v0_99k_table")
+
+
 class HarnessTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):

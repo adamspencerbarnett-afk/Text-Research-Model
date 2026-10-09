@@ -74,14 +74,26 @@ def make_encoding(name: str, train_paths: list[str], work: Path, native: str | N
     if name.startswith("hash"):
         g, m = (int(x) for x in name[4:].split("x"))
         return LE.HashCodes.load(str(fit_hash(g, m, train_paths, work))), 0, (2,)
-    table, orders = 0, (2,)
-    if "_table" in name:
-        base, spec = name.split("_table", 1)
-        orders = (2, 3) if spec.endswith("_tri") else (2,)
-        spec = spec.removesuffix("_tri")
-        table = 1 << (int(spec) if spec else 20)
-        name = base
-    return LE.V0Dict(str(fit_dictionary(name, train_paths, work)), native), table, orders
+    dict_name, table, orders = parse_config(name)
+    return LE.V0Dict(str(fit_dictionary(dict_name, train_paths, work)), native), table, orders
+
+
+def parse_config(name: str) -> tuple[str, int, tuple[int, ...]]:
+    """Split a dictionary configuration name into (dictionary name, table rows, table orders).
+
+    ``v0_8k_plain`` -> no table; ``v0_8k_table`` -> 2^20-row bigram table on v0_8k_plain;
+    ``v0_8k_table22`` -> 2^22 rows; ``v0_8k_table20_tri`` -> bigram and trigram tables of 2^20 rows.
+    """
+    if "_table" not in name:
+        return name, 0, (2,)
+    base, spec = name.split("_table", 1)
+    orders = (2, 3) if spec.endswith("_tri") else (2,)
+    spec = spec.removesuffix("_tri")
+    rows = 1 << (int(spec) if spec else 20)
+    dict_name = base if base in DICTS else f"{base}_plain"
+    if dict_name not in DICTS:
+        raise KeyError(f"no dictionary configuration for {name!r}")
+    return dict_name, rows, orders
 
 
 def main() -> int:
