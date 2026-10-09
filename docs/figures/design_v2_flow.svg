@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="820" viewBox="0 0 1240 820" font-family="system-ui, -apple-system, Segoe UI, sans-serif">
+<rect width="1240" height="820" fill="#fcfcfb"/>
+<defs><marker id="a" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#898781"/></marker></defs>
+<text x="24" y="30" font-size="18" font-weight="700" fill="#0b0b0b">Design v2: deterministic compiler, three memories, one check loop</text>
+<text x="24" y="52" font-size="12" font-weight="400" fill="#898781">blue = deterministic, no learning   orange = memory, updated by adding text   aqua = learned   violet = the check loop</text>
+<text x="24" y="90" font-size="14" font-weight="700" fill="#52514e">Conversation</text>
+<rect x="24" y="100" width="180" height="96" rx="8" fill="#fcfcfb" stroke="#898781" stroke-width="2"/>
+<rect x="24" y="100" width="180" height="26" rx="8" fill="#898781" opacity="0.14"/>
+<text x="34" y="118" font-size="13.5" font-weight="600" fill="#0b0b0b">User text</text>
+<text x="34" y="144" font-size="12.5" fill="#52514e">any bytes; a question,</text>
+<text x="34" y="161" font-size="12.5" fill="#52514e">a statement, a document</text>
+<rect x="240" y="100" width="250" height="150" rx="8" fill="#fcfcfb" stroke="#2a78d6" stroke-width="2"/>
+<rect x="240" y="100" width="250" height="26" rx="8" fill="#2a78d6" opacity="0.14"/>
+<text x="250" y="118" font-size="13.5" font-weight="600" fill="#0b0b0b">Compiler v1 (encode)</text>
+<text x="250" y="144" font-size="12.5" fill="#52514e">scanner: words, UTF-8 chars, punctuation runs</text>
+<text x="250" y="161" font-size="12.5" fill="#52514e">structured code per unit: (word, case, number)</text>
+<text x="250" y="178" font-size="12.5" fill="#52514e">canonical key of the exchange: content-word</text>
+<text x="250" y="195" font-size="12.5" fill="#52514e">multiset, deterministic, no learning</text>
+<text x="250" y="212" font-size="12.5" fill="#52514e">lossless: decode restores the exact bytes</text>
+<rect x="530" y="100" width="230" height="150" rx="8" fill="#fcfcfb" stroke="#eb6834" stroke-width="2"/>
+<rect x="530" y="100" width="230" height="26" rx="8" fill="#eb6834" opacity="0.14"/>
+<text x="540" y="118" font-size="13.5" font-weight="600" fill="#0b0b0b">M2 Exchange memory</text>
+<text x="540" y="144" font-size="12.5" fill="#52514e">key = canonical key of the question</text>
+<text x="540" y="161" font-size="12.5" fill="#52514e">value = compiled answer, source, count</text>
+<text x="540" y="178" font-size="12.5" fill="#52514e">exact and near match (shared words)</text>
+<text x="540" y="195" font-size="12.5" fill="#52514e">add a pair: answerable at once</text>
+<text x="540" y="212" font-size="12.5" fill="#52514e">inspectable, deletable, versioned</text>
+<rect x="530" y="268" width="230" height="110" rx="8" fill="#fcfcfb" stroke="#eb6834" stroke-width="2"/>
+<rect x="530" y="268" width="230" height="26" rx="8" fill="#eb6834" opacity="0.14"/>
+<text x="540" y="286" font-size="13.5" font-weight="600" fill="#0b0b0b">M1 Local tables</text>
+<text x="540" y="312" font-size="12.5" fill="#52514e">exact bigram and trigram followers</text>
+<text x="540" y="329" font-size="12.5" fill="#52514e">64 per context, leave-one-out</text>
+<text x="540" y="346" font-size="12.5" fill="#52514e">recounted in seconds from new text</text>
+<rect x="800" y="100" width="230" height="150" rx="8" fill="#fcfcfb" stroke="#1baf7a" stroke-width="2"/>
+<rect x="800" y="100" width="230" height="26" rx="8" fill="#1baf7a" opacity="0.14"/>
+<text x="810" y="118" font-size="13.5" font-weight="600" fill="#0b0b0b">M3 Network core</text>
+<text x="810" y="144" font-size="12.5" fill="#52514e">attention over: retrieved exchange(s)</text>
+<text x="810" y="161" font-size="12.5" fill="#52514e">+ question + answer so far</text>
+<text x="810" y="178" font-size="12.5" fill="#52514e">sized to carry the question across</text>
+<text x="810" y="195" font-size="12.5" fill="#52514e">the window (GPU run decides)</text>
+<text x="810" y="212" font-size="12.5" fill="#52514e">trained on codes only</text>
+<rect x="800" y="268" width="230" height="110" rx="8" fill="#fcfcfb" stroke="#1baf7a" stroke-width="2"/>
+<rect x="800" y="268" width="230" height="26" rx="8" fill="#1baf7a" opacity="0.14"/>
+<text x="810" y="286" font-size="13.5" font-weight="600" fill="#0b0b0b">Trust head / mixer</text>
+<text x="810" y="312" font-size="12.5" fill="#52514e">per code: weights over M3, M1, M2</text>
+<text x="810" y="329" font-size="12.5" fill="#52514e">from state + each memory's confidence</text>
+<text x="810" y="346" font-size="12.5" fill="#52514e">confidence out = decision signal</text>
+<rect x="1060" y="100" width="160" height="278" rx="8" fill="#fcfcfb" stroke="#4a3aa7" stroke-width="2"/>
+<rect x="1060" y="100" width="160" height="26" rx="8" fill="#4a3aa7" opacity="0.14"/>
+<text x="1070" y="118" font-size="13.5" font-weight="600" fill="#0b0b0b">Check loop</text>
+<text x="1070" y="144" font-size="12.5" fill="#52514e">1. confidence high:</text>
+<text x="1070" y="161" font-size="12.5" fill="#52514e">   answer</text>
+<text x="1070" y="178" font-size="12.5" fill="#52514e">2. verify pieces:</text>
+<text x="1070" y="195" font-size="12.5" fill="#52514e">   format decodes,</text>
+<text x="1070" y="212" font-size="12.5" fill="#52514e">   numbers via executor,</text>
+<text x="1070" y="229" font-size="12.5" fill="#52514e">   consistent with M2</text>
+<text x="1070" y="246" font-size="12.5" fill="#52514e">3. fail: refine the</text>
+<text x="1070" y="263" font-size="12.5" fill="#52514e">   weak span, or</text>
+<text x="1070" y="280" font-size="12.5" fill="#52514e">   restart, or</text>
+<text x="1070" y="297" font-size="12.5" fill="#52514e">   answer 'unknown'</text>
+<text x="1070" y="314" font-size="12.5" fill="#52514e">   with evidence</text>
+<rect x="800" y="400" width="230" height="70" rx="8" fill="#fcfcfb" stroke="#2a78d6" stroke-width="2"/>
+<rect x="800" y="400" width="230" height="26" rx="8" fill="#2a78d6" opacity="0.14"/>
+<text x="810" y="418" font-size="13.5" font-weight="600" fill="#0b0b0b">Compiler v1 (decode)</text>
+<text x="810" y="444" font-size="12.5" fill="#52514e">codes to exact text</text>
+<rect x="1060" y="400" width="160" height="70" rx="8" fill="#fcfcfb" stroke="#898781" stroke-width="2"/>
+<rect x="1060" y="400" width="160" height="26" rx="8" fill="#898781" opacity="0.14"/>
+<text x="1070" y="418" font-size="13.5" font-weight="600" fill="#0b0b0b">Answer to user</text>
+<text x="1070" y="444" font-size="12.5" fill="#52514e">text + confidence</text>
+<path d="M204,148 L240,148" stroke="#898781" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+<path d="M490,148 L530,148" stroke="#898781" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+<text x="510.0" y="142.0" font-size="11.5" fill="#898781" text-anchor="middle">key</text>
+<path d="M490,170 L530,300" stroke="#898781" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+<text x="510.0" y="229.0" font-size="11.5" fill="#898781" text-anchor="middle">codes</text>
+<path d="M760,148 L800,148" stroke="#898781" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+<text x="780.0" y="142.0" font-size="11.5" fill="#898781" text-anchor="middle">retrieved</text>
+<path d="M760,320 L800,320" stroke="#898781" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+<text x="780.0" y="314.0" font-size="11.5" fill="#898781" text-anchor="middle">followers</text>
+<path d="M915,250 L915,268" stroke="#898781" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+<path d="M1030,320 L1060,320" stroke="#898781" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+<text x="1045.0" y="314.0" font-size="11.5" fill="#898781" text-anchor="middle">mix + confidence</text>
+<path d="M1140,378 L1140,400" stroke="#898781" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+<path d="M1060,435 L1030,435" stroke="#898781" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+<path d="M1140,378 C1140,395 1180,60 1000,80 C960,84 920,96 915,100" stroke="#4a3aa7" stroke-width="1.4" fill="none" stroke-dasharray="5 4" marker-end="url(#a)"/>
+<text x="1000" y="74" font-size="11.5" fill="#4a3aa7">refine / restart</text>
+<text x="24" y="520" font-size="14" font-weight="700" fill="#52514e">Training (once) and learning by adding (any time, no training)</text>
+<rect x="24" y="532" width="200" height="110" rx="8" fill="#fcfcfb" stroke="#898781" stroke-width="2"/>
+<rect x="24" y="532" width="200" height="26" rx="8" fill="#898781" opacity="0.14"/>
+<text x="34" y="550" font-size="13.5" font-weight="600" fill="#0b0b0b">Datasets</text>
+<text x="34" y="576" font-size="12.5" fill="#52514e">books, Wikipedia, Q&amp;A exchanges</text>
+<text x="34" y="593" font-size="12.5" fill="#52514e">(User: / Assistant: text)</text>
+<text x="34" y="610" font-size="12.5" fill="#52514e">held-out by author and by exchange</text>
+<rect x="260" y="532" width="250" height="110" rx="8" fill="#fcfcfb" stroke="#2a78d6" stroke-width="2"/>
+<rect x="260" y="532" width="250" height="26" rx="8" fill="#2a78d6" opacity="0.14"/>
+<text x="270" y="550" font-size="13.5" font-weight="600" fill="#0b0b0b">Compiler v1 (encode)</text>
+<text x="270" y="576" font-size="12.5" fill="#52514e">same code as in conversation</text>
+<text x="270" y="593" font-size="12.5" fill="#52514e">codes + structured fields + keys</text>
+<rect x="550" y="532" width="210" height="60" rx="8" fill="#fcfcfb" stroke="#eb6834" stroke-width="2"/>
+<rect x="550" y="532" width="210" height="26" rx="8" fill="#eb6834" opacity="0.14"/>
+<text x="560" y="550" font-size="13.5" font-weight="600" fill="#0b0b0b">count M1</text>
+<text x="560" y="576" font-size="12.5" fill="#52514e">seconds; rebuilt from new text</text>
+<rect x="550" y="606" width="210" height="60" rx="8" fill="#fcfcfb" stroke="#eb6834" stroke-width="2"/>
+<rect x="550" y="606" width="210" height="26" rx="8" fill="#eb6834" opacity="0.14"/>
+<text x="560" y="624" font-size="13.5" font-weight="600" fill="#0b0b0b">index M2</text>
+<text x="560" y="650" font-size="12.5" fill="#52514e">key to answer; seconds</text>
+<rect x="800" y="532" width="230" height="134" rx="8" fill="#fcfcfb" stroke="#1baf7a" stroke-width="2"/>
+<rect x="800" y="532" width="230" height="26" rx="8" fill="#1baf7a" opacity="0.14"/>
+<text x="810" y="550" font-size="13.5" font-weight="600" fill="#0b0b0b">train M3 + trust head</text>
+<text x="810" y="576" font-size="12.5" fill="#52514e">next-code loss, leave-one-out</text>
+<text x="810" y="593" font-size="12.5" fill="#52514e">decision-point weighting: more</text>
+<text x="810" y="610" font-size="12.5" fill="#52514e">loss where M1 and M2 cannot help</text>
+<text x="810" y="627" font-size="12.5" fill="#52514e">plateau stop on a validation split</text>
+<text x="810" y="644" font-size="12.5" fill="#52514e">then task accuracy on held-out Q&amp;A</text>
+<rect x="24" y="668" width="200" height="70" rx="8" fill="#fcfcfb" stroke="#898781" stroke-width="2"/>
+<rect x="24" y="668" width="200" height="26" rx="8" fill="#898781" opacity="0.14"/>
+<text x="34" y="686" font-size="13.5" font-weight="600" fill="#0b0b0b">New text or new Q&amp;A pair</text>
+<text x="34" y="712" font-size="12.5" fill="#52514e">from a user, a document, a correction</text>
+<path d="M224,587 L260,587" stroke="#898781" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+<path d="M510,570 L550,562" stroke="#898781" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+<path d="M510,600 L550,636" stroke="#898781" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+<path d="M760,562 L800,580" stroke="#898781" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+<text x="780.0" y="565.0" font-size="11.5" fill="#898781" text-anchor="middle">LOO counts</text>
+<path d="M760,636 L800,620" stroke="#898781" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+<text x="780.0" y="622.0" font-size="11.5" fill="#898781" text-anchor="middle">keys</text>
+<path d="M224,703 L405,642" stroke="#898781" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+<text x="314.5" y="666.5" font-size="11.5" fill="#898781" text-anchor="middle">compile and add to M1 and M2 only</text>
+<rect x="24" y="760" width="1196" height="44" rx="8" fill="#e1e0d9" opacity="0.5"/>
+<text x="36" y="787" font-size="12.5" fill="#52514e">Measured every run: bits per byte (held-out, out of domain)  ·  answer accuracy on held-out Q&amp;A  ·  accuracy on pairs added to M2 with no training  ·  reply bytes per second  ·  learned parameters vs memory size</text>
+</svg>
