@@ -1,0 +1,271 @@
+{
+ "ladder": "ladder1",
+ "budget_s": 600.0,
+ "seed": 1,
+ "corpus": {
+  "train_books": 1,
+  "train_bytes": 19053056,
+  "heldout": [
+   "qa_heldout"
+  ],
+  "ood": [
+   "qa_sample"
+  ]
+ },
+ "configs": {
+  "v0_8k_ng64": {
+   "encoding": {
+    "name": "v0_8k_plain",
+    "vocab": 8192,
+    "groups": 0,
+    "members": 0,
+    "dictionary": "data_qa/work/v0_8k_plain.cv0d",
+    "dictionary_hash": "65ad4cc79c66502c",
+    "entries": 7934,
+    "phrases": 0,
+    "case_flags": false,
+    "max_phrase_units": 1
+   },
+   "model": {
+    "width": 128,
+    "layers": 4,
+    "heads": 4,
+    "ctx": 256,
+    "batch": 16,
+    "peak_lr": 0.001,
+    "table_rows": 0,
+    "table_orders": [],
+    "params": {
+     "core": 791296,
+     "embedding": 1081344,
+     "output_heads": 405,
+     "table": 0,
+     "total": 1873045
+    },
+    "ngram_tables": [
+     {
+      "order": 2,
+      "contexts": 8018,
+      "topk": 64,
+      "entries": 283351,
+      "build_s": 0.9
+     },
+     {
+      "order": 3,
+      "contexts": 535980,
+      "topk": 64,
+      "entries": 1659118,
+      "build_s": 3.8
+     }
+    ]
+   },
+   "training": {
+    "budget_s": 600.0,
+    "train_s": 600.3,
+    "steps": 1462,
+    "tokens_seen": 5988352,
+    "bytes_seen": 24288680,
+    "tokens_per_s": 9976.0,
+    "bytes_per_s": 40462.4,
+    "final_train_bits_per_token": 5.2286,
+    "train_tokens": 4603550,
+    "valid_tokens": 93951,
+    "valid_bytes": 378741,
+    "patience": 4,
+    "min_delta": 0.002,
+    "stop_reason": "budget",
+    "stopped_early": false,
+    "history": [
+     {
+      "train_s": 60.4,
+      "step": 135,
+      "tokens_seen": 552960,
+      "bytes_seen": 2241358,
+      "train_bits_per_token": 5.6908,
+      "quick_bits_per_byte": 1.4309,
+      "lr": 0.0009779927090846248
+     },
+     {
+      "train_s": 120.3,
+      "step": 282,
+      "tokens_seen": 1155072,
+      "bytes_seen": 4679102,
+      "train_bits_per_token": 5.5123,
+      "quick_bits_per_byte": 1.3955,
+      "lr": 0.0009142780453034024
+     },
+     {
+      "train_s": 180.0,
+      "step": 429,
+      "tokens_seen": 1757184,
+      "bytes_seen": 7131247,
+      "train_bits_per_token": 5.4415,
+      "quick_bits_per_byte": 1.3808,
+      "lr": 0.0008152616507927448
+     },
+     {
+      "train_s": 240.2,
+      "step": 577,
+      "tokens_seen": 2363392,
+      "bytes_seen": 9582169,
+      "train_bits_per_token": 5.379,
+      "quick_bits_per_byte": 1.3694,
+      "lr": 0.0006894371368154333
+     },
+     {
+      "train_s": 300.1,
+      "step": 717,
+      "tokens_seen": 2936832,
+      "bytes_seen": 11901980,
+      "train_bits_per_token": 5.3461,
+      "quick_bits_per_byte": 1.36,
+      "lr": 0.0005506070607842474
+     },
+     {
+      "train_s": 360.4,
+      "step": 865,
+      "tokens_seen": 3543040,
+      "bytes_seen": 14359530,
+      "train_bits_per_token": 5.3149,
+      "quick_bits_per_byte": 1.353,
+      "lr": 0.00041099334890475406
+     },
+     {
+      "train_s": 420.2,
+      "step": 1017,
+      "tokens_seen": 4165632,
+      "bytes_seen": 16890467,
+      "train_bits_per_token": 5.2936,
+      "quick_bits_per_byte": 1.3451,
+      "lr": 0.0002857930432450168
+     },
+     {
+      "train_s": 480.1,
+      "step": 1164,
+      "tokens_seen": 4767744,
+      "bytes_seen": 19339581,
+      "train_bits_per_token": 5.2828,
+      "quick_bits_per_byte": 1.3409,
+      "lr": 0.00018619157520599776
+     },
+     {
+      "train_s": 540.4,
+      "step": 1316,
+      "tokens_seen": 5390336,
+      "bytes_seen": 21862828,
+      "train_bits_per_token": 5.2364,
+      "quick_bits_per_byte": 1.3372,
+      "lr": 0.00012202521170609372
+     },
+     {
+      "train_s": 600.3,
+      "step": 1462,
+      "tokens_seen": 5988352,
+      "bytes_seen": 24288680,
+      "train_bits_per_token": 5.2286,
+      "quick_bits_per_byte": 1.335,
+      "lr": 0.00010000004502032973
+     }
+    ]
+   },
+   "eval": {
+    "validation": {
+     "bytes": 378741,
+     "tokens": 93951,
+     "bits_per_byte": 1.3587
+    },
+    "heldout": {
+     "qa_heldout": {
+      "bytes": 383751,
+      "tokens": 94238,
+      "ids_per_kb": 245.6,
+      "bits_per_byte": 1.3561,
+      "bits_per_token": 5.5222,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.3182,
+        "bits_share": 0.2892,
+        "bits_per_byte": 1.2325
+       },
+       "freq_101_1000": {
+        "byte_share": 0.3024,
+        "bits_share": 0.2938,
+        "bits_per_byte": 1.3175
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.3794,
+        "bits_share": 0.417,
+        "bits_per_byte": 1.4905
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0612,
+        "bits_share": 0.1386,
+        "bits_per_byte": 3.0705
+       },
+       "type_word": {
+        "byte_share": 0.9309,
+        "bits_share": 0.8535,
+        "bits_per_byte": 1.2434
+       },
+       "type_other": {
+        "byte_share": 0.0079,
+        "bits_share": 0.0079,
+        "bits_per_byte": 1.3571
+       }
+      }
+     }
+    },
+    "heldout_overall": {
+     "bytes": 383751,
+     "tokens": 94238,
+     "ids_per_kb": 245.6,
+     "bits_per_byte": 1.3561
+    },
+    "ood": {
+     "qa_sample": {
+      "bytes": 18651,
+      "tokens": 4251,
+      "ids_per_kb": 227.9,
+      "bits_per_byte": 1.2403,
+      "bits_per_token": 5.4431
+     }
+    },
+    "ood_overall": {
+     "bytes": 18651,
+     "tokens": 4251,
+     "ids_per_kb": 227.9,
+     "bits_per_byte": 1.2403
+    }
+   },
+   "seed": 1,
+   "generation": {
+    "prompt": "We went to the park",
+    "tokens": 200,
+    "bytes": 754,
+    "seconds": 1.18,
+    "tokens_per_s": 168.9,
+    "bytes_per_s": 636.9,
+    "note": "sliding context, no KV cache, CPU",
+    "sample": " and go for a customer service.\n\nUser: Describe the setting sun,\nThe sun's not possible.\nAssistant: It is an adjective-node is the process by which is released that we will fighting for the future, a single, and the 12, 4, 100, 7.\n\nUser: Create a list of five books that someone to buy TV time will lead to unify the issue.\nAssistant: One day, 10, 3]\nAssistant: The area of the United Kingdom, but is an important role in the field of computer vision, and creating an app that tracks of a good education  is increased to 10.\nAssistant: The three main types of questions to ask a customer is the world"
+   },
+   "machine": {
+    "python": "3.13.16",
+    "torch": "2.14.1+cu130",
+    "threads": 4,
+    "cpu": "x86_64",
+    "cores": 4
+   },
+   "config": "v0_8k_ng64"
+  }
+ }
+}
