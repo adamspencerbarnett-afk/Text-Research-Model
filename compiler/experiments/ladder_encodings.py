@@ -96,6 +96,49 @@ class V0Dict(Encoding):
         return d
 
 
+class StandardBPE(Encoding):
+    """The traditional tokenizer: byte-pair merges learned on the training text and applied
+    in merge order (compiler_v0.BPEBaseline), on the same scanner units, no case flags.
+    Serves as the conventional baseline; it has no deterministic global dictionary file,
+    only a merge list, which is saved beside the results for reproducibility."""
+
+    def __init__(self, merges, name="bpe"):
+        self.merges = [(bytes(a), bytes(b)) for a, b, *_ in merges]
+        self.bpe = cv.BPEBaseline([(a, b, False) for a, b in self.merges], case_flags=False)
+        self.name = name
+        self.vocab = cv.FIRST_ENTRY_ID + len(self.bpe.ids)
+        self.id_bytes = [bytes([i]) for i in range(256)] + [b"", b""] + [b""] * len(self.bpe.ids)
+        for piece, i in self.bpe.ids.items():
+            self.id_bytes[i] = piece
+        self.lens = np.array([len(b) for b in self.id_bytes], dtype=np.int64)
+
+    @classmethod
+    def fit(cls, texts, vocab: int, name="bpe"):
+        counts = cv.count_units(texts, case_flags=False)
+        _, merges = cv.learn_pieces(counts, vocab - cv.FIRST_ENTRY_ID, positional=False)
+        return cls(merges, name)
+
+    def encode(self, data):
+        tokens = np.array(self.bpe.encode(data), dtype=np.int64)
+        return tokens, self.lens[tokens]
+
+    def decode(self, tokens):
+        return b"".join(self.id_bytes[int(t)] for t in tokens)
+
+    def save(self, path: str) -> None:
+        Path(path).write_text(json.dumps({"name": self.name, "merges": [[cv._escape(a), cv._escape(b)] for a, b in self.merges]}))
+
+    @classmethod
+    def load(cls, path: str) -> "StandardBPE":
+        j = json.loads(Path(path).read_text())
+        return cls([(cv._unescape(a), cv._unescape(b)) for a, b in j["merges"]], j["name"])
+
+    def describe(self):
+        d = super().describe()
+        d.update(merges=len(self.merges), merges_hash=f"{cv.fnv1a64(json.dumps([[cv._escape(a), cv._escape(b)] for a, b in self.merges]).encode()):016x}")
+        return d
+
+
 class HashCodes(Encoding):
     """Dictionary-free coordinate codes.
 

@@ -329,9 +329,21 @@ def eval_file(model: LM, enc: LE.Encoding, path: str, work: Path) -> dict:
 def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval_sets: dict[str, list[str]],
         work: Path, budget_s: float, width=128, layers=4, heads=4, ctx=256, batch=16, lr=1e-3,
         table_rows=0, seed=1, eval_every_s=120.0, quick_bytes=150_000, prompt=b"We went to the park",
-        gen_tokens=200, log=print, save_path=None, table_orders=(2,), ngram_orders=(), ngram_topk=16) -> dict:
+        gen_tokens=200, log=print, save_path=None, table_orders=(2,), ngram_orders=(), ngram_topk=16,
+        valid_share=0.02, patience=0, min_delta=0.002) -> dict:
+    """Train for up to ``budget_s`` seconds of training time.
+
+    The last ``valid_share`` of the training stream is held back as the validation split: it
+    is never trained on, the n-gram tables are not counted on it, and the learning curve and
+    early stopping read from it. The held-out and out-of-domain files in ``eval_sets`` are
+    scored once, at the end. With ``patience`` > 0, training stops when the validation bits
+    per byte have not improved by more than ``min_delta`` for ``patience`` evaluations in a row.
+    """
     torch.manual_seed(seed)
     rng = np.random.default_rng(seed)
+    n_train = int(len(train_tokens) * (1 - valid_share)) if valid_share > 0 else len(train_tokens)
+    valid_tokens, valid_lens = train_tokens[n_train:], train_lens[n_train:]
+    train_tokens, train_lens = train_tokens[:n_train], train_lens[:n_train]
     valid = np.fromiter(enc.reverse.keys(), dtype=np.int64, count=len(enc.reverse)) if isinstance(enc, LE.HashCodes) else None
     ngrams, ngram_info = [], []
     for order in ngram_orders:
@@ -353,10 +365,13 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
     counts = model.param_counts()
     log(f"[{enc.name}] params {counts}  train tokens {len(train_tokens):,}  budget {budget_s:.0f}s")
 
-    # Quick validation slice: the first ~quick_bytes bytes of the first held-out file.
-    first = eval_sets["heldout"][0]
-    q_tokens, q_lens = enc.encode_file(first, work)
-    n_quick = int(np.searchsorted(np.cumsum(q_lens), quick_bytes)) + 1
+    # Quick validation slice: the first ~quick_bytes bytes of the validation split (or, with no
+    # validation split, of the first held-out file, as the earliest runs did).
+    if len(valid_tokens) > ctx + 1:
+        q_tokens, q_lens = valid_tokens, valid_lens
+    else:
+        q_tokens, q_lens = enc.encode_file(eval_sets["heldout"][0], work)
+    n_quick = min(len(q_tokens), int(np.searchsorted(np.cumsum(q_lens), quick_bytes)) + 1)
     q_tokens, q_bytes = q_tokens[:n_quick], int(q_lens[:n_quick].sum())
 
     def lr_at(frac, step):
@@ -367,6 +382,7 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
     offsets_base = np.arange(ctx + 1)
     train_time, step, tokens_seen, bytes_seen, ema = 0.0, 0, 0, 0, None
     history, next_eval = [], eval_every_s
+    best_quick, bad_evals, stop_reason = float("inf"), 0, "budget"
     model.train()
     while train_time < budget_s:
         t0 = time.perf_counter()
@@ -396,8 +412,16 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
                    "train_bits_per_token": round(ema, 4), "quick_bits_per_byte": round(qbits / q_bytes, 4), "lr": cur_lr}
             history.append(row)
             log(f"[{enc.name}] {row['train_s']:7.1f}s step {step:6d} seen {bytes_seen/1e6:6.2f} MB  "
-                f"train {ema:.3f} b/tok  quick {row['quick_bits_per_byte']:.4f} b/byte")
+                f"train {ema:.3f} b/tok  valid {row['quick_bits_per_byte']:.4f} b/byte")
             next_eval += eval_every_s
+            if row["quick_bits_per_byte"] < best_quick - min_delta:
+                best_quick, bad_evals = row["quick_bits_per_byte"], 0
+            else:
+                bad_evals += 1
+                if patience and bad_evals >= patience:
+                    stop_reason = f"plateau: no improvement over {min_delta} bits/byte in {patience} evaluations"
+                    log(f"[{enc.name}] stopping early at {train_time:.0f}s: {stop_reason}")
+                    break
 
     result = {"encoding": enc.describe(), "model": {"width": width, "layers": layers, "heads": heads, "ctx": ctx,
                                                       "batch": batch, "peak_lr": lr, "table_rows": table_rows,
@@ -406,8 +430,15 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
               "training": {"budget_s": budget_s, "train_s": round(train_time, 1), "steps": step, "tokens_seen": tokens_seen,
                            "bytes_seen": bytes_seen, "tokens_per_s": round(tokens_seen / train_time, 1),
                            "bytes_per_s": round(bytes_seen / train_time, 1), "final_train_bits_per_token": round(ema, 4),
-                           "history": history},
+                           "train_tokens": int(n), "valid_tokens": int(len(valid_tokens)), "valid_bytes": int(valid_lens.sum()),
+                           "patience": patience, "min_delta": min_delta, "stop_reason": stop_reason,
+                           "stopped_early": stop_reason != "budget", "history": history},
               "eval": {}, "seed": seed}
+    if len(valid_tokens) > ctx + 1:
+        vbits, _ = total_bits(model, valid_tokens)
+        result["eval"]["validation"] = {"bytes": int(valid_lens.sum()), "tokens": int(len(valid_tokens)),
+                                        "bits_per_byte": round(vbits / max(1, int(valid_lens.sum())), 4)}
+        log(f"[{enc.name}] validation split: {result['eval']['validation']}")
 
     for split, paths in eval_sets.items():
         rows = {Path(p).stem: eval_file(model, enc, p, work) for p in paths}
@@ -470,6 +501,9 @@ def main(argv=None) -> int:
     ap.add_argument("--table-orders", default="2", help="comma-separated n-gram orders for the hashed tables")
     ap.add_argument("--ngram-orders", default="", help="comma-separated orders of exact n-gram output tables, e.g. 2,3")
     ap.add_argument("--ngram-topk", type=int, default=16)
+    ap.add_argument("--valid-share", type=float, default=0.02, help="share of the training stream held back for validation")
+    ap.add_argument("--patience", type=int, default=0, help="stop after this many evaluations without improvement (0: never)")
+    ap.add_argument("--min-delta", type=float, default=0.002, help="improvement in validation bits/byte that counts")
     ap.add_argument("--seed", type=int, default=1); ap.add_argument("--eval-every", type=float, default=120)
     ap.add_argument("--threads", type=int, default=0)
     a = ap.parse_args(argv)
@@ -486,7 +520,8 @@ def main(argv=None) -> int:
     result = run(enc, tokens, lens, eval_sets_from(a.data), work, a.budget, a.width, a.layers, a.heads, a.ctx,
                  a.batch, a.lr, a.table_rows, a.seed, a.eval_every,
                  table_orders=tuple(int(o) for o in a.table_orders.split(",")),
-                 ngram_orders=tuple(int(o) for o in a.ngram_orders.split(",") if o), ngram_topk=a.ngram_topk)
+                 ngram_orders=tuple(int(o) for o in a.ngram_orders.split(",") if o), ngram_topk=a.ngram_topk,
+                 valid_share=a.valid_share, patience=a.patience, min_delta=a.min_delta)
     result["args"] = vars(a)
     Path(a.out).write_text(json.dumps(result, indent=1))
     return 0

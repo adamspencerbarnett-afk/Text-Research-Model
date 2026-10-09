@@ -68,6 +68,14 @@ def make_encoding(name: str, train_paths: list[str], work: Path, native: str | N
     base, table, orders, ngram = parse_config_full(name)
     if base == "bytes":
         return LE.Bytes(), table, orders, ngram
+    if base.startswith("bpe_"):
+        vocab = int(base[4:].rstrip("k")) * 1024
+        path = work / f"{base}.merges.json"
+        if not path.exists():
+            t0 = time.time()
+            LE.StandardBPE.fit((Path(p).read_bytes() for p in train_paths), vocab, base).save(str(path))
+            say(f"fitted {base}: {vocab:,} IDs ({time.time() - t0:.0f}s)")
+        return LE.StandardBPE.load(str(path)), table, orders, ngram
     if base.startswith("hash"):
         g, m = (int(x) for x in base[4:].split("x"))
         return LE.HashCodes.load(str(fit_hash(g, m, train_paths, work))), table, orders, ngram
@@ -98,7 +106,7 @@ def parse_config_full(name: str) -> tuple[str, int, tuple[int, ...], tuple[int, 
             if spec.endswith(suffix):
                 orders, spec = o, spec.removesuffix(suffix)
         table = 1 << (int(spec) if spec else 20)
-    if base == "bytes" or base.startswith("hash"):
+    if base == "bytes" or base.startswith("hash") or base.startswith("bpe_"):
         return base, table, orders, ngram
     if base not in DICTS and f"{base}_plain" in DICTS:
         base = f"{base}_plain"
@@ -113,6 +121,8 @@ def main() -> int:
     ap.add_argument("--native", default=None); ap.add_argument("--budget", type=float, default=600)
     ap.add_argument("--configs", default=",".join(CONFIGS)); ap.add_argument("--out", default="results/ladder1.json")
     ap.add_argument("--seed", type=int, default=1); ap.add_argument("--eval-every", type=float, default=120)
+    ap.add_argument("--patience", type=int, default=0); ap.add_argument("--min-delta", type=float, default=0.002)
+    ap.add_argument("--valid-share", type=float, default=0.02)
     a = ap.parse_args()
     work = Path(a.work); work.mkdir(parents=True, exist_ok=True)
     train_paths = sorted(glob.glob(f"{a.data}/train/*.txt"))
@@ -134,7 +144,8 @@ def main() -> int:
         say(f"{name}: {len(tokens):,} training tokens ({time.time() - t0:.0f}s to encode)")
         r = train_lm.run(enc, tokens, lens, eval_sets, work, a.budget, table_rows=table, seed=a.seed,
                          eval_every_s=a.eval_every, log=say, save_path=str(work / f"ladder1_{name}.pt"),
-                         table_orders=orders, ngram_orders=ngram)
+                         table_orders=orders, ngram_orders=ngram, valid_share=a.valid_share,
+                         patience=a.patience, min_delta=a.min_delta)
         r["config"] = name
         (work / f"ladder1_{name}.json").write_text(json.dumps(r, indent=1))
         results["configs"][name] = r

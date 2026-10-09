@@ -60,6 +60,20 @@ class V0DictTests(unittest.TestCase):
         self.assertTrue(np.array_equal(t1, t2))
 
 
+class StandardBPETests(unittest.TestCase):
+    def test_round_trip_lengths_and_save_load(self):
+        e = LE.StandardBPE.fit([TEXT], 400, "bpe_test")
+        for data in (TEXT, OTHER, bytes(range(256))):
+            t, lens = e.encode(data)
+            self.assertEqual(e.decode(t), data)
+            self.assertEqual(int(lens.sum()), len(data))
+            self.assertTrue(((t >= 0) & (t < e.vocab)).all())
+        with tempfile.TemporaryDirectory() as tmp:
+            p = os.path.join(tmp, "m.json"); e.save(p); f = LE.StandardBPE.load(p)
+        self.assertTrue(np.array_equal(f.encode(TEXT)[0], e.encode(TEXT)[0]))
+        self.assertEqual(f.describe()["merges_hash"], e.describe()["merges_hash"])
+
+
 class HashCodesTests(unittest.TestCase):
     def test_codes_are_a_pure_function_of_the_unit(self):
         a, b = LE.HashCodes(64, 128), LE.HashCodes(64, 128)
@@ -108,6 +122,7 @@ class LadderConfigTests(unittest.TestCase):
         self.assertEqual(ladder1.parse_config("hash4096x4096_table20_tri"), ("hash4096x4096", 1 << 20, (2, 3)))
         self.assertEqual(ladder1.parse_config("v0_8k_table20_q4"), ("v0_8k_plain", 1 << 20, (2, 3, 4)))
         self.assertEqual(ladder1.parse_config_full("v0_8k_ng"), ("v0_8k_plain", 0, (2,), (2, 3)))
+        self.assertEqual(ladder1.parse_config_full("bpe_8k"), ("bpe_8k", 0, (2,), ()))
         self.assertEqual(ladder1.parse_config_full("v0_8k_table20_tri_ng"), ("v0_8k_plain", 1 << 20, (2, 3), (2, 3)))
         with self.assertRaises(KeyError):
             ladder1.parse_config("v0_99k_table")
@@ -180,6 +195,22 @@ class HarnessTests(unittest.TestCase):
         # "7" is always followed by 8 (3 times): eval gives probability 1, training 2/2 = 1 as well
         self.assertAlmostEqual(float(full[0]), 0.0, places=3)
         self.assertAlmostEqual(float(loo[0]), 0.0, places=3)
+
+    def test_validation_split_and_early_stopping(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            work = Path(tmp)
+            held = work / "held.txt"; held.write_bytes(OTHER * 30)
+            enc = LE.Bytes(); tokens, lens = enc.encode(TEXT * 3)
+            r = self.tl.run(enc, tokens, lens, {"heldout": [str(held)]}, work, budget_s=30.0, width=16, layers=1,
+                            heads=2, ctx=16, batch=4, eval_every_s=0.3, quick_bytes=64, gen_tokens=3,
+                            log=lambda *_: None, valid_share=0.1, patience=2, min_delta=10.0)
+            t = r["training"]
+            self.assertEqual(t["train_tokens"] + t["valid_tokens"], len(tokens))
+            self.assertAlmostEqual(t["valid_tokens"] / len(tokens), 0.1, places=2)
+            self.assertTrue(t["stopped_early"]); self.assertIn("plateau", t["stop_reason"])
+            self.assertLess(t["train_s"], 10.0)                       # stopped long before the 30 s budget
+            self.assertEqual(len(t["history"]), 3)                     # best, then two non-improvements
+            self.assertIn("validation", r["eval"])
 
     def test_short_runs_for_every_model_kind(self):
         with tempfile.TemporaryDirectory() as tmp:
