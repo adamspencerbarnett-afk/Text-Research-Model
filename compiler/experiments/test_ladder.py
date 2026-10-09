@@ -162,9 +162,10 @@ class HarnessTests(unittest.TestCase):
         tokens = np.array([1, 2, 3, 1, 2, 4, 1, 2, 3, 1, 2, 3, 5], dtype=np.int64)
         t = self.tl.NgramTable(tokens, order=2, topk=2)
         row = int(np.searchsorted(t.keys, 2))              # context "2" is followed by 3,4,3,3
-        self.assertEqual(list(t.ids[row]), [3, 4])
-        self.assertEqual(list(t.counts[row]), [3.0, 1.0])
+        self.assertEqual(t.row(row), ([3, 4], [3.0, 1.0]))
         self.assertEqual(float(t.totals[row]), 4.0)
+        self.assertEqual(t.entries, 6)                       # 1->2, 2->3, 2->4, 3->1, 3->5, 4->1 (at most 2 kept per context)
+        self.assertEqual(sum(min(len(t.row(i)[0]), 2) for i in range(t.contexts)), t.entries)
         ids, counts, totals = t.features(np.array([[1, 2, 9]], dtype=np.int64))
         self.assertEqual(ids[0, 1].tolist(), [3, 4])        # after "2"
         self.assertEqual(ids[0, 2].tolist(), [-1, -1])      # "9" never seen

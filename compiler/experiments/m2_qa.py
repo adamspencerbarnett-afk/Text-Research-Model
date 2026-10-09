@@ -235,7 +235,7 @@ def main() -> int:
         for _ in range(n_tokens):
             x = torch.tensor([seq[-a.ctx:]], device=dev)
             h = model.hidden(x)[:, -1]
-            logits = (model.mixed_logits(h, x.cpu().numpy()) + bias) / temperature
+            logits = (model.mixed_logits(h, x) + bias) / temperature
             kth = torch.topk(logits, top_k).values[..., -1, None]
             logits = logits.masked_fill(logits < kth, float("-inf"))
             seq.append(torch.multinomial(F.softmax(logits, -1).cpu(), 1, generator=gen).item())

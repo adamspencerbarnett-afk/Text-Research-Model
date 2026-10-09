@@ -82,8 +82,10 @@ class NgramTable:
 
     For every context of ``order - 1`` tokens seen in training, keeps the ``topk`` most frequent
     next tokens with their frequencies (renormalised over the kept followers) and the context's
-    total count. Lookup is a binary search over the sorted context keys, so a batch costs
-    little. Flat vocabularies only; tokens must be below 2^21.
+    total count. The followers are stored ragged (``offsets`` into ``ids`` and ``counts``, most
+    contexts have far fewer than ``topk``), so a table of a 250 MB corpus fits on the GPU, and
+    the lookup is a binary search over the sorted context keys plus one gather, on whatever
+    device the batch is on. Flat vocabularies only; tokens must be below 2^21.
     """
 
     def __init__(self, tokens: np.ndarray, order: int, topk: int = 16):
@@ -100,34 +102,52 @@ class NgramTable:
         self.keys, first = np.unique(ctx, return_index=True)
         sizes = np.diff(np.append(first, len(ctx)))
         totals = np.add.reduceat(counts, first)
-        row = np.repeat(np.arange(len(self.keys)), sizes)
         rank = np.arange(len(ctx)) - np.repeat(first, sizes)
-        keep = rank < topk
-        self.ids = np.full((len(self.keys), topk), -1, dtype=np.int64)
-        self.counts = np.zeros((len(self.keys), topk), dtype=np.float32)
-        self.ids[row[keep], rank[keep]] = nxt[keep]
-        self.counts[row[keep], rank[keep]] = counts[keep]
+        keep = rank < topk                       # sorted by context then by count: kept rows stay contiguous
+        self.ids = nxt[keep].astype(np.int32)
+        self.counts = counts[keep].astype(np.float32)
+        self.offsets = np.concatenate([[0], np.cumsum(np.minimum(sizes, topk))]).astype(np.int64)
         self.totals = totals.astype(np.float32)
-        self.contexts = len(self.keys)
+        self.contexts, self.entries = len(self.keys), int(keep.sum())
+        self._on: dict = {}
 
-    def features(self, x: np.ndarray, device=None):
-        """For a (B, T) token array: follower ids (B, T, K), their counts (B, T, K) and the
-        context's total count (B, T); -1 / 0 where the context is unseen or incomplete."""
+    def row(self, context: int) -> tuple[list[int], list[float]]:
+        """Kept followers and counts of one context row (for inspection and tests)."""
+        a, b = self.offsets[context], self.offsets[context + 1]
+        return self.ids[a:b].tolist(), self.counts[a:b].tolist()
+
+    def tensors(self, device):
+        """The table as tensors on ``device`` (moved once, then cached)."""
+        key = str(device)
+        if key not in self._on:
+            self._on[key] = tuple(torch.from_numpy(a).to(device) for a in (self.keys, self.offsets, self.ids, self.counts, self.totals))
+        return self._on[key]
+
+    def features(self, x, device=None):
+        """For a (B, T) token array or tensor: follower ids (B, T, K), their counts (B, T, K)
+        and the context's total count (B, T); -1 / 0 where the context is unseen or incomplete.
+        Computed on ``device`` (default: the tensor's device, or the CPU for an array)."""
+        if not torch.is_tensor(x):
+            x = torch.from_numpy(np.ascontiguousarray(x))
+        device = device if device is not None else x.device
+        x = x.to(device, torch.int64)
+        keys, offsets, ids, counts, totals = self.tensors(device)
         B, T = x.shape
-        key = np.zeros((B, T), dtype=np.int64)
+        key = torch.zeros((B, T), dtype=torch.int64, device=device)
         for j in range(self.k):
             shift = self.k - 1 - j
-            col = np.zeros((B, T), dtype=np.int64)
+            col = torch.zeros((B, T), dtype=torch.int64, device=device)
             col[:, shift:] = x[:, :T - shift]
             key = (key << 21) + col
-        pos = np.minimum(np.searchsorted(self.keys, key), len(self.keys) - 1)
-        found = (self.keys[pos] == key)
+        pos = torch.searchsorted(keys, key).clamp_max(len(keys) - 1)
+        found = keys[pos] == key
         found[:, :self.k - 1] = False
-        ids = np.where(found[..., None], self.ids[pos], -1)
-        counts = np.where(found[..., None], self.counts[pos], 0.0).astype(np.float32)
-        totals = np.where(found, self.totals[pos], 0.0).astype(np.float32)
-        out = torch.from_numpy(ids), torch.from_numpy(counts), torch.from_numpy(totals)
-        return tuple(t.to(device) for t in out) if device is not None else out
+        start, n = offsets[pos], offsets[pos + 1] - offsets[pos]
+        ar = torch.arange(self.topk, device=device)
+        valid = found[..., None] & (ar < n[..., None])
+        at = (start[..., None] + ar).clamp_max(len(ids) - 1)
+        return (torch.where(valid, ids[at].long(), -1), torch.where(valid, counts[at], 0.0),
+                torch.where(found, totals[pos], 0.0))
 
 
 def table_features(counts, totals, loo: float, ids=None, y=None):
@@ -246,7 +266,7 @@ class LM(nn.Module):
         # seen once "predicts" its follower perfectly and the model learns to over-trust counts.
         loo = 1.0 if self.training else 0.0
         for table in self.ngrams:
-            ids, counts, totals = table.features(x.cpu().numpy(), y.device)
+            ids, counts, totals = table.features(x)
             c_target = (counts * (ids == y[..., None])).sum(-1)
             kept = counts.sum(-1)
             c_target = (c_target - loo * (c_target > 0)).clamp_min(0.0)
@@ -257,7 +277,7 @@ class LM(nn.Module):
         p = (mix * torch.stack(p_parts, -1)).sum(-1)
         return -torch.log(p.clamp_min(1e-9))
 
-    def mixed_logits(self, h_last, x_last_np):
+    def mixed_logits(self, h_last, x_last):
         """Full next-token log-probabilities at the last position, with the n-gram mixture."""
         logits = h_last @ self.emb.weight.T
         if not self.ngrams:
@@ -265,7 +285,7 @@ class LM(nn.Module):
         p = [F.softmax(logits, -1)]
         confs = []
         for table in self.ngrams:
-            ids, counts, totals = table.features(x_last_np, h_last.device)
+            ids, counts, totals = table.features(x_last, h_last.device)
             dense = torch.zeros_like(p[0])
             ok = ids[:, -1] >= 0
             probs = counts[:, -1] / counts[:, -1].sum(-1, keepdim=True).clamp_min(1.0)
@@ -291,7 +311,7 @@ class LM(nn.Module):
             lm = self.head_m(torch.cat([h, self.emb_g(torch.tensor([g], device=h.device))], -1))
             m = pick(lm.masked_fill(~self.valid[g], float("-inf")))
             return g * self.M + m
-        return pick(self.mixed_logits(h, x.cpu().numpy()))
+        return pick(self.mixed_logits(h, x))
 
 
 # --------------------------------------------------------------------------- evaluation
@@ -440,7 +460,7 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
         table = NgramTable(train_tokens, order, ngram_topk)
         ngrams.append(table)
         ngram_info.append({"order": order, "contexts": table.contexts, "topk": ngram_topk,
-                           "entries": int((table.ids >= 0).sum()), "build_s": round(time.perf_counter() - t0, 1)})
+                           "entries": table.entries, "build_s": round(time.perf_counter() - t0, 1)})
         log(f"[{enc.name}] {order}-gram table: {table.contexts:,} contexts, {ngram_info[-1]['entries']:,} entries ({ngram_info[-1]['build_s']}s)")
     model = LM(enc, width, layers, heads, ctx, table_rows, valid, table_orders, ngrams).to(device)
     dense = [p for n, p in model.named_parameters() if not n.startswith("table")]
