@@ -180,6 +180,28 @@ Per book, every encoding ranks the same way, and every model is bad on the out-o
 - *Longer budgets* (30 min) for the best three, to see whether the ordering holds as the curves flatten; the width-256 repeat belongs on Actions or a GPU.
 - *Speed from the output side, not the sequence:* multi-unit prediction heads on the word encoder (Track E), since phrases in the sequence cost quality.
 
+### Ladder 2a: how far do the tables scale? (9 October)
+
+Same core, same text, same 600 s, seed 1. The 2^20 row is the ladder 1 run; the others are new (`results/ladder2a.json`). "At 15.1 MB" is the equal-text reading from each run's validation curve.
+
+| Input tables on v0 8k | Table params | Total params | Held-out bits/byte | At 15.1 MB | Steps | Train IDs/s | Talk-back bytes/s |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| none | 0 | 1.9M | 2.007 | 2.109 | 1,277 | 8,715 | 732 |
+| bigram, 2^18 rows | 33.6M | 35.4M | 1.931 | 2.029 | 1,210 | 8,258 | 637 |
+| bigram, 2^20 rows | 134.2M | 136.1M | 1.939 | 2.030 | 1,110 | 7,574 | 848 |
+| bigram, 2^22 rows | 536.9M | 538.7M | 1.916 | 2.014 | 1,197 | 8,166 | 707 |
+| bigram + trigram, 2^20 rows each | 268.4M | 270.3M | **1.913** | **2.006** | 1,168 | 7,970 | 759 |
+
+What it says:
+
+1. *Every table helps, by 3.4–4.7%, and the cost stays small.* Steps per second drop 5–13%, talk-back speed is unchanged within noise, and the 2^22 table (537M parameters, 6.4 GB with its optimizer state) trained without trouble on this machine. "Far more parameters at nearly the same speed" holds across a 16× range of table sizes.
+2. *Rows scale weakly at this data size.* Going from 2^18 to 2^22 rows, 16× the parameters, buys 0.8% (1.931 to 1.916). The 2^20 point is no better than 2^18. A 17 MB pass touches most rows of a 537M-parameter table only a handful of times, so the extra rows are mostly empty. Table capacity has to grow with the data, which is the case for the larger corpus in Phase 0.2 before any bigger table is tried.
+3. *Context order beats row count.* A trigram table beside the bigram one (268M parameters) does slightly better than quadrupling the bigram table (537M): 2.006 against 2.014 at equal text. The next table experiments add orders (4-grams, skip-grams) before they add rows.
+4. *The ordering was fixed by minute 4* here too (validation 2.177, 2.171, 2.167 and 2.156 bits per byte for 2^18, 2^20, 2^22 and bigram+trigram at 240 s, the same order as at 600 s). Together with ladder 1 this sets the screening budget from here on: 4 minutes to rank ideas, 10 minutes only to confirm the best two or three, longer only for a configuration that has passed both.
+5. *Run-to-run speed noise is about ±8%* in steps per second on this shared machine (the 2^20 run was the slowest although it is not the largest), so differences in the equal-time column below about 1% are not meaningful; the equal-text column is the one to read for small gaps.
+
+Next for tables (ladder 2b, 4-minute screens): do the gains stack on the equation encoder (hash codes + tables) and do they rescue the byte model (bytes + tables)? Then more orders rather than more rows, and the bigger corpus.
+
 
 ## 4. Phases
 
@@ -310,6 +332,7 @@ Rules carried over from the V1 discipline: fit dictionaries and tokenizers on th
 ## 8. Log
 
 - **2026-10-08.** Review of `encoder-v0` and the earlier results; measurements F1–F3 on two held-out books; PyTorch installed in the sandbox and the Phase 1 model shape timed on CPU; plan written. No model was trained to completion and no result in `results/` changed.
+- **2026-10-09, later.** Ladder 2a, table scaling (`results/ladder2a.json`): tables of 2^18 to 2^22 rows all help by 3.4–4.7% at 5–13% step cost; rows scale weakly at 45 MB of data; a trigram table beside the bigram beats quadrupling the bigram rows. Screening budget set to 4 minutes per idea on the evidence of both ladders. Earlier in the day a configuration-name bug cost an hour (ladder 2a crashed at launch and the watcher did not notice); fixed and tested.
 - **2026-10-09.** Adam's steer (section 3a). Training harness, encoding interface, hash coordinate encoder, chat tool and tests added. Ladder 1 run: six encodings, 600 s each, results in `results/ladder1.json` and section 3a. Headline: compiled text beats bytes by 8% at equal compute and talks back 2.5× faster; a 134M-parameter hashed bigram table on a 1.9M-parameter model is the best configuration at 13% step cost; the dictionary-free hash encoder is within 1.5% of the fitted dictionary; phrase IDs lose 2.5–4% and are dropped as a sequence device.
 
 ## Appendix A: initial results, for reference

@@ -177,6 +177,331 @@
     "cores": 4
    },
    "config": "v0_8k_table18"
+  },
+  "v0_8k_table22": {
+   "encoding": {
+    "name": "v0_8k_plain",
+    "vocab": 8192,
+    "groups": 0,
+    "members": 0,
+    "dictionary": "data/work/v0_8k_plain.cv0d",
+    "dictionary_hash": "9967d692c6bafc80",
+    "entries": 7934,
+    "phrases": 0,
+    "case_flags": false,
+    "max_phrase_units": 1
+   },
+   "model": {
+    "width": 128,
+    "layers": 4,
+    "heads": 4,
+    "ctx": 256,
+    "batch": 16,
+    "peak_lr": 0.001,
+    "table_rows": 4194304,
+    "table_orders": [
+     2
+    ],
+    "params": {
+     "core": 791296,
+     "embedding": 1081344,
+     "output_heads": 0,
+     "table": 536870912,
+     "total": 538743552
+    }
+   },
+   "training": {
+    "budget_s": 600.0,
+    "train_s": 600.4,
+    "steps": 1197,
+    "tokens_seen": 4902912,
+    "bytes_seen": 16967314,
+    "tokens_per_s": 8166.4,
+    "bytes_per_s": 28261.1,
+    "final_train_bits_per_token": 6.4229,
+    "history": [
+     {
+      "train_s": 120.0,
+      "step": 214,
+      "tokens_seen": 876544,
+      "bytes_seen": 3034264,
+      "train_bits_per_token": 8.1263,
+      "quick_bits_per_byte": 2.3165,
+      "lr": 0.0009147210408313436
+     },
+     {
+      "train_s": 240.0,
+      "step": 463,
+      "tokens_seen": 1896448,
+      "bytes_seen": 6559376,
+      "train_bits_per_token": 7.0992,
+      "quick_bits_per_byte": 2.1667,
+      "lr": 0.0006901588457225334
+     },
+     {
+      "train_s": 360.0,
+      "step": 711,
+      "tokens_seen": 2912256,
+      "bytes_seen": 10080698,
+      "train_bits_per_token": 6.7414,
+      "quick_bits_per_byte": 2.0719,
+      "lr": 0.0004119420872709489
+     },
+     {
+      "train_s": 480.0,
+      "step": 954,
+      "tokens_seen": 3907584,
+      "bytes_seen": 13519400,
+      "train_bits_per_token": 6.5012,
+      "quick_bits_per_byte": 2.0219,
+      "lr": 0.00018657625549823394
+     },
+     {
+      "train_s": 600.4,
+      "step": 1197,
+      "tokens_seen": 4902912,
+      "bytes_seen": 16967314,
+      "train_bits_per_token": 6.4229,
+      "quick_bits_per_byte": 2.0046,
+      "lr": 0.00010000002873236759
+     }
+    ]
+   },
+   "eval": {
+    "heldout": {
+     "Heart-of-Darkness_219": {
+      "bytes": 211025,
+      "tokens": 61192,
+      "ids_per_kb": 290.0,
+      "bits_per_byte": 1.9883,
+      "bits_per_token": 6.857
+     },
+     "The-Adventures-of-Sherlock-Holmes_1661": {
+      "bytes": 562531,
+      "tokens": 160338,
+      "ids_per_kb": 285.0,
+      "bits_per_byte": 1.859,
+      "bits_per_token": 6.5222
+     },
+     "The-Prince_1232": {
+      "bytes": 281531,
+      "tokens": 77046,
+      "ids_per_kb": 273.7,
+      "bits_per_byte": 1.9746,
+      "bits_per_token": 7.2154
+     }
+    },
+    "heldout_overall": {
+     "bytes": 1055087,
+     "tokens": 298576,
+     "ids_per_kb": 283.0,
+     "bits_per_byte": 1.9157
+    },
+    "ood": {
+     "repo_docs_markdown": {
+      "bytes": 123663,
+      "tokens": 43022,
+      "ids_per_kb": 347.9,
+      "bits_per_byte": 3.7251,
+      "bits_per_token": 10.7078
+     },
+     "repo_python_code": {
+      "bytes": 484809,
+      "tokens": 208415,
+      "ids_per_kb": 429.9,
+      "bits_per_byte": 4.1337,
+      "bits_per_token": 9.6157
+     }
+    },
+    "ood_overall": {
+     "bytes": 608472,
+     "tokens": 251437,
+     "ids_per_kb": 413.2,
+     "bits_per_byte": 4.0507
+    }
+   },
+   "seed": 1,
+   "generation": {
+    "prompt": "We went to the park",
+    "tokens": 200,
+    "bytes": 626,
+    "seconds": 0.89,
+    "tokens_per_s": 225.8,
+    "bytes_per_s": 706.7,
+    "note": "sliding context, no KV cache, CPU",
+    "sample": ", \"There's do not know?\"\n\nSokoning the name of Gentive hand, and made them\nthe same--the house, with a little man.\n\nThe lady, as I had come, and the young and sweet as a\njighted, he was coming to the room.\n\n\"You are very so many man!\"\n\n\"And I was gone,\" said Sir, and the little\npaper, I'll take it, who was afraid of him, and that I saw the\ncause I thought that I was sorry for her that I should have had a\nwin to him with a little \"and I will help me.\"\n\n\"Oh, you say that he can be done you?\"\n\n\"Well, I was just that I would not speak to me,\nthe door,\" said Mr. Casaubon, that I was in the door, sh"
+   },
+   "machine": {
+    "python": "3.13.16",
+    "torch": "2.14.1+cu130",
+    "threads": 4,
+    "cpu": "x86_64",
+    "cores": 4
+   },
+   "config": "v0_8k_table22"
+  },
+  "v0_8k_table20_tri": {
+   "encoding": {
+    "name": "v0_8k_plain",
+    "vocab": 8192,
+    "groups": 0,
+    "members": 0,
+    "dictionary": "data/work/v0_8k_plain.cv0d",
+    "dictionary_hash": "9967d692c6bafc80",
+    "entries": 7934,
+    "phrases": 0,
+    "case_flags": false,
+    "max_phrase_units": 1
+   },
+   "model": {
+    "width": 128,
+    "layers": 4,
+    "heads": 4,
+    "ctx": 256,
+    "batch": 16,
+    "peak_lr": 0.001,
+    "table_rows": 1048576,
+    "table_orders": [
+     2,
+     3
+    ],
+    "params": {
+     "core": 791296,
+     "embedding": 1081344,
+     "output_heads": 0,
+     "table": 268435456,
+     "total": 270308096
+    }
+   },
+   "training": {
+    "budget_s": 600.0,
+    "train_s": 600.2,
+    "steps": 1168,
+    "tokens_seen": 4784128,
+    "bytes_seen": 16554438,
+    "tokens_per_s": 7970.3,
+    "bytes_per_s": 27579.6,
+    "final_train_bits_per_token": 6.35,
+    "history": [
+     {
+      "train_s": 120.4,
+      "step": 232,
+      "tokens_seen": 950272,
+      "bytes_seen": 3291468,
+      "train_bits_per_token": 7.931,
+      "quick_bits_per_byte": 2.2815,
+      "lr": 0.0009145096924135942
+     },
+     {
+      "train_s": 240.3,
+      "step": 467,
+      "tokens_seen": 1912832,
+      "bytes_seen": 6616834,
+      "train_bits_per_token": 7.0164,
+      "quick_bits_per_byte": 2.1561,
+      "lr": 0.0006894016150115825
+     },
+     {
+      "train_s": 360.4,
+      "step": 699,
+      "tokens_seen": 2863104,
+      "bytes_seen": 9908912,
+      "train_bits_per_token": 6.6895,
+      "quick_bits_per_byte": 2.0715,
+      "lr": 0.00041100980208388493
+     },
+     {
+      "train_s": 480.1,
+      "step": 932,
+      "tokens_seen": 3817472,
+      "bytes_seen": 13211995,
+      "train_bits_per_token": 6.4631,
+      "quick_bits_per_byte": 2.0158,
+      "lr": 0.0001864365243131877
+     },
+     {
+      "train_s": 600.2,
+      "step": 1168,
+      "tokens_seen": 4784128,
+      "bytes_seen": 16554438,
+      "train_bits_per_token": 6.35,
+      "quick_bits_per_byte": 1.9975,
+      "lr": 0.00010000024558091517
+     }
+    ]
+   },
+   "eval": {
+    "heldout": {
+     "Heart-of-Darkness_219": {
+      "bytes": 211025,
+      "tokens": 61192,
+      "ids_per_kb": 290.0,
+      "bits_per_byte": 1.9799,
+      "bits_per_token": 6.8278
+     },
+     "The-Adventures-of-Sherlock-Holmes_1661": {
+      "bytes": 562531,
+      "tokens": 160338,
+      "ids_per_kb": 285.0,
+      "bits_per_byte": 1.8564,
+      "bits_per_token": 6.5132
+     },
+     "The-Prince_1232": {
+      "bytes": 281531,
+      "tokens": 77046,
+      "ids_per_kb": 273.7,
+      "bits_per_byte": 1.976,
+      "bits_per_token": 7.2204
+     }
+    },
+    "heldout_overall": {
+     "bytes": 1055087,
+     "tokens": 298576,
+     "ids_per_kb": 283.0,
+     "bits_per_byte": 1.913
+    },
+    "ood": {
+     "repo_docs_markdown": {
+      "bytes": 123663,
+      "tokens": 43022,
+      "ids_per_kb": 347.9,
+      "bits_per_byte": 3.7113,
+      "bits_per_token": 10.668
+     },
+     "repo_python_code": {
+      "bytes": 484809,
+      "tokens": 208415,
+      "ids_per_kb": 429.9,
+      "bits_per_byte": 4.2627,
+      "bits_per_token": 9.9158
+     }
+    },
+    "ood_overall": {
+     "bytes": 608472,
+     "tokens": 251437,
+     "ids_per_kb": 413.2,
+     "bits_per_byte": 4.1506
+    }
+   },
+   "seed": 1,
+   "generation": {
+    "prompt": "We went to the park",
+    "tokens": 200,
+    "bytes": 575,
+    "seconds": 0.76,
+    "tokens_per_s": 263.9,
+    "bytes_per_s": 758.6,
+    "note": "sliding context, no KV cache, CPU",
+    "sample": ", and I was very glad of it.\n\n\u201cOh, you are not quite a\nma(1,\u201d\n\n\u201cI am not a thing to be at right to do as I am in a great\nfro\ufffdWhat a word, for this, that\u2019s not that you\u2019d his daughter, as I\nmust have done so much as the way there, and that that\nhe had been done! \u201cI must believe to be,\u201d\n\n\u201cWhat are you sure I have only said, that you are not too much than it will\nhave no time for an hour and your mother?\u201d\n\n\u201cand how you must go to your mind?\u201d said Monte Cristo, \u201cI must say that,\nthe time, \u201cBut what is it to come: you are not glad to know that the\n"
+   },
+   "machine": {
+    "python": "3.13.16",
+    "torch": "2.14.1+cu130",
+    "threads": 4,
+    "cpu": "x86_64",
+    "cores": 4
+   },
+   "config": "v0_8k_table20_tri"
   }
  }
 }

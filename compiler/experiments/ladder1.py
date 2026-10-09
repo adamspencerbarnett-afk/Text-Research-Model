@@ -64,36 +64,37 @@ def fit_hash(groups: int, members: int, train_paths: list[str], work: Path) -> P
 
 
 def make_encoding(name: str, train_paths: list[str], work: Path, native: str | None):
-    """Return (encoding, table_rows, table_orders) for a configuration name.
-
-    ``v0_8k_table`` is the 2^20-row bigram table; ``v0_8k_table22`` has 2^22 rows and
-    ``v0_8k_table22_tri`` adds a trigram table of the same size.
-    """
-    if name == "bytes":
-        return LE.Bytes(), 0, (2,)
-    if name.startswith("hash"):
-        g, m = (int(x) for x in name[4:].split("x"))
-        return LE.HashCodes.load(str(fit_hash(g, m, train_paths, work))), 0, (2,)
-    dict_name, table, orders = parse_config(name)
-    return LE.V0Dict(str(fit_dictionary(dict_name, train_paths, work)), native), table, orders
+    """Return (encoding, table_rows, table_orders) for a configuration name; see parse_config."""
+    base, table, orders = parse_config(name)
+    if base == "bytes":
+        return LE.Bytes(), table, orders
+    if base.startswith("hash"):
+        g, m = (int(x) for x in base[4:].split("x"))
+        return LE.HashCodes.load(str(fit_hash(g, m, train_paths, work))), table, orders
+    return LE.V0Dict(str(fit_dictionary(base, train_paths, work)), native), table, orders
 
 
 def parse_config(name: str) -> tuple[str, int, tuple[int, ...]]:
-    """Split a dictionary configuration name into (dictionary name, table rows, table orders).
+    """Split a configuration name into (base encoding, table rows, table orders).
 
-    ``v0_8k_plain`` -> no table; ``v0_8k_table`` -> 2^20-row bigram table on v0_8k_plain;
-    ``v0_8k_table22`` -> 2^22 rows; ``v0_8k_table20_tri`` -> bigram and trigram tables of 2^20 rows.
+    The base is ``bytes``, ``hashGxM`` or a dictionary name from DICTS. An optional
+    ``_table[N][_tri]`` suffix adds hashed input tables: ``v0_8k_table`` is a 2^20-row bigram
+    table on v0_8k_plain, ``v0_8k_table22`` has 2^22 rows, ``hash4096x4096_table20_tri`` puts
+    bigram and trigram tables of 2^20 rows each on the hash encoder.
     """
-    if "_table" not in name:
-        return name, 0, (2,)
-    base, spec = name.split("_table", 1)
-    orders = (2, 3) if spec.endswith("_tri") else (2,)
-    spec = spec.removesuffix("_tri")
-    rows = 1 << (int(spec) if spec else 20)
-    dict_name = base if base in DICTS else f"{base}_plain"
-    if dict_name not in DICTS:
+    base, table, orders = name, 0, (2,)
+    if "_table" in name:
+        base, spec = name.split("_table", 1)
+        orders = (2, 3) if spec.endswith("_tri") else (2,)
+        spec = spec.removesuffix("_tri")
+        table = 1 << (int(spec) if spec else 20)
+    if base == "bytes" or base.startswith("hash"):
+        return base, table, orders
+    if base not in DICTS and f"{base}_plain" in DICTS:
+        base = f"{base}_plain"
+    if base not in DICTS:
         raise KeyError(f"no dictionary configuration for {name!r}")
-    return dict_name, rows, orders
+    return base, table, orders
 
 
 def main() -> int:
