@@ -129,6 +129,21 @@ class NgramTable:
         return torch.from_numpy(ids), torch.from_numpy(counts), torch.from_numpy(totals)
 
 
+def table_features(counts, totals, loo: float, ids=None, y=None):
+    """Three confidence features per table for the trust head: log(1 + total count), the top
+    follower's share and the entropy of the follower distribution (in bits). In training the
+    current occurrence is removed first (leave-one-out), consistently with the probabilities."""
+    c = counts
+    if loo and ids is not None:
+        c = (c - loo * (ids == y[..., None])).clamp_min(0.0)
+    tot = (totals - loo * (totals > 0)).clamp_min(0.0)
+    kept = c.sum(-1).clamp_min(1.0)
+    p = c / kept[..., None]
+    top = p.max(-1).values
+    ent = -(p * torch.log2(p.clamp_min(1e-9))).sum(-1)
+    return [torch.log1p(tot), top, ent]
+
+
 class LM(nn.Module):
     INVALID = -30.0  # logit given to a (group, member) code that no unit in training maps to
 
@@ -143,7 +158,7 @@ class LM(nn.Module):
         self.ngrams = ngrams or []
         if self.ngrams and self.coords:
             raise NotImplementedError("n-gram output tables need a flat vocabulary")
-        self.mix_head = nn.Linear(width + len(self.ngrams), len(self.ngrams) + 1) if self.ngrams else None
+        self.mix_head = nn.Linear(width + 3 * len(self.ngrams), len(self.ngrams) + 1) if self.ngrams else None
         if self.coords:
             self.G, self.M = enc.groups, enc.members
             self.emb_g, self.emb_m = nn.Embedding(self.G, width), nn.Embedding(self.M, width)
@@ -236,7 +251,7 @@ class LM(nn.Module):
             c_target = (c_target - loo * (c_target > 0)).clamp_min(0.0)
             kept = (kept - loo * (totals > 0)).clamp_min(0.0)
             p_parts.append(torch.where(kept > 0, c_target / kept.clamp_min(1.0), torch.zeros_like(kept)))
-            confs.append(torch.log1p((totals - loo * (totals > 0)).clamp_min(0.0)))
+            confs.extend(table_features(counts, totals, loo, ids, y))
         mix = F.softmax(self.mix_head(torch.cat([h] + [c[..., None] for c in confs], -1)), -1)
         p = (mix * torch.stack(p_parts, -1)).sum(-1)
         return -torch.log(p.clamp_min(1e-9))
@@ -255,7 +270,7 @@ class LM(nn.Module):
             probs = counts[:, -1] / counts[:, -1].sum(-1, keepdim=True).clamp_min(1.0)
             dense.scatter_add_(-1, ids[:, -1].clamp_min(0), probs * ok)
             p.append(dense)
-            confs.append(torch.log1p(totals[:, -1]))
+            confs.extend(f[:, -1] for f in table_features(counts, totals, 0.0))
         mix = F.softmax(self.mix_head(torch.cat([h_last] + [c[..., None] for c in confs], -1)), -1)
         return torch.log((mix[..., None] * torch.stack(p, 1)).sum(1).clamp_min(1e-9))
 
