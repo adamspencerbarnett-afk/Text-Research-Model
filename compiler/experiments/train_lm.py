@@ -316,7 +316,73 @@ def total_bits(model: LM, tokens: np.ndarray, batch: int = 64) -> tuple[float, i
     return bits, predicted
 
 
-def eval_file(model: LM, enc: LE.Encoding, path: str, work: Path) -> dict:
+@torch.no_grad()
+def token_bits(model: LM, tokens: np.ndarray, batch: int = 64) -> np.ndarray:
+    """-log2 p for every token but the first (context reset every ctx tokens), aligned to tokens[1:]."""
+    model.eval()
+    ctx, n = model.ctx, len(tokens)
+    out = np.zeros(n - 1, dtype=np.float64)
+    starts = list(range(0, n - 1, ctx))
+    for i in range(0, len(starts), batch):
+        xs, ys, spans = [], [], []
+        for s in starts[i:i + batch]:
+            end = min(s + ctx + 1, n)
+            take = end - s - 1
+            tail = True
+            if end - s < ctx + 1:          # same window handling as total_bits
+                if n >= ctx + 1:
+                    s, end = n - ctx - 1, n
+                else:
+                    tail = False
+            w = tokens[s:end]
+            if len(w) < ctx + 1:
+                w = np.pad(w, (0, ctx + 1 - len(w)))
+            xs.append(w[:-1]); ys.append(w[1:]); spans.append((s, take, tail))
+        nll = model.nll(torch.from_numpy(np.stack(xs)), torch.from_numpy(np.stack(ys))).numpy() / LN2
+        for row, (s, take, tail) in zip(nll, spans):
+            if tail:
+                out[s + ctx - take:s + ctx] = row[-take:]
+            else:
+                out[s:s + take] = row[:take]
+    model.train()
+    return out
+
+
+def class_bits(model: LM, enc: LE.Encoding, tokens: np.ndarray, lens: np.ndarray, train_counts: np.ndarray | None) -> dict:
+    """Split a file's bits by what kind of token is being predicted: frequency band in the
+    training text (top 100 / top 1,000 / top 10,000 / rarer / never seen) and token type
+    (word, byte fallback, other). Each entry: share of bytes, share of bits, bits per byte."""
+    bits = token_bits(model, tokens)
+    y, ly = tokens[1:], lens[1:]
+    groups: dict[str, np.ndarray] = {}
+    if train_counts is not None and not enc.groups:
+        rank = np.empty(len(train_counts), dtype=np.int64)
+        rank[np.argsort(-train_counts)] = np.arange(len(train_counts))
+        r = rank[y]
+        groups.update({"freq_top100": r < 100, "freq_101_1000": (r >= 100) & (r < 1000),
+                       "freq_1001_10000": (r >= 1000) & (r < 10000), "freq_rarer": (r >= 10000) & (train_counts[y] > 0),
+                       "freq_unseen_in_training": train_counts[y] == 0})
+    if not enc.groups:
+        is_byte = y < 256
+        kind = np.array([b.strip(b" ").isalpha() if b else False for b in [enc_bytes(enc, t) for t in range(enc.vocab)]])
+        is_word = kind[y]
+        groups.update({"type_byte_fallback": is_byte, "type_word": is_word & ~is_byte, "type_other": ~is_word & ~is_byte})
+    total_b, total_bits = int(ly.sum()), float(bits.sum())
+    return {name: {"byte_share": round(float(ly[m].sum()) / max(1, total_b), 4),
+                   "bits_share": round(float(bits[m].sum()) / max(1e-9, total_bits), 4),
+                   "bits_per_byte": round(float(bits[m].sum()) / max(1, float(ly[m].sum())), 4)}
+            for name, m in groups.items()}
+
+
+def enc_bytes(enc: LE.Encoding, t: int) -> bytes:
+    if hasattr(enc, "id_bytes"):
+        return enc.id_bytes[t]
+    if hasattr(enc, "d"):
+        return enc.d.id_bytes[t]
+    return bytes([t]) if t < 256 else b""
+
+
+def eval_file(model: LM, enc: LE.Encoding, path: str, work: Path, train_counts=None, classes: bool = False) -> dict:
     tokens, lens = enc.encode_file(path, work)
     nbytes = os.path.getsize(path)
     bits, predicted = total_bits(model, tokens)
@@ -324,6 +390,8 @@ def eval_file(model: LM, enc: LE.Encoding, path: str, work: Path) -> dict:
            "bits_per_byte": round(bits / nbytes, 4), "bits_per_token": round(bits / max(1, predicted), 4)}
     if isinstance(enc, LE.HashCodes):
         row["fidelity"] = enc.fidelity(Path(path).read_bytes())
+    if classes:
+        row["by_class"] = class_bits(model, enc, tokens, lens, train_counts)
     return row
 
 
@@ -443,8 +511,9 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
                                         "bits_per_byte": round(vbits / max(1, int(valid_lens.sum())), 4)}
         log(f"[{enc.name}] validation split: {result['eval']['validation']}")
 
+    train_counts = np.bincount(train_tokens, minlength=enc.vocab) if not enc.groups else None
     for split, paths in eval_sets.items():
-        rows = {Path(p).stem: eval_file(model, enc, p, work) for p in paths}
+        rows = {Path(p).stem: eval_file(model, enc, p, work, train_counts, classes=(split == "heldout")) for p in paths}
         result["eval"][split] = rows
         tb = sum(r["bits_per_byte"] * r["bytes"] for r in rows.values())
         nb = sum(r["bytes"] for r in rows.values())

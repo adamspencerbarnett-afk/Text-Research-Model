@@ -196,6 +196,21 @@ class HarnessTests(unittest.TestCase):
         self.assertAlmostEqual(float(full[0]), 0.0, places=3)
         self.assertAlmostEqual(float(loo[0]), 0.0, places=3)
 
+    def test_class_bits_partition_the_total(self):
+        import torch
+        torch.manual_seed(0)
+        e = LE.Bytes(); tokens, lens = e.encode(TEXT)
+        model = self.tl.LM(e, width=16, layers=1, heads=2, ctx=16)
+        counts = np.bincount(tokens, minlength=256)
+        total, _ = self.tl.total_bits(model, tokens)
+        per = self.tl.token_bits(model, tokens)
+        self.assertAlmostEqual(float(per.sum()), total, places=3)
+        c = self.tl.class_bits(model, e, tokens, lens, counts)
+        freq = [v for k, v in c.items() if k.startswith("freq_")]; typ = [v for k, v in c.items() if k.startswith("type_")]
+        self.assertAlmostEqual(sum(v["byte_share"] for v in freq), 1.0, places=2)
+        self.assertAlmostEqual(sum(v["bits_share"] for v in typ), 1.0, places=2)
+        self.assertEqual(c["type_byte_fallback"]["byte_share"], 1.0)   # bytes are all byte tokens
+
     def test_validation_split_and_early_stopping(self):
         with tempfile.TemporaryDirectory() as tmp:
             work = Path(tmp)
