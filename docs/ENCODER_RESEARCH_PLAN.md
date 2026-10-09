@@ -380,6 +380,31 @@ What this shows, and why it is useful rather than merely disappointing:
 
 The chat format itself was learned in minutes by both models (turn markers, sentence shapes, closing a turn and opening the next), so the compiler-and-tables pipeline works end to end for conversation; what is missing is the part that makes the answer depend on the question.
 
+### Design v2, screen 1: the exchange memory on the Q&A data (9 October, three runs)
+
+`compiler/experiments/m2_qa.py`. The compiler's scanner turns every question into a canonical key (its content words); an exchange memory (M2) stores 51,000 training exchanges by key with exact and nearest lookup; the local tables (M1) stay on; the core (M3) trains for 600 s on windows of [nearest other exchange] + [this exchange] so it can learn to use what memory returns. Four groups of questions are answered through the compiler and scored by word F1 against the reference: seen (training questions), paraphrase (held-out questions with a strong nearest key), unseen (the rest), and added (held-out pairs put into memory after training, no training). Results in `results/m2_qa.json`, `m2_qa_run2.json`, `m2_qa_run3.json`; the run 3 core is `models/m2_qa_run3.pt`.
+
+| Question group | Memory path (exact key) | Network, run 1 | Network, run 3 with retrieval bias | Retrieved answer itself |
+| --- | ---: | ---: | ---: | ---: |
+| seen (200 / 60) | 0.971 F1, 99% exact | 0.128 | **0.233** (first exact answers, 1.7%) | 1.0 |
+| added after training (200 / 60) | 0.960 F1, 99% exact | 0.118 | **0.210** | 1.0 |
+| paraphrase (44) | no exact key | 0.135 | 0.131 | 0.273 |
+| unseen (156) | no exact key | 0.117 | 0.118 | 0.189 |
+| held-out, no memory at all (60) | | 0.120 | | |
+
+Run by run:
+
+1. *Run 1 (memory + retrieval-augmented training).* The memory path answers what it holds, 99% exactly, including 200 pairs added in seconds after training: the self-updating knowledge store works, by lookup. The network path ignores the memory entirely: F1 0.12–0.13 in every group, the same as with no memory, and the same generic opening for every question. Yet the nearest exchange in the window improved validation prediction from 1.356 to 1.298 bits per byte: the network reads memory for scoring and cannot act on it when generating.
+2. *Run 2 (half the training windows carry the exchange's own text, to teach copying; answers also generated with the tables off).* Copying was not learned (0.131). With the tables off the network's text falls apart (F1 0.04–0.06) but becomes topical for the first time: "water can heat energy" for why ice floats, "global increased" for global warming, "AI customer" for the customer-service question. So the question does reach the network; the network lacks fluency; the tables supply fluency and erase the question; the trust head chooses fluent and generic.
+3. *Run 3 (a retrieval bias at generation: codes that occur in the retrieved answer get a bonus of 3 nats, the soft form of the check loop's "answer from evidence").* Where memory holds the right exchange the answers become about the question: seen 0.139 → 0.233, added 0.128 → 0.210, with the first exact answers. Samples: "The global warming... such as the greenhouse effect" to the global-warming question; "AI can be used to quickly and customer service" to the customer-service question. Where memory holds nothing relevant (unseen) nothing changes, as it should. The policy "repeat the retrieved answer when the key overlap is at least 0.5, otherwise generate" scores 0.161 on held-out against 0.13 for generation alone.
+
+What this settles:
+
+- *The memory layer is right and works now:* exact and near lookup by a deterministic key, updated by adding, inspectable. Everything that memory holds is answerable at once.
+- *The network cannot yet carry memory into an answer by itself at this scale.* A 0.79M core trained for ten CPU-minutes does not learn to copy from context, and the local tables, keyed on the last codes, overpower it. The retrieval bias is a stand-in for the copy mechanism a larger core would learn; the GPU run is where that gets tested.
+- *Fluency and conditioning live in different components* (tables and network) and the mixer cannot yet combine them. That is the Design v2 question for the next screens: tables conditioned on the retrieved exchange, a learned copy head instead of a constant bias, and the number channel (numeric questions still produce digit runs).
+- *Paraphrase answering is bounded by retrieval:* the retrieved answer caps at 0.27 F1 on paraphrases, so better keys (inflection folding, synonyms, or a learned key) matter more than better generation for that group.
+
 **Best model, stated plainly.** Text is compiled into 8,192 word-and-piece codes by the deterministic compiler. A 4-layer, width-128 Transformer (0.79M parameters) reads the codes, with two hashed lookup tables (bigram and trigram keys, 2^20 rows each, 268M parameters, one lookup each per code) added to its input. Its output is mixed, per code, with exact bigram and trigram follower counts from the training text (3.3M entries, built in four seconds, rebuilt without retraining), using weights the network predicts from its state and each table's confidence. After 600 s of CPU training: 1.806 bits per byte on unseen books, 3.96 on code and Markdown it was never trained on, about 600 bytes of reply per second on one core.
 
 
@@ -512,6 +537,7 @@ Rules carried over from the V1 discipline: fit dictionaries and tokenizers on th
 ## 8. Log
 
 - **2026-10-08.** Review of `encoder-v0` and the earlier results; measurements F1–F3 on two held-out books; PyTorch installed in the sandbox and the Phase 1 model shape timed on CPU; plan written. No model was trained to completion and no result in `results/` changed.
+- **2026-10-09, Design v2 screen 1.** Exchange memory keyed on the question, three runs on the Q&A data: memory path 99% exact on seen and on pairs added after training; the network ignores memory on its own (0.13 F1); with the tables off it is topical but broken; with a retrieval bias at generation the answers become about the question where memory holds the right exchange (seen 0.139 → 0.233, added 0.128 → 0.210, first exact answers). Core saved as `models/m2_qa_run3.pt`.
 - **2026-10-09, Design v2.** `docs/DESIGN_V2.md` with `figures/design_v2_flow.svg`: straight answers on why encoding alone could not add knowledge (a lossless encoder changes speed, stability and exposed structure, not information), why the reasoning loop should have been in from the start, and the architecture that follows: structured codes and canonical keys from the compiler, local tables (M1), a question-keyed exchange memory (M2), a network sized to carry the question (M3), a trust head and a deterministic check loop; answer accuracy and learning-by-adding measured from the first screen.
 - **2026-10-09, talking-bot test.** Two models trained from scratch on 19 MB of chat-formatted Alpaca text; the table model predicts unseen exchanges 19% better than the plain one (1.356 against 1.674 bits per byte) but neither answers a question: the tables are keyed on the last codes, which are identical after "Assistant:" for every question. Conclusion recorded; fix belongs to Phase 3.
 - **2026-10-09, learning by reading and Version 1.** Adding one Austen book to the count tables alone improved prediction of another Austen book by 0.59% against 0.02% for an unrelated book; the model learns by reading, without training. Alpaca (52k exchanges) converted to chat text for the talking-bot test. Version 1 frozen in `releases/version1.zip` with `docs/VERSION_1.md`.
