@@ -1,0 +1,460 @@
+{
+ "setup": {
+  "data": "data_qa",
+  "work": "runs/m2",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 600.0,
+  "ctx": 256,
+  "batch": 16,
+  "topk": 64,
+  "neighbor_codes": 110,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/m2_qa_run7_copy_seed2.json",
+  "seed": 2,
+  "self_context_p": 0.5,
+  "copy_bias": 3.0,
+  "device": "cpu",
+  "threads": 10,
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "save": "runs/m2/run7.pt",
+  "train_exchanges": 50232,
+  "eval": 510,
+  "added": 511,
+  "distinct_keys": 49873
+ },
+ "training": {
+  "steps": 1629,
+  "train_s": 600.1,
+  "history": [
+   {
+    "train_s": 60.1,
+    "step": 196,
+    "train_bits_per_code": 3.932,
+    "valid_bits_per_byte": 1.4881
+   },
+   {
+    "train_s": 120.2,
+    "step": 409,
+    "train_bits_per_code": 4.729,
+    "valid_bits_per_byte": 1.4736
+   },
+   {
+    "train_s": 180.3,
+    "step": 563,
+    "train_bits_per_code": 4.182,
+    "valid_bits_per_byte": 1.4805
+   },
+   {
+    "train_s": 240.1,
+    "step": 718,
+    "train_bits_per_code": 3.197,
+    "valid_bits_per_byte": 1.4688
+   },
+   {
+    "train_s": 300.2,
+    "step": 870,
+    "train_bits_per_code": 3.334,
+    "valid_bits_per_byte": 1.4805
+   },
+   {
+    "train_s": 360.2,
+    "step": 1022,
+    "train_bits_per_code": 4.17,
+    "valid_bits_per_byte": 1.5038
+   },
+   {
+    "train_s": 420.0,
+    "step": 1177,
+    "train_bits_per_code": 3.133,
+    "valid_bits_per_byte": 1.4864
+   },
+   {
+    "train_s": 480.3,
+    "step": 1328,
+    "train_bits_per_code": 3.265,
+    "valid_bits_per_byte": 1.4507
+   },
+   {
+    "train_s": 540.1,
+    "step": 1478,
+    "train_bits_per_code": 3.084,
+    "valid_bits_per_byte": 1.4114
+   },
+   {
+    "train_s": 600.1,
+    "step": 1629,
+    "train_bits_per_code": 3.724,
+    "valid_bits_per_byte": 1.4233
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.99,
+   "exact": 1.0
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 60,
+   "f1": 0.6169,
+   "exact": 0.1167,
+   "f1_no_m1": 0.0508,
+   "f1_bias": 0.6445,
+   "exact_bias": 0.1667
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 45,
+   "f1": 0.1998,
+   "exact": 0.0222,
+   "f1_no_m1": 0.0503,
+   "f1_bias": 0.2279,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.2767
+  },
+  "unseen_network_with_nearest": {
+   "n": 155,
+   "f1": 0.1558,
+   "exact": 0.0,
+   "f1_no_m1": 0.0515,
+   "f1_bias": 0.1493,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.1885
+  },
+  "heldout_network_without_memory": {
+   "n": 60,
+   "f1": 0.0945,
+   "exact": 0.0
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.183
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.9706,
+   "exact": 0.985
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 60,
+   "f1": 0.5579,
+   "exact": 0.1167,
+   "f1_no_m1": 0.0553,
+   "f1_bias": 0.5933,
+   "exact_bias": 0.1333
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "What are the benefits of using a ladder in the workplace?",
+    "a": "The risk of injurymost, it can not be usedable platform to reach otherwise require climbing or finding that the risk of injurymostatss and foremost, it can also",
+    "f1": 0.6282051282051282,
+    "exact": 0.0,
+    "a_no_m1": "Can can T online online air by optimize. the value\na was food online air can The home? can the email, food online digital online small when both long? as long o",
+    "f1_no_m1": 0.152046783625731,
+    "a_bias": "It can not have to reach otherwise hard-reach areas otherwise require climbing or finding that would also help to reach otherwise hard-reach areas. First, it ca",
+    "f1_bias": 0.6227544910179641,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Describe a species of flower.",
+    "a": "The tiger l, bright orange petals that are speckled with dark markings resembling a vibrant and beautiful species of flower. It has large, bright yellow, and th",
+    "f1": 0.746031746031746,
+    "exact": 0.0,
+    "a_no_m1": "Del can T online online so one before so one both long? Some are long? the water at certain can one good\nSp or strong; long when one digital online online onlin",
+    "f1_no_m1": 0.05555555555555556,
+    "a_bias": "The tiger l, bright orange petals that are speckled with dark markings resembling a vibrant and beautiful species of flower. It has large, bright yellow, and th",
+    "f1_bias": 0.746031746031746,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Compose a melody for this song using musical notes\nThe song is called \"Make Me B",
+    "a": "A4 B4 G4 D4 D4 E4 E4 A4 E4 G4 D4 E4 G4 E4 B4 F4 A4 E4 E4 B4 D4 E4 D4 E4 G4 A4 B4 D4 D4 E4 F = 1000\nAssistant: \"The song is a process of photosynthesis",
+    "f1": 0.7500000000000001,
+    "exact": 0.0,
+    "a_no_m1": "Del can can digital online any digital before so as both long? can one online by air can both home can one good, food online digital online user. great! home on",
+    "f1_no_m1": 0.0,
+    "a_bias": "A4 B4 G4 D4 D4 E4 E4 A4 E4 G4 D4 E4 G4 E4 B4 F4 A4 E4 E4 B4 D4 E4 D4 E4 G4 A4 B4 D4 D4 E4 F4 B4.",
+    "f1_bias": 0.8070175438596492,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Ask a question that someone buying the product might have.\nSmart Fridge Pro, a W",
+    "a": "What Freedom of speech used in a internet and can provide?\nAssistant: \"The Road Not Taken\" by the internet.\nAssistant: The main difference between a laptop can ",
+    "f1": 0.3414634146341463,
+    "exact": 0.0,
+    "a_no_m1": "Del can T online online air by user. the value\na was food online air online certain at both value, long on good or strong as cost is one digital online small ne",
+    "f1_no_m1": 0.023255813953488372,
+    "a_bias": "What Fr advice can provide?",
+    "f1_bias": 0.5333333333333333,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "What is the difference between a direct object and an indirect object?",
+    "a": "The direct object is that a verb is that a verb is the recipient of a verb, while an indirect object is the recipient of a verb is \"She brought him a verb is th",
+    "f1": 0.6835443037974683,
+    "exact": 0.0,
+    "a_no_m1": "Can can can digital online air by user. the value\na was food online online online certain at certain can one good\n, P given air when one good\ns followed on econ",
+    "f1_no_m1": 0.04938271604938272,
+    "a_bias": "The direct object is that a verb is that a verb is the recipient of a verb, while an indirect object is the recipient of a verb is \"She brought him a verb is th",
+    "f1_bias": 0.6835443037974683,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Generate a sentence which demonstrates the use of the homophones \"there\" and \"th",
+    "a": "They weren't sure if they could do.",
+    "f1": 0.5161290322580645,
+    "exact": 0.0,
+    "a_no_m1": "Del can can digital online when digital before so as obtain\no to food online air can can T both value, air as strong; Some; long when one digital online small a",
+    "f1_no_m1": 0.061855670103092786,
+    "a_bias": "They weren't sure if they could do.",
+    "f1_bias": 0.5161290322580645,
+    "exact_bias": 0.0
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Classify the text as being sarcastic or not\nThat was the best day ever!",
+    "a": "Non-sarcastic, or non-sarcastic.",
+    "f1": 0.33333333333333337,
+    "exact": 0.0,
+    "a_no_m1": "Del can can digital online air from user. the value\no to food online air can can T so can one good\nSp is Some; cost is T digital online small at online one digi",
+    "f1_no_m1": 0.0,
+    "a_bias": "Non-sarcastic.",
+    "f1_bias": 0.6666666666666666,
+    "exact_bias": 0.0,
+    "sim": 0.525,
+    "f1_vs_retrieved": 0.5714285714285715,
+    "retrieved_answer_f1_vs_ref": 0.6666666666666666
+   },
+   {
+    "q": "Name a few techniques to reduce stress.",
+    "a": "The main can be done through deep breathing and doubt - this your mood anxiety, improve your mood anxiety, and doubt - this your mood anxiety and doubts and dou",
+    "f1": 0.31249999999999994,
+    "exact": 0.0,
+    "a_no_m1": "Can can T online online when digital before so the value\na was food online online online certain at certain can the long on good or financial; cost is T digital",
+    "f1_no_m1": 0.07894736842105264,
+    "a_bias": "1.\n2.\n2. Decreasing anxiety and physical activity - this your mood anxiety, and doubt - this your mood anxiety and doubt - this can help you stay on track.\n4. S",
+    "f1_bias": 0.25641025641025644,
+    "exact_bias": 0.0,
+    "sim": 0.508,
+    "f1_vs_retrieved": 0.4761904761904762,
+    "retrieved_answer_f1_vs_ref": 0.33526011560693647
+   },
+   {
+    "q": "Predict the stock price for a certain company",
+    "a": "It is difficult to predict the exact stock price of Company X three months from now. However, factors. However, factors to consider are the market outlook from ",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "Del can can Some? s useN; both long? Some are long? the C given certain can one good, food online before online small when one by c on online online one digital",
+    "f1_no_m1": 0.0,
+    "a_bias": "It is difficult to predict the exact stock price of Company X three months in advance as it is influence health. However, factors. However, the current stock pr",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "sim": 0.621,
+    "f1_vs_retrieved": 0.5750000000000001,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Generate a sentence that explains the importance of getting enough sleep.",
+    "a": "Getting enough sleep is essential for both physical and mental health. It helps to maintain energy levels and keep us alert throughout the day. It helps to impr",
+    "f1": 0.3617021276595745,
+    "exact": 0.0,
+    "a_no_m1": "Del can can digital online when digital before free; both long? Some are set? the water at certain can one before as air or strong; long when one digital online",
+    "f1_no_m1": 0.038834951456310676,
+    "a_bias": "Getting enough sleep is essential for both physical and mental health. It helps to maintain energy levels and keep us alert throughout the day. It helps to impr",
+    "f1_bias": 0.33663366336633666,
+    "exact_bias": 0.0,
+    "sim": 0.557,
+    "f1_vs_retrieved": 0.6902654867256637,
+    "retrieved_answer_f1_vs_ref": 0.4533333333333333
+   },
+   {
+    "q": "Describe what the purpose of a priority queue is.",
+    "a": "A priority queue is a data structure where items are stored in an order according to the priority queue is removed from the priority queue first, followed by as",
+    "f1": 0.3770491803278688,
+    "exact": 0.0,
+    "a_no_m1": "Del can can Some? so and increasing can can at digital digital online by economic can well was working when free as air or strong as long when one digital onlin",
+    "f1_no_m1": 0.10526315789473684,
+    "a_bias": "The item with item with a priority queue. It works by assigning a data structure where items from the priority queue is added to the queue is added to the queue",
+    "f1_bias": 0.4000000000000001,
+    "exact_bias": 0.0,
+    "sim": 0.759,
+    "f1_vs_retrieved": 0.7969924812030075,
+    "retrieved_answer_f1_vs_ref": 0.4274809160305343
+   },
+   {
+    "q": "Describe in a few sentences about the solar system.",
+    "a": "The eight planets orbit, comeliptids, along with dwarf planets orbit, come up with d, asteroid'scury, and other objects such as natural satellites to stay focus",
+    "f1": 0.21359223300970873,
+    "exact": 0.0,
+    "a_no_m1": "Can at air when online by digital before so one both long? Some are long? the water at both value, The water before online digital online air when one digital o",
+    "f1_no_m1": 0.08,
+    "a_bias": "The eight planets orbit, comeliptids, along with dwarf planets orbit, comets, comets, and Neptune. The eight planets orbit, and other objects such as natural sa",
+    "f1_bias": 0.4166666666666667,
+    "exact_bias": 0.0,
+    "sim": 0.723,
+    "f1_vs_retrieved": 0.4,
+    "retrieved_answer_f1_vs_ref": 0.583941605839416
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Write an introduction paragraph summarizing the following article\nThe main theme",
+    "a": "This book explore. It examines the environment.",
+    "f1": 0.09375,
+    "exact": 0.0,
+    "a_no_m1": "Del can T online online when digital before so as both long? Some are set? the water at certain can the email, food online before online user. great to online o",
+    "f1_no_m1": 0.10687022900763359,
+    "a_bias": "This book explore. It examines the environment. It can coexist with a more sustainable way. It can both benefit and harm the environment and discusses how we ca",
+    "f1_bias": 0.11214953271028036,
+    "exact_bias": 0.0,
+    "sim": 0.145,
+    "f1_vs_retrieved": 0.2553191489361702,
+    "retrieved_answer_f1_vs_ref": 0.14432989690721648
+   },
+   {
+    "q": "Create a 3-4 sentence story using the following words: ship, storm, rope.",
+    "a": "Once upon a time, thereed for a time the flower flower flower that could grant any wish was an ench. One day, a brave sailor set course for an adventure of a ma",
+    "f1": 0.20967741935483872,
+    "exact": 0.0,
+    "a_no_m1": "Del can can Some? so and increasing can digital by air by optimize\n, making at both value, making as strong; user as cost: Think s Pro on economic. the home can",
+    "f1_no_m1": 0.08955223880597016,
+    "a_bias": "Once upon a time, thereed for a time the flower flower flower that could grant any wish was an ench. One day, a brave sailor set course for an adventure of a ma",
+    "f1_bias": 0.20967741935483872,
+    "exact_bias": 0.0,
+    "sim": 0.368,
+    "f1_vs_retrieved": 0.7927927927927928,
+    "retrieved_answer_f1_vs_ref": 0.25210084033613445
+   },
+   {
+    "q": "Give an example of a web host service.",
+    "a": "One example of a web service that could be automated using AI for a web service that could be used to customer complaints.",
+    "f1": 0.2857142857142857,
+    "exact": 0.0,
+    "a_no_m1": "Del can T online online any obtain, air; both long? Some are set? the software when so can the long on good in good in each one good\ns Pro on online digital dig",
+    "f1_no_m1": 0.08928571428571429,
+    "a_bias": "One example of a web service that could be automated using AI-enabled machines can be used to customer complaints. AI-enabled machines to customer complaints. A",
+    "f1_bias": 0.22784810126582278,
+    "exact_bias": 0.0,
+    "sim": 0.33,
+    "f1_vs_retrieved": 0.6206896551724138,
+    "retrieved_answer_f1_vs_ref": 0.29333333333333333
+   },
+   {
+    "q": "When did the SARS-CoV-2 virus originate?",
+    "a": "As of May 20, 21021 million people have been infected with SARS-CoV States.102 in the United States.11 million people.",
+    "f1": 0.27906976744186046,
+    "exact": 0.0,
+    "a_no_m1": "Del can can digital online any obtain, air; one digital by air by optimize\n, G at certain can one before as air or strong; long when one digital online online o",
+    "f1_no_m1": 0.02040816326530612,
+    "a_bias": "10, 202.1021 million people have been infected with SARS-CoV States.100 321 million people have been infected with SARS-CoV have been infected with SARS-2 in th",
+    "f1_bias": 0.19607843137254902,
+    "exact_bias": 0.0,
+    "sim": 0.309,
+    "f1_vs_retrieved": 0.8571428571428571,
+    "retrieved_answer_f1_vs_ref": 0.28571428571428564
+   },
+   {
+    "q": "Create a content plan for a blog organized around animal conservation.",
+    "a": "Content Plan for a blog post about the benefits of using voice recognition technology and how it works \n- Benefits of using voice recognition technology and how",
+    "f1": 0.1794871794871795,
+    "exact": 0.0,
+    "a_no_m1": "Del can can free? s useN; one by long to food by air can well was both value, making as The home on air when one good\n Think and long or air; T this digital onl",
+    "f1_no_m1": 0.12359550561797752,
+    "a_bias": "- Introduction to voice recognition technology.\n- Introduction to voice recognition technology and how it works \n- Benefits of using voice recognition technolog",
+    "f1_bias": 0.12422360248447203,
+    "exact_bias": 0.0,
+    "sim": 0.223,
+    "f1_vs_retrieved": 0.6603773584905661,
+    "retrieved_answer_f1_vs_ref": 0.1829268292682927
+   },
+   {
+    "q": "Generate a heartfelt condolence message for a deceased friend.",
+    "a": "I am deeply sorry for the love of those around you provide comfort and peace during this difficult time.",
+    "f1": 0.4313725490196078,
+    "exact": 0.0,
+    "a_no_m1": "Del can can Some? s De or financial can can at digital digital online by air or home as digital online small as strong; user as long when one digital online sma",
+    "f1_no_m1": 0.055555555555555546,
+    "a_bias": "I am deeply sorry for the love of those around you provide comfort and peace during this difficult time.",
+    "f1_bias": 0.4313725490196078,
+    "exact_bias": 0.0,
+    "sim": 0.384,
+    "f1_vs_retrieved": 0.9268292682926829,
+    "retrieved_answer_f1_vs_ref": 0.4814814814814815
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Convert the following sentence into the interrogative form: \"He isn't going to t",
+    "a": "Isn't he going to the party?\nAssistant: The party?",
+    "f1": 0.8235294117647058,
+    "exact": 0.0,
+    "a_no_m1": "Del can can digital online so. The system and home can T so. well that setting can T so can one good\nSp is Some; cost is one digital online small at online one ",
+    "f1_no_m1": 0.05,
+    "a_bias": "Isn't he going to the party?\nAssistant: The party?",
+    "f1_bias": 0.8235294117647058,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Explain the concept of a polling system in elections.",
+    "a": "The information is used to find the information.",
+    "f1": 0.125,
+    "exact": 0.0,
+    "a_no_m1": "Can at air online online when digital good and financial at digital by digital digital online online online certain at certain digital online certain as strong;",
+    "f1_no_m1": 0.06666666666666667,
+    "a_bias": "The information is used to find the information. The polls and to find the polls can favor regarding candidates or issues involves surveying citizens to make pr",
+    "f1_bias": 0.6704545454545454,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Generate a pun from the words 'giraffe' and 'elephant'",
+    "a": "Giraffe's and elephants and elephants are '.",
+    "f1": 0.42857142857142855,
+    "exact": 0.0,
+    "a_no_m1": "Del can can Some? s use followed and water can T so. the financial can can T so can one good\nSp and financial; cost: Think\n Think and long or air; T this digita",
+    "f1_no_m1": 0.07792207792207792,
+    "a_bias": "'.",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Analyze the given text and provide a list of prominent themes.\nThe sky was fille",
+    "a": "Prominent themes of the night.",
+    "f1": 0.4347826086956522,
+    "exact": 0.0,
+    "a_no_m1": "Del can can digital online by digital before so one both long? Some are set? the overall with certain digital online certain as air or strong; cost: Think\n Thin",
+    "f1_no_m1": 0.06593406593406594,
+    "a_bias": "Prominent themes of the night.",
+    "f1_bias": 0.4347826086956522,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Name 3 properties of water.",
+    "a": "Water has several important, including its ability to form hydrogen bonds, a high surface tension, and three distinct. It has a neutral pH, and is very good at ",
+    "f1": 0.33707865168539325,
+    "exact": 0.0,
+    "a_no_m1": "Del can can Some? s useN are both long? Some are long? the software at certain can one good, food online before as long when one digital online small at online ",
+    "f1_no_m1": 0.0392156862745098,
+    "a_bias": "- liquid, including its ability to form hydrogen bonds, a high heat capacity, solid, liquid, and gas. It has several important properties, and gas. Additionally",
+    "f1_bias": 0.3132530120481928,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Name three successful female entrepreneurs from the 21st century.",
+    "a": "Three successful female entrepreneurs from the 2020 successful female entrepreneurs.",
+    "f1": 0.3243243243243243,
+    "exact": 0.0,
+    "a_no_m1": "Del can can digital online when digital before so as both long? Some are set? the water at certain can one good, food online before online small one good\ns Pro ",
+    "f1_no_m1": 0.0404040404040404,
+    "a_bias": "21st century.",
+    "f1_bias": 0.13333333333333333,
+    "exact_bias": 0.0
+   }
+  ]
+ }
+}

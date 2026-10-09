@@ -1,0 +1,460 @@
+{
+ "setup": {
+  "data": "data_qa",
+  "work": "runs/m2",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 600.0,
+  "ctx": 256,
+  "batch": 16,
+  "topk": 64,
+  "neighbor_codes": 110,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/m2_qa_run8_copy_answer_only.json",
+  "seed": 1,
+  "self_context_p": 0.5,
+  "copy_bias": 3.0,
+  "device": "cpu",
+  "threads": 10,
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": true,
+  "save": "runs/m2/run8.pt",
+  "train_exchanges": 50232,
+  "eval": 510,
+  "added": 511,
+  "distinct_keys": 49873
+ },
+ "training": {
+  "steps": 1602,
+  "train_s": 600.1,
+  "history": [
+   {
+    "train_s": 60.2,
+    "step": 198,
+    "train_bits_per_code": 3.92,
+    "valid_bits_per_byte": 1.4241
+   },
+   {
+    "train_s": 120.3,
+    "step": 388,
+    "train_bits_per_code": 3.771,
+    "valid_bits_per_byte": 1.426
+   },
+   {
+    "train_s": 180.4,
+    "step": 539,
+    "train_bits_per_code": 4.634,
+    "valid_bits_per_byte": 1.3973
+   },
+   {
+    "train_s": 240.3,
+    "step": 691,
+    "train_bits_per_code": 3.791,
+    "valid_bits_per_byte": 1.4402
+   },
+   {
+    "train_s": 300.3,
+    "step": 842,
+    "train_bits_per_code": 4.688,
+    "valid_bits_per_byte": 1.4286
+   },
+   {
+    "train_s": 360.0,
+    "step": 993,
+    "train_bits_per_code": 3.796,
+    "valid_bits_per_byte": 1.4051
+   },
+   {
+    "train_s": 420.1,
+    "step": 1144,
+    "train_bits_per_code": 3.687,
+    "valid_bits_per_byte": 1.4372
+   },
+   {
+    "train_s": 480.1,
+    "step": 1297,
+    "train_bits_per_code": 5.205,
+    "valid_bits_per_byte": 1.4261
+   },
+   {
+    "train_s": 540.4,
+    "step": 1451,
+    "train_bits_per_code": 3.541,
+    "valid_bits_per_byte": 1.4647
+   },
+   {
+    "train_s": 600.1,
+    "step": 1602,
+    "train_bits_per_code": 4.147,
+    "valid_bits_per_byte": 1.4
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.9862,
+   "exact": 0.99
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 60,
+   "f1": 0.517,
+   "exact": 0.0167,
+   "f1_no_m1": 0.0639,
+   "f1_bias": 0.5213,
+   "exact_bias": 0.0333
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 44,
+   "f1": 0.2153,
+   "exact": 0.0,
+   "f1_no_m1": 0.0529,
+   "f1_bias": 0.1765,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.2727
+  },
+  "unseen_network_with_nearest": {
+   "n": 156,
+   "f1": 0.1557,
+   "exact": 0.0,
+   "f1_no_m1": 0.0652,
+   "f1_bias": 0.1375,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.1887
+  },
+  "heldout_network_without_memory": {
+   "n": 60,
+   "f1": 0.1255,
+   "exact": 0.0
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.1815
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.96,
+   "exact": 0.99
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 60,
+   "f1": 0.446,
+   "exact": 0.0,
+   "f1_no_m1": 0.0606,
+   "f1_bias": 0.4502,
+   "exact_bias": 0.0167
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Describe a personality trait of Queen Elizabeth II and back it up with an exampl",
+    "a": "The People can relations which is her most recent news, after it has becomeplomatic state of poise. She has becomeplomatic state of po, after it had been severe",
+    "f1": 0.5373134328358209,
+    "exact": 0.0,
+    "a_no_m1": "Pick\nBe\nYou?\ufffd as high?a or local that both Data can O by bi\nDes. Dr can both Data by financial from St for human both St would so Another and higher that O will",
+    "f1_no_m1": 0.15384615384615383,
+    "a_bias": "1999979979997, 1. She was her decision to restise and strong leadership. She is her, after it had been severed for more997ise and strong leadership. By doing th",
+    "f1_bias": 0.484375,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Name five of the most common space rocks found in our solar system.",
+    "a": "The five most common space rocks found in our Solar System are asteroidt objects and Trans-NeptuningNewE.",
+    "f1": 0.7692307692307693,
+    "exact": 0.0,
+    "a_no_m1": "Pick\nPe, t by bi as high\na or local that both Data can O by bi\n While. Un to high from O with control on both So that humans\nBe and technology or t with O; But.",
+    "f1_no_m1": 0.0879120879120879,
+    "a_bias": "our Solar System are asteroids, metuiper beltunian objects and Trans-Neptunian objects.\n\n space rocks found in our Solar System are asteroids.\n most common spac",
+    "f1_bias": 0.5079365079365079,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "What is the main difference between the methods of knowledge sharing through con",
+    "a": "The main difference between the methods of time sharing through conversation and through more natural exchanges of ideasrutiny of an event.\nAssistant: The main ",
+    "f1": 0.6271186440677967,
+    "exact": 0.0,
+    "a_no_m1": "Can from un as local in further can both for smart with La that both that most; St from Dr could when both Data could; Her for t; Data could both St would so O;",
+    "f1_no_m1": 0.07751937984496123,
+    "a_bias": "conversation is that conversation is more natural exchanges of time, while shorter period difference between the methods of ideasrutiny of ideasrutiny of knowle",
+    "f1_bias": 0.7610619469026549,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Guess what someone is thinking",
+    "a": "The life has they want to make it more time for leisurely to make more time for leisurely to make more informed decisions.",
+    "f1": 0.4,
+    "exact": 0.0,
+    "a_no_m1": "Pick\nBe\nDes in my w\nOnce  with un so So\nCharacter and ensure from Dr could when both Data?f\na\nOnce\nDes in Dr by smart can O! S will higher for humans. S at So o",
+    "f1_no_m1": 0.047619047619047616,
+    "a_bias": "The life has they want to make more time for leisure time for leisure activities.",
+    "f1_bias": 0.5945945945945945,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Speculate what will happen in the future in terms of technology.",
+    "a": "The future of automation, technology is likely to become increasingly more.",
+    "f1": 0.30985915492957744,
+    "exact": 0.0,
+    "a_no_m1": "Can\nBe\n Start in un as high?a or local that both Data can O by bi\n Un is t can both Car by financial from most so So that other bi by cloud\n Un that O will air ",
+    "f1_no_m1": 0.10687022900763357,
+    "a_bias": "people across the future, technology is likely to become increasingly more. We can expect advances in the fields of automation, virtual reality, artificial inte",
+    "f1_bias": 0.8412698412698413,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Write the full name for the following acronym: CIA",
+    "a": "The Intelligence (",
+    "f1": 0.4,
+    "exact": 0.0,
+    "a_no_m1": "Pick\nOnce\nDes in my h when other bi with C in t\nCharacter and two my answer\na, two Ch from O with t;a, time with my smart with smart. From\nOnce, their student\nA",
+    "f1_no_m1": 0.0,
+    "a_bias": "cy, Intelligence Agency",
+    "f1_bias": 0.6666666666666666,
+    "exact_bias": 0.0
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Name two possible solutions to reduce the effects of global warming.",
+    "a": "The impact of greenhouse gases such as carbon dioxide and better managing forests and solar energy sources like solar, wind and other ecosystems to reduce globa",
+    "f1": 0.37777777777777777,
+    "exact": 0.0,
+    "a_no_m1": "Pick\nBe\n Start in my h when other smart with local that money\nEx and ensure from Dr could with t can both Data by financial from most by human both with control",
+    "f1_no_m1": 0.020833333333333336,
+    "a_bias": "renewable and solar such as carbon dioxide, switching to clean energy sources like solar and wind and solar, wind and other ecosystems to reduce global warming.",
+    "f1_bias": 0.34408602150537637,
+    "exact_bias": 0.0,
+    "sim": 0.698,
+    "f1_vs_retrieved": 0.7846153846153845,
+    "retrieved_answer_f1_vs_ref": 0.4047619047619047
+   },
+   {
+    "q": "What is the area of France in square kilometers?",
+    "a": "The area of India in 1,287, 1, 4, 7.\nAssistant: 1.",
+    "f1": 0.28571428571428575,
+    "exact": 0.0,
+    "a_no_m1": "Pick\nOnce\nDes in my natural when other smart with local that both Data can O by bi\nDes. Dr could as medical by smart from Dr by human both St for smart can O!a\n",
+    "f1_no_m1": 0.0,
+    "a_bias": "3, 263, 3, 3, 3.3.7,2, 287, 6, 3 is 287, 7, 3. \n 3, 2, 202287, 26.263. 263. 3, 3.",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "sim": 0.563,
+    "f1_vs_retrieved": 0.7142857142857143,
+    "retrieved_answer_f1_vs_ref": 0.5
+   },
+   {
+    "q": "Generate a 5-word poem based on the given theme.\nFriendship",
+    "a": "The biiendship is a binding stronger\nAssistant: The binding stronger\nThan any force like ropes or spots like grass, pain and keeps us free\nFrom sorrow, pain and",
+    "f1": 0.05714285714285715,
+    "exact": 0.0,
+    "a_no_m1": "Pick\nBe\n Start in my h when other smart with my high can O! Another and home\n Un. Un to high from O with control on both So that humans\nBe and technology or t w",
+    "f1_no_m1": 0.026666666666666665,
+    "a_bias": "a binds\nIt grows like ropes or chains like\nIt is a binding stronger\nThan any force like ropes, pain and keeps us free\nFrom sorrow, pain, pain and childish.\nFrom",
+    "f1_bias": 0.0392156862745098,
+    "exact_bias": 0.0,
+    "sim": 0.626,
+    "f1_vs_retrieved": 0.7857142857142856,
+    "retrieved_answer_f1_vs_ref": 0.06451612903225806
+   },
+   {
+    "q": "Name three endangered animal species.",
+    "a": "The Asian elephantangered animal species include Asian elephants, giraffes, and pandas.",
+    "f1": 0.2962962962962963,
+    "exact": 0.0,
+    "a_no_m1": "Pick\nBe\n Start in my w\n Start  with local that both Data can O by bi\na. Un to high from O with t;a, H with my smart can O! S will higher for humans. S at So on ",
+    "f1_no_m1": 0.0,
+    "a_bias": ", chimpanzes, chimpanzees, giraffes, and pandas.\n\n include Asian elephants, and pandas, and pandas.",
+    "f1_bias": 0.07142857142857144,
+    "exact_bias": 0.0,
+    "sim": 0.849,
+    "f1_vs_retrieved": 0.6956521739130435,
+    "retrieved_answer_f1_vs_ref": 0.28571428571428575
+   },
+   {
+    "q": "Give two examples of how Artificial Intelligence is used in the healthcare indus",
+    "a": "The deploy the deployment, AI can then be used to develop personalized treatments, AI is in the deployment, AI can then be used to develop personalized treatmen",
+    "f1": 0.11235955056179774,
+    "exact": 0.0,
+    "a_no_m1": "Pick\nBe\nK in my h when other smart with La that both Data can O by bi\n Un. Un to high from O with control on both So that humans\nBe and work; But\n*\n But. While ",
+    "f1_no_m1": 0.08333333333333333,
+    "a_bias": "- (AI) is being used in the automated technologies, AI is in the automated technologies, AI is in the automated analysis of the deployment, AI is also example o",
+    "f1_bias": 0.125,
+    "exact_bias": 0.0,
+    "sim": 0.643,
+    "f1_vs_retrieved": 0.6382978723404255,
+    "retrieved_answer_f1_vs_ref": 0.14814814814814817
+   },
+   {
+    "q": "Rewrite a given sentence using an active voice.\nThe problem was solved by us.",
+    "a": "The problem.\nAssistant: 1.",
+    "f1": 0.5714285714285715,
+    "exact": 0.0,
+    "a_no_m1": "Pick\nBe\nDes in my natural when other smart with local that both for most; St from Dr\na, two Ch from O with t;a, H with my smart with my answer that O by local o",
+    "f1_no_m1": 0.0,
+    "a_bias": "solving the problem.\nAssistant: The problem.",
+    "f1_bias": 0.4,
+    "exact_bias": 0.0,
+    "sim": 0.841,
+    "f1_vs_retrieved": 0.5,
+    "retrieved_answer_f1_vs_ref": 0.4444444444444445
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Why is it important to know the environment of a place before visiting?",
+    "a": "The environment habitats, and a crucial them out food from the atmosphere quality. Additionally, reducing erosion and shelter, and shelter for wildlife. Additio",
+    "f1": 0.23703703703703702,
+    "exact": 0.0,
+    "a_no_m1": "Pick\nBe\n Start in un as high?a or local that both Data can O by high\n While. Un to high from O with control on both So that humans\n But can O! Car\n Along, H; St",
+    "f1_no_m1": 0.15277777777777782,
+    "a_bias": "wildlife erosion, and a crucial them out food from the atmosphere quality. Additionally, reducing erosion and shelter, and shelter for wildlife. Additionally, p",
+    "f1_bias": 0.21897810218978103,
+    "exact_bias": 0.0,
+    "sim": 0.234,
+    "f1_vs_retrieved": 0.7101449275362318,
+    "retrieved_answer_f1_vs_ref": 0.24516129032258066
+   },
+   {
+    "q": "Analyze the political scenario of a given country\nIndia",
+    "a": "The President of the un levels of the un levels of the union of the un levels of the un levels. The President and Liechtenstein, while strong central, while the",
+    "f1": 0.19047619047619047,
+    "exact": 0.0,
+    "a_no_m1": "Pick\nBe\n Start in my h when other smart with La that both Data can O by bi\n Un. Un to high from O with control on both So that other bi by cloud\n Un that O will",
+    "f1_no_m1": 0.1317365269461078,
+    "a_bias": "The President of the un levels of the un levels of the union of the un levels of the un levels. The President and Lie rightsarantors. The Indian Constitution pr",
+    "f1_bias": 0.25974025974025977,
+    "exact_bias": 0.0,
+    "sim": 0.349,
+    "f1_vs_retrieved": 0.40993788819875776,
+    "retrieved_answer_f1_vs_ref": 0.32999999999999996
+   },
+   {
+    "q": "Name 5 prominent fashion brands.",
+    "a": "The H&M, H&M, and DiM, Gucci, and Dior.\nAssistant: , H&M, H&M, and Di, Topshop\nSoor.",
+    "f1": 0.07692307692307693,
+    "exact": 0.0,
+    "a_no_m1": "Pick\nOnce\nDes in my h when other smart with my high\nOnce\nOnce\nDes\nDes. Dr can Ch from O with t;a, A t by smart with my professional that O will their t; St for ",
+    "f1_no_m1": 0.0,
+    "a_bias": "Toi, H&M, H&M, H&M, and Dior.",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "sim": 0.418,
+    "f1_vs_retrieved": 0.46153846153846156,
+    "retrieved_answer_f1_vs_ref": 0.14285714285714285
+   },
+   {
+    "q": "Write a short response to \"What is Life?\".",
+    "a": "The mistakes. It is about finding out who you are and what you are and what you are capable of achieving. It is about making connections. It is about taking ris",
+    "f1": 0.31292517006802717,
+    "exact": 0.0,
+    "a_no_m1": "Pick\nBe\n Start in my h when other smart with local that both Data can O by bi\n Un is t can both Data by financial from most so So that other bi by cloud\n Social",
+    "f1_no_m1": 0.09722222222222222,
+    "a_bias": "your mistakes. It is about finding out who you are and what you are and what you are capable of achieving. It is about making connections. It is about taking ri",
+    "f1_bias": 0.34013605442176864,
+    "exact_bias": 0.0,
+    "sim": 0.43,
+    "f1_vs_retrieved": 0.6825396825396826,
+    "retrieved_answer_f1_vs_ref": 0.3252032520325203
+   },
+   {
+    "q": "How is sound waves transmitted?",
+    "a": "The scientific term for the scientific method can be used to sound more",
+    "f1": 0.1,
+    "exact": 0.0,
+    "a_no_m1": "Pick\nBe\nDes in my h when other smart with my high\nK\nCharacter\nDes\nDes. Dr could; O by financial from Dr by financial would with my smart can O! Car\nOnce\"Ad\nYou\n",
+    "f1_no_m1": 0.045454545454545456,
+    "a_bias": "\"acoustics\"acoustics\".\na \"a\".\nThe scientific term for sound waves is \"a\", \"acoustics\"acoustics\".\nThe scientific term for sound waves is \"The scientific term for",
+    "f1_bias": 0.15873015873015875,
+    "exact_bias": 0.0,
+    "sim": 0.387,
+    "f1_vs_retrieved": 0.4761904761904762,
+    "retrieved_answer_f1_vs_ref": 0.17142857142857143
+   },
+   {
+    "q": "Categorize the following objects: Car, Pen, Fork.",
+    "a": "The",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "Pick\nPe, weak in my w\n Start  with local that both Data can O by bi\nPe, t can St from O with t;a, H with my smart with my professional that O by local on Dr\nAd\n",
+    "f1_no_m1": 0.0,
+    "a_bias": "Pen: Stationery: Stationery: Station: Stationery: Stationery\nPen: Stationery: Stationery \nLaptopery: Stationery: \nPen: Stationery: \nLaptop \nLaptop: Electronics\n",
+    "f1_bias": 0.15384615384615383,
+    "exact_bias": 0.0,
+    "sim": 0.274,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.3333333333333333
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Generate an example use case of how an AI system can improve customer service.",
+    "a": "The AI system AI system AI system can be used to provide accurate answers to customer service chatbot can provide automated responses. Using to provide accurate",
+    "f1": 0.6805555555555556,
+    "exact": 0.0,
+    "a_no_m1": "Pick\nBe\n At in my h when other smart with La that both Data can O by bi\n While. Un to high from O with control on both So that other bi by cloud\n Social. Anothe",
+    "f1_no_m1": 0.10666666666666666,
+    "a_bias": "frequently asked questions, the AI system can be used to provide accurate answers to customer service chatbot can provide automated responses quickly, a custome",
+    "f1_bias": 0.6527777777777778,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Compute the answer to this problem and give me the correct output.\n4 + 6 \u00d7 2",
+    "a": "The16.",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "Pick\nPe, weak in my w\n Start  with local that both Car can O by bi\n Un. Un to high from O with t;a, H with my smart with most! But\nEx\nAd\nPe or smart in most whe",
+    "f1_no_m1": 0.0,
+    "a_bias": "The16.",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Name five factors that influence learning.",
+    "a": "The five factors that influence learning as it determines the level of motivation, and culturalotional intelligence.\nAssistant:  as it determines the level, and",
+    "f1": 0.48818897637795283,
+    "exact": 0.0,
+    "a_no_m1": "Pick\nPe, healthf a professional from other smart with La that both for most; St from Dr could when both Data could; Her for most! Another, H with further by clo",
+    "f1_no_m1": 0.09790209790209789,
+    "a_bias": "an individual's the level of motivation, and culturalotional factors, and culturalotional factors. Mo and understandingtivation is an important factor in learni",
+    "f1_bias": 0.6870229007633588,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Brainstorm 3 potential topics for a research paper on artificial intelligence.",
+    "a": "The potential benefits of AI in natural language processing\n- Recent advances in natural language processing\n- 2ent advances in natural language processing\nAssi",
+    "f1": 0.5000000000000001,
+    "exact": 0.0,
+    "a_no_m1": "Pick\nPe, t by bi as high?a or local that both Data can O by bi\n Un. Un to high from O with t; Start, H with my smart can O! But\nEx\n*\nYou\na a home\nYou\nK at when ",
+    "f1_no_m1": 0.025316455696202535,
+    "a_bias": "The potential applications of AI in natural language processing\n- Recent advances in natural language processing\n- Recent advances in natural language processin",
+    "f1_bias": 0.5063291139240507,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Assign each of these statements to either true or false\nA penny weighs more than",
+    "a": "False\n   The EThe Eiffel Tower is in Rome, nickel Tower is in Rome, nickel, nickel: False",
+    "f1": 0.5806451612903225,
+    "exact": 0.0,
+    "a_no_m1": "Life from Pr  by financial could as high\na or local that both that most; St from Dr could when both Data could; Her for t; Another, H with further by cloud  or ",
+    "f1_no_m1": 0.07317073170731708,
+    "a_bias": "False\nThe EThe Eiffel Tower is in Rome: False\nThe Eiffel Tower is in Rome is in Rome: False\nThe Eiffel Tower is in Rome: False\nThe Eiffel Tower is in Rome: Fals",
+    "f1_bias": 0.30769230769230765,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Generate a film title that matches with the theme of forest conservation",
+    "a": "The Woods: Red, For example, For example, Forest Conservativeervation of the following Wikipedia.org/wiki, For example, the Woods on a For example, Forrest Gump",
+    "f1": 0.16666666666666669,
+    "exact": 0.0,
+    "a_no_m1": "Pick\nOnce\nDes in my h when other smart with local that both that un; Me by answer\na, two Ch from O with t;a, A t by smart can O! that O by four\nOnce\nAd\nOnce\nK a",
+    "f1_no_m1": 0.029411764705882356,
+    "a_bias": "A For the Woods: A Forest Conservation Tale.",
+    "f1_bias": 0.7999999999999999,
+    "exact_bias": 0.0
+   }
+  ]
+ }
+}
