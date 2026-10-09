@@ -1,0 +1,410 @@
+{
+ "ladder": "ladder1",
+ "budget_s": 600.0,
+ "seed": 1,
+ "corpus": {
+  "train_books": 297,
+  "train_bytes": 200574668,
+  "heldout": [
+   "Heart-of-Darkness_219",
+   "The-Adventures-of-Sherlock-Holmes_1661",
+   "The-Prince_1232",
+   "Walden-and-On-The-Duty-Of-Civil-Disobedience_205"
+  ],
+  "ood": [
+   "repo_docs_markdown",
+   "repo_python_code"
+  ]
+ },
+ "configs": {
+  "bpe_8k": {
+   "encoding": {
+    "name": "bpe_8k",
+    "vocab": 8192,
+    "groups": 0,
+    "members": 0,
+    "merges": 7934,
+    "merges_hash": "84ea73cdedd5b43c"
+   },
+   "model": {
+    "width": 128,
+    "layers": 4,
+    "heads": 4,
+    "ctx": 256,
+    "batch": 16,
+    "peak_lr": 0.001,
+    "table_rows": 0,
+    "table_orders": [],
+    "params": {
+     "core": 791296,
+     "embedding": 1081344,
+     "output_heads": 0,
+     "table": 0,
+     "total": 1872640
+    },
+    "ngram_tables": []
+   },
+   "training": {
+    "budget_s": 600.0,
+    "train_s": 600.3,
+    "steps": 1763,
+    "tokens_seen": 7221248,
+    "bytes_seen": 25086367,
+    "tokens_per_s": 12030.2,
+    "bytes_per_s": 41792.5,
+    "final_train_bits_per_token": 6.7295,
+    "train_tokens": 56602282,
+    "valid_tokens": 1155149,
+    "valid_bytes": 4008650,
+    "patience": 4,
+    "min_delta": 0.002,
+    "stop_reason": "budget",
+    "stopped_early": false,
+    "history": [
+     {
+      "train_s": 61.5,
+      "step": 156,
+      "tokens_seen": 638976,
+      "bytes_seen": 2216268,
+      "train_bits_per_token": 9.2355,
+      "quick_bits_per_byte": 2.3798,
+      "lr": 0.0009788185153387315
+     },
+     {
+      "train_s": 120.1,
+      "step": 320,
+      "tokens_seen": 1310720,
+      "bytes_seen": 4546736,
+      "train_bits_per_token": 7.8367,
+      "quick_bits_per_byte": 2.2248,
+      "lr": 0.0009144174079543191
+     },
+     {
+      "train_s": 180.1,
+      "step": 500,
+      "tokens_seen": 2048000,
+      "bytes_seen": 7104632,
+      "train_bits_per_token": 7.5086,
+      "quick_bits_per_byte": 2.1566,
+      "lr": 0.000814926325641928
+     },
+     {
+      "train_s": 240.2,
+      "step": 681,
+      "tokens_seen": 2789376,
+      "bytes_seen": 9683259,
+      "train_bits_per_token": 7.302,
+      "quick_bits_per_byte": 2.0992,
+      "lr": 0.0006892574239962098
+     },
+     {
+      "train_s": 300.3,
+      "step": 858,
+      "tokens_seen": 3514368,
+      "bytes_seen": 12199229,
+      "train_bits_per_token": 7.1293,
+      "quick_bits_per_byte": 2.0554,
+      "lr": 0.0005501913327934685
+     },
+     {
+      "train_s": 360.3,
+      "step": 1039,
+      "tokens_seen": 4255744,
+      "bytes_seen": 14773453,
+      "train_bits_per_token": 6.9959,
+      "quick_bits_per_byte": 2.0246,
+      "lr": 0.00041098702379682885
+     },
+     {
+      "train_s": 420.3,
+      "step": 1223,
+      "tokens_seen": 5009408,
+      "bytes_seen": 17397211,
+      "train_bits_per_token": 6.9164,
+      "quick_bits_per_byte": 2.0006,
+      "lr": 0.00028549984395040195
+     },
+     {
+      "train_s": 480.1,
+      "step": 1403,
+      "tokens_seen": 5746688,
+      "bytes_seen": 19970058,
+      "train_bits_per_token": 6.8555,
+      "quick_bits_per_byte": 1.9802,
+      "lr": 0.0001862613486671984
+     },
+     {
+      "train_s": 540.1,
+      "step": 1582,
+      "tokens_seen": 6479872,
+      "bytes_seen": 22511514,
+      "train_bits_per_token": 6.7782,
+      "quick_bits_per_byte": 1.9686,
+      "lr": 0.00012220756455034844
+     },
+     {
+      "train_s": 600.3,
+      "step": 1763,
+      "tokens_seen": 7221248,
+      "bytes_seen": 25086367,
+      "train_bits_per_token": 6.7295,
+      "quick_bits_per_byte": 1.9597,
+      "lr": 0.00010000004231942812
+     }
+    ]
+   },
+   "eval": {
+    "validation": {
+     "bytes": 4008650,
+     "tokens": 1155149,
+     "bits_per_byte": 1.9057
+    },
+    "heldout": {
+     "Heart-of-Darkness_219": {
+      "bytes": 211025,
+      "tokens": 60618,
+      "ids_per_kb": 287.3,
+      "bits_per_byte": 2.0008,
+      "bits_per_token": 6.9655,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.3603,
+        "bits_share": 0.3153,
+        "bits_per_byte": 1.7511
+       },
+       "freq_101_1000": {
+        "byte_share": 0.3003,
+        "bits_share": 0.3163,
+        "bits_per_byte": 2.1075
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.3395,
+        "bits_share": 0.3684,
+        "bits_per_byte": 2.1716
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.069,
+        "bits_share": 0.1166,
+        "bits_per_byte": 3.3818
+       },
+       "type_word": {
+        "byte_share": 0.929,
+        "bits_share": 0.8821,
+        "bits_per_byte": 1.9
+       },
+       "type_other": {
+        "byte_share": 0.002,
+        "bits_share": 0.0013,
+        "bits_per_byte": 1.2361
+       }
+      }
+     },
+     "The-Adventures-of-Sherlock-Holmes_1661": {
+      "bytes": 562531,
+      "tokens": 159205,
+      "ids_per_kb": 283.0,
+      "bits_per_byte": 1.8688,
+      "bits_per_token": 6.6034,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.3874,
+        "bits_share": 0.3333,
+        "bits_per_byte": 1.6078
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2987,
+        "bits_share": 0.3189,
+        "bits_per_byte": 1.9952
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.3139,
+        "bits_share": 0.3478,
+        "bits_per_byte": 2.0708
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0641,
+        "bits_share": 0.1125,
+        "bits_per_byte": 3.2806
+       },
+       "type_word": {
+        "byte_share": 0.9264,
+        "bits_share": 0.8845,
+        "bits_per_byte": 1.7843
+       },
+       "type_other": {
+        "byte_share": 0.0095,
+        "bits_share": 0.003,
+        "bits_per_byte": 0.5932
+       }
+      }
+     },
+     "The-Prince_1232": {
+      "bytes": 281531,
+      "tokens": 76049,
+      "ids_per_kb": 270.1,
+      "bits_per_byte": 1.9725,
+      "bits_per_token": 7.3024,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.3558,
+        "bits_share": 0.2859,
+        "bits_per_byte": 1.5846
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2933,
+        "bits_share": 0.3322,
+        "bits_per_byte": 2.2343
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.3508,
+        "bits_share": 0.3819,
+        "bits_per_byte": 2.1472
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0526,
+        "bits_share": 0.1008,
+        "bits_per_byte": 3.7788
+       },
+       "type_word": {
+        "byte_share": 0.9405,
+        "bits_share": 0.8947,
+        "bits_per_byte": 1.8764
+       },
+       "type_other": {
+        "byte_share": 0.0069,
+        "bits_share": 0.0045,
+        "bits_per_byte": 1.3069
+       }
+      }
+     },
+     "Walden-and-On-The-Duty-Of-Civil-Disobedience_205": {
+      "bytes": 636914,
+      "tokens": 175494,
+      "ids_per_kb": 275.5,
+      "bits_per_byte": 2.0228,
+      "bits_per_token": 7.3413,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.3554,
+        "bits_share": 0.3,
+        "bits_per_byte": 1.7077
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2921,
+        "bits_share": 0.3203,
+        "bits_per_byte": 2.2184
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.3525,
+        "bits_share": 0.3797,
+        "bits_per_byte": 2.1784
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0544,
+        "bits_share": 0.097,
+        "bits_per_byte": 3.6063
+       },
+       "type_word": {
+        "byte_share": 0.9376,
+        "bits_share": 0.8986,
+        "bits_per_byte": 1.9385
+       },
+       "type_other": {
+        "byte_share": 0.0079,
+        "bits_share": 0.0044,
+        "bits_per_byte": 1.1262
+       }
+      }
+     }
+    },
+    "heldout_overall": {
+     "bytes": 1692001,
+     "tokens": 471366,
+     "ids_per_kb": 278.6,
+     "bits_per_byte": 1.9605
+    },
+    "ood": {
+     "repo_docs_markdown": {
+      "bytes": 123663,
+      "tokens": 42074,
+      "ids_per_kb": 340.2,
+      "bits_per_byte": 3.4737,
+      "bits_per_token": 10.21
+     },
+     "repo_python_code": {
+      "bytes": 484809,
+      "tokens": 202502,
+      "ids_per_kb": 417.7,
+      "bits_per_byte": 3.7831,
+      "bits_per_token": 9.0572
+     }
+    },
+    "ood_overall": {
+     "bytes": 608472,
+     "tokens": 244576,
+     "ids_per_kb": 402.0,
+     "bits_per_byte": 3.7202
+    }
+   },
+   "seed": 1,
+   "generation": {
+    "prompt": "We went to the park",
+    "tokens": 200,
+    "bytes": 661,
+    "seconds": 0.76,
+    "tokens_per_s": 261.5,
+    "bytes_per_s": 864.4,
+    "note": "sliding context, no KV cache, CPU",
+    "sample": ", to see them, at his son,\nbut not at the man, in the old man and the best, as a\nthat he must let us, and there are for him when we get\nto the other. But there is the house, to the place with a great\npola, and he is his death; and that he is still that he has already\nfor it, or the first time, that, the old lady in the lady to\nand as it is, but we be a man, they will be the house, to be no money\nnot to the thing for the time, and he has been a moment that the\na matter (the very very much, but the case he has a man to\nhad to be a good---p------that one time?\"\n\nHe was one thing in the little.\n\nW"
+   },
+   "machine": {
+    "python": "3.13.16",
+    "torch": "2.14.1+cu130",
+    "threads": 4,
+    "cpu": "x86_64",
+    "cores": 4
+   },
+   "config": "bpe_8k"
+  }
+ }
+}
