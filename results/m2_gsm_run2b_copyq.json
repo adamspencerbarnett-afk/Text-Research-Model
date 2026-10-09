@@ -1,0 +1,457 @@
+{
+ "setup": {
+  "data": "data_qa_gsm",
+  "work": "runs/m2_gsm",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 600.0,
+  "ctx": 256,
+  "batch": 16,
+  "topk": 64,
+  "neighbor_codes": 110,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/m2_gsm_run2b_copyq.json",
+  "seed": 1,
+  "self_context_p": 0.5,
+  "copy_bias": 3.0,
+  "device": "cpu",
+  "threads": 10,
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "copy_question": true,
+  "calculator": false,
+  "save": "runs/m2_gsm/run2b.pt",
+  "train_exchanges": 7473,
+  "eval": 659,
+  "added": 660,
+  "distinct_keys": 7460
+ },
+ "training": {
+  "steps": 2345,
+  "train_s": 600.1,
+  "history": [
+   {
+    "train_s": 60.2,
+    "step": 226,
+    "train_bits_per_code": 3.36,
+    "valid_bits_per_byte": 1.5195
+   },
+   {
+    "train_s": 120.2,
+    "step": 461,
+    "train_bits_per_code": 3.663,
+    "valid_bits_per_byte": 1.4643
+   },
+   {
+    "train_s": 180.0,
+    "step": 700,
+    "train_bits_per_code": 3.404,
+    "valid_bits_per_byte": 1.4556
+   },
+   {
+    "train_s": 240.0,
+    "step": 938,
+    "train_bits_per_code": 3.787,
+    "valid_bits_per_byte": 1.4628
+   },
+   {
+    "train_s": 300.2,
+    "step": 1177,
+    "train_bits_per_code": 3.458,
+    "valid_bits_per_byte": 1.4181
+   },
+   {
+    "train_s": 360.2,
+    "step": 1417,
+    "train_bits_per_code": 3.164,
+    "valid_bits_per_byte": 1.4226
+   },
+   {
+    "train_s": 420.0,
+    "step": 1655,
+    "train_bits_per_code": 3.396,
+    "valid_bits_per_byte": 1.3673
+   },
+   {
+    "train_s": 480.1,
+    "step": 1881,
+    "train_bits_per_code": 3.285,
+    "valid_bits_per_byte": 1.3576
+   },
+   {
+    "train_s": 540.3,
+    "step": 2113,
+    "train_bits_per_code": 3.068,
+    "valid_bits_per_byte": 1.326
+   },
+   {
+    "train_s": 600.1,
+    "step": 2345,
+    "train_bits_per_code": 2.847,
+    "valid_bits_per_byte": 1.3129
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 1.0,
+   "exact": 1.0
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 60,
+   "f1": 0.664,
+   "exact": 0.0167,
+   "num_exact": 0.3,
+   "num_exact_bias": 0.1833,
+   "f1_no_m1": 0.0439,
+   "f1_bias": 0.718,
+   "exact_bias": 0.0
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 2,
+   "f1": 0.4293,
+   "exact": 0.0,
+   "num_exact": 0.0,
+   "num_exact_bias": 0.0,
+   "f1_no_m1": 0.0909,
+   "f1_bias": 0.447,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.5859
+  },
+  "unseen_network_with_nearest": {
+   "n": 198,
+   "f1": 0.2981,
+   "exact": 0.0,
+   "num_exact": 0.0101,
+   "num_exact_bias": 0.0101,
+   "f1_no_m1": 0.0299,
+   "f1_bias": 0.2025,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.2433
+  },
+  "heldout_network_without_memory": {
+   "n": 60,
+   "f1": 0.3237,
+   "exact": 0.0,
+   "num_exact": 0.0,
+   "num_exact_bias": 0.0
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.301
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 1.0,
+   "exact": 1.0
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 60,
+   "f1": 0.6869,
+   "exact": 0.0,
+   "num_exact": 0.3667,
+   "num_exact_bias": 0.3833,
+   "f1_no_m1": 0.0432,
+   "f1_bias": 0.6892,
+   "exact_bias": 0.0
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "A machine fills 150 cans of paint every 8 minutes. How many minutes does it take",
+    "a": "To know how many groups of 150 cans, we calculate 675 cans, we calculate 675 \u00d7 150 = 4.5.\nFor each of these groups, 8 minutes are needed, so it takes 8 \u00d7 4.5 = ",
+    "f1": 0.9019607843137256,
+    "exact": 0.0,
+    "a_no_m1": "celebr  x because                            \nLet                                \nE is",
+    "f1_no_m1": 0.0,
+    "a_bias": "To know how many groups of 150 cans, we calculate 675 cans, we calculate 675 \u00d7 150 = 4.5.\nFor each of these groups, 8 minutes are needed, so it takes 8 \u00d7 4.5 = ",
+    "f1_bias": 0.9019607843137256,
+    "exact_bias": 0.0,
+    "num_exact": 1.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Bob buys nose spray.  He buys 10 of them for a \"buy one get one free\" promotion.",
+    "a": "He got 10/2=5 paid 5=$15\nThat means he paid 15*3=$15\nAnswer: 15\n\n  How much does he paid $5\n\n  How much does he pay?\nAssistant: He got 10 of them  They each cos",
+    "f1": 0.4,
+    "exact": 0.0,
+    "a_no_m1": "Kh  x because /                     \nN is got",
+    "f1_no_m1": 0.14285714285714288,
+    "a_bias": "He got 10/2=5 paid 5=$15\nThat means he paid 15*3=$15\nAnswer: 15\n\n $5\n\n $3.\n: he paid $300 = $30 = 50 = 2*2= $15\nHe buys",
+    "f1_bias": 0.8,
+    "exact_bias": 0.0,
+    "num_exact": 1.0,
+    "num_exact_bias": 1.0
+   },
+   {
+    "q": "Trevor buys three bouquets of carnations. The first included 9 carnations, and t",
+    "a": "There are 12*3=36.\nThere are 9+14=23 accounted for.\nThe third included 36-23=13 carnations.\nAnswer: 13\n\n how many carnations.\nAnswer: 13\n\n how many carnations i",
+    "f1": 0.49056603773584906,
+    "exact": 0.0,
+    "a_no_m1": "lob  does  does  be  x because                                                        \nBe is",
+    "f1_no_m1": 0.06451612903225806,
+    "a_bias": "There are 12*3=36.\nThere are 9+14=23 accounted for.\nThe third included 36-23=13 carnations.\nAnswer: 13\n\n how many carnations.\nAnswer: 13\n\n how many carnations, ",
+    "f1_bias": 0.48,
+    "exact_bias": 0.0,
+    "num_exact": 1.0,
+    "num_exact_bias": 1.0
+   },
+   {
+    "q": "Every time she goes to the store, Felicity gets a lollipop. After she finishes t",
+    "a": "She has 240 sticks because 40 x .6 / = 240\nShe has been going to the store for 80 weeks because 240 / = 80\nAnswer: 80\n\n how many weeks becauset is 60% complete,",
+    "f1": 0.7111111111111111,
+    "exact": 0.0,
+    "a_no_m1": "lob  x  x:      (                                                \nBe': Five%  Unfortunately the normal ones ( babysitter ) because two kids",
+    "f1_no_m1": 0.20689655172413793,
+    "a_bias": "She has 240 sticks because 40 x .6 / = 240\nShe has been going to the store for 80 weeks because 240 / = 80\nAnswer: 8000\n\n how many weeks because 60 sticks to fi",
+    "f1_bias": 0.7804878048780487,
+    "exact_bias": 0.0,
+    "num_exact": 1.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Andrea needs 45 rhinestones to finish an art project. She bought a third of what",
+    "a": "Andrea bought 45 / 3 = 15 rhinestones.\nShe found 45 / 5 = 9 rhinestones in her supplies.\nThus, Andrea still needs 45 - 15 - 9 - = 21 rhinestones.\nAnswer: 21",
+    "f1": 1.0,
+    "exact": 0.0,
+    "a_no_m1": "Last  x because",
+    "f1_no_m1": 0.0,
+    "a_bias": "Andrea bought 45 / 3 = 15 rhinestones.\nShe found 45 / 5 = 9 rhinestones in her supplies.\nThus, Andrea still needs 45 - 15 - 9 - = 21 rhinestones.\nAnswer: 21\n\n1",
+    "f1_bias": 1.0,
+    "exact_bias": 0.0,
+    "num_exact": 1.0,
+    "num_exact_bias": 1.0
+   },
+   {
+    "q": "In the garden, the gecko eats 12 bugs.  The lizard eats half as many bugs as the",
+    "a": "In the gecko eats 12 bugs as the gecko eats / 3 = 6 bugs.\nToad eats 6 x 3 = 18 bugs.\nToad eats 18 x 1.50 = 27 bugs.\nThe lizard, frog and toad eat 6 + + + +",
+    "f1": 0.7037037037037038,
+    "exact": 0.0,
+    "a_no_m1": "Y  x",
+    "f1_no_m1": 0.0625,
+    "a_bias": "12 bugs. 2 = 6 bugs.\nToad eats 6 x 3 = 18 bugs.\nToad eats 18 x 1.50 = 27 bugs.\nThe lizard, frog and toad eats 6 x 1.50 = 27 bugs.\nThe lizard, frog and to",
+    "f1_bias": 0.7169811320754716,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Max bought stamps at the post office. Some of the stamps had a snowflake design,",
+    "a": "The stamps is 1 + 9 = 20.\nThe number of rose stamps is 20 \u2212 = 7.\nBella bought 11 + 20 + 7 = 38 stamps in all.\nAnswer: 38\n\n and truck stamps.\nAnswer: 38",
+    "f1": 0.4864864864864865,
+    "exact": 0.0,
+    "a_no_m1": "Y  x  x                                                                  \nBe' x so one one times",
+    "f1_no_m1": 0.0,
+    "a_bias": "The stamps is 1 + 9 = 20.\nThe number of rose stamps is 20 \u2212 = 7.\nBella bought 11 + 20 + 7 = 38 stamps in all.\nAnswer: 38\n\n and truck stamps.\nAnswer: 38 stamps.\n",
+    "f1_bias": 0.4615384615384615,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.722,
+    "f1_vs_retrieved": 0.8648648648648649,
+    "retrieved_answer_f1_vs_ref": 0.4444444444444444
+   },
+   {
+    "q": "A plane travels 1200 miles in 3 hours. At the same rate, how many additional hou",
+    "a": "The rate is 20/3=90 mph.\nThen it takes an additional 180=2 hours.\nAnswer: 2\n\n how many additional 2\n\n?\nAssistant: The rate is 270 miles?\nAssistant: The rate is ",
+    "f1": 0.37209302325581395,
+    "exact": 0.0,
+    "a_no_m1": "Five more other Ld  x:   x               \nN is because ( + +                   \nCombining        \nE *",
+    "f1_no_m1": 0.18181818181818182,
+    "a_bias": "The rate is 20/3=90 mph.\nThen it takes an additional 180=2 hours.\nAnswer: 2\n\n how many additional 2\n\n?\n: The rate is an additional 180=2 hours.\nAnswer: 2\n\n?\nAss",
+    "f1_bias": 0.43243243243243246,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.561,
+    "f1_vs_retrieved": 0.5116279069767442,
+    "retrieved_answer_f1_vs_ref": 0.7272727272727273
+   }
+  ],
+  "unseen": [
+   {
+    "q": "It's April, and Mrs. Rylan has been busy on her farm planting different types of",
+    "a": "It's April planting packets of celery seeds costs $40 and 10 and 20 + 40 = $10 packets of celery seeds.\nThe tomato seeds is 4 x $1.50 =  Therefore, the cost of ",
+    "f1": 0.3934426229508197,
+    "exact": 0.0,
+    "a_no_m1": "Y  x because                                                     )\nLet to keep. This is both\nBe is half is by ( x each x because two",
+    "f1_no_m1": 0.08333333333333333,
+    "a_bias": "20 packets of tomato seeds is $7.50.50.50 packets of four packets of tomato seeds is + = $6.5 x  Therefore, the cost of chili pepper seeds is $0.90 =  Therefore",
+    "f1_bias": 0.36666666666666664,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.243,
+    "f1_vs_retrieved": 0.6666666666666667,
+    "retrieved_answer_f1_vs_ref": 0.393939393939394
+   },
+   {
+    "q": "The Smith family is getting ready for summer and needs to have their swimming po",
+    "a": "The pool company measure to fill and left.\nAssistant: If The pool is 10. Smith measure to come and donate the pool company is 10.  How much will 5.\nAssistant: T",
+    "f1": 0.46511627906976744,
+    "exact": 0.0,
+    "a_no_m1": "spend  x                         \nE-agly: N\nBe is  x: N  *x   \nE x-x+\nBe (kila is left *+st *st\nG\nF (flat.",
+    "f1_no_m1": 0.17910447761194032,
+    "a_bias": "it cost $0*5 = 10 pool, 10 pool is 25 feet\nThat means it is 6 feet deep, $30 = $90,00\nAnswer: 3*3*30000=$9000,000000*$90000",
+    "f1_bias": 0.27586206896551724,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.14,
+    "f1_vs_retrieved": 0.18181818181818182,
+    "retrieved_answer_f1_vs_ref": 0.23728813559322035
+   },
+   {
+    "q": "Trinity sells magazines at 11/8 of the price she bought the magazines. If she bo",
+    "a": "Trin bought $72,00 = 1/8 of the magazines.\nAnswer: 1/8, she bought 3, she bought a discount of 30. If she bought 1/8, she bought 2 + $72 = 20,00.\nAnswer: 80",
+    "f1": 0.5142857142857142,
+    "exact": 0.0,
+    "a_no_m1": "Y  does half, so another,  All  All is one, ) is: N  All. Of half,  W  All  And\nB  All a long  All by two  x:                     \nE is by another     )",
+    "f1_no_m1": 0.08888888888888889,
+    "a_bias": "11111111 = $10\nAnswer: 72 of the profit 10\nAnswer: 100 = 2 = 20\nHe sells them for $80\nHe gets a discount of 45000=$80\nAnswer: 50 = $55",
+    "f1_bias": 0.38709677419354843,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.209,
+    "f1_vs_retrieved": 0.23076923076923078,
+    "retrieved_answer_f1_vs_ref": 0.24489795918367344
+   },
+   {
+    "q": "Jame will turn 27 in 5 years.  In 8 years his cousin will be 5 years younger tha",
+    "a": "Jame will be 5 years younger than twice as twice R than twice as many years old.\nAnswer: 2 = 5",
+    "f1": 0.24489795918367344,
+    "exact": 0.0,
+    "a_no_m1": "Y  x",
+    "f1_no_m1": 0.0,
+    "a_bias": "2 = 3 years\nAnswer: 3 years 8 years old now 5 years old\nAnswer: 2",
+    "f1_bias": 0.3902439024390244,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.191,
+    "f1_vs_retrieved": 0.1095890410958904,
+    "retrieved_answer_f1_vs_ref": 0.2727272727272727
+   },
+   {
+    "q": "Antoine's french onion soup recipe calls for 2 pounds of onions. He likes to dou",
+    "a": "He also needs 2 people = $ 2 boxes of onions\nThe total number of beef 1 boxes * 2 = 30 boxes\nAnswer: 1200 = 10 = $20000\nAnswer: 300000\nThen find the total numbe",
+    "f1": 0.28865979381443296,
+    "exact": 0.0,
+    "a_no_m1": "*",
+    "f1_no_m1": 0.0,
+    "a_bias": "2 = 2 pounds of beef\nSo he used 6 pounds of beef = 2 pounds\nAnswer: 12 = 16 = 2 = 2 = 13 = 12 - 12 pounds of beef\nSo he needs 12 = 2 pounds of beef stock of 12",
+    "f1_bias": 0.27083333333333337,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.122,
+    "f1_vs_retrieved": 0.2857142857142857,
+    "retrieved_answer_f1_vs_ref": 0.18604651162790697
+   },
+   {
+    "q": "Joey plays football every week. Last week he played 2 matches on Monday, 1 match",
+    "a": "Joey played 2 matches Joey played 1 match 3 match, Joey played 1 match won 12 matches / 3 = 10 matches\nAnswer: 15",
+    "f1": 0.4827586206896552,
+    "exact": 0.0,
+    "a_no_m1": "Y  x      W   ( All         )",
+    "f1_no_m1": 0.0,
+    "a_bias": "2 = 30 people.\nAnswer: 10\nOn Friday, they had 100 = 500.\nOn Friday, they played 240 = 10 = 12 week.\nAnswer: 100",
+    "f1_bias": 0.2962962962962963,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.155,
+    "f1_vs_retrieved": 0.03773584905660377,
+    "retrieved_answer_f1_vs_ref": 0.2222222222222222
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Of the 20 available cars for rent, 12 are automatic cars, 4 are manual cars, and",
+    "a": "12 + 4 = 16 cars are either automatic or manual.\nSo, 20 - 16 = 4 cars are semi-automatic.\nTherefore, the percentage of semi-automatic cars is 4/20 x 10 x 100%",
+    "f1": 0.9523809523809523,
+    "exact": 0.0,
+    "a_no_m1": "C  x         (              \nN is:: Y",
+    "f1_no_m1": 0.15384615384615385,
+    "a_bias": "12 + 4 = 16 cars are either automatic or manual.\nSo, 20 - 16 = 4 cars are semi-automatic.\nTherefore, the percentage of semi-automatic cars is 4/20 x 10 x 100%",
+    "f1_bias": 0.9523809523809523,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "The red rope was four times the length of the blue rope. The blue rope was 7 cen",
+    "a": "The length of 3 rope 3 rope 37 centimeters shorter than the yellow rope was cut into 17 centimeters = 3 rope.\nBlue rope 3 rope 37 centimeters = * * 7)= - * + 7)",
+    "f1": 0.5283018867924528,
+    "exact": 0.0,
+    "a_no_m1": "Y  x         (",
+    "f1_no_m1": 0.06060606060606061,
+    "a_bias": "the length of the 37 centimeters.\nBlue rope 3 rope 377 centimeters long.\nBlue rope.\nAnswer: 10 = 2\nAnswer: 20",
+    "f1_bias": 0.48888888888888893,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 1.0
+   },
+   {
+    "q": "Tom bought a CD for $4, and a headphone set. In total, he paid $48. How many mor",
+    "a": "The headphone set cost was 48 - 4 = $44.\nThat means, for that money Tom would be able to buy 44 / 4 = 11 more CDs.\nAnswer: 111\n\n\n\n\n\n $48. In total, he paid $48.",
+    "f1": 0.8260869565217391,
+    "exact": 0.0,
+    "a_no_m1": "celebr  x because one       (",
+    "f1_no_m1": 0.0,
+    "a_bias": "The headphone set cost was 48 - 4 = $44.\nThat means, for that money Tom would be able to buy 44 / 4 = 11 more CDs.\nAnswer: 11111\n\n 1\n\n18.\n: Tom would be able to",
+    "f1_bias": 0.8636363636363636,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "It takes 20 minutes for the oil to heat up to 300 degrees.  It then takes 40% lo",
+    "a": "It then 20 minutes for 10 = 20000000 minutes to 40 degrees than from room temperature to 30 degrees than from room temperature time was 30\nSo it takes 20+8+8+20",
+    "f1": 0.5833333333333334,
+    "exact": 0.0,
+    "a_no_m1": "Y  x                                                    )\nBe'       \nE is half is by one  x so one one times,",
+    "f1_no_m1": 0.03389830508474576,
+    "a_bias": "20 = 200 minutes to 400000000 degrees than from 30\nAnswer: 30 3 minutes\nSo it takes 201 minutes was 3 minutes was 3 minutes was 200\nSo it takes 200+200\nSo it to",
+    "f1_bias": 0.5970149253731343,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Sally has realized she did not receive a full wage this week. Her bank account, ",
+    "a": "The wage she received was $420 \u2013 $20000 = $220\nThis means her wage was $300 \u2013 $22220 = $800 short\nAnswer: 800",
+    "f1": 1.0,
+    "exact": 0.0,
+    "a_no_m1": "Kh  x         (                                                     \nBe is another cost\nBe  x so one one times",
+    "f1_no_m1": 0.0,
+    "a_bias": "The wage she received was $420 \u2013 $20000 = $220\nThis means her wage was $300 \u2013 $22220 = $800 short\nAnswer: 80000000 \u2013 = 800",
+    "f1_bias": 1.0,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Shawnda decides that her neighborhood kids could really use a bike inflation ser",
+    "a": "Shawn use 25 people = $1000 people is 10 cents to fill up because 5 equals 10.\nThere were 9 tricycle tires to fill up because 3 times 3 equals 5.\nThere were 9 t",
+    "f1": 0.674698795180723,
+    "exact": 0.0,
+    "a_no_m1": "Y  x                                               \nLet: Five  x\nBe' x  (T-d. S the normal ones ( necess ( necess",
+    "f1_no_m1": 0.0,
+    "a_bias": "25 = 1055 505 = 10555555 = 50 dollars\nAnswer: 250 50\nAnswer: 50 9 tricycle tire.\nAnswer: 20 times $50Answer: 20 times 20 times 10 times 1.",
+    "f1_bias": 0.23728813559322035,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   }
+  ]
+ },
+ "checks": {}
+}

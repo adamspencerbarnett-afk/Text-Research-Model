@@ -1,0 +1,460 @@
+{
+ "setup": {
+  "data": "data_qa_gsm",
+  "work": "runs/m2_gsm",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 600.0,
+  "ctx": 256,
+  "batch": 16,
+  "topk": 64,
+  "neighbor_codes": 110,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/m2_gsm_run3b_calc.json",
+  "seed": 1,
+  "self_context_p": 0.5,
+  "copy_bias": 3.0,
+  "device": "cpu",
+  "threads": 10,
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "copy_question": true,
+  "calculator": true,
+  "save": "runs/m2_gsm/run3b.pt",
+  "train_exchanges": 7473,
+  "eval": 659,
+  "added": 660,
+  "distinct_keys": 7460
+ },
+ "training": {
+  "steps": 2325,
+  "train_s": 600.1,
+  "history": [
+   {
+    "train_s": 60.2,
+    "step": 230,
+    "train_bits_per_code": 4.28,
+    "valid_bits_per_byte": 1.5079
+   },
+   {
+    "train_s": 120.1,
+    "step": 461,
+    "train_bits_per_code": 3.663,
+    "valid_bits_per_byte": 1.4643
+   },
+   {
+    "train_s": 180.2,
+    "step": 695,
+    "train_bits_per_code": 3.727,
+    "valid_bits_per_byte": 1.4548
+   },
+   {
+    "train_s": 240.2,
+    "step": 930,
+    "train_bits_per_code": 3.176,
+    "valid_bits_per_byte": 1.4885
+   },
+   {
+    "train_s": 300.1,
+    "step": 1153,
+    "train_bits_per_code": 3.435,
+    "valid_bits_per_byte": 1.4486
+   },
+   {
+    "train_s": 360.2,
+    "step": 1383,
+    "train_bits_per_code": 3.544,
+    "valid_bits_per_byte": 1.3982
+   },
+   {
+    "train_s": 420.0,
+    "step": 1622,
+    "train_bits_per_code": 3.098,
+    "valid_bits_per_byte": 1.3723
+   },
+   {
+    "train_s": 480.2,
+    "step": 1857,
+    "train_bits_per_code": 2.831,
+    "valid_bits_per_byte": 1.359
+   },
+   {
+    "train_s": 540.1,
+    "step": 2093,
+    "train_bits_per_code": 3.319,
+    "valid_bits_per_byte": 1.3271
+   },
+   {
+    "train_s": 600.1,
+    "step": 2325,
+    "train_bits_per_code": 2.637,
+    "valid_bits_per_byte": 1.3182
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 1.0,
+   "exact": 1.0
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 60,
+   "f1": 0.8042,
+   "exact": 0.05,
+   "num_exact": 0.3333,
+   "num_exact_bias": 0.35,
+   "f1_no_m1": 0.0554,
+   "f1_bias": 0.8197,
+   "exact_bias": 0.05
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 2,
+   "f1": 0.5859,
+   "exact": 0.0,
+   "num_exact": 0.0,
+   "num_exact_bias": 0.0,
+   "f1_no_m1": 0.0286,
+   "f1_bias": 0.5859,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.5859
+  },
+  "unseen_network_with_nearest": {
+   "n": 198,
+   "f1": 0.2722,
+   "exact": 0.0,
+   "num_exact": 0.0202,
+   "num_exact_bias": 0.0202,
+   "f1_no_m1": 0.0501,
+   "f1_bias": 0.1794,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.2433
+  },
+  "heldout_network_without_memory": {
+   "n": 60,
+   "f1": 0.3389,
+   "exact": 0.0,
+   "num_exact": 0.0,
+   "num_exact_bias": 0.0
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.2753
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 1.0,
+   "exact": 1.0
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 60,
+   "f1": 0.7534,
+   "exact": 0.05,
+   "num_exact": 0.35,
+   "num_exact_bias": 0.3667,
+   "f1_no_m1": 0.0655,
+   "f1_bias": 0.779,
+   "exact_bias": 0.05
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Michael wants to dig a hole 400 feet less deep than twice the depth of the hole ",
+    "a": "Michael will dig a hole that he wants to dig a hole that is 400000-400 = 399600 feet deep.\nTo have to work for a total of 4000000 = $20000 feet less than twice ",
+    "f1": 0.43939393939393945,
+    "exact": 0.0,
+    "a_no_m1": "Y  x                             \nB is represented: By is represented by\nF, half. All the entire, twice. Of the fifth. All his fifth. Once the remainder. S, one",
+    "f1_no_m1": 0.13138686131386862,
+    "a_bias": "Michael will dig a hole that he wants to dig a hole that is 400000-400 = 399600 feet deep.\nTo have to work for a hole that is 4000000-40 = 3999960000 feet less ",
+    "f1_bias": 0.5147058823529412,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "John needs to take 2 pills a day.  One pill costs $1.5.  The insurance covers 40",
+    "a": "It cost 2*1.5= 3 a day.\nSo it cost 3 a day.\nInsurance covers 90*.4=$96.\nSo he pays 90*.4=$36.\nSo he pays 90-36= 54 a month.\nAnswer: 54",
+    "f1": 0.8648648648648648,
+    "exact": 0.0,
+    "a_no_m1": "Five  x: Y       (L'\nG is: Ten ++(                          \nN x +\nCombining\nMultiplying La ( rese +L  (B  *",
+    "f1_no_m1": 0.0,
+    "a_bias": "It cost 2*1.5= 3 a day.\nSo it cost 3 a day.\nInsurance covers 90*.4=$96.\nSo he pays 90*.4=$36.\nSo he pays 90-36= 54 a month.\nAnswer: 54",
+    "f1_bias": 0.8648648648648648,
+    "exact_bias": 0.0,
+    "num_exact": 1.0,
+    "num_exact_bias": 1.0
+   },
+   {
+    "q": "Josh has 18 yards of ribbon that is to be used equally to 6 gifts. If each gift ",
+    "a": "The 6 gifts will use 6 x 2 = 12 yards of ribbon.\nSo, 18 - 12 = 6 yards of ribbon will be left.\nAnswer: 6",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "Nile  this normal the remaining  so another,  x because one             \nN is:(                                 \nGe is this add by a  x so this",
+    "f1_no_m1": 0.16216216216216214,
+    "a_bias": "The 6 gifts will use 6 x 2 = 12 yards of ribbon.\nSo, 18 - 12 = 6 yards of ribbon will be left.\nAnswer: 6",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": 1.0,
+    "num_exact_bias": 1.0
+   },
+   {
+    "q": "The chicken crossed the road to get to the other side twice for the thrill of it",
+    "a": "The chicken lost 23 * 2 = 46 feathers on its second road crossing.\nThus, it had 5263 - 46 = 5217 feathers after crossings.\nAnswer: 5217",
+    "f1": 0.8571428571428572,
+    "exact": 0.0,
+    "a_no_m1": "Y Let: Y ), so another  x because one                  \nCh is\nF is because two/( ( babysitter  x by half,\nGe. Of his\nBe'. Together the remainder. S,\nBe is by a ",
+    "f1_no_m1": 0.07407407407407407,
+    "a_bias": "The chicken lost 23 * 2 = 46 feathers on its second road crossing.\nThus, it had 5263 - 46 = 5217 feathers after crossing the road crossing the road twice.\nAnswe",
+    "f1_bias": 0.8260869565217391,
+    "exact_bias": 0.0,
+    "num_exact": 1.0,
+    "num_exact_bias": 1.0
+   },
+   {
+    "q": "Juliet is 3 years older than her sister Maggie but 2 years younger than her elde",
+    "a": "Maggie is 3 years younger than Juliet who is 10 years so she is 10-3 = 7 years old\nRalph is 2 years older than Maggie so he is 10+2 = 12 years old\nThe sum of Ma",
+    "f1": 0.8717948717948718,
+    "exact": 0.0,
+    "a_no_m1": "Y  x because        (              \nEvery one                         +\nBe'\nE *L.    *",
+    "f1_no_m1": 0.0,
+    "a_bias": "Maggie is 3 years younger than Juliet who is 10 years so she is 10-3 = 7 years old\nRalph is 2 years older than Maggie so he is 10+2 = 12 years old\nThe sum of Ma",
+    "f1_bias": 0.8717948717948718,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "John has 54 pieces of gum, Cole has 45 pieces of gum and Aubrey has no pieces of",
+    "a": "Total pieces of gum are 54 pieces + 45 pieces + 0 pieces + 0 pieces = 9 pieces\nWhen the pieces amongst 3 people 999 people, each one gets / 3 people = 33 pieces",
+    "f1": 0.9166666666666666,
+    "exact": 0.0,
+    "a_no_m1": "Five more x because        ( because\nN + x                           \nMar       +\nCombining (kila L (\nE ( (   *",
+    "f1_no_m1": 0.0,
+    "a_bias": "Total pieces of gum are 54 pieces + 45 pieces + 0 pieces + 0 pieces = 9 pieces\nWhen the pieces amongst 3 people 999 people, each one gets / 3 people = 33 pieces",
+    "f1_bias": 0.9166666666666666,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Max bought stamps at the post office. Some of the stamps had a snowflake design,",
+    "a": "The number of truck stamps is 11 + 9 = 20.\nThe number of rose stamps is 20 \u2212 13 = 7.\nBella bought 111 + 20 + 7 = 138 stamps in all.\nAnswer: 138",
+    "f1": 0.4444444444444444,
+    "exact": 0.0,
+    "a_no_m1": "Y  this  because   x:   (        \nBe,    +\nN (                                 \nBe is by another. All\nF', one times,",
+    "f1_no_m1": 0.0,
+    "a_bias": "The number of truck stamps is 11 + 9 = 20.\nThe number of rose stamps is 20 \u2212 13 = 7.\nBella bought 111 + 20 + 7 = 138 stamps in all.\nAnswer: 138",
+    "f1_bias": 0.4444444444444444,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.722,
+    "f1_vs_retrieved": 1.0,
+    "retrieved_answer_f1_vs_ref": 0.4444444444444444
+   },
+   {
+    "q": "A plane travels 1200 miles in 3 hours. At the same rate, how many additional hou",
+    "a": "The rate is 270/3= 90 mph.\nThen it takes an additional 180/90= 2 hours.\nAnswer: 2",
+    "f1": 0.7272727272727273,
+    "exact": 0.0,
+    "a_no_m1": "olo has  so one \ufffdly. We  x is because   +      +  \nN is\nE'. S\nGe x x **          +\nCombining  x  L \ufffd\nE (kil'\nCombining (Rr x",
+    "f1_no_m1": 0.05714285714285715,
+    "a_bias": "The rate is 270/3= 90 mph.\nThen it takes an additional 180/90= 2 hours.\nAnswer: 2",
+    "f1_bias": 0.7272727272727273,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.561,
+    "f1_vs_retrieved": 1.0,
+    "retrieved_answer_f1_vs_ref": 0.7272727272727273
+   }
+  ],
+  "unseen": [
+   {
+    "q": "It's April, and Mrs. Rylan has been busy on her farm planting different types of",
+    "a": "It's April planting packets of celery pepper seeds is 20 packets of tomato seeds is 20 packets of tomato seeds is 4 x 2 = 8.50 packets.\nAnd, the cost of four pa",
+    "f1": 0.3582089552238805,
+    "exact": 0.0,
+    "a_no_m1": "Y  x because        (              \nEvery one\nLet,                       \nBe', one, so four times, because a piece  (d  x each only one times,",
+    "f1_no_m1": 0.0,
+    "a_bias": "20 packets of four packets of four packets of tomato seeds is 4 x $7.50 = 30.\nAnd, the cost of five packets of tomato seeds is 5 x $1.50 = 7.50.50.             ",
+    "f1_bias": 0.3703703703703704,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.243,
+    "f1_vs_retrieved": 0.6933333333333334,
+    "retrieved_answer_f1_vs_ref": 0.393939393939394
+   },
+   {
+    "q": "The Smith family is getting ready for summer and needs to have their swimming po",
+    "a": "The pool is 10*6*6 = 360 cubic feet\nThat means it is 14 feet.  How much does it is 3.  How much does it cost to fill the pool?\nThat means it is $0*6*1200 = 0000",
+    "f1": 0.32432432432432434,
+    "exact": 0.0,
+    "a_no_m1": "Y  x: Y       (              \nEvery one ticket, so another, +st  x\nF Rl. S (kil is by\nCh B\nBe'. We the remainder. S,\nBe is by a big-st (st the following.",
+    "f1_no_m1": 0.15584415584415587,
+    "a_bias": "10*6*20= 12000 = 1000000\nThat means it is 10 feet.\nAnswer: 1200*25000",
+    "f1_bias": 0.11764705882352941,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.14,
+    "f1_vs_retrieved": 0.5581395348837208,
+    "retrieved_answer_f1_vs_ref": 0.23728813559322035
+   },
+   {
+    "q": "Trinity sells magazines at 11/8 of the price she bought the magazines. If she bo",
+    "a": "If the magazines at the magazines at the magazines at $72, and 1/7 = 0.14 magazines\nAnswer: 13.88",
+    "f1": 0.4827586206896552,
+    "exact": 0.0,
+    "a_no_m1": "Y  x in one,      ( Con'\nMar is: Ten + x)    +l       didn       *          +\nCombining\nMultiplying'\nMultiplying'. All\nE is\nE'+x N Rl",
+    "f1_no_m1": 0.0,
+    "a_bias": "11111111 = $72\nAnswer: 700",
+    "f1_bias": 0.11764705882352941,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.209,
+    "f1_vs_retrieved": 0.08695652173913043,
+    "retrieved_answer_f1_vs_ref": 0.24489795918367344
+   },
+   {
+    "q": "Jame will turn 27 in 5 years.  In 8 years his cousin will be 5 years younger tha",
+    "a": "Jame will be 27 years his age 30 years = 157\nAnswer: 1",
+    "f1": 0.3,
+    "exact": 0.0,
+    "a_no_m1": "Y  x in                \nG is\nMar * ++                    \nW x +\nCombining\nMultiplying L\nCombining (B\nCombining N B  *",
+    "f1_no_m1": 0.08333333333333333,
+    "a_bias": "2 = 3 years = 15 years\nAnswer: 15",
+    "f1_bias": 0.17142857142857143,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.191,
+    "f1_vs_retrieved": 0.125,
+    "retrieved_answer_f1_vs_ref": 0.2727272727272727
+   },
+   {
+    "q": "Antoine's french onion soup recipe calls for 2 pounds of onions. He likes to dou",
+    "a": "He likes to use 2 pounds of onions are 3 boxes of onions is 1 boxes = 10 pounds of beef\nSo he also used $2 pounds of onions = 2 = 10 = $20\nAnswer: 2",
+    "f1": 0.3673469387755103,
+    "exact": 0.0,
+    "a_no_m1": "Y  x because        (L             \nN is because\nF +                    +\n            *",
+    "f1_no_m1": 0.024390243902439025,
+    "a_bias": "2 = 3 = 3 = 16\nAnswer: 12 = 12 = 6\n\n2\nAnswer: 12 = 2 = 13 = 12",
+    "f1_bias": 0.026315789473684213,
+    "exact_bias": 0.0,
+    "num_exact": 1.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.122,
+    "f1_vs_retrieved": 0.5555555555555556,
+    "retrieved_answer_f1_vs_ref": 0.18604651162790697
+   },
+   {
+    "q": "Joey plays football every week. Last week he played 2 matches on Monday, 1 match",
+    "a": "Joey played 2 matches, 1 match won 30 = $15 matches.\nThe number of matches.\nAnswer: 30",
+    "f1": 0.4615384615384615,
+    "exact": 0.0,
+    "a_no_m1": "Y  x: Y       (L'\nG is: Ten (B +ag'\nN L-ag x N L./x        L./x +\nCombining\nMultiplying L\nCombining \ufffd\nE \ufffdag'+x *",
+    "f1_no_m1": 0.0,
+    "a_bias": "2 = 30 people attended the game.\nOn Friday, 80 = 10 people attended the game.\nA total of 80 + 60 = 140 people attended the game.\nA total of 80 + 6 + 10 10 + = 3",
+    "f1_bias": 0.21621621621621623,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.155,
+    "f1_vs_retrieved": 0.12000000000000001,
+    "retrieved_answer_f1_vs_ref": 0.2222222222222222
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Of the 20 available cars for rent, 12 are automatic cars, 4 are manual cars, and",
+    "a": "12 + 4 = 16 cars are either automatic or manual.\nSo, 20 - 16 = 4 cars are semi-automatic.\nTherefore, the percentage of semi-automatic cars is 4/20 x 100% = 2\nAn",
+    "f1": 1.0,
+    "exact": 0.0,
+    "a_no_m1": "Y  x: Y       (L the normal0      \nMar *+++L\nF x N L./x             +\nCombining\nMultiplying L\nCombining: All\nE Subtracting (B\nF (Rl",
+    "f1_no_m1": 0.0909090909090909,
+    "a_bias": "12 + 4 = 16 cars are either automatic or manual.\nSo, 20 - 16 = 4 cars are semi-automatic.\nTherefore, the percentage of semi-automatic cars is 4/20 x 100% = 2\nAn",
+    "f1_bias": 1.0,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "The red rope was four times the length of the blue rope. The blue rope was 7 cen",
+    "a": "The length of the yellow rope = Y - 7\nRed rope = Y 4 * + Y + - - 7)\nY - - 7 4\n 37 cm\n6 = 7 cm\nY 3720 cm\n6Y 20 cm\n6*10 = 60\nAnswer: 60",
+    "f1": 0.72,
+    "exact": 0.0,
+    "a_no_m1": "Y  x: Y       ( because\nLet: V\nLet ++)  *                       \nG:\nDan  didn the remaining x    *   *",
+    "f1_no_m1": 0.18181818181818182,
+    "a_bias": "the yellow rope = Y - - 7\nRed rope = 4 * (Y - + Y - 7)\nY + Y 7 7) = 37 cm\n6Y 37\n6Y = 72\nY 720 cm long.\n6Y =",
+    "f1_bias": 0.7083333333333333,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Tom bought a CD for $4, and a headphone set. In total, he paid $48. How many mor",
+    "a": "The headphone set cost was 48 - 4 = 44.\nThat means, for that money Tom would be able to buy 44 / 4 = 11 more CDs.\nAnswer: 11\n\n\n\n not to buy 11\n\n not to buy the ",
+    "f1": 0.7450980392156863,
+    "exact": 0.0,
+    "a_no_m1": "Five more an normal the*      (                \nN, so another                                \nBe is add is by a*",
+    "f1_no_m1": 0.18181818181818182,
+    "a_bias": "The headphone set cost was 48 - 4 = 44.\nThat means, for that money Tom would be able to buy 44 / 4 = 11 more CDs.\nAnswer: 11\n\n11\n\n :, he paid :, he would be abl",
+    "f1_bias": 0.76,
+    "exact_bias": 0.0,
+    "num_exact": 1.0,
+    "num_exact_bias": 1.0
+   },
+   {
+    "q": "It takes 20 minutes for the oil to heat up to 300 degrees.  It then takes 40% lo",
+    "a": "It then 20*.4=8 more minutes to go from 3000 to 4000 degrees than from room temperature to 30 degrees than from 30\nSo it takes 20+8= 28 minutes to cook the chic",
+    "f1": 0.7105263157894737,
+    "exact": 0.0,
+    "a_no_m1": "Y  x         (                                     \nLet:*x+\nBe is half. We is added *\nBe is half.(B\nF'. Out, half",
+    "f1_no_m1": 0.0,
+    "a_bias": "20 = 200 minutes to 200000000 degrees than from 400\nAnswer: 101 to 4 to go from room temperature to warming time was 4 chicken.\nSo it takes 28+200 chicken. 20. ",
+    "f1_bias": 0.6857142857142858,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Sally has realized she did not receive a full wage this week. Her bank account, ",
+    "a": "The wage she received was $420 \u2013 $20000 = $220\nThis means her wage was $30000 \u2013 $220 = $80 short\nAnswer: $\ufffd\ufffd 880",
+    "f1": 1.0,
+    "exact": 0.0,
+    "a_no_m1": "shr  does\nLet: W  represent because  x because one                  \nCh is\nG is  x                     \nBe'. All\nBe is by a biga st'. Together them.",
+    "f1_no_m1": 0.0,
+    "a_bias": "The wage she received was $420 \u2013 $20000 = $220\nThis means her wage was $30000 \u2013 $220 = $80 short\nAnswer: $\ufffd\ufffd 8800000",
+    "f1_bias": 1.0,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Shawnda decides that her neighborhood kids could really use a bike inflation ser",
+    "a": "Shawn tires to charge 25 people came by 30 bike tires to find the total tires to fill up because 2 times 5 equals 10.\nThere were 9 tricycle tires to fill up bec",
+    "f1": 0.7368421052631579,
+    "exact": 0.0,
+    "a_no_m1": "Y  x: Y       ( because half is: V\nLet                            \nLet\nLet: C  x\nBe'-st the remainder. Sed. S is add. Together them  x so only one times,",
+    "f1_no_m1": 0.08,
+    "a_bias": "25 10 bike tires to fill up because 2 times 5 equals 10.\nThere were 9 tricycle tires to fill up because 2 times 3 times 5 equals 9.\nThere were 9 tricycle tires ",
+    "f1_bias": 0.8505747126436781,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   }
+  ]
+ },
+ "checks": {
+  "answer_replaced": 306,
+  "answer_confirmed": 68
+ }
+}
