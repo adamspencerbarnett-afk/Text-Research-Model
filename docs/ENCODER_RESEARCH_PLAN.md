@@ -130,7 +130,56 @@ What this changes in the plan:
 
 Six encodings, one model (4 layers, width 128, context 256 tokens, batch 16), the same 45 MB of training text, 600 seconds of training each on the same 4-core CPU, seed 1. Fitting happened on the training split only. Code: `compiler/experiments/ladder1.py`, `train_lm.py`, `ladder_encodings.py`. Raw results: `results/ladder1.json`.
 
-*The run is in progress; this section is filled in from `results/ladder1.json` when it completes.*
+**Equal training time (600 s each, 4-core CPU).** Held-out is the three books; OOD is the repository's Markdown and Python. "MB seen" is how much training text each model got through in its 600 s.
+
+| Encoding | Params | IDs/KB | Held-out bits/byte | OOD bits/byte | MB seen | Steps | Train IDs/s | Talk-back bytes/s |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| bytes (text directly) | 0.86M | 1000.0 | 2.181 | 4.537 | 15.1 | 3,682 | 25,130 | 293 |
+| v0 8k, words and pieces | 1.87M | 283.0 | 2.007 | 4.062 | 18.1 | 1,277 | 8,715 | 732 |
+| v0 8k + 1,024 phrases of up to 3 units | 1.87M | 232.7 | 2.057 | 4.029 | 21.2 | 1,198 | 8,174 | 968 |
+| v0 8k + 2,048 phrases of up to 6 units | 1.87M | 233.3 | 2.075 | 4.053 | 21.7 | 1,217 | 8,307 | 744 |
+| hash 4096×4096 (equation, no dictionary) | 3.45M | 240.7 | 2.037 | 4.374 | 17.1 | 1,048 | 7,153 | 258* |
+| v0 8k + hashed bigram table, 2^20 rows | 136.09M | 283.0 | **1.939** | 4.121 | 15.7 | 1,110 | 7,574 | 848 |
+
+\* The hash model's talk-back speed was held down by a per-step recomputation of the group mask in the sampler, fixed after the run; the re-run below gives the real number.
+
+**Equal training text.** Validation bits per byte (a 150 KB slice of Heart of Darkness, measured every 120 s) read off each curve at 15.1 MB, the most the slowest run saw, and at 10 MB.
+
+| Encoding | bits/byte at 10 MB | bits/byte at 15.1 MB | seconds to reach 15.1 MB |
+| --- | ---: | ---: | ---: |
+| bytes | 2.347 | 2.232 | 600 |
+| v0 8k | 2.167 | 2.109 | 500 |
+| v0 8k + phrases ≤3 | 2.243 | 2.184 | 428 |
+| v0 8k + phrases ≤6 | 2.271 | 2.199 | 414 |
+| hash 4096×4096 | 2.141 | **2.099** | 529 |
+| v0 8k + table | **2.086** | **2.030** | 576 |
+
+Per book, every encoding ranks the same way, and every model is bad on the out-of-domain files (4.0–4.5 bits per byte) because training was books only.
+
+**Hash encoder fidelity** (share of held-out bytes that decode back exactly): Heart of Darkness 98.70%, Sherlock Holmes 98.41%, The Prince 95.67%. The rest is units never seen in training (1.3%, 1.5% and 4.2%); collisions cost under 0.1%. In training, 126,005 distinct units mapped to 125,497 codes; 508 units were lost to collisions, 0.02% of unit occurrences.
+
+**Talk-back** (prompt "We went to the park", 200 tokens, same sampling for all): the byte model after 10 minutes produces word-like noise ("enession me souticing mysterning on to careful the side"); the compiled models produce words and phrases in grammatical runs ("and she stood in the world. “You are that I was not to you!”"; "he came up to his own ping all his hat and got his back to the table"). None of them makes sense yet; they are 10-minute models. The point of the test is that the loop works: text in, codes to the model, codes out, text back, through one deterministic compiler.
+
+**What worked.**
+
+1. *Compiling the text beats feeding it raw.* At equal compute the word-and-piece dictionary gives 8.0% fewer bits per byte than bytes, and the model talks back 2.5× faster in bytes per second. At equal text seen it is still 5.5% better. Shorter sequences let the same core see 20% more text in the same time, and each step predicts a whole word.
+2. *Parameters in a table are nearly free.* Adding a hashed bigram table of 2^20 rows, 134M parameters, to the 1.9M-parameter model gave the best result of the ladder, 1.939 bits per byte, 3.4% better than the same model without it at equal time, 3.7% at equal text. Training steps were 13% slower and talk-back speed did not drop. This is the first direct evidence for the thesis: 73× the parameters at close to the same speed, and better.
+3. *An equation can replace the fitted dictionary.* The hash encoder, with no vocabulary chosen by anyone, lands between the dictionary and the phrases at equal time (1.5% behind the dictionary) and ahead of the dictionary at equal text (2.099 against 2.109), because every word in training is one code: there are no pieces. Its costs are measured, not guessed: 1.3–4.2% of held-out bytes are units it never saw and cannot decode, and out-of-domain text suffers most (4.37 bits per byte against 4.06) for the same reason.
+
+**What failed, and why.**
+
+4. *Phrase IDs made the model worse.* Both phrase dictionaries cut sequence length by 18% and let the model see the most text (21–22 MB), yet they scored 2.5–3.4% worse than plain words at equal time and 3.5–4.3% worse at equal text. Two causes, both structural: a phrase is a rarer unit than its words, so each phrase code gets fewer training examples; and a phrase hides the identity of its words (" of the" shares nothing with " of" or " the"), so the model learns the same words' behaviour twice. Phrases of up to 6 units did not shorten sequences any further than 3 (233 against 233 IDs per KB), because in an 8k budget long phrases are too rare to earn slots, and the 2,048 phrase slots displaced word pieces. "One code for 'we went to the park'" therefore fails as a sequence device at this scale. The idea survives in two other places: as table rows (the bigram table carried phrase-level knowledge into the input without changing the sequence, and won), and as a prediction device (several units per step, Track E), which is where the speed should come from.
+
+**Caveats.** One seed, 600 CPU-seconds, a 0.8M-parameter core on 45 MB of English novels. The gaps between bytes and the compiled encodings (5–8%) and the table's gain (3–4%) are larger than seed noise usually is for runs like these; the 1.5% between the dictionary and the hash encoder is not, and needs a second seed before it is believed. Every curve was still falling steeply at 600 s, so absolute numbers mean little; the ordering is the result.
+
+**What to change next (ladder 2).**
+
+- *Table scaling:* 2^18, 2^20 and 2^22 rows, and a trigram table beside the bigram, at the same core. This draws the curve the thesis needs: bits per byte against parameters, with step time and RAM beside it. (Run in this session if time allows; the code supports it.)
+- *Hash encoder, lossless:* units never seen in training fall back to byte codes, as the dictionary does, so every text round-trips; case-folded units so "The" and "the" share a code; and a three-coordinate variant (256×256×256, three 256-way softmaxes) to see how cheap the output can get.
+- *A second seed* for bytes, v0 8k, hash and table, to put error bars on the ordering.
+- *Longer budgets* (30 min) for the best three, to see whether the ordering holds as the curves flatten; the width-256 repeat belongs on Actions or a GPU.
+- *Speed from the output side, not the sequence:* multi-unit prediction heads on the word encoder (Track E), since phrases in the sequence cost quality.
+
 
 ## 4. Phases
 
@@ -261,6 +310,7 @@ Rules carried over from the V1 discipline: fit dictionaries and tokenizers on th
 ## 8. Log
 
 - **2026-10-08.** Review of `encoder-v0` and the earlier results; measurements F1–F3 on two held-out books; PyTorch installed in the sandbox and the Phase 1 model shape timed on CPU; plan written. No model was trained to completion and no result in `results/` changed.
+- **2026-10-09.** Adam's steer (section 3a). Training harness, encoding interface, hash coordinate encoder, chat tool and tests added. Ladder 1 run: six encodings, 600 s each, results in `results/ladder1.json` and section 3a. Headline: compiled text beats bytes by 8% at equal compute and talks back 2.5× faster; a 134M-parameter hashed bigram table on a 1.9M-parameter model is the best configuration at 13% step cost; the dictionary-free hash encoder is within 1.5% of the fitted dictionary; phrase IDs lose 2.5–4% and are dropped as a sequence device.
 
 ## Appendix A: initial results, for reference
 

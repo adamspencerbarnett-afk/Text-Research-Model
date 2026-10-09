@@ -85,6 +85,7 @@ class LM(nn.Module):
             else:
                 valid[:] = True
             self.register_buffer("valid", valid.view(self.G, self.M))
+            self.register_buffer("valid_group", self.valid.any(1))   # groups with at least one code in use
         else:
             self.emb = nn.Embedding(enc.vocab, width)
         self.pos = nn.Embedding(ctx, width)
@@ -152,7 +153,7 @@ class LM(nn.Module):
             return torch.multinomial(F.softmax(logits, -1), 1, generator=gen).item()
 
         if self.coords:
-            g = pick(self.head_g(h).masked_fill(~self.valid.any(1), float("-inf")))
+            g = pick(self.head_g(h).masked_fill(~self.valid_group, float("-inf")))
             lm = self.head_m(torch.cat([h, self.emb_g(torch.tensor([g]))], -1))
             m = pick(lm.masked_fill(~self.valid[g], float("-inf")))
             return g * self.M + m
