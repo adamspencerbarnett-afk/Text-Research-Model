@@ -129,6 +129,7 @@ def main() -> int:
     ap.add_argument("--ctx", type=int, default=256); ap.add_argument("--batch", type=int, default=16); ap.add_argument("--topk", type=int, default=64)
     ap.add_argument("--neighbor-codes", type=int, default=110); ap.add_argument("--eval-n", type=int, default=200)
     ap.add_argument("--max-train", type=int, default=0); ap.add_argument("--out", default="results/m2_qa.json"); ap.add_argument("--seed", type=int, default=1)
+    ap.add_argument("--self-context-p", type=float, default=0.0, help="share of training windows whose context is the exchange itself, to teach copying from memory")
     a = ap.parse_args()
     torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
     work = Path(a.work); work.mkdir(parents=True, exist_ok=True)
@@ -173,7 +174,8 @@ def main() -> int:
     def sample(i: int):
         """[nearest other exchange, tail] + SEP + [this exchange, head], padded to ctx+1, with a loss mask."""
         own = codes[i][:a.ctx - a.neighbor_codes - len(sep)]
-        nb = codes_of(neighbors[i])[-a.neighbor_codes:] if neighbors[i] is not None else np.array([], dtype=np.int64)
+        src = i if (a.self_context_p and rng.random() < a.self_context_p) else neighbors[i]
+        nb = codes_of(src)[-a.neighbor_codes:] if src is not None else np.array([], dtype=np.int64)
         seq = np.concatenate([nb, sep, own])[:a.ctx + 1]
         mask = np.zeros(a.ctx + 1, dtype=np.float32); mask[len(nb) + len(sep):len(seq)] = 1.0
         return np.pad(seq, (0, a.ctx + 1 - len(seq)), constant_values=PAD), mask
@@ -214,19 +216,25 @@ def main() -> int:
             say(f"{train_time:6.0f}s step {step:5d} train {float(loss)/math.log(2):.3f} b/code  valid {v:.4f} b/byte"); next_eval += 60
 
     @torch.no_grad()
-    def answer(q: bytes, context_exchange: int | None, n_tokens=80, temperature=0.5, top_k=10):
+    def answer(q: bytes, context_exchange: int | None, n_tokens=80, temperature=0.5, top_k=10, use_m1=True):
         model.eval(); gen = torch.Generator().manual_seed(a.seed)
+        saved = model.ngrams
+        if not use_m1:
+            model.ngrams = []
         nb = codes_of(context_exchange)[-a.neighbor_codes:] if context_exchange is not None else np.array([], dtype=np.int64)
         seq = [int(t) for t in np.concatenate([nb, sep, enc.encode(render(q, None))[0]])]
         start = len(seq)
         for _ in range(n_tokens):
             seq.append(model.sample_next(torch.tensor([seq[-a.ctx:]]), gen, temperature, top_k))
         out = enc.decode(seq[start:]).split(b"\nUser:")[0].split(b"User:")[0].strip()
-        model.train(); return out
+        model.ngrams = saved; model.train(); return out
 
     def score(rows):
-        return {"n": len(rows), "f1": round(float(np.mean([r["f1"] for r in rows])), 4) if rows else None,
-                "exact": round(float(np.mean([r["exact"] for r in rows])), 4) if rows else None}
+        out = {"n": len(rows), "f1": round(float(np.mean([r["f1"] for r in rows])), 4) if rows else None,
+               "exact": round(float(np.mean([r["exact"] for r in rows])), 4) if rows else None}
+        if rows and "f1_no_m1" in rows[0]:
+            out["f1_no_m1"] = round(float(np.mean([r["f1_no_m1"] for r in rows])), 4)
+        return out
 
     results = {"setup": vars(a) | {"train_exchanges": len(train_x), "eval": len(eval_x), "added": len(add_x), "distinct_keys": len(mem.exact)},
                "training": {"steps": step, "train_s": round(train_time, 1), "history": history}, "groups": {}, "samples": {}}
@@ -238,8 +246,9 @@ def main() -> int:
         hit = mem.exact_hit(q)
         mem_rows.append({"f1": f1(mem.exchanges[hit][1], ref) if hit is not None else 0.0, "exact": float(hit is not None and mem.exchanges[hit][1] == ref)})
         if len(net_rows) < 60:
-            out = answer(q, hit)
-            net_rows.append({"q": q.decode("utf-8", "replace")[:80], "a": out.decode("utf-8", "replace")[:160], "f1": f1(out, ref), "exact": float(out == ref)})
+            out = answer(q, hit); out2 = answer(q, hit, use_m1=False)
+            net_rows.append({"q": q.decode("utf-8", "replace")[:80], "a": out.decode("utf-8", "replace")[:160], "f1": f1(out, ref), "exact": float(out == ref),
+                             "a_no_m1": out2.decode("utf-8", "replace")[:160], "f1_no_m1": f1(out2, ref)})
     results["groups"]["seen_memory_path"] = score(mem_rows)
     results["groups"]["seen_network_with_own_exchange_in_context"] = score(net_rows)
     results["samples"]["seen_network"] = net_rows[:6]
@@ -249,8 +258,9 @@ def main() -> int:
         r = mem.retrieve(q, 1)
         sim = r[0][0] if r else 0.0
         nb = r[0][1] if r else None
-        out = answer(q, nb)
+        out = answer(q, nb); out2 = answer(q, nb, use_m1=False)
         row = {"q": q.decode("utf-8", "replace")[:80], "a": out.decode("utf-8", "replace")[:160], "f1": f1(out, ref), "exact": float(out == ref),
+               "a_no_m1": out2.decode("utf-8", "replace")[:160], "f1_no_m1": f1(out2, ref),
                "sim": round(sim, 3), "f1_vs_retrieved": f1(out, mem.exchanges[nb][1]) if nb is not None else 0.0,
                "retrieved_answer_f1_vs_ref": f1(mem.exchanges[nb][1], ref) if nb is not None else 0.0}
         (para_rows if sim >= 0.5 else unseen_rows).append(row)
@@ -269,8 +279,9 @@ def main() -> int:
         hit = mem.exact_hit(q)
         add_mem.append({"f1": f1(mem.exchanges[hit][1], ref) if hit is not None else 0.0, "exact": float(hit is not None and mem.exchanges[hit][1] == ref)})
         if len(add_net) < 60:
-            out = answer(q, hit)
-            add_net.append({"q": q.decode("utf-8", "replace")[:80], "a": out.decode("utf-8", "replace")[:160], "f1": f1(out, ref), "exact": float(out == ref)})
+            out = answer(q, hit); out2 = answer(q, hit, use_m1=False)
+            add_net.append({"q": q.decode("utf-8", "replace")[:80], "a": out.decode("utf-8", "replace")[:160], "f1": f1(out, ref), "exact": float(out == ref),
+                            "a_no_m1": out2.decode("utf-8", "replace")[:160], "f1_no_m1": f1(out2, ref)})
     results["groups"]["added_memory_path"] = score(add_mem)
     results["groups"]["added_network_with_added_exchange_in_context"] = score(add_net)
     results["samples"]["added_network"] = add_net[:6]

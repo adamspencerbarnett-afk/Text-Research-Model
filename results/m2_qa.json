@@ -1,0 +1,315 @@
+{
+ "setup": {
+  "data": "data_qa",
+  "work": "data_qa/work_m2",
+  "native": "data/cv0",
+  "budget": 600.0,
+  "ctx": 256,
+  "batch": 16,
+  "topk": 64,
+  "neighbor_codes": 110,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/m2_qa.json",
+  "seed": 1,
+  "train_exchanges": 50232,
+  "eval": 510,
+  "added": 511,
+  "distinct_keys": 49873
+ },
+ "training": {
+  "steps": 1544,
+  "train_s": 600.1,
+  "history": [
+   {
+    "train_s": 60.0,
+    "step": 146,
+    "train_bits_per_code": 5.148,
+    "valid_bits_per_byte": 1.3662
+   },
+   {
+    "train_s": 120.2,
+    "step": 300,
+    "train_bits_per_code": 5.84,
+    "valid_bits_per_byte": 1.3485
+   },
+   {
+    "train_s": 180.3,
+    "step": 455,
+    "train_bits_per_code": 4.925,
+    "valid_bits_per_byte": 1.3365
+   },
+   {
+    "train_s": 240.1,
+    "step": 605,
+    "train_bits_per_code": 5.587,
+    "valid_bits_per_byte": 1.3304
+   },
+   {
+    "train_s": 300.1,
+    "step": 761,
+    "train_bits_per_code": 5.28,
+    "valid_bits_per_byte": 1.3207
+   },
+   {
+    "train_s": 360.2,
+    "step": 919,
+    "train_bits_per_code": 5.838,
+    "valid_bits_per_byte": 1.3164
+   },
+   {
+    "train_s": 420.2,
+    "step": 1072,
+    "train_bits_per_code": 5.079,
+    "valid_bits_per_byte": 1.3131
+   },
+   {
+    "train_s": 480.2,
+    "step": 1233,
+    "train_bits_per_code": 5.54,
+    "valid_bits_per_byte": 1.3091
+   },
+   {
+    "train_s": 540.3,
+    "step": 1390,
+    "train_bits_per_code": 5.143,
+    "valid_bits_per_byte": 1.3034
+   },
+   {
+    "train_s": 600.1,
+    "step": 1544,
+    "train_bits_per_code": 5.088,
+    "valid_bits_per_byte": 1.2984
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.9713,
+   "exact": 0.99
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 60,
+   "f1": 0.1278,
+   "exact": 0.0
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 44,
+   "f1": 0.1347,
+   "exact": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.2727
+  },
+  "unseen_network_with_nearest": {
+   "n": 156,
+   "f1": 0.1172,
+   "exact": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.1887
+  },
+  "heldout_network_without_memory": {
+   "n": 60,
+   "f1": 0.1203,
+   "exact": 0.0
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.96,
+   "exact": 0.99
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 60,
+   "f1": 0.1175,
+   "exact": 0.0
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Explain the term \"learning curve\".",
+    "a": "The customer service, and a customer service.\nAssistant: The main difference between a customer service.\nAssistant: The most common type of data.",
+    "f1": 0.15789473684210525,
+    "exact": 0.0
+   },
+   {
+    "q": "Create a rhyming phrase.\nWord: Clock",
+    "a": "The 1. What is the most important elements of the given article.\nAssistant: An example of a given number is 4.",
+    "f1": 0.08333333333333333,
+    "exact": 0.0
+   },
+   {
+    "q": "Outline the events of the following movie: The Great Gatsby.",
+    "a": "The 1. What is the most important elements of the given article.\nAssistant: An example of a given number is 4. A small town.\nAssistant: The phrase \"The Great Ga",
+    "f1": 0.21138211382113822,
+    "exact": 0.0
+   },
+   {
+    "q": "Write a Java program to implement a simple calculator.",
+    "a": "The 1. What is the most important elements of the given article.\nAssistant: An example of a given number is 4.",
+    "f1": 0.0,
+    "exact": 0.0
+   },
+   {
+    "q": "Tell me about the traditional Philippine clothing for men.",
+    "a": "The sun is a type of sentence: \n- 10000-word phrase that is the most important thing in communication.",
+    "f1": 0.16666666666666666,
+    "exact": 0.0
+   },
+   {
+    "q": "Complete the following sentence: In spite of the pandemic,",
+    "a": "The 1.",
+    "f1": 0.11764705882352941,
+    "exact": 0.0
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Name two possible solutions to reduce the effects of global warming.",
+    "a": "The 1. What is the most important elements of the given article.\nAssistant: An example of a given number is 4. A small town.\nAssistant: The phrase \"The Great Ga",
+    "f1": 0.10526315789473684,
+    "exact": 0.0,
+    "sim": 0.698,
+    "f1_vs_retrieved": 0.10309278350515463,
+    "retrieved_answer_f1_vs_ref": 0.4047619047619047
+   },
+   {
+    "q": "What is the area of France in square kilometers?",
+    "a": "The 1. What is the most important elements of the given article.\nAssistant: An example of a given number is 4.",
+    "f1": 0.14814814814814814,
+    "exact": 0.0,
+    "sim": 0.563,
+    "f1_vs_retrieved": 0.22222222222222218,
+    "retrieved_answer_f1_vs_ref": 0.5
+   },
+   {
+    "q": "Generate a 5-word poem based on the given theme.\nFriendship",
+    "a": "The sun is a type of sentence: \n- 100\nAssistant: An example of a given number is 4.",
+    "f1": 0.0,
+    "exact": 0.0,
+    "sim": 0.626,
+    "f1_vs_retrieved": 0.0975609756097561,
+    "retrieved_answer_f1_vs_ref": 0.06451612903225806
+   },
+   {
+    "q": "Name three endangered animal species.",
+    "a": "The 1. What is the most important elements of the given article.\nAssistant: An example of a given number is 4.",
+    "f1": 0.17142857142857143,
+    "exact": 0.0,
+    "sim": 0.849,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.28571428571428575
+   },
+   {
+    "q": "Give two examples of how Artificial Intelligence is used in the healthcare indus",
+    "a": "The 1. What is the most important elements of the given article.\nAssistant: An example of a given number is 4. A data-driven insights to the store.",
+    "f1": 0.14814814814814817,
+    "exact": 0.0,
+    "sim": 0.643,
+    "f1_vs_retrieved": 0.20754716981132076,
+    "retrieved_answer_f1_vs_ref": 0.14814814814814817
+   },
+   {
+    "q": "Rewrite a given sentence using an active voice.\nThe problem was solved by us.",
+    "a": "The 1.",
+    "f1": 0.4,
+    "exact": 0.0,
+    "sim": 0.841,
+    "f1_vs_retrieved": 0.33333333333333337,
+    "retrieved_answer_f1_vs_ref": 0.4444444444444445
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Why is it important to know the environment of a place before visiting?",
+    "a": "The 1. What is the most important elements of the given article.\nAssistant: An example of a given number is 4. A small town.\nAssistant: The phrase \"The Great Ga",
+    "f1": 0.21621621621621623,
+    "exact": 0.0,
+    "sim": 0.234,
+    "f1_vs_retrieved": 0.12280701754385966,
+    "retrieved_answer_f1_vs_ref": 0.24516129032258066
+   },
+   {
+    "q": "Analyze the political scenario of a given country\nIndia",
+    "a": "The 1. What is the most important elements of the given article.\nAssistant: An example of a given number is 4. A data-driven insights to the store.",
+    "f1": 0.13445378151260504,
+    "exact": 0.0,
+    "sim": 0.349,
+    "f1_vs_retrieved": 0.16541353383458648,
+    "retrieved_answer_f1_vs_ref": 0.32999999999999996
+   },
+   {
+    "q": "Name 5 prominent fashion brands.",
+    "a": "The 1. What is the most important elements of the given article.\nAssistant: An example of a given number is 4.",
+    "f1": 0.0,
+    "exact": 0.0,
+    "sim": 0.418,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.14285714285714285
+   },
+   {
+    "q": "Write a short response to \"What is Life?\".",
+    "a": "The 1. What is the most important elements of the given article.\nAssistant: An example of a given number is 4.",
+    "f1": 0.1758241758241758,
+    "exact": 0.0,
+    "sim": 0.43,
+    "f1_vs_retrieved": 0.2571428571428572,
+    "retrieved_answer_f1_vs_ref": 0.3252032520325203
+   },
+   {
+    "q": "How is sound waves transmitted?",
+    "a": "The 1. What is the most important elements of the given article.\nAssistant: An example of a given number is 4.",
+    "f1": 0.08695652173913043,
+    "exact": 0.0,
+    "sim": 0.387,
+    "f1_vs_retrieved": 0.14814814814814814,
+    "retrieved_answer_f1_vs_ref": 0.17142857142857143
+   },
+   {
+    "q": "Categorize the following objects: Car, Pen, Fork.",
+    "a": "The 1. What is the most important elements of the given article.\nAssistant: An example of a given number is 4.",
+    "f1": 0.0,
+    "exact": 0.0,
+    "sim": 0.274,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.3333333333333333
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Generate an example use case of how an AI system can improve customer service.",
+    "a": "The customer service, and a customer service.\nAssistant: The main difference between a customer service.\nAssistant: The most common type of data.",
+    "f1": 0.24000000000000002,
+    "exact": 0.0
+   },
+   {
+    "q": "Compute the answer to this problem and give me the correct output.\n4 + 6 \u00d7 2",
+    "a": "The 1.",
+    "f1": 0.0,
+    "exact": 0.0
+   },
+   {
+    "q": "Name five factors that influence learning.",
+    "a": "The 1. What is the most important elements of the given article.\nAssistant: An example of a given number is 4. A data-driven insights to the store.",
+    "f1": 0.19801980198019803,
+    "exact": 0.0
+   },
+   {
+    "q": "Brainstorm 3 potential topics for a research paper on artificial intelligence.",
+    "a": "The 1. What is the most important elements of the given article.\nAssistant: An example of a given number is 4. A small town.\nAssistant: The phrase \"The Great Ga",
+    "f1": 0.14545454545454545,
+    "exact": 0.0
+   },
+   {
+    "q": "Assign each of these statements to either true or false\nA penny weighs more than",
+    "a": "The 1. What is the most important elements of the given article.\nAssistant: An example of a given number is 4.",
+    "f1": 0.17647058823529413,
+    "exact": 0.0
+   },
+   {
+    "q": "Generate a film title that matches with the theme of forest conservation",
+    "a": "The 1. What is the most important elements of the given article.\nAssistant: An example of a given number is 4.",
+    "f1": 0.15384615384615385,
+    "exact": 0.0
+   }
+  ]
+ }
+}
