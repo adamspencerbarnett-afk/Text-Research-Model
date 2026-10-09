@@ -1,8 +1,8 @@
 # Master Plan
 
-## Encoder research track
+## Track 2: the compiler, tables and memory (current work, from 8 October 2026)
 
-The repository now carries a second line of work beside V1: Compiler v0, a stateless single-pass text encoder with one frozen dictionary (`compiler/`). Its review and the phased plan for the next experiments (corpus and encoder fixes, the neural learnability ladder, lookup-table models, factorized IDs, the number channel, multi-unit prediction and a learned-chunking benchmark) are in [`docs/ENCODER_RESEARCH_PLAN.md`](docs/ENCODER_RESEARCH_PLAN.md). The V1 plan below is unchanged.
+The active research is Track 2 in [`README.md`](README.md): a deterministic compiler serving training and conversation, exact count tables and a question-keyed exchange memory around a small core, measured by bits per byte and by answer accuracy. Its plan and every result are in [`docs/ENCODER_RESEARCH_PLAN.md`](docs/ENCODER_RESEARCH_PLAN.md), its architecture in [`docs/DESIGN_V2.md`](docs/DESIGN_V2.md), and the next steps (the scale run, the learned copy head, the check loop and number channel, learning by reading at scale) in [`docs/HANDOFF_LOCAL.md`](docs/HANDOFF_LOCAL.md). The V1 plan below is kept as written on 15 September; V1 is frozen.
 
 ## Current status
 
