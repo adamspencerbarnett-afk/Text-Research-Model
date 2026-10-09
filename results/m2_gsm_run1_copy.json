@@ -1,0 +1,454 @@
+{
+ "setup": {
+  "data": "data_qa_gsm",
+  "work": "runs/m2_gsm",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 600.0,
+  "ctx": 256,
+  "batch": 16,
+  "topk": 64,
+  "neighbor_codes": 110,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/m2_gsm_run1_copy.json",
+  "seed": 1,
+  "self_context_p": 0.5,
+  "copy_bias": 3.0,
+  "device": "cpu",
+  "threads": 10,
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": true,
+  "save": "runs/m2_gsm/run1.pt",
+  "train_exchanges": 7473,
+  "eval": 659,
+  "added": 660,
+  "distinct_keys": 7460
+ },
+ "training": {
+  "steps": 1622,
+  "train_s": 600.1,
+  "history": [
+   {
+    "train_s": 60.3,
+    "step": 156,
+    "train_bits_per_code": 4.463,
+    "valid_bits_per_byte": 1.733
+   },
+   {
+    "train_s": 120.2,
+    "step": 314,
+    "train_bits_per_code": 4.166,
+    "valid_bits_per_byte": 1.7197
+   },
+   {
+    "train_s": 180.1,
+    "step": 470,
+    "train_bits_per_code": 4.223,
+    "valid_bits_per_byte": 1.7223
+   },
+   {
+    "train_s": 240.1,
+    "step": 629,
+    "train_bits_per_code": 3.981,
+    "valid_bits_per_byte": 1.7271
+   },
+   {
+    "train_s": 300.2,
+    "step": 788,
+    "train_bits_per_code": 4.417,
+    "valid_bits_per_byte": 1.6786
+   },
+   {
+    "train_s": 360.3,
+    "step": 945,
+    "train_bits_per_code": 3.45,
+    "valid_bits_per_byte": 1.6942
+   },
+   {
+    "train_s": 420.3,
+    "step": 1102,
+    "train_bits_per_code": 4.274,
+    "valid_bits_per_byte": 1.6598
+   },
+   {
+    "train_s": 480.3,
+    "step": 1259,
+    "train_bits_per_code": 3.793,
+    "valid_bits_per_byte": 1.6621
+   },
+   {
+    "train_s": 540.2,
+    "step": 1439,
+    "train_bits_per_code": 3.193,
+    "valid_bits_per_byte": 1.6628
+   },
+   {
+    "train_s": 600.1,
+    "step": 1622,
+    "train_bits_per_code": 3.551,
+    "valid_bits_per_byte": 1.6545
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 1.0,
+   "exact": 1.0
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 60,
+   "f1": 0.6349,
+   "exact": 0.0,
+   "num_exact": 0.3,
+   "num_exact_bias": 0.25,
+   "f1_no_m1": 0.0935,
+   "f1_bias": 0.6186,
+   "exact_bias": 0.0
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 2,
+   "f1": 0.4138,
+   "exact": 0.0,
+   "num_exact": 0.0,
+   "num_exact_bias": 0.0,
+   "f1_no_m1": 0.0397,
+   "f1_bias": 0.3538,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.5859
+  },
+  "unseen_network_with_nearest": {
+   "n": 198,
+   "f1": 0.1872,
+   "exact": 0.0,
+   "num_exact": 0.0101,
+   "num_exact_bias": 0.0,
+   "f1_no_m1": 0.0912,
+   "f1_bias": 0.1801,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.2433
+  },
+  "heldout_network_without_memory": {
+   "n": 60,
+   "f1": 0.151,
+   "exact": 0.0,
+   "num_exact": 0.0167,
+   "num_exact_bias": 0.0167
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.1912
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 1.0,
+   "exact": 1.0
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 60,
+   "f1": 0.5686,
+   "exact": 0.0,
+   "num_exact": 0.2333,
+   "num_exact_bias": 0.0833,
+   "f1_no_m1": 0.0921,
+   "f1_bias": 0.6056,
+   "exact_bias": 0.0
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Peter and his dad Rupert shared the same birthday.  To make it special, they eac",
+    "a": "He has 10 years old because he has 3.\nRupert is 10 birthday candles.5*10 + = 10 = 2 = 2000 candles on his cake.\nAnswer: 20",
+    "f1": 0.6511627906976744,
+    "exact": 0.0,
+    "a_no_m1": "He has two times the kids \ufffd the large \ufffd is by half is so since one family\nBr  cheerle  Sch.iqu. lip: He has one car is so this kitchen.poon  scallops  cranberri",
+    "f1_no_m1": 0.14634146341463414,
+    "a_bias": "Peter is 10 years old because he has 3.\nRupert is 10 birthday candles.5*10 = 35 candles on his cake.\nAnswer: 1000 = 300 = 100 his cake.\nAnswer: 1000 = 15 = 100 ",
+    "f1_bias": 0.7659574468085106,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "A carnival snack booth made $50 selling popcorn each day. It made three times as",
+    "a": "He made $150 = 1500000-   + $15 = $2000 = $10000.\nAnswer: 20\n\n $3000 $75 $75 = 20 $30 = $10",
+    "f1": 0.09523809523809523,
+    "exact": 0.0,
+    "a_no_m1": "He has two times from oranges is so since John is a normal because by both: It'). Also is two dollars, Mark has by one car was by one car is a ticket is both/\nB",
+    "f1_no_m1": 0.1142857142857143,
+    "a_bias": "$150 = 10 = $800-$20 50 = $100.\nAnswer: 12 = 2000 = $10 = 20000 $30000 $20 = $10 $11",
+    "f1_bias": 0.05,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Coral is reading a book that is 600 pages long.  She reads half of it in the fir",
+    "a": "He 1: 3000000000=30000\n900000=3000 pages\nWeek 2: 2: 2: 20=90 pages\n30 pages\nAnswer: 210\n\n\n310",
+    "f1": 0.625,
+    "exact": 0.0,
+    "a_no_m1": "He has two dogs: He has one ticket is both is two blue, John has is a fifth car is four oranges is both. That is one car, Mark has two dollars, one family has t",
+    "f1_no_m1": 0.0,
+    "a_bias": "1: 1: 1:30000/.300000=300\n900-30=900 pages\n30(.30=90 pages remain\n3:900 pages\nAnswer: 210100\n\n\nAnswer: 210",
+    "f1_bias": 0.625,
+    "exact_bias": 0.0,
+    "num_exact": 1.0,
+    "num_exact_bias": 1.0
+   },
+   {
+    "q": "Before getting to work, Jess has a few errands to run. Jess has to walk 11 block",
+    "a": "He needs to walk + + 6 blocks + 8 blocks = 25 blocks total.\nJess needs to go 25 blocks \u2013 5 = 20 blocks to work.\nAnswer: 20",
+    "f1": 0.8648648648648648,
+    "exact": 0.0,
+    "a_no_m1": "He has two times the kids is by two more dollars, she has by both: He has one normal??? if two dollars per cat is per school, John is a savings is two oranges: ",
+    "f1_no_m1": 0.0,
+    "a_bias": "11 blocks + + 6 blocks + 8 blocks = 25 blocks total.\nJess needs to go 25 blocks \u2013 5 = 20 blocks to work.\nAnswer: 2000000\n\n to go 200\nAnswer: 20 = 150\n\n to",
+    "f1_bias": 0.8421052631578948,
+    "exact_bias": 0.0,
+    "num_exact": 1.0,
+    "num_exact_bias": 1.0
+   },
+   {
+    "q": "Rookie police officers have to buy duty shoes at the full price of $85, but offi",
+    "a": "He has 3 = 10 - $175 - $17 = $17 less.\nAnswer: 1200 = 2000 = 200 = 2019 = $1000% of the 20 = 150 =",
+    "f1": 0.10526315789473684,
+    "exact": 0.0,
+    "a_no_m1": "He has two times the kids is so John has Of is one fifth truck'? if one truck is twice this ticket, Peter has two pieces: He has one car is a kitchen is two pie",
+    "f1_no_m1": 0.021052631578947368,
+    "a_bias": "10 = $17 less.\nCops that served a year pay $17 = $17 less.\nAnswer: 201 = 2000 = 201 = 20100 3517 = $20 = $1000 =",
+    "f1_bias": 0.3902439024390244,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Daryl is loading crates at a warehouse and wants to make sure that they are not ",
+    "a": "Daryl\u2019s items, he has 30kg nails + $70kg hammers * + 60000kg hammers * 40000 = 300kg in the class.\nAnswer: 30",
+    "f1": 0.2616822429906543,
+    "exact": 0.0,
+    "a_no_m1": "He has two times the ticket? However the large got? He bought half, Tom has after one car? He has half, Peter has twice this ticket, Peter has two times a ticke",
+    "f1_no_m1": 0.0759493670886076,
+    "a_bias": "Daryl\u2019s items, in total 30kg nails + 200kg hammers + + 60kg nails + 12 = 20kg weight limit = 10kg in items + 20kg in items = 10kg.\nAnswer: 80",
+    "f1_bias": 0.35398230088495575,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 1.0
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Max bought stamps at the post office. Some of the stamps had a snowflake design,",
+    "a": "He bought  + 9 = 20.\nThe number of rose stamps is 20 = 7.\nBella bought 18 12 = 7.\nAnswer: 38",
+    "f1": 0.3448275862068966,
+    "exact": 0.0,
+    "a_no_m1": "He has two times the kids is by two stars \ufffdt will Mark is by two hours. Je the problem, Carla has three kids, one car, Mark had is a savings, two oranges: She h",
+    "f1_no_m1": 0.02531645569620253,
+    "a_bias": "1 = 20.\nThe number of rose stamps is 113 20 + 13 = 7.\nBella bought 1118 + 20 = 38 stamps in all.\nAnswer: 38888",
+    "f1_bias": 0.4,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.722,
+    "f1_vs_retrieved": 0.6206896551724137,
+    "retrieved_answer_f1_vs_ref": 0.4444444444444444
+   },
+   {
+    "q": "A plane travels 1200 miles in 3 hours. At the same rate, how many additional hou",
+    "a": "He has 2/3=90 mph.\nThe rate at which the rate of 18 = 10 mph.\nThen it takes an additional 12/90=2 hours.\nAnswer: 2",
+    "f1": 0.4827586206896552,
+    "exact": 0.0,
+    "a_no_m1": "He has two dogs: He has two shirts is both is two blue more more) per car is both). Mr that both has two dollars, four shirts, John is a fifth school is two pie",
+    "f1_no_m1": 0.05405405405405405,
+    "a_bias": "2/3=90 mph.\nThen it takes an additional 180/90= 180 mph.\nAnswer: 3 = 2 = 20 mph.\nAnswer: 10 = 20 additional 30 additional 1000 additional 20 additional 180 addi",
+    "f1_bias": 0.30769230769230765,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.561,
+    "f1_vs_retrieved": 0.6896551724137931,
+    "retrieved_answer_f1_vs_ref": 0.7272727272727273
+   }
+  ],
+  "unseen": [
+   {
+    "q": "It's April, and Mrs. Rylan has been busy on her farm planting different types of",
+    "a": "He pepper-s packets of tomato seeds is 1.50 = $50.\nThe cost of the cost of the cost of the cost of the cost of the cost of the cost of the packets of milk is 4 ",
+    "f1": 0.3582089552238805,
+    "exact": 0.0,
+    "a_no_m1": "He has two times from? She had: He got: Rick bought by both: He has one car is by two dollars, Peter has two more dollars per weekend \ufffd\nBr  Mor. That is two pie",
+    "f1_no_m1": 0.06818181818181818,
+    "a_bias": "10 = $100 = $6.\nAnswer: 12000 = 500000  Therefore is 1.5 x 20 = $7.500000 = $300.                                                                               ",
+    "f1_bias": 0.1212121212121212,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.243,
+    "f1_vs_retrieved": 0.6133333333333333,
+    "retrieved_answer_f1_vs_ref": 0.393939393939394
+   },
+   {
+    "q": "The Smith family is getting ready for summer and needs to have their swimming po",
+    "a": "He has 10*20=120 cubic feet\nThat means it is 25*1200000=3000 liters of water is 4000000 = $200000000000000\nSo it takes 15 = $100",
+    "f1": 0.2,
+    "exact": 0.0,
+    "a_no_m1": "He has two times the ticket  entr the% \ufffd is one purchase is after two hours by both??), both because by two more dollars, Mark bought? He bought? He has?   The ",
+    "f1_no_m1": 0.1142857142857143,
+    "a_bias": "10*20=12000 cubic feet\nThat means it is 25*1200000=3000 liters\nSo it cost 20000= 300000000000000000\nAnswer: 200 = $100",
+    "f1_bias": 0.17857142857142855,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.14,
+    "f1_vs_retrieved": 0.689655172413793,
+    "retrieved_answer_f1_vs_ref": 0.23728813559322035
+   },
+   {
+    "q": "Trinity sells magazines at 11/8 of the price she bought the magazines. If she bo",
+    "a": "He has 400 = $15000\nThe total number of00000*.75=$800\nHe gets a discount of 2*.75=$80\nHe gets a discount of 2-8=$1.5\nSo he spent 2-1.5=$250",
+    "f1": 0.17142857142857143,
+    "exact": 0.0,
+    "a_no_m1": "He has two times from four kids is his fifth school was is one purchase is on two blue times per car? His blue, the regular, one car was her dollars is a fifth ",
+    "f1_no_m1": 0.07228915662650602,
+    "a_bias": "10 = 1000 = 100000000000*.5=$.500 = 2 =40000 = 200 = 200000000000\n50*2= $10000",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.209,
+    "f1_vs_retrieved": 0.5,
+    "retrieved_answer_f1_vs_ref": 0.24489795918367344
+   },
+   {
+    "q": "Jame will turn 27 in 5 years.  In 8 years his cousin will be 5 years younger tha",
+    "a": "11 = 8 years old her sister was three years from now?\nAssistant: First find the total number of years old.\nSince there are 1200 = 1 years = 1 years\nAnswer: 3000",
+    "f1": 0.3076923076923077,
+    "exact": 0.0,
+    "a_no_m1": "Mark has two dogs: Andrew is so John has both is a one fifth last one car is one truck is twice this ticket, Peter has two more dollars, Mark had two dollars, o",
+    "f1_no_m1": 0.16494845360824742,
+    "a_bias": "11 = 8 years old her sister was three years ago: 1 years old Bethany was three years * 25 years = 1 years\nThen double that number to find how old Bethany is * 2",
+    "f1_bias": 0.3333333333333333,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.191,
+    "f1_vs_retrieved": 0.49438202247191004,
+    "retrieved_answer_f1_vs_ref": 0.2727272727272727
+   },
+   {
+    "q": "Antoine's french onion soup recipe calls for 2 pounds of onions. He likes to dou",
+    "a": "He used 3 = 100 = 1800-$7.\nThe total number of beef\nSo he got 10 = 2 = 2000 = 200 = 200 pounds of vegetables.",
+    "f1": 0.1839080459770115,
+    "exact": 0.0,
+    "a_no_m1": "He has two dogs: He has one ticket\nRe \ufffd \ufffd the car is one family\nRea, Mark has three kids, one car was there in two dollars, one family has two hours. He has two",
+    "f1_no_m1": 0.11678832116788321,
+    "a_bias": "13 = 12=36 pounds of beef\nSo he used 3 = 12 = 16 pounds of beef\nSo he used 6 = 2 pounds of vegetables\nAnswer: 12 - 12 = 36 = 12 = 2 pounds of vegetables\nAnswer:",
+    "f1_bias": 0.23404255319148937,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.122,
+    "f1_vs_retrieved": 0.7199999999999999,
+    "retrieved_answer_f1_vs_ref": 0.18604651162790697
+   },
+   {
+    "q": "Joey plays football every week. Last week he played 2 matches on Monday, 1 match",
+    "a": "He has 3 = 10 people = 10 people attended the game.\nAnswer: 12 = 60 people attended the party.\nAnswer: 4",
+    "f1": 0.14285714285714288,
+    "exact": 0.0,
+    "a_no_m1": "He has two times will Jason is so John has , Max bought by both: He has one normal), Billy has both after two dollars is an ticket, John is a car is two oranges",
+    "f1_no_m1": 0.025974025974025976,
+    "a_bias": "10 = 10 people attended the game.\nAnswer: 150 = 10 people attended the game.\nAnswer: 1200 = 2 = 10 people attended the game.\nAnswer: 200 = 10 people more people",
+    "f1_bias": 0.18181818181818182,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.155,
+    "f1_vs_retrieved": 0.34615384615384615,
+    "retrieved_answer_f1_vs_ref": 0.2222222222222222
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Of the 20 available cars for rent, 12 are automatic cars, 4 are manual cars, and",
+    "a": "He- + 4 = 16 cars are either automatic or manual.\nSo, 20 = 4 cars are either automatic.\nTherefore, the percentageic cars is 4/20 x 1000 x 10000% = 20% = $10%",
+    "f1": 0.7500000000000001,
+    "exact": 0.0,
+    "a_no_m1": "He has one ticket: She had: She has two pieces is one fifth truck: It'? However the%, Mark has three kids: She got: They one ticket, one ticket flo : She has tw",
+    "f1_no_m1": 0.05263157894736841,
+    "a_bias": "12 = 16 cars are either automatic or manual.\nSo, 20 - 16 16 = 4 cars are either automatic.\nTherefore, the percentageic.\nTherefore, the percentage of semi-automa",
+    "f1_bias": 0.8636363636363636,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "The red rope was four times the length of the blue rope. The blue rope was 7 cen",
+    "a": "He has = - 7\nBlue rope in total?\nAssistant: The second rope 100 = - (Y = * 2 = 4 * 10 = $20000000 = 1000\n\n\nAnswer: = = 7 cm\n6",
+    "f1": 0.36363636363636365,
+    "exact": 0.0,
+    "a_no_m1": "He has two times the kids is so the% , two times by both: Sally is one car is the large has two dollars. per ticket: He have in two dollars, one family has both",
+    "f1_no_m1": 0.0851063829787234,
+    "a_bias": "10 = - 7\nRed rope 7\nBlue rope (Y (Y - + Y - 7 = 4 = 4 ** - 200 = 20 cm\n6Y = 120 cm\n60 cm\n60 = 120",
+    "f1_bias": 0.5238095238095238,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Tom bought a CD for $4, and a headphone set. In total, he paid $48. How many mor",
+    "a": "He would, and 48 - 4 = $44.\nThat means, for that money Tom would be able to buy / 4 = 1111 more CDs.\nAnswer: 1",
+    "f1": 0.7777777777777778,
+    "exact": 0.0,
+    "a_no_m1": "He has two dogs: He has one ticket is both is by one fifth truck'?   she has four more), both has two dollars is an school, John is a fifth school is two pieces",
+    "f1_no_m1": 0.04878048780487805,
+    "a_bias": "48 - 4 = $4.\nThat means, for that money Tom would be able to buy 444 / 4 = 11 more CDs.\nAnswer: 1111111111111 1",
+    "f1_bias": 0.8484848484848484,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "It takes 20 minutes for the oil to heat up to 300 degrees.  It then takes 40% lo",
+    "a": "He has 3 more minutes to 1000000\nThe total number of minutes\nThen, 30\nThe total number of minutes in 200\nAnswer: 20=$108 minutes to $2000+$4000000\nThen find the",
+    "f1": 0.35135135135135137,
+    "exact": 0.0,
+    "a_no_m1": "He has two times the whole truck'???????? Tom is a fifth new adult is two dollars per truck is by one car was there in two times a ticket is two pieces: Rick ha",
+    "f1_no_m1": 0.03669724770642201,
+    "a_bias": "100 to 1000 = 3 more minutes to 300 minutes to 4000000000\n400\nAnswer: 20=8 minutes to 10=8 minutes + 20 minutes to go to the chicken: 120=18 = 100 minutes",
+    "f1_bias": 0.5161290322580645,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Sally has realized she did not receive a full wage this week. Her bank account, ",
+    "a": "He received was $4200 \u2013 $20000 = $2220\nThis means her wage was \u2013 = $80 short\nSo he spends $200000 = $30000\nAnswer: 20",
+    "f1": 0.7199999999999999,
+    "exact": 0.0,
+    "a_no_m1": "He has two times the whole whole entire full? Mr this normal because by both: It'? during the%, Mark has three kids is one car: He had is a savings is two orang",
+    "f1_no_m1": 0.08,
+    "a_bias": "$420 \u2013 \u2013 $20000 = $2220\nThis means her wage was \u2013 = $80 short\nAnswer: 40",
+    "f1_bias": 0.7368421052631579,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Shawnda decides that her neighborhood kids could really use a bike inflation ser",
+    "a": "He has 3 bike tires to fill the bike costs $10 bike tires to fill up because 100 equals 10.\nThere were 5 equals 2 times 9 tricycle tires to fill up because 9 tr",
+    "f1": 0.6590909090909091,
+    "exact": 0.0,
+    "a_no_m1": "He has two times per whole truck is so Billy is a ticket is half is one original: She makes because in two games is a stock, one car was by one previous ticket,",
+    "f1_no_m1": 0.10256410256410256,
+    "a_bias": "10 bike tires to fill up because 10 equals 100.\nThere were 1 times 2 times 5 equals 10 bike tires to fill up because 5 equals 10.\nThere were 10 total tires to f",
+    "f1_bias": 0.7435897435897435,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   }
+  ]
+ }
+}

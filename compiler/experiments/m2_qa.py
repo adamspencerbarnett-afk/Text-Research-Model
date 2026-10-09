@@ -251,6 +251,34 @@ def final_number(text: bytes) -> bytes | None:
     return m[-1].replace(b",", b"") if m else None
 
 
+EXPR = re.compile(rb"([\d][\d,]*\.?\d*(?:\s*[-+*/x]\s*[\d$][\d,]*\.?\d*)+)\s*=\s*$")
+
+
+def evaluate_tail(text: bytes) -> str | None:
+    """The executor. When ``text`` ends in an arithmetic expression followed by '=', its value as
+    the model should write it (integer when integral, else up to two decimals); else None."""
+    m = EXPR.search(text[-80:])
+    if not m:
+        return None
+    expr = m.group(1).replace(b",", b"").replace(b"$", b"").replace(b"x", b"*").replace(b"\xc3\x97", b"*").decode("ascii", "ignore")
+    try:
+        import ast
+        node = ast.parse(expr, mode="eval")
+        def ev(n):
+            if isinstance(n, ast.Expression): return ev(n.body)
+            if isinstance(n, ast.Constant) and isinstance(n.value, (int, float)): return float(n.value)
+            if isinstance(n, ast.BinOp) and type(n.op) in (ast.Add, ast.Sub, ast.Mult, ast.Div):
+                l, r = ev(n.left), ev(n.right)
+                return {ast.Add: l + r, ast.Sub: l - r, ast.Mult: l * r, ast.Div: l / r if r else float("nan")}[type(n.op)]
+            raise ValueError
+        v = ev(node)
+    except (ValueError, SyntaxError, ZeroDivisionError, RecursionError):
+        return None
+    if v != v or abs(v) > 1e15:
+        return None
+    return str(int(round(v))) if abs(v - round(v)) < 1e-9 else f"{v:.2f}".rstrip("0").rstrip(".")
+
+
 def num_exact(pred: bytes, ref: bytes) -> float | None:
     """1/0 when the reference carries a final number (GSM8K), None otherwise."""
     r = final_number(ref)
@@ -279,6 +307,8 @@ def main() -> int:
     ap.add_argument("--evidence", action="store_true", help="bigram table counted over the retrieved exchange as a trust-head source")
     ap.add_argument("--fold-keys", action="store_true", help="fold inflections in the question key")
     ap.add_argument("--copy-answer-only", action="store_true", help="the copy head and evidence table see only the answer part of the retrieved exchange")
+    ap.add_argument("--copy-question", action="store_true", help="the copy head may also point into the current question (operands, names)")
+    ap.add_argument("--calculator", action="store_true", help="check loop, rule 1: when the reply has written 'a op b =', the executor writes the result; the final Answer: is checked against the last computed value")
     ap.add_argument("--save", default=None, help="save the core's weights here after training")
     a = ap.parse_args()
     global FOLD_KEYS
@@ -318,14 +348,18 @@ def main() -> int:
         return codes[i]
     q_lens: list[int] = []
 
+    def q_len(i: int) -> int:
+        """Codes of exchange i's question part ("User: ...\\nAssistant:")."""
+        while len(q_lens) <= i:
+            q_lens.append(len(enc.encode(render(mem.exchanges[len(q_lens)][0], None))[0]))
+        return q_lens[i]
+
     def answer_start(i: int, nb_len: int) -> int:
         """Index inside the retrieved tail (the last nb_len codes of exchange i) where its answer
         begins; 0 when the whole tail may be copied from."""
         if not a.copy_answer_only:
             return 0
-        while len(q_lens) <= i:
-            q_lens.append(len(enc.encode(render(mem.exchanges[len(q_lens)][0], None))[0]))
-        return max(0, q_lens[i] - (len(codes_of(i)) - nb_len))
+        return max(0, q_len(i) - (len(codes_of(i)) - nb_len))
 
     ngrams = [train_lm.NgramTable(all_codes, o, a.topk) for o in (2, 3)]
     say(f"M1 built: {ngrams[0].contexts:,} bigram and {ngrams[1].contexts:,} trigram contexts")
@@ -334,6 +368,8 @@ def main() -> int:
     # Codes the training text never contains (case flags on a plain dictionary, unused pieces)
     # are never emitted: their logits are untrained and a flat top-k can otherwise pick one.
     never_seen = torch.from_numpy(np.bincount(all_codes, minlength=enc.vocab) == 0)
+    EQUALS = int(enc.encode(b"=")[0][-1])
+    checks = collections.Counter()
     dev = torch.device(a.device)
     model = V2LM(enc, 128, 4, 4, a.ctx, ngrams, a.copy_head, a.evidence).to(dev)
     say(f"core: {model.param_counts()['total']:,} learned parameters, sources: network, 2 tables"
@@ -351,6 +387,9 @@ def main() -> int:
         mask = np.zeros(a.ctx + 1, dtype=np.float32); mask[len(nb) + len(sep):len(seq)] = 1.0
         src = np.zeros(a.ctx + 1, dtype=bool)                               # the retrieved span
         src[(answer_start(src_i, len(nb)) if src_i is not None else 0):len(nb)] = True
+        if a.copy_question:
+            q0 = len(nb) + len(sep)
+            src[q0:min(q0 + q_len(i), len(seq))] = True
         return np.pad(seq, (0, a.ctx + 1 - len(seq)), constant_values=PAD), mask, src
 
     def batch(idx):
@@ -359,12 +398,16 @@ def main() -> int:
         s = torch.from_numpy(np.stack(ss)).to(dev)
         return x[:, :-1], x[:, 1:], m[:, 1:], s[:, :-1]
 
-    def span_mask(seq_len: int, nb_len: int, start: int = 0) -> torch.Tensor:
-        """Which positions of the window seq[-ctx:] belong to the retrieved span (from start)."""
+    def span_mask(seq_len: int, nb_len: int, start: int = 0, question: tuple[int, int] | None = None) -> torch.Tensor:
+        """Which positions of the window seq[-ctx:] belong to the retrieved span (from start),
+        plus the current question's positions when --copy-question."""
         offset = max(0, seq_len - a.ctx)
         n = min(seq_len, a.ctx)
         pos = torch.arange(n, device=dev) + offset
-        return ((pos < nb_len) & (pos >= start))[None]
+        m = (pos < nb_len) & (pos >= start)
+        if a.copy_question and question is not None:
+            m |= (pos >= question[0]) & (pos < question[1])
+        return m[None]
 
     @torch.no_grad()
     def valid_bpb(exchanges, n=120):
@@ -379,7 +422,8 @@ def main() -> int:
             x = torch.from_numpy(seq[None, :-1]).to(dev); y = torch.from_numpy(seq[None, 1:]).to(dev)
             scored = seq[len(nb) + len(sep):]                       # the exchange's own codes, each predicted
             start = answer_start(nb_i[0][1], len(nb)) if nb_i else 0
-            nll = model.nll(x, y, span_mask(len(seq) - 1, len(nb), start))[0, len(nb) + len(sep) - 1:]
+            q0 = len(nb) + len(sep); qspan = (q0, q0 + len(enc.encode(render(q, None))[0]))
+            nll = model.nll(x, y, span_mask(len(seq) - 1, len(nb), start, qspan))[0, len(nb) + len(sep) - 1:]
             bits += float(nll.sum()) / math.log(2); nbytes += float(enc.lens[scored].sum())
         model.train(); return bits / max(1, nbytes)
 
@@ -411,15 +455,31 @@ def main() -> int:
         a_start = answer_start(context_exchange, len(nb)) if context_exchange is not None else 0
         seq = [int(t) for t in np.concatenate([nb, sep, enc.encode(render(q, None))[0]])]
         start = len(seq)
-        for _ in range(n_tokens):
+        qspan = (len(nb) + len(sep), start)
+        computed: list[str] = []            # results the executor wrote, in order
+        while len(seq) - start < n_tokens:
             x = torch.tensor([seq[-a.ctx:]], device=dev)
             h = model.hidden_all(x)
-            logits = (model.mixed_logits(h, x, span_mask(len(seq), len(nb), a_start)) + bias) / temperature
+            logits = (model.mixed_logits(h, x, span_mask(len(seq), len(nb), a_start, qspan)) + bias) / temperature
             logits = logits.masked_fill(never_seen.to(logits.device), float("-inf"))
             kth = torch.topk(logits, top_k).values[..., -1, None]
             logits = logits.masked_fill(logits < kth, float("-inf"))
             seq.append(torch.multinomial(F.softmax(logits, -1).cpu(), 1, generator=gen).item())
+            if a.calculator and seq[-1] == EQUALS:
+                value = evaluate_tail(enc.decode(seq[start:]))
+                if value is not None:
+                    computed.append(value)
+                    seq.extend(int(t) for t in enc.encode(b" " + value.encode())[0])
         out = enc.decode(seq[start:]).split(b"\nUser:")[0].split(b"User:")[0].strip()
+        if a.calculator and computed:
+            # Rule 2: the stated final answer must be a value the executor computed; otherwise the
+            # last computed value is the answer (a refine, counted in results["checks"]).
+            said = final_number(out)
+            if said is None or said.decode() not in computed:
+                checks["answer_replaced"] += 1
+                out = NUM.sub(b"Answer: " + computed[-1].encode(), out) if said is not None else out + b"\nAnswer: " + computed[-1].encode()
+            else:
+                checks["answer_confirmed"] += 1
         model.ngrams = saved; model.train(); return out
 
     def score(rows):
@@ -491,6 +551,7 @@ def main() -> int:
                             "a_no_m1": out2.decode("utf-8", "replace")[:160], "f1_no_m1": f1(out2, ref),
                             "a_bias": out3.decode("utf-8", "replace")[:160], "f1_bias": f1(out3, ref), "exact_bias": float(out3 == ref),
                              "num_exact": num_exact(out, ref), "num_exact_bias": num_exact(out3, ref)})
+    results["checks"] = dict(checks)
     results["groups"]["added_memory_path"] = score(add_mem)
     results["groups"]["added_network_with_added_exchange_in_context"] = score(add_net)
     results["samples"]["added_network"] = add_net[:6]
