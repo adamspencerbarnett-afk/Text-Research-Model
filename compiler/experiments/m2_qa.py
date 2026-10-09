@@ -306,6 +306,8 @@ def main() -> int:
     ap.add_argument("--self-context-p", type=float, default=0.0, help="share of training windows whose context is the exchange itself, to teach copying from memory")
     ap.add_argument("--copy-bias", type=float, default=0.0, help="generation-time bonus (in nats) on codes that appear in the retrieved answer: the soft form of answering from evidence")
     ap.add_argument("--device", default="cpu", help="cpu, cuda or cuda:N"); ap.add_argument("--threads", type=int, default=0)
+    ap.add_argument("--width", type=int, default=128); ap.add_argument("--layers", type=int, default=4); ap.add_argument("--heads", type=int, default=4)
+    ap.add_argument("--greedy", action="store_true", help="scored answers take the most likely code at each step instead of sampling")
     ap.add_argument("--copy-head", action="store_true", help="learned pointer over the retrieved exchange as a trust-head source")
     ap.add_argument("--evidence", action="store_true", help="bigram table counted over the retrieved exchange as a trust-head source")
     ap.add_argument("--fold-keys", action="store_true", help="fold inflections in the question key")
@@ -374,7 +376,7 @@ def main() -> int:
     EQUALS = int(enc.encode(b"=")[0][-1])
     checks = collections.Counter()
     dev = torch.device(a.device)
-    model = V2LM(enc, 128, 4, 4, a.ctx, ngrams, a.copy_head, a.evidence).to(dev)
+    model = V2LM(enc, a.width, a.layers, a.heads, a.ctx, ngrams, a.copy_head, a.evidence).to(dev)
     say(f"core: {model.param_counts()['total']:,} learned parameters, sources: network, 2 tables"
         + (", copy head" if a.copy_head else "") + (", evidence table" if a.evidence else ""))
     dense = [p for n, p in model.named_parameters()]
@@ -465,9 +467,12 @@ def main() -> int:
             h = model.hidden_all(x)
             logits = (model.mixed_logits(h, x, span_mask(len(seq), len(nb), a_start, qspan)) + bias) / temperature
             logits = logits.masked_fill(never_seen.to(logits.device), float("-inf"))
-            kth = torch.topk(logits, top_k).values[..., -1, None]
-            logits = logits.masked_fill(logits < kth, float("-inf"))
-            seq.append(torch.multinomial(F.softmax(logits, -1).cpu(), 1, generator=gen).item())
+            if a.greedy:
+                seq.append(int(logits.argmax(-1).item()))
+            else:
+                kth = torch.topk(logits, top_k).values[..., -1, None]
+                logits = logits.masked_fill(logits < kth, float("-inf"))
+                seq.append(torch.multinomial(F.softmax(logits, -1).cpu(), 1, generator=gen).item())
             if a.calculator and seq[-1] == EQUALS:
                 value = evaluate_tail(enc.decode(seq[start:]))
                 if value is not None:
