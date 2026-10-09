@@ -173,6 +173,7 @@ class LM(nn.Module):
         super().__init__()
         self.ctx, self.coords = ctx, enc.groups > 0
         self.vocab = enc.vocab
+        self.no_case_flags = hasattr(enc, "d") and not getattr(enc.d, "case_flags", True)
         # Exact n-gram follower tables mixed into the output: the model predicts the mixture
         # weights (network, table 1, table 2, ...) from its hidden state and each table's
         # confidence, so it learns when to trust counts and when to think.
@@ -311,7 +312,10 @@ class LM(nn.Module):
             lm = self.head_m(torch.cat([h, self.emb_g(torch.tensor([g], device=h.device))], -1))
             m = pick(lm.masked_fill(~self.valid[g], float("-inf")))
             return g * self.M + m
-        return pick(self.mixed_logits(h, x))
+        logits = self.mixed_logits(h, x)
+        if self.no_case_flags:                   # a plain dictionary cannot decode the flag IDs
+            logits[:, 256:258] = float("-inf")
+        return pick(logits)
 
 
 # --------------------------------------------------------------------------- evaluation

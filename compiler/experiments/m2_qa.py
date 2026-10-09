@@ -242,6 +242,21 @@ def render(q: bytes, a: bytes | None) -> bytes:
     return b"User: " + q + b"\nAssistant:" + (b" " + a + b"\n\n" if a is not None else b"")
 
 
+NUM = re.compile(rb"Answer:\s*(-?[\d,]*\.?\d+)")
+
+
+def final_number(text: bytes) -> bytes | None:
+    """The checkable target of a GSM-style answer: the number after the last "Answer:"."""
+    m = NUM.findall(text)
+    return m[-1].replace(b",", b"") if m else None
+
+
+def num_exact(pred: bytes, ref: bytes) -> float | None:
+    """1/0 when the reference carries a final number (GSM8K), None otherwise."""
+    r = final_number(ref)
+    return None if r is None else float(final_number(pred) == r)
+
+
 def f1(pred: bytes, ref: bytes) -> float:
     p, r = collections.Counter(words_of(pred)), collections.Counter(words_of(ref))
     common = sum((p & r).values())
@@ -316,6 +331,9 @@ def main() -> int:
     say(f"M1 built: {ngrams[0].contexts:,} bigram and {ngrams[1].contexts:,} trigram contexts")
     sep = enc.encode(b"\n\n")[0]
     PAD = 0
+    # Codes the training text never contains (case flags on a plain dictionary, unused pieces)
+    # are never emitted: their logits are untrained and a flat top-k can otherwise pick one.
+    never_seen = torch.from_numpy(np.bincount(all_codes, minlength=enc.vocab) == 0)
     dev = torch.device(a.device)
     model = V2LM(enc, 128, 4, 4, a.ctx, ngrams, a.copy_head, a.evidence).to(dev)
     say(f"core: {model.param_counts()['total']:,} learned parameters, sources: network, 2 tables"
@@ -397,6 +415,7 @@ def main() -> int:
             x = torch.tensor([seq[-a.ctx:]], device=dev)
             h = model.hidden_all(x)
             logits = (model.mixed_logits(h, x, span_mask(len(seq), len(nb), a_start)) + bias) / temperature
+            logits = logits.masked_fill(never_seen.to(logits.device), float("-inf"))
             kth = torch.topk(logits, top_k).values[..., -1, None]
             logits = logits.masked_fill(logits < kth, float("-inf"))
             seq.append(torch.multinomial(F.softmax(logits, -1).cpu(), 1, generator=gen).item())
@@ -406,6 +425,10 @@ def main() -> int:
     def score(rows):
         out = {"n": len(rows), "f1": round(float(np.mean([r["f1"] for r in rows])), 4) if rows else None,
                "exact": round(float(np.mean([r["exact"] for r in rows])), 4) if rows else None}
+        nums = [r["num_exact"] for r in rows if r.get("num_exact") is not None]
+        if nums:
+            out["num_exact"] = round(float(np.mean(nums)), 4)
+            out["num_exact_bias"] = round(float(np.mean([r["num_exact_bias"] for r in rows if r.get("num_exact_bias") is not None])), 4)
         if rows and "f1_no_m1" in rows[0]:
             out["f1_no_m1"] = round(float(np.mean([r["f1_no_m1"] for r in rows])), 4)
         if rows and "f1_bias" in rows[0]:
@@ -426,7 +449,8 @@ def main() -> int:
             out = answer(q, hit); out2 = answer(q, hit, use_m1=False); out3 = answer(q, hit, copy_bias=a.copy_bias)
             net_rows.append({"q": q.decode("utf-8", "replace")[:80], "a": out.decode("utf-8", "replace")[:160], "f1": f1(out, ref), "exact": float(out == ref),
                              "a_no_m1": out2.decode("utf-8", "replace")[:160], "f1_no_m1": f1(out2, ref),
-                             "a_bias": out3.decode("utf-8", "replace")[:160], "f1_bias": f1(out3, ref), "exact_bias": float(out3 == ref)})
+                             "a_bias": out3.decode("utf-8", "replace")[:160], "f1_bias": f1(out3, ref), "exact_bias": float(out3 == ref),
+                             "num_exact": num_exact(out, ref), "num_exact_bias": num_exact(out3, ref)})
     results["groups"]["seen_memory_path"] = score(mem_rows)
     results["groups"]["seen_network_with_own_exchange_in_context"] = score(net_rows)
     results["samples"]["seen_network"] = net_rows[:6]
@@ -440,12 +464,12 @@ def main() -> int:
         row = {"q": q.decode("utf-8", "replace")[:80], "a": out.decode("utf-8", "replace")[:160], "f1": f1(out, ref), "exact": float(out == ref),
                "a_no_m1": out2.decode("utf-8", "replace")[:160], "f1_no_m1": f1(out2, ref),
                "a_bias": out3.decode("utf-8", "replace")[:160], "f1_bias": f1(out3, ref), "exact_bias": float(out3 == ref),
-               "sim": round(sim, 3), "f1_vs_retrieved": f1(out, mem.exchanges[nb][1]) if nb is not None else 0.0,
+               "num_exact": num_exact(out, ref), "num_exact_bias": num_exact(out3, ref), "sim": round(sim, 3), "f1_vs_retrieved": f1(out, mem.exchanges[nb][1]) if nb is not None else 0.0,
                "retrieved_answer_f1_vs_ref": f1(mem.exchanges[nb][1], ref) if nb is not None else 0.0}
         (para_rows if sim >= 0.5 else unseen_rows).append(row)
         if len(nomem_rows) < 60:
             out0 = answer(q, None)
-            nomem_rows.append({"f1": f1(out0, ref), "exact": float(out0 == ref)})
+            nomem_rows.append({"f1": f1(out0, ref), "exact": float(out0 == ref), "num_exact": num_exact(out0, ref), "num_exact_bias": num_exact(out0, ref)})
     results["groups"]["paraphrase_network_with_nearest"] = score(para_rows) | {"retrieved_answer_f1_vs_ref": round(float(np.mean([r["retrieved_answer_f1_vs_ref"] for r in para_rows])), 4) if para_rows else None}
     results["groups"]["unseen_network_with_nearest"] = score(unseen_rows) | {"retrieved_answer_f1_vs_ref": round(float(np.mean([r["retrieved_answer_f1_vs_ref"] for r in unseen_rows])), 4) if unseen_rows else None}
     results["groups"]["heldout_network_without_memory"] = score(nomem_rows)
@@ -465,7 +489,8 @@ def main() -> int:
             out = answer(q, hit); out2 = answer(q, hit, use_m1=False); out3 = answer(q, hit, copy_bias=a.copy_bias)
             add_net.append({"q": q.decode("utf-8", "replace")[:80], "a": out.decode("utf-8", "replace")[:160], "f1": f1(out, ref), "exact": float(out == ref),
                             "a_no_m1": out2.decode("utf-8", "replace")[:160], "f1_no_m1": f1(out2, ref),
-                            "a_bias": out3.decode("utf-8", "replace")[:160], "f1_bias": f1(out3, ref), "exact_bias": float(out3 == ref)})
+                            "a_bias": out3.decode("utf-8", "replace")[:160], "f1_bias": f1(out3, ref), "exact_bias": float(out3 == ref),
+                             "num_exact": num_exact(out, ref), "num_exact_bias": num_exact(out3, ref)})
     results["groups"]["added_memory_path"] = score(add_mem)
     results["groups"]["added_network_with_added_exchange_in_context"] = score(add_net)
     results["samples"]["added_network"] = add_net[:6]
