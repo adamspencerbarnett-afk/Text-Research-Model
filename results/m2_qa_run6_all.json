@@ -1,0 +1,459 @@
+{
+ "setup": {
+  "data": "data_qa",
+  "work": "runs/m2",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 600.0,
+  "ctx": 256,
+  "batch": 16,
+  "topk": 64,
+  "neighbor_codes": 110,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/m2_qa_run6_all.json",
+  "seed": 1,
+  "self_context_p": 0.5,
+  "copy_bias": 3.0,
+  "device": "cpu",
+  "threads": 10,
+  "copy_head": true,
+  "evidence": true,
+  "fold_keys": true,
+  "save": "runs/m2/run6.pt",
+  "train_exchanges": 50232,
+  "eval": 510,
+  "added": 511,
+  "distinct_keys": 49785
+ },
+ "training": {
+  "steps": 1393,
+  "train_s": 600.0,
+  "history": [
+   {
+    "train_s": 60.3,
+    "step": 136,
+    "train_bits_per_code": 3.262,
+    "valid_bits_per_byte": 1.4492
+   },
+   {
+    "train_s": 120.1,
+    "step": 271,
+    "train_bits_per_code": 4.734,
+    "valid_bits_per_byte": 1.4708
+   },
+   {
+    "train_s": 180.2,
+    "step": 405,
+    "train_bits_per_code": 3.102,
+    "valid_bits_per_byte": 1.4024
+   },
+   {
+    "train_s": 240.3,
+    "step": 539,
+    "train_bits_per_code": 3.76,
+    "valid_bits_per_byte": 1.3815
+   },
+   {
+    "train_s": 300.4,
+    "step": 672,
+    "train_bits_per_code": 4.217,
+    "valid_bits_per_byte": 1.3882
+   },
+   {
+    "train_s": 360.2,
+    "step": 806,
+    "train_bits_per_code": 2.829,
+    "valid_bits_per_byte": 1.3715
+   },
+   {
+    "train_s": 420.4,
+    "step": 944,
+    "train_bits_per_code": 3.327,
+    "valid_bits_per_byte": 1.3972
+   },
+   {
+    "train_s": 480.3,
+    "step": 1079,
+    "train_bits_per_code": 3.633,
+    "valid_bits_per_byte": 1.3802
+   },
+   {
+    "train_s": 540.1,
+    "step": 1223,
+    "train_bits_per_code": 4.227,
+    "valid_bits_per_byte": 1.3703
+   },
+   {
+    "train_s": 600.0,
+    "step": 1393,
+    "train_bits_per_code": 3.918,
+    "valid_bits_per_byte": 1.3558
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.9688,
+   "exact": 0.985
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 60,
+   "f1": 0.4148,
+   "exact": 0.0667,
+   "f1_no_m1": 0.0397,
+   "f1_bias": 0.562,
+   "exact_bias": 0.0833
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 55,
+   "f1": 0.1989,
+   "exact": 0.0,
+   "f1_no_m1": 0.0366,
+   "f1_bias": 0.1802,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.2547
+  },
+  "unseen_network_with_nearest": {
+   "n": 145,
+   "f1": 0.1592,
+   "exact": 0.0,
+   "f1_no_m1": 0.0482,
+   "f1_bias": 0.1476,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.1819
+  },
+  "heldout_network_without_memory": {
+   "n": 60,
+   "f1": 0.1256,
+   "exact": 0.0
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.1855
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.96,
+   "exact": 0.99
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 60,
+   "f1": 0.3942,
+   "exact": 0.0167,
+   "f1_no_m1": 0.0372,
+   "f1_bias": 0.5168,
+   "exact_bias": 0.0333
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Why is biodiversity important to ecosystems?",
+    "a": "Biodiversity is biodiversity important to allow them to maintain healthy habitats that ecosystems?\nAssistant: Biodiversity is important to allow them to ecosyst",
+    "f1": 0.6119402985074627,
+    "exact": 0.0,
+    "a_no_m1": "La    f  \nPro  \np'\np- Comp\nc\nc\nb \ny\" Th- Research, give and C and track m\n( \" En'\nf y\nK and all 'm \nPro and Me \" Su- Su - Comp 'y ''",
+    "f1_no_m1": 0.03773584905660377,
+    "a_bias": "Biodiversity is important to ecosystems can remain resilient in the face of diseases and materials to ecosystems because it helps to ensure that there is import",
+    "f1_bias": 0.6666666666666666,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Create a function for calculating factorials.",
+    "a": "def calculateFactorial(n: def calculateFactorial(n: -> int) -> int: \n    # Return the factorial(n)",
+    "f1": 0.7826086956521738,
+    "exact": 0.0,
+    "a_no_m1": "Look   b to different or one or\"Al\np'\np- En'c\nct f\ny\"cl-c\nhm''y m'\n \" En'e  y\n m- Pr and different, all '\" Research\"(-ch- Compy and F ''",
+    "f1_no_m1": 0.0,
+    "a_bias": "int) \n    ''''''Returns the factorial(n) -> int: \n    '''\n    '''''Returns the factorial(n!) \n----------------------------",
+    "f1_bias": 0.6666666666666666,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Explain why someone who wants to recycle their old books should donate them to a",
+    "a": "Donating old books to a library is an excellent way to reduce landfills. Libraries not only make books to recycling centers from book donate them to purchase ne",
+    "f1": 0.6511627906976745,
+    "exact": 0.0,
+    "a_no_m1": "Un\n En b\" Su or C\n During with give in the one different in one all one and Ct f\nAl\" Mo- Research, give and U and track and give with up bt'- Pr b\nf and V hmt\np",
+    "f1_no_m1": 0.10084033613445376,
+    "a_bias": "Donating old books to a library is an excellent way to reduce landfills. Libraries not only make books to recycling centers from book donations to a library. Li",
+    "f1_bias": 0.4852941176470589,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Find the gross profit of an item after taxation given its cost price and selling",
+    "a": "10\nAssistant: 10\nAssistant: 10\nAssistant: Find the gross profit = 50, after taxation, after taxation. This is a great way to get the grossing a large amount of ",
+    "f1": 0.2666666666666667,
+    "exact": 0.0,
+    "a_no_m1": "Po  y f 'c-h'b- Look\n'- En'c\ncc  f\nby- Research\nhmb'y mc\nUn\" En'E  y\nfm- Prhm ' 'bm\" Suhch- Compy'y ''c h'",
+    "f1_no_m1": 0.0,
+    "a_bias": "50, 50,00, after taxation.\nAssistant: 500,00, 5000,00, 50000, 50000, 5, 5000, 500000, 50000000000,",
+    "f1_bias": 0.5714285714285715,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Evaluate the following algebraic equation.\n2 (3 + 5)",
+    "a": "Evaluate the following algebraic equation.\nAssistant: The algebraic equation: 1.\nAssistant: The most effective ways to reduce the risk of developing chronic dis",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "Is  y f  c\nc'bf'm'- En'c\nc\nb f\nf\nPro'he Un'y m'c  y'E  y\nKm- Su'm   'b y y\nC- Researchy'y ''y Un",
+    "f1_no_m1": 0.0,
+    "a_bias": "Evaluate the following algebraic equation.\nAssistant: The algebraic equation: 161616.\nAssistant: The algebraic equations are equations that contain the fire.",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Identify the patterns in this set of numbers\n2, 5, 10, 17",
+    "a": "Identify the next consecutive odd number.\nAssistant: This set of numbers\nAssistant: This set of numbers, 17\nAssistant: This set of numbers, 5 5 = 10, 10, where ",
+    "f1": 0.6176470588235294,
+    "exact": 0.0,
+    "a_no_m1": "Un  y f Unc-hft- Look\np- En'cmhcbht\nbm-chhmb'y m'c bt'E  y\nKm- Enhmt' 'b'y y\nPro- Researchy'y ''y Un'",
+    "f1_no_m1": 0.0,
+    "a_bias": "10, 5 10, 5, 100, where each number is found, 17. Thus the pattern of numbers, 5 5 = 17. Thus the next consecutive odd numbers, 10 + 5, 2, 10, 10 17. Thus,",
+    "f1_bias": 0.625,
+    "exact_bias": 0.0
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Name two possible solutions to reduce the effects of global warming.",
+    "a": "reducing our emissions of greenhouse gases such as carbon dioxide, and better managing forests and other ecosystems to reduce global warming.\nAssistant: Three p",
+    "f1": 0.38235294117647056,
+    "exact": 0.0,
+    "a_no_m1": "Look\n   ? or different\n?  \n- Look\n'- Comp\nc\n\ufffd, humans and C\n\"User- Research\nf \ncy !c\n \" En'\n   !  and give  and V \nPro and track and no in one one in up in one ",
+    "f1_no_m1": 0.032786885245901634,
+    "a_bias": "reducing our emissions of greenhouse gases such as carbon dioxide, and better managing forests and other ecosystems to reduce global warming. Additionally, swit",
+    "f1_bias": 0.3191489361702127,
+    "exact_bias": 0.0,
+    "sim": 0.697,
+    "f1_vs_retrieved": 0.6111111111111109,
+    "retrieved_answer_f1_vs_ref": 0.4047619047619047
+   },
+   {
+    "q": "What is the area of France in square kilometers?",
+    "a": "The area of India in square kilometers is 3,263,20197.\nAssistant: The area in square kilometers of India\nAssistant: The area of India\nAssistant: A area of India",
+    "f1": 0.13333333333333336,
+    "exact": 0.0,
+    "a_no_m1": "Is\n   f  c? f\nf'\n - LaUserc\ny\n  \ny\"User(f\n!  'y !(\n  y'   y\nK and V  and support, its all in it in\n\n life, track - Researchy and their one or to it",
+    "f1_no_m1": 0.0,
+    "a_bias": "3, 3,287, 3,287,287.287,263,263, 8,287.7,2,2, 3,2, 3. 3,2876,287, 3. 26. 3, 8,",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "sim": 0.561,
+    "f1_vs_retrieved": 0.2666666666666667,
+    "retrieved_answer_f1_vs_ref": 0.5
+   },
+   {
+    "q": "Generate a 5-word poem based on the given theme.\nFriendship",
+    "a": "Friendship is a binding stronger\nIt grows like ropes or spots\nIt grows like grass and childish blames.\nIt grows like grass and childish blames.",
+    "f1": 0.06666666666666667,
+    "exact": 0.0,
+    "a_no_m1": "Po\nPe b to F c\nh't- Me\np- Comp'c\nct' f\nb\nPro\nhhmb'ht- Fc bt'\" Pr b\nfm- Suhmt' 'b'\" Suh\nh- Comp 'y ''c h'",
+    "f1_no_m1": 0.0,
+    "a_bias": "Friends, pain and keeps us free\nThan any force like ropes or chains\nIt grows like grass and childish blames.\nIt grows like grass and childish blames.\nThan any f",
+    "f1_bias": 0.07142857142857142,
+    "exact_bias": 0.0,
+    "sim": 0.647,
+    "f1_vs_retrieved": 0.6274509803921569,
+    "retrieved_answer_f1_vs_ref": 0.06451612903225806
+   },
+   {
+    "q": "Name three endangered animal species.",
+    "a": "List 3, snow leopards, and 5 endangered animal species.",
+    "f1": 0.34782608695652173,
+    "exact": 0.0,
+    "a_no_m1": "Po\nPe  f  c\n f\nAl'\ncl-v'c\nc\nb \ny\" Th-Al\nfm''m m'\nUn\" En'\n  b\nK and h  mt\np'b \" Su- Su - Compy'y ''",
+    "f1_no_m1": 0.04347826086956522,
+    "a_bias": "List 3, snow leopards, and pandas.",
+    "f1_bias": 0.09523809523809523,
+    "exact_bias": 0.0,
+    "sim": 0.843,
+    "f1_vs_retrieved": 0.631578947368421,
+    "retrieved_answer_f1_vs_ref": 0.28571428571428575
+   },
+   {
+    "q": "Come up with a creative and original marketing slogan for the following product.",
+    "a": "Come up your heart. Ice cream that won't melt melt melt melt your heart. \n2. Scoop up your heart. Get chillin's for a new ice cream.",
+    "f1": 0.10810810810810811,
+    "exact": 0.0,
+    "a_no_m1": "Un\nPe  f  c\n f\nNew and one different is further\nc\nct f- Research\"User- Research, its potential and no with no or low\n \" En'\nAd y\nK and V y\ny\np'\" Research\" Su- C",
+    "f1_no_m1": 0.04081632653061225,
+    "a_bias": "3. \n2. Scoop up with our unbeatable flavors. Ice cream that won't melt your summer with our cool ice cream.\n3. \n3. \n2. Get chillin't melt melt.\n2. \n3. \n3. Get c",
+    "f1_bias": 0.25,
+    "exact_bias": 0.0,
+    "sim": 0.583,
+    "f1_vs_retrieved": 0.6,
+    "retrieved_answer_f1_vs_ref": 0.30303030303030304
+   },
+   {
+    "q": "Generate a blog post discussing the importance of healthy eating habits.",
+    "a": "Getting a sleep schedule and sleep more deeply.",
+    "f1": 0.030769230769230767,
+    "exact": 0.0,
+    "a_no_m1": "Un\nNew\nb to often traditional given text \nb- Look\np- Comp\nc\nc\nNew and traditional human for improved on all, give and develop and track and give with increased ",
+    "f1_no_m1": 0.13978494623655913,
+    "a_bias": "Getting a sleep schedule and sleep more deeply. For example, sticking to establish healthy sleep schedule and screens before bed. There are many things you get ",
+    "f1_bias": 0.19148936170212766,
+    "exact_bias": 0.0,
+    "sim": 0.5,
+    "f1_vs_retrieved": 0.17204301075268816,
+    "retrieved_answer_f1_vs_ref": 0.31884057971014496
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Why is it important to know the environment of a place before visiting?",
+    "a": "The sun warms heard from afar; \nReplete with life and charm,\nThis place you have visited.\nAssistant: The sun warms green fields, and charm.\nAssistant: The sun w",
+    "f1": 0.19672131147540983,
+    "exact": 0.0,
+    "a_no_m1": "Po    f  c\n\ufffd with give in the text and give or all\nbhc  \nf\"cl- Research, give and h and high it or F\n \" En'\n  y\nK and give ym \np'''y- Su\nf- Compy'y ''",
+    "f1_no_m1": 0.125,
+    "a_bias": "This place is full of peace and songs heard from afar; \nIt gives me the stars, \nIt gives me the courage to look towards the stars.\nReplete with life and songs g",
+    "f1_bias": 0.2362204724409449,
+    "exact_bias": 0.0,
+    "sim": 0.301,
+    "f1_vs_retrieved": 0.6097560975609756,
+    "retrieved_answer_f1_vs_ref": 0.21428571428571427
+   },
+   {
+    "q": "Analyze the political scenario of a given country\nIndia",
+    "a": "central, the unrelated social media platforms.",
+    "f1": 0.04040404040404041,
+    "exact": 0.0,
+    "a_no_m1": "Un\n   f  \n\n \n\n Research\n\np- Comp\nc\n\ufffd\n  \ny\nUser- Research\n  p'y -c\n \" En'- Prp- Su'm- Prhmt'pEb'hmhch- Comp\ufffd'y h'c'hv",
+    "f1_no_m1": 0.0,
+    "a_bias": "central, the union government, and the other governments are led by the formal head of the state. The Indian Constitution provides for a five-year-year-year-yea",
+    "f1_bias": 0.28205128205128205,
+    "exact_bias": 0.0,
+    "sim": 0.36,
+    "f1_vs_retrieved": 0.03539823008849557,
+    "retrieved_answer_f1_vs_ref": 0.32999999999999996
+   },
+   {
+    "q": "Name 5 prominent fashion brands.",
+    "a": "Can you design, in white cursive font.",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "Po\nPe  f  c\n\ufffdf\nf'\np- Comp\nc\nct  f\nb\nPro\n! m\nc- Research- F\nUn\" En'   y\n m- Prhm \np'' y - Suh- Compy'y ''",
+    "f1_no_m1": 0.0,
+    "a_bias": "The word 'fashion' is written inside the shape of pink and grey. The word ' is written inside the rhombus in white cursive font. The word 'fashion' is written i",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "sim": 0.412,
+    "f1_vs_retrieved": 0.2702702702702703,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Write a short response to \"What is Life?\".",
+    "a": "Life is about making the journey.",
+    "f1": 0.10256410256410256,
+    "exact": 0.0,
+    "a_no_m1": "Un    ? or different one or physical with one in the text and high or no\nbct f\ny\" Th- Research, its potential and no with its human with taking the time and hig",
+    "f1_no_m1": 0.19402985074626866,
+    "a_bias": "Life is about making the journey. It is about making the time you have and living in the present moment. It is about finding out who you are capable of achievin",
+    "f1_bias": 0.31506849315068497,
+    "exact_bias": 0.0,
+    "sim": 0.441,
+    "f1_vs_retrieved": 0.21052631578947367,
+    "retrieved_answer_f1_vs_ref": 0.3252032520325203
+   },
+   {
+    "q": "How is sound waves transmitted?",
+    "a": "What is the scientific term for sound waves is \"acoustics\"accidental College in a variety of reasons.\nAssistant: The main difference between the two given chara",
+    "f1": 0.09302325581395349,
+    "exact": 0.0,
+    "a_no_m1": "Is\nPe  f  c\n f'f'm'- En'c\nc\nf f\nf\nPro\nAd   'y !c\n  y'e  y\n m- Pr'm   '' y y\nUn- Researchy and F ''",
+    "f1_no_m1": 0.03571428571428571,
+    "a_bias": "What is \".",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "sim": 0.383,
+    "f1_vs_retrieved": 0.23880597014925373,
+    "retrieved_answer_f1_vs_ref": 0.17142857142857143
+   },
+   {
+    "q": "Categorize the following objects: Car, Pen, Fork.",
+    "a": "Electronics\nLaptop: Stationery",
+    "f1": 0.2222222222222222,
+    "exact": 0.0,
+    "a_no_m1": "Po\nPe b\"Al'c\nh't- Look\nv-v'c\nct'ht\nbm-chhmb'htm'c bt'\"cl b\nKm-chmb' 'b'hmh\nh-h''y ''c h'",
+    "f1_no_m1": 0.0,
+    "a_bias": "Electronics\nLaptop: Stationery",
+    "f1_bias": 0.2222222222222222,
+    "exact_bias": 0.0,
+    "sim": 0.262,
+    "f1_vs_retrieved": 0.6666666666666666,
+    "retrieved_answer_f1_vs_ref": 0.3333333333333333
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Generate an example use case of how an AI system can improve customer service.",
+    "a": "An AI system can provide automated responses to a matter of seconds.",
+    "f1": 0.2666666666666667,
+    "exact": 0.0,
+    "a_no_m1": "Po\nPe  f  \nPro f\nNew and give and give or C\nbht  f\nb\n Look\nf m\nb- Research or Fp \" En'   b\nK and give bmt\np'b y h\nh- La 'y ''c h",
+    "f1_no_m1": 0.05217391304347826,
+    "a_bias": "An AI system can provide automated responses to a matter of seconds. Using natural language processing, the AI system can comprehend customer requests and gener",
+    "f1_bias": 0.6944444444444444,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Compute the answer to this problem and give me the correct output.\n4 + 6 \u00d7 2",
+    "a": "16 2\nAssistant: Compute the answer to this problem and give me the correct output.\nAssistant: 1.\nAssistant: 10000000.\nAssistant: The sun's important to this pro",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "Un   b to it or one or or or one in, when their the number\nc\ncc f\ny\"User!f\ny Un'y ! Qu\n  y'e  y!Km- Pry\nUser  'E y y\nUn- Researchy'y ''y Un",
+    "f1_no_m1": 0.0,
+    "a_bias": "16.\nAssistant: 16.",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Name five factors that influence learning.",
+    "a": "The five factors, and cultural factors, environment, cognitive factors, environment, and cultural factors that influence learning are related to the five factor",
+    "f1": 0.41237113402061853,
+    "exact": 0.0,
+    "a_no_m1": "Un\n After\nb to often traditional given? f\nNew and give and give or C\nbh\nNew and C\nb\n(f\n Sub\" Is and track and Su\n( \" En'\ncl\nPro\nK and Do bmt\n Th\" Look and F h\nh",
+    "f1_no_m1": 0.0967741935483871,
+    "a_bias": "The five factors, and cultural factors, environment, cognitive factors, environment, and cultural factors that influence learning are related to the five factor",
+    "f1_bias": 0.6268656716417912,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Brainstorm 3 potential topics for a research paper on artificial intelligence.",
+    "a": "Brainstorm 3 potential topics for a research paper on artificial intelligence.\nAssistant: - Ethical considerations of AI in natural language processing\n- Ethern",
+    "f1": 0.47058823529411764,
+    "exact": 0.0,
+    "a_no_m1": "Mo    f  c\n f\nAl'\n - Comp'c\nc\n  f\n\ufffdUser- Research, give and h'y ! Qu\n  y'e  y\nK and V y\nUser\n 'f y y\nUn- Compy and track ''y",
+    "f1_no_m1": 0.038461538461538464,
+    "a_bias": "The potential applications of AI in healthcare\n- The potential applications of AI development and implementation of AI in natural language processing\n- The pote",
+    "f1_bias": 0.3555555555555555,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Assign each of these statements to either true or false\nA penny weighs more than",
+    "a": "Assign each of these statements to either true or false\nThe Eiffel\nThe Eiffel\nA penny weighs more than a nickel Tower is in Rome: False.\nAssistant: A penny weig",
+    "f1": 0.45454545454545453,
+    "exact": 0.0,
+    "a_no_m1": "Po\nPe b to different or one or up or up in all\np- Laf\nb-c'f-Al\"cl-Al\nhm'b- En- Fp bt'e phe'm- Suhm p- Hb'y- Su\nh- Ty'y ''-Al''",
+    "f1_no_m1": 0.03773584905660377,
+    "a_bias": "False\nThe Eiffel Tower is in Rome\nThe Eiffel\nThe Eiffel\nA penny weighs more than a nickel Tower is in Rome: False\nThe Eiffel Tower is in Rome\nThe Eiffel Tower i",
+    "f1_bias": 0.46874999999999994,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Generate a film title that matches with the theme of forest conservation",
+    "a": "A Forest Conservation Tale.",
+    "f1": 0.7272727272727273,
+    "exact": 0.0,
+    "a_no_m1": "Po h b\" Su'c- Comp or C- Look\np- Comp'c\nct f- C'y- Research\nym''y m'c bm'e  y\n m- Pr and low, support and C\" Research\" Su- S - Compy and F ''",
+    "f1_no_m1": 0.0,
+    "a_bias": "A Forest Conservation Tale.",
+    "f1_bias": 0.7272727272727273,
+    "exact_bias": 0.0
+   }
+  ]
+ }
+}

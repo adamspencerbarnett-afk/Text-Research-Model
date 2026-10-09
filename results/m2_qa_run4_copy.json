@@ -1,0 +1,459 @@
+{
+ "setup": {
+  "data": "data_qa",
+  "work": "runs/m2",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 600.0,
+  "ctx": 256,
+  "batch": 16,
+  "topk": 64,
+  "neighbor_codes": 110,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/m2_qa_run4_copy.json",
+  "seed": 1,
+  "self_context_p": 0.5,
+  "copy_bias": 3.0,
+  "device": "cpu",
+  "threads": 10,
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "save": "runs/m2/run4.pt",
+  "train_exchanges": 50232,
+  "eval": 510,
+  "added": 511,
+  "distinct_keys": 49873
+ },
+ "training": {
+  "steps": 1328,
+  "train_s": 600.2,
+  "history": [
+   {
+    "train_s": 60.3,
+    "step": 151,
+    "train_bits_per_code": 4.173,
+    "valid_bits_per_byte": 1.4233
+   },
+   {
+    "train_s": 120.2,
+    "step": 282,
+    "train_bits_per_code": 4.064,
+    "valid_bits_per_byte": 1.4292
+   },
+   {
+    "train_s": 180.2,
+    "step": 412,
+    "train_bits_per_code": 2.746,
+    "valid_bits_per_byte": 1.4362
+   },
+   {
+    "train_s": 240.2,
+    "step": 542,
+    "train_bits_per_code": 3.699,
+    "valid_bits_per_byte": 1.4121
+   },
+   {
+    "train_s": 300.3,
+    "step": 673,
+    "train_bits_per_code": 3.428,
+    "valid_bits_per_byte": 1.4143
+   },
+   {
+    "train_s": 360.4,
+    "step": 804,
+    "train_bits_per_code": 4.184,
+    "valid_bits_per_byte": 1.4262
+   },
+   {
+    "train_s": 420.3,
+    "step": 933,
+    "train_bits_per_code": 4.173,
+    "valid_bits_per_byte": 1.3957
+   },
+   {
+    "train_s": 480.2,
+    "step": 1064,
+    "train_bits_per_code": 2.86,
+    "valid_bits_per_byte": 1.4177
+   },
+   {
+    "train_s": 540.2,
+    "step": 1196,
+    "train_bits_per_code": 3.663,
+    "valid_bits_per_byte": 1.4157
+   },
+   {
+    "train_s": 600.2,
+    "step": 1328,
+    "train_bits_per_code": 4.512,
+    "valid_bits_per_byte": 1.425
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.9652,
+   "exact": 0.99
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 60,
+   "f1": 0.4815,
+   "exact": 0.0333,
+   "f1_no_m1": 0.0438,
+   "f1_bias": 0.6096,
+   "exact_bias": 0.1167
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 44,
+   "f1": 0.2325,
+   "exact": 0.0,
+   "f1_no_m1": 0.035,
+   "f1_bias": 0.1743,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.2727
+  },
+  "unseen_network_with_nearest": {
+   "n": 156,
+   "f1": 0.1602,
+   "exact": 0.0,
+   "f1_no_m1": 0.0383,
+   "f1_bias": 0.1539,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.1887
+  },
+  "heldout_network_without_memory": {
+   "n": 60,
+   "f1": 0.1285,
+   "exact": 0.0
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.185
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.96,
+   "exact": 0.99
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 60,
+   "f1": 0.4352,
+   "exact": 0.0333,
+   "f1_no_m1": 0.0365,
+   "f1_bias": 0.5651,
+   "exact_bias": 0.1333
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Determine the pair of numbers with the greatest product.\n0 and -4",
+    "a": "The pair of -4 sentence0 and -4, which has a product is - 2 is 0 and 0.",
+    "f1": 0.6666666666666665,
+    "exact": 0.0,
+    "a_no_m1": "support that our these public in Ne or cost or home with C our another by Comp- measure on Comp is Pe or natural couldUn\n C their Comp by AI these our one by an",
+    "f1_no_m1": 0.06521739130434782,
+    "a_bias": "-4, 0 and 0 and -4, -4, which has a product.\n0 and 0.00 and 0 and 0 and -4, -4, 0.",
+    "f1_bias": 0.4,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Add a few more lines to the given haiku.\nPrayers upon the wind\ncircling all arou",
+    "a": "Prayers upon the wind\nCircling all around the wind\nT will affect the wind\nA blessing warmth touches us all\n- from above",
+    "f1": 0.6923076923076923,
+    "exact": 0.0,
+    "a_no_m1": "ret  by another by Ne could C by digital our these both our another by Comp- measure on Comp on social, natural couldUn\n due are rest by AI these digital by dig",
+    "f1_no_m1": 0.019801980198019802,
+    "a_bias": "Prayers upon the wind\nCircling all around the wind\nT will never end\nThe sun's upon the world\nCircling all\nTall mountains, green valleys\nThe sun's\nT will never e",
+    "f1_bias": 0.6097560975609756,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Generate a short paragraph describing a post-apocalyptic world.",
+    "a": "with little to no resilient. The skies who remain are dark and left survivors struggling to survive. The skies who remain are those who remain are those who rem",
+    "f1": 0.47560975609756106,
+    "exact": 0.0,
+    "a_no_m1": "support that our these AI digital could as cost or home with increased at Al by Comp- measure by small one with increased could both these I digital their Comp ",
+    "f1_no_m1": 0.12021857923497267,
+    "a_bias": "with little to this virtualins. The skies who remain are dark and left survivors struggling to survive. The skies who remain are those who remain are those who ",
+    "f1_bias": 0.46341463414634143,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Research and explain the principle of Occam's Razor.",
+    "a": "as this can lead to cut away extraneous information and assumptions that when there is used to the most likely answer.\n information and assumptions, and the cor",
+    "f1": 0.5371428571428571,
+    "exact": 0.0,
+    "a_no_m1": "support that our these AI digital could C by digital our these both our another by Comp- measure on Comp on App, natural couldUn\n due are rest by AI these anoth",
+    "f1_no_m1": 0.05154639175257732,
+    "a_bias": "as this can lead to cut away extraneous information and assumptions that when there is used to the most likely answer. The principles, the correct one. The prin",
+    "f1_bias": 0.47826086956521735,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Describe the main characters in the book \"The Hunger Games\".",
+    "a": "ensure that the tyrantrict 12 and Peeta is the mentor from District 12 and provides Katnissn, is the mentor from Disaymitch is the Haymitch Abern love interest.",
+    "f1": 0.4028776978417266,
+    "exact": 0.0,
+    "a_no_m1": "support that our another by digital could C by digital our these both our another by Comp- measure by only AI various both could both these I digital their Comp",
+    "f1_no_m1": 0.06741573033707866,
+    "a_bias": "ensurebutes from the various districts of Panem who oversees the mentor from the various district 1. Peeta with advice is the mentor from Disaymitch is the Haym",
+    "f1_bias": 0.4615384615384615,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Design a mobile app that helps people shop more responsibly",
+    "a": "providing loans benefits, and track your progress.",
+    "f1": 0.07272727272727272,
+    "exact": 0.0,
+    "a_no_m1": "support that our these AI digital could C by digital our these both our another by Comp- measure on Comp is Pe or natural couldUn\n due are rest by AI these anot",
+    "f1_no_m1": 0.045714285714285714,
+    "a_bias": "providing detailed information about a product\u2019s benefits, and track its supply chain. Additionally, and track its supply chain. It should be the product, risks",
+    "f1_bias": 0.588957055214724,
+    "exact_bias": 0.0
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Name two possible solutions to reduce the effects of global warming.",
+    "a": "reducing our emissions of greenhouse gases such as carbon dioxide, switching to renewable energy sources can help slow the effects of greenhouse gases such as c",
+    "f1": 0.36585365853658536,
+    "exact": 0.0,
+    "a_no_m1": "social that our these AI digital could C by digital our these both our another by Comp- measure on Comp on social, natural couldUn\n due are U by AI these our on",
+    "f1_no_m1": 0.02040816326530612,
+    "a_bias": "reducing our emissions of greenhouse gases such as carbon dioxide, switching to renewable energy sources can help slow the effects of greenhouse gases such as c",
+    "f1_bias": 0.3191489361702127,
+    "exact_bias": 0.0,
+    "sim": 0.698,
+    "f1_vs_retrieved": 0.5901639344262295,
+    "retrieved_answer_f1_vs_ref": 0.4047619047619047
+   },
+   {
+    "q": "What is the area of France in square kilometers?",
+    "a": "The area of India in square kilometers of India\nAssistant: The area of a area of the area.\nAssistant: The area in square kilometers.",
+    "f1": 0.25,
+    "exact": 0.0,
+    "a_no_m1": "ret  by another by Ne: ret, cost-, C at Al by Comp- measure on Comp is Pe or natural couldUn\n due I other another at Comp by small their another; which increase",
+    "f1_no_m1": 0.0,
+    "a_bias": "3, 3, 3, 3,2, 3,287,2, 3, 3,287, 3,287.7,2,287, 3, 3, 3,287,287,263.",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "sim": 0.563,
+    "f1_vs_retrieved": 0.43750000000000006,
+    "retrieved_answer_f1_vs_ref": 0.5
+   },
+   {
+    "q": "Generate a 5-word poem based on the given theme.\nFriendship",
+    "a": "Friction or chains, pain and keeps us free\nIt grows\nIt is a binding stronger\nThan any force like ropes, pain and keeps us free\nFrom sorrow, pain, pain and child",
+    "f1": 0.05555555555555555,
+    "exact": 0.0,
+    "a_no_m1": "support that our these public in Ne or home or Pe with C at Al by Comp- measure on re could Pe or natural couldUn\n due are rest by AI both their AI digital as C",
+    "f1_no_m1": 0.0,
+    "a_bias": "Friction or chains, pain and keeps us free\nIt grows\nIt is a binding stronger\nThan any force like ropes, pain and keeps us free\nFrom sorrow, pain, pain and child",
+    "f1_bias": 0.0392156862745098,
+    "exact_bias": 0.0,
+    "sim": 0.626,
+    "f1_vs_retrieved": 0.7719298245614036,
+    "retrieved_answer_f1_vs_ref": 0.06451612903225806
+   },
+   {
+    "q": "Name three endangered animal species.",
+    "a": "Endgames, giraffes, chimpanzees, chimpanzees, snow, and pandas.",
+    "f1": 0.08695652173913043,
+    "exact": 0.0,
+    "a_no_m1": "Go\nNew  by Ne or natural by digital our these both our another by Comp- measure on Comp is Pe or natural couldUn\n C their Comp by AI these another by digital at",
+    "f1_no_m1": 0.0,
+    "a_bias": "Endangered species.\n\n, chimpanzees, giraffes, and giraffes, giraffes, chimpanzees, and pandas.",
+    "f1_bias": 0.23076923076923075,
+    "exact_bias": 0.0,
+    "sim": 0.849,
+    "f1_vs_retrieved": 0.5263157894736842,
+    "retrieved_answer_f1_vs_ref": 0.28571428571428575
+   },
+   {
+    "q": "Give two examples of how Artificial Intelligence is used in the healthcare indus",
+    "a": "The analysis of the deployment of the analysis of the analysis of recognizing and addressing deployment of AI is in the analysis of the analysis of the analysis",
+    "f1": 0.06593406593406592,
+    "exact": 0.0,
+    "a_no_m1": "support that our these AI digital could as cost-, work both our another by Comp- measure include natural could Al or natural couldUn\n due are rest by AI these a",
+    "f1_no_m1": 0.04081632653061224,
+    "a_bias": "(AI) is in healthcare. One example of the automated analysis of the deployment of AI is in the analysis of the analysis of the analysis of the deployment of AI ",
+    "f1_bias": 0.06185567010309278,
+    "exact_bias": 0.0,
+    "sim": 0.643,
+    "f1_vs_retrieved": 0.46153846153846156,
+    "retrieved_answer_f1_vs_ref": 0.14814814814814817
+   },
+   {
+    "q": "Rewrite a given sentence using an active voice.\nThe problem was solved by us.",
+    "a": "She was in active voice.",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "ret  by another by digital could as cost or home with C at Al by Comp- measure on Comp is Pe or natural could which I digital their Comp by AI these their AI di",
+    "f1_no_m1": 0.0,
+    "a_bias": "She is solving the problem is solving the problem.",
+    "f1_bias": 0.30769230769230765,
+    "exact_bias": 0.0,
+    "sim": 0.841,
+    "f1_vs_retrieved": 0.20000000000000004,
+    "retrieved_answer_f1_vs_ref": 0.4444444444444445
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Why is it important to know the environment of a place before visiting?",
+    "a": "The environment for the environment because it toxins and preserving water quality, and the environment. Plants are essential for providing food erosion, reduci",
+    "f1": 0.23703703703703702,
+    "exact": 0.0,
+    "a_no_m1": "support that our these AI digital could as cost-, work both our another by Comp- measure include natural could Pe or natural couldUn\n due are rest by AI these a",
+    "f1_no_m1": 0.02758620689655172,
+    "a_bias": "Plants are essential for the environment because they help maintain healthy habitats by providing food erosion losses and naturally filter them out. Plants also",
+    "f1_bias": 0.19858156028368792,
+    "exact_bias": 0.0,
+    "sim": 0.234,
+    "f1_vs_retrieved": 0.5942028985507246,
+    "retrieved_answer_f1_vs_ref": 0.24516129032258066
+   },
+   {
+    "q": "Analyze the political scenario of a given country\nIndia",
+    "a": "central, while other governments are led to the union of the union government: central, while other governments.\nAssistant: central, state governments. India, w",
+    "f1": 0.1830065359477124,
+    "exact": 0.0,
+    "a_no_m1": "support that our these AI digital could C by digital our these both our another by Comp- measure on Comp is Pe or natural couldUn\n due are rest by AI these huma",
+    "f1_no_m1": 0.09815950920245398,
+    "a_bias": "central, while other governments are led to the union of the union government: central, while other governments. The President are led by elected for a five-yea",
+    "f1_bias": 0.1891891891891892,
+    "exact_bias": 0.0,
+    "sim": 0.349,
+    "f1_vs_retrieved": 0.5029940119760479,
+    "retrieved_answer_f1_vs_ref": 0.32999999999999996
+   },
+   {
+    "q": "Name 5 prominent fashion brands.",
+    "a": "Zara, H&M, H&M, and Dior.\nAssistant: Zara \nAssistant: Zara, and Dior.",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "support that our these public in Ne or home could Pe with C at Al by Comp- measure on Comp is Pe or natural couldUn\n due are U by AI these another by digital at",
+    "f1_no_m1": 0.0,
+    "a_bias": "Zara, H&M, H&M, and Dior.\nAssistant: Zara, and Dior.",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "sim": 0.418,
+    "f1_vs_retrieved": 0.5,
+    "retrieved_answer_f1_vs_ref": 0.14285714285714285
+   },
+   {
+    "q": "Write a short response to \"What is Life?\".",
+    "a": "Life is about making the question '.\nAssistant: Life is like a most of the present moment and learning from your mistakes.\nAssistant: Life is about making conne",
+    "f1": 0.35460992907801425,
+    "exact": 0.0,
+    "a_no_m1": "support that our these public in AI another by digital our these both our another by Comp- measure on Comp is Pe or natural couldUn\n due are rest by AI both the",
+    "f1_no_m1": 0.08391608391608392,
+    "a_bias": "Life is about making the question. It is about making the time you are and what you are capable of achieving. It is about making connections and what you are ca",
+    "f1_bias": 0.3243243243243243,
+    "exact_bias": 0.0,
+    "sim": 0.43,
+    "f1_vs_retrieved": 0.6833333333333333,
+    "retrieved_answer_f1_vs_ref": 0.3252032520325203
+   },
+   {
+    "q": "How is sound waves transmitted?",
+    "a": "The scientific term for sound waves is 1.",
+    "f1": 0.17647058823529413,
+    "exact": 0.0,
+    "a_no_m1": "ret  by another by Ne or natural by digital our these both our another by Comp- measure on Comp is Pe or natural couldUn\n C their Comp by AI these another by di",
+    "f1_no_m1": 0.0,
+    "a_bias": "\".\nTheAssistantics\"acoustics\"acoustics\".\n\nUser\"acoustics\".",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "sim": 0.387,
+    "f1_vs_retrieved": 0.9333333333333333,
+    "retrieved_answer_f1_vs_ref": 0.17142857142857143
+   },
+   {
+    "q": "Categorize the following objects: Car, Pen, Fork.",
+    "a": "Electronics\nLaptop: Statue of Lsuch as pen)\nPenciles, laptop, laptop.\nPen: Stationery",
+    "f1": 0.2222222222222222,
+    "exact": 0.0,
+    "a_no_m1": "ret  by another by Ne or natural by digital our these both our another by Comp- measure on Comp is Pe or natural couldUn\n\ufffd are rest by AI these our one by anoth",
+    "f1_no_m1": 0.0,
+    "a_bias": "Electronics\nLaptop: Stationeryics\nLaptop: Clothing \nLaptop: Clothing \nPen: Stationery: Clothing \nLaptop: Stationery \nLaptop: Electronics\nPen: Clothing \nLaptop: ",
+    "f1_bias": 0.14814814814814814,
+    "exact_bias": 0.0,
+    "sim": 0.274,
+    "f1_vs_retrieved": 0.4444444444444444,
+    "retrieved_answer_f1_vs_ref": 0.3333333333333333
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Generate an example use case of how an AI system can improve customer service.",
+    "a": "An AI system can provide automated responses to customer inquiries. For example, the AI system can provide further assistancehendt, a matter of how an example o",
+    "f1": 0.5753424657534247,
+    "exact": 0.0,
+    "a_no_m1": "support that our these AI digital could C by digital our these both our another by Comp- measure on Comp on social, natural couldUn\n due are rest by AI these an",
+    "f1_no_m1": 0.05228758169934641,
+    "a_bias": "An AI system can provide automated responses to customer inquiries. For example, the AI system can provide further assistancehendt, a matter of seconds. For exa",
+    "f1_bias": 0.6986301369863015,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Compute the answer to this problem and give me the correct output.\n4 + 6 \u00d7 2",
+    "a": "16 20 problem and give me the correct the correct output.",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "ret  by another by Ne or natural by digital our these both our another by Comp- measure on Comp is Pe or natural couldUn\n C their Comp by AI these another by di",
+    "f1_no_m1": 0.0,
+    "a_bias": "16.",
+    "f1_bias": 0.0,
+    "exact_bias": 1.0
+   },
+   {
+    "q": "Name five factors that influence learning.",
+    "a": "The five factors that influence experience. Motivation, and understanding.\nAssistant: The five factors that influence learning experience. Email in learning.\nAs",
+    "f1": 0.5,
+    "exact": 0.0,
+    "a_no_m1": "support that our these AI digital could as cost or home with C at Al by Comp- measure on increased could C our our, work by digital their Comp by AI these digit",
+    "f1_no_m1": 0.04,
+    "a_bias": "The five factors that influence experience. Motivation, and understanding. Mognitive factors. Cognitive factors. Cognitive factors, and the level of motivation,",
+    "f1_bias": 0.6451612903225806,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Brainstorm 3 potential topics for a research paper on artificial intelligence.",
+    "a": "- The potential topics to AI development and implementation of AI in natural language processing\n- Ethical considerations of AI in natural language processing\n-",
+    "f1": 0.523076923076923,
+    "exact": 0.0,
+    "a_no_m1": "ret  by another by digital could C by digital our these both our another by Comp- measure on Comp is Pe or natural couldUn\n due are rest by AI these our one by ",
+    "f1_no_m1": 0.08791208791208792,
+    "a_bias": "The potential applications of AI in healthcare\n- The potential applications of AI development and implementation of AI development and implementation of AI in n",
+    "f1_bias": 0.42352941176470593,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Assign each of these statements to either true or false\nA penny weighs more than",
+    "a": "A penny weighs more than a nickel, niffel Tower is in Rome\nThe Eiffel Tower is in Rome: False\n   than a nick of time.The Eiffel Tower is in Rome, False\nThe Eiff",
+    "f1": 0.5660377358490566,
+    "exact": 0.0,
+    "a_no_m1": "support that our these public in AI another by digital our these both our another by Comp- measure include natural could C our our high our up, show at Comp at ",
+    "f1_no_m1": 0.02247191011235955,
+    "a_bias": "False\nThe Eiffel Tower is in Romeel Tower is in Rome\nThe Eiffel Tower is in Rome: False\nThe Eiffel Tower is in Rome\nThe Eiffel Tower is a nickel: False\nThe Eiff",
+    "f1_bias": 0.29850746268656714,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Generate a film title that matches with the theme of forest conservation",
+    "a": "Saving the Woods: Saving the Woods the Woods: A Forest Cons of forest conservation\nAssistant: Saving the Woods: Red, Saving the way we matches with the Woods: S",
+    "f1": 0.2641509433962264,
+    "exact": 0.0,
+    "a_no_m1": "support that our these public in Ne or home or Pe with C our another by Comp- measure on Comp is Pe or natural couldUn\n C their Comp by AI these our one by anot",
+    "f1_no_m1": 0.0,
+    "a_bias": "A Foration Tale.",
+    "f1_bias": 0.4,
+    "exact_bias": 0.0
+   }
+  ]
+ }
+}

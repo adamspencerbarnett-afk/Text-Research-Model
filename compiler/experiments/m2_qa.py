@@ -263,6 +263,7 @@ def main() -> int:
     ap.add_argument("--copy-head", action="store_true", help="learned pointer over the retrieved exchange as a trust-head source")
     ap.add_argument("--evidence", action="store_true", help="bigram table counted over the retrieved exchange as a trust-head source")
     ap.add_argument("--fold-keys", action="store_true", help="fold inflections in the question key")
+    ap.add_argument("--copy-answer-only", action="store_true", help="the copy head and evidence table see only the answer part of the retrieved exchange")
     ap.add_argument("--save", default=None, help="save the core's weights here after training")
     a = ap.parse_args()
     global FOLD_KEYS
@@ -300,6 +301,17 @@ def main() -> int:
             q, ans = mem.exchanges[len(codes)]
             codes.append(enc.encode(render(q, ans))[0])
         return codes[i]
+    q_lens: list[int] = []
+
+    def answer_start(i: int, nb_len: int) -> int:
+        """Index inside the retrieved tail (the last nb_len codes of exchange i) where its answer
+        begins; 0 when the whole tail may be copied from."""
+        if not a.copy_answer_only:
+            return 0
+        while len(q_lens) <= i:
+            q_lens.append(len(enc.encode(render(mem.exchanges[len(q_lens)][0], None))[0]))
+        return max(0, q_lens[i] - (len(codes_of(i)) - nb_len))
+
     ngrams = [train_lm.NgramTable(all_codes, o, a.topk) for o in (2, 3)]
     say(f"M1 built: {ngrams[0].contexts:,} bigram and {ngrams[1].contexts:,} trigram contexts")
     sep = enc.encode(b"\n\n")[0]
@@ -315,11 +327,12 @@ def main() -> int:
     def sample(i: int):
         """[nearest other exchange, tail] + SEP + [this exchange, head], padded to ctx+1, with a loss mask."""
         own = codes[i][:a.ctx - a.neighbor_codes - len(sep)]
-        src = i if (a.self_context_p and rng.random() < a.self_context_p) else neighbors[i]
-        nb = codes_of(src)[-a.neighbor_codes:] if src is not None else np.array([], dtype=np.int64)
+        src_i = i if (a.self_context_p and rng.random() < a.self_context_p) else neighbors[i]
+        nb = codes_of(src_i)[-a.neighbor_codes:] if src_i is not None else np.array([], dtype=np.int64)
         seq = np.concatenate([nb, sep, own])[:a.ctx + 1]
         mask = np.zeros(a.ctx + 1, dtype=np.float32); mask[len(nb) + len(sep):len(seq)] = 1.0
-        src = np.zeros(a.ctx + 1, dtype=bool); src[:len(nb)] = True        # the retrieved span
+        src = np.zeros(a.ctx + 1, dtype=bool)                               # the retrieved span
+        src[(answer_start(src_i, len(nb)) if src_i is not None else 0):len(nb)] = True
         return np.pad(seq, (0, a.ctx + 1 - len(seq)), constant_values=PAD), mask, src
 
     def batch(idx):
@@ -328,11 +341,12 @@ def main() -> int:
         s = torch.from_numpy(np.stack(ss)).to(dev)
         return x[:, :-1], x[:, 1:], m[:, 1:], s[:, :-1]
 
-    def span_mask(seq_len: int, nb_len: int) -> torch.Tensor:
-        """Which positions of the window seq[-ctx:] belong to the retrieved span."""
+    def span_mask(seq_len: int, nb_len: int, start: int = 0) -> torch.Tensor:
+        """Which positions of the window seq[-ctx:] belong to the retrieved span (from start)."""
         offset = max(0, seq_len - a.ctx)
         n = min(seq_len, a.ctx)
-        return (torch.arange(n, device=dev) + offset < nb_len)[None]
+        pos = torch.arange(n, device=dev) + offset
+        return ((pos < nb_len) & (pos >= start))[None]
 
     @torch.no_grad()
     def valid_bpb(exchanges, n=120):
@@ -346,7 +360,8 @@ def main() -> int:
                 continue
             x = torch.from_numpy(seq[None, :-1]).to(dev); y = torch.from_numpy(seq[None, 1:]).to(dev)
             scored = seq[len(nb) + len(sep):]                       # the exchange's own codes, each predicted
-            nll = model.nll(x, y, span_mask(len(seq) - 1, len(nb)))[0, len(nb) + len(sep) - 1:]
+            start = answer_start(nb_i[0][1], len(nb)) if nb_i else 0
+            nll = model.nll(x, y, span_mask(len(seq) - 1, len(nb), start))[0, len(nb) + len(sep) - 1:]
             bits += float(nll.sum()) / math.log(2); nbytes += float(enc.lens[scored].sum())
         model.train(); return bits / max(1, nbytes)
 
@@ -375,12 +390,13 @@ def main() -> int:
         if copy_bias and context_exchange is not None:
             ans_codes = enc.encode(mem.exchanges[context_exchange][1])[0]
             bias[torch.from_numpy(np.unique(ans_codes))] = copy_bias
+        a_start = answer_start(context_exchange, len(nb)) if context_exchange is not None else 0
         seq = [int(t) for t in np.concatenate([nb, sep, enc.encode(render(q, None))[0]])]
         start = len(seq)
         for _ in range(n_tokens):
             x = torch.tensor([seq[-a.ctx:]], device=dev)
             h = model.hidden_all(x)
-            logits = (model.mixed_logits(h, x, span_mask(len(seq), len(nb))) + bias) / temperature
+            logits = (model.mixed_logits(h, x, span_mask(len(seq), len(nb), a_start)) + bias) / temperature
             kth = torch.topk(logits, top_k).values[..., -1, None]
             logits = logits.masked_fill(logits < kth, float("-inf"))
             seq.append(torch.multinomial(F.softmax(logits, -1).cpu(), 1, generator=gen).item())

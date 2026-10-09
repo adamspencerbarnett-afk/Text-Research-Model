@@ -1,0 +1,459 @@
+{
+ "setup": {
+  "data": "data_qa",
+  "work": "runs/m2",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 600.0,
+  "ctx": 256,
+  "batch": 16,
+  "topk": 64,
+  "neighbor_codes": 110,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/m2_qa_run5_copy_evidence.json",
+  "seed": 1,
+  "self_context_p": 0.5,
+  "copy_bias": 3.0,
+  "device": "cpu",
+  "threads": 10,
+  "copy_head": true,
+  "evidence": true,
+  "fold_keys": false,
+  "save": "runs/m2/run5.pt",
+  "train_exchanges": 50232,
+  "eval": 510,
+  "added": 511,
+  "distinct_keys": 49873
+ },
+ "training": {
+  "steps": 1382,
+  "train_s": 600.1,
+  "history": [
+   {
+    "train_s": 60.0,
+    "step": 172,
+    "train_bits_per_code": 4.023,
+    "valid_bits_per_byte": 1.4476
+   },
+   {
+    "train_s": 120.2,
+    "step": 312,
+    "train_bits_per_code": 4.672,
+    "valid_bits_per_byte": 1.3817
+   },
+   {
+    "train_s": 180.2,
+    "step": 447,
+    "train_bits_per_code": 3.913,
+    "valid_bits_per_byte": 1.3883
+   },
+   {
+    "train_s": 240.0,
+    "step": 580,
+    "train_bits_per_code": 4.381,
+    "valid_bits_per_byte": 1.3651
+   },
+   {
+    "train_s": 300.2,
+    "step": 714,
+    "train_bits_per_code": 2.724,
+    "valid_bits_per_byte": 1.39
+   },
+   {
+    "train_s": 360.0,
+    "step": 846,
+    "train_bits_per_code": 4.501,
+    "valid_bits_per_byte": 1.3637
+   },
+   {
+    "train_s": 420.3,
+    "step": 979,
+    "train_bits_per_code": 4.07,
+    "valid_bits_per_byte": 1.3446
+   },
+   {
+    "train_s": 480.3,
+    "step": 1115,
+    "train_bits_per_code": 3.818,
+    "valid_bits_per_byte": 1.3322
+   },
+   {
+    "train_s": 540.3,
+    "step": 1249,
+    "train_bits_per_code": 2.61,
+    "valid_bits_per_byte": 1.3745
+   },
+   {
+    "train_s": 600.1,
+    "step": 1382,
+    "train_bits_per_code": 3.94,
+    "valid_bits_per_byte": 1.3488
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.96,
+   "exact": 0.985
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 60,
+   "f1": 0.4472,
+   "exact": 0.0167,
+   "f1_no_m1": 0.0896,
+   "f1_bias": 0.5654,
+   "exact_bias": 0.0
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 44,
+   "f1": 0.2193,
+   "exact": 0.0,
+   "f1_no_m1": 0.0709,
+   "f1_bias": 0.1742,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.2727
+  },
+  "unseen_network_with_nearest": {
+   "n": 156,
+   "f1": 0.1533,
+   "exact": 0.0,
+   "f1_no_m1": 0.0748,
+   "f1_bias": 0.1469,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.1887
+  },
+  "heldout_network_without_memory": {
+   "n": 60,
+   "f1": 0.127,
+   "exact": 0.0
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.1795
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.96,
+   "exact": 0.99
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 60,
+   "f1": 0.3808,
+   "exact": 0.0,
+   "f1_no_m1": 0.0702,
+   "f1_bias": 0.5152,
+   "exact_bias": 0.0167
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Name five of the most well-known credit cards.",
+    "a": "The five of the most well-known credit cards are Visa, American Express, Mastercard, American Express, American Express, American Express the most well-known fo",
+    "f1": 0.39999999999999997,
+    "exact": 0.0,
+    "a_no_m1": "Po\n\" Is\"fhC'- App with unf'f'- En'c\" Appt'ft\n App\" Look'thm'ghfm'cg\" En'- Pr- Su!'m- Prhmt'p'''y- Su and Ne- Lay'y\"i'- La''",
+    "f1_no_m1": 0.04347826086956522,
+    "a_bias": "The five most well-known credit cards.",
+    "f1_bias": 0.6086956521739131,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Given a weather forecast, list possible outdoor activities that can be done.\nWea",
+    "a": "Possible activities that can be done.\nAssistant: partly cloudy skies include going for a picnic, golfing, having a bike, golfing, and going for a picnic, list p",
+    "f1": 0.7333333333333333,
+    "exact": 0.0,
+    "a_no_m1": "Po \" Is\"f' or cost?\ufffdft- Look\n Look is making from one and making or home and track\n App and allow it at its text and allow with another or cost with no and maki",
+    "f1_no_m1": 0.02150537634408602,
+    "a_bias": "partly cloudy skies include going for a hike, having a picnic, and going for a bike ride.",
+    "f1_bias": 0.7727272727272727,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Outline the basic process of creating a game using computer programming.",
+    "a": "The next step is to create a more formal and overall health.",
+    "f1": 0.16666666666666666,
+    "exact": 0.0,
+    "a_no_m1": "Research \" Research  to show - Research - Research in track and free is making on business and social in show and develop\n Pr are analyze it all text and develo",
+    "f1_no_m1": 0.15277777777777776,
+    "a_bias": "The next step is to create a game's, main characters, including the game's user interface, you can be published and released to make sure it works correctly and",
+    "f1_bias": 0.6329113924050633,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Determine which method should be used to solve this equation:\n2y + 6 =10",
+    "a": "Assistant:\n2y + 6 = + 10\nAssistant:\n2.\nAssistant:\n    for i in range(len(array):\n- 20\nAssistant: Subject: Subject: Subject: The equation for a 3, \"I don't belie",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "Go- En -f to it it or long with one in and give and give and analyze\n#- Po to further in it for more in all text is it and often\n\n provide it its more it\n\n\n\n\n\nA",
+    "f1_no_m1": 0.0,
+    "a_bias": "Assistant:\n2y + 6 = + 10\nAssistant:\n2.\nAssistant:\n    for i in range(len(array):\n- 20\nAssistant: Subtraction",
+    "f1_bias": 0.15384615384615385,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Generate a line of code in Java to print the following string\nHello World",
+    "a": "System.out.println(\");",
+    "f1": 0.7499999999999999,
+    "exact": 0.0,
+    "a_no_m1": "Goc\" Is\"fh''-\"f'f'\" Look- La'c\" Lat'ftf\" Th-ft!\" Po'gfm'c'ft'\" Pr!y!'m- S'mt'- Go\" N\" Su- Sf- Ty and no and analyze or h- Sh'",
+    "f1_no_m1": 0.0,
+    "a_bias": "System.out.println(\");",
+    "f1_bias": 0.7499999999999999,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Given a set of survey responses, determine the average response to each question",
+    "a": "Average response to recommend the service to recommend the service to question \n* Neutral \nAverage(data) \n* Very likely \n* Very likely \n* Very, and other items ",
+    "f1": 0.368421052631579,
+    "exact": 0.0,
+    "a_no_m1": "Po and further further it to further or en and give with give and track and track-f'c and making or not and making\n\"cl-fthm''y it or often often it or h'- Pr!y!",
+    "f1_no_m1": 0.02777777777777778,
+    "a_bias": "Satisfied \n2: Somewhat likely \nAverage response to question \n2.\n2: Somewhat likely \nAverage response to question \n2.\n2. \n2.\n2.\n2.\n2 \n2.\n2.\nAverage response to q",
+    "f1_bias": 0.7857142857142858,
+    "exact_bias": 0.0
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Name two possible solutions to reduce the effects of global warming.",
+    "a": "reducing our emissions of greenhouse gases such as carbon dioxide, and better managing forests and other ecosystems to reduce global warming.\nAssistant: Three p",
+    "f1": 0.3368421052631579,
+    "exact": 0.0,
+    "a_no_m1": "Research \" Is  to show to using?\ufffdf??Be\n En is its all  and social in more all one at its potential at all text is its one and track - En\n\ufffd; further one all at i",
+    "f1_no_m1": 0.04938271604938272,
+    "a_bias": "reducing our emissions of greenhouse gases such as carbon dioxide, and better managing forests and other ecosystems to reduce global warming. Additionally, swit",
+    "f1_bias": 0.31578947368421045,
+    "exact_bias": 0.0,
+    "sim": 0.698,
+    "f1_vs_retrieved": 0.6222222222222222,
+    "retrieved_answer_f1_vs_ref": 0.4047619047619047
+   },
+   {
+    "q": "What is the area of France in square kilometers?",
+    "a": "Find the area of India in square kilometers is 3,263.",
+    "f1": 0.47058823529411764,
+    "exact": 0.0,
+    "a_no_m1": "Po\n\" Is  to suggest to all? f'f'\" Look is further it\n(ht to all in at in their their it at in it and allow with it or life\n N\" En and making !b- F and use\n\n\n\n\n\n",
+    "f1_no_m1": 0.0,
+    "a_bias": "3, 3, 3.",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "sim": 0.563,
+    "f1_vs_retrieved": 0.9411764705882353,
+    "retrieved_answer_f1_vs_ref": 0.5
+   },
+   {
+    "q": "Generate a 5-word poem based on the given theme.\nFriendship",
+    "a": "Friendship is a binding stronger\nIt grows like ropes or spots\nIt grows like grass and childish blames.\nIt grows like grass and childish blames.",
+    "f1": 0.06666666666666667,
+    "exact": 0.0,
+    "a_no_m1": "Po from one  or support to support and en  with one in support and track and making on or support and no and no in further its their their all all in their furt",
+    "f1_no_m1": 0.030303030303030307,
+    "a_bias": "Friends, pain and keeps us free\nThan any force like ropes or chains\nIt grows like grass and childish blames.\nIt grows like grass and childish blames.\nThan any f",
+    "f1_bias": 0.07547169811320754,
+    "exact_bias": 0.0,
+    "sim": 0.626,
+    "f1_vs_retrieved": 0.6274509803921569,
+    "retrieved_answer_f1_vs_ref": 0.06451612903225806
+   },
+   {
+    "q": "Name three endangered animal species.",
+    "a": "List 3, snow leopards, and 5 endangered animal species.",
+    "f1": 0.34782608695652173,
+    "exact": 0.0,
+    "a_no_m1": "Po\n En\" SuffC'- App with un- Look\" Look- En'c\" App\n Suft\n App\n Be\" High!\" Is'hfm'cg\" En'f'fhf'm- Suhmt'- Go\" N\" Su- Su to making in often and no and analyze or ",
+    "f1_no_m1": 0.03636363636363637,
+    "a_bias": "List 3, snow leopards, and pandas.",
+    "f1_bias": 0.09523809523809523,
+    "exact_bias": 0.0,
+    "sim": 0.849,
+    "f1_vs_retrieved": 0.631578947368421,
+    "retrieved_answer_f1_vs_ref": 0.28571428571428575
+   },
+   {
+    "q": "Give two examples of how Artificial Intelligence is used in the healthcare indus",
+    "a": "The analysis of recognizing and treatment solutions in healthcare.",
+    "f1": 0.10810810810810811,
+    "exact": 0.0,
+    "a_no_m1": "Research \" Is f- Comp and analyze ?( Research and give and give with business\n En?(b? Is\nf- Look\n Su?\ufffdUn and track - Me\nUn\" En and making ( En\nfm- Pr and improv",
+    "f1_no_m1": 0.057971014492753624,
+    "a_bias": "- (AI) is being used to develop personalized treatment solutions in healthcare. With these technologies, which is in healthcare. One example of X-ray is being u",
+    "f1_bias": 0.13636363636363638,
+    "exact_bias": 0.0,
+    "sim": 0.643,
+    "f1_vs_retrieved": 0.20224719101123595,
+    "retrieved_answer_f1_vs_ref": 0.14814814814814817
+   },
+   {
+    "q": "Rewrite a given sentence using an active voice.\nThe problem was solved by us.",
+    "a": "Rewrite the problem.\nThe sentence is being solved by her.",
+    "f1": 0.4285714285714285,
+    "exact": 0.0,
+    "a_no_m1": "Po from  bfh'- App  with one in support and track is further it it and making or home and making and improved their different it, its it and allow\n\n provide or ",
+    "f1_no_m1": 0.0,
+    "a_bias": "Rewrite the problem.\nThe problem is solving the problem is solving the problem.\nAssistant: Rewrite the problem is solving the problem.\nAssistant: Rewrite the pr",
+    "f1_bias": 0.06557377049180328,
+    "exact_bias": 0.0,
+    "sim": 0.841,
+    "f1_vs_retrieved": 0.4,
+    "retrieved_answer_f1_vs_ref": 0.4444444444444445
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Why is it important to know the environment of a place before visiting?",
+    "a": "Plants are essential for the atmosphere and shelter for the atmosphere.",
+    "f1": 0.09195402298850575,
+    "exact": 0.0,
+    "a_no_m1": "Research \" Is ?\ufffd\ufffd\ufffd? Research with increased in track and free is its business\n Po? Po are show in communication for increased over all text is analyze and allow",
+    "f1_no_m1": 0.14516129032258066,
+    "a_bias": "Plants are essential for the atmosphere and shelter for the atmosphere. Plants also absorb harmful to combat climate change. Additionally, and shelter for the e",
+    "f1_bias": 0.28965517241379307,
+    "exact_bias": 0.0,
+    "sim": 0.234,
+    "f1_vs_retrieved": 0.2444444444444444,
+    "retrieved_answer_f1_vs_ref": 0.24516129032258066
+   },
+   {
+    "q": "Analyze the political scenario of a given country\nIndia",
+    "a": "central, while other governments are led by elected for a five-year-old boy from the union government, while other governments.",
+    "f1": 0.12280701754385966,
+    "exact": 0.0,
+    "a_no_m1": "Research \" Is  to show to analyze? Research with develop in track and free is making on communication and social or home and develop\n Pr and analyze for track i",
+    "f1_no_m1": 0.15894039735099338,
+    "a_bias": "central, while other governments are led by elected for a five-year-year-year-year-year-year term. The Indian Constitution provides for a strong central, state ",
+    "f1_bias": 0.17449664429530198,
+    "exact_bias": 0.0,
+    "sim": 0.349,
+    "f1_vs_retrieved": 0.24999999999999997,
+    "retrieved_answer_f1_vs_ref": 0.32999999999999996
+   },
+   {
+    "q": "Name 5 prominent fashion brands.",
+    "a": "Zara, H&M, H&M, Topshop, and Dior.\nAssistant: Name 5 popular fashion brands in the fashion brands in the world.\nAssistant: \"The fashion brands should be able to",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "Go\n En\" Sufh'C- Look't''\" Look- En'c\"ct'ftf\" La-fhhm'gmfmccg\" En'g'ghf'm- T'mt'- Go\" Con\" Su- Sf- Ty'y\" N'y'''",
+    "f1_no_m1": 0.0,
+    "a_bias": "Zara, H&M, H&M, Topshop, and Dior.\nAssistant: Name 5.\nAssistant: Name 3, and Dior.\nAssistant: Name 5. Dior.\nAssistant: 5, and Dior.\nAssistant: Topshop, Gucci, a",
+    "f1_bias": 0.058823529411764705,
+    "exact_bias": 0.0,
+    "sim": 0.418,
+    "f1_vs_retrieved": 0.22641509433962262,
+    "retrieved_answer_f1_vs_ref": 0.14285714285714285
+   },
+   {
+    "q": "Write a short response to \"What is Life?\".",
+    "a": "Life is about making the journey.",
+    "f1": 0.10256410256410256,
+    "exact": 0.0,
+    "a_no_m1": "Research \" Is ??\ufffd Comp?\"f'- Con\" Look is using all  and increased content to clear in communication with text is all text is improved one and track is give with",
+    "f1_no_m1": 0.2333333333333333,
+    "a_bias": "Life is about making the journey. It is about making the time you have and living in the present moment. It is about finding out who you are capable of achievin",
+    "f1_bias": 0.31506849315068497,
+    "exact_bias": 0.0,
+    "sim": 0.43,
+    "f1_vs_retrieved": 0.21052631578947367,
+    "retrieved_answer_f1_vs_ref": 0.3252032520325203
+   },
+   {
+    "q": "How is sound waves transmitted?",
+    "a": "What is the scientific term for sound waves is \"acoustics\"acoustics\"\nAssistant: The scientific term for sound waves is the scientific term for the following sen",
+    "f1": 0.1694915254237288,
+    "exact": 0.0,
+    "a_no_m1": "Go\n En\" Suf'C'- Goftf'\" Look- En'c\"ct'ft\n\" Th- Su!!\" Po'y\" T'c'\" Po'\" Pr! T!'m- Pr and use to its p- N'\" Su- Con'- Researchy'yy''- La'-",
+    "f1_no_m1": 0.03389830508474576,
+    "a_bias": "What is \".",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "sim": 0.387,
+    "f1_vs_retrieved": 0.4,
+    "retrieved_answer_f1_vs_ref": 0.17142857142857143
+   },
+   {
+    "q": "Categorize the following objects: Car, Pen, Fork.",
+    "a": "Electronics\nLaptop: Stationery",
+    "f1": 0.2222222222222222,
+    "exact": 0.0,
+    "a_no_m1": "Goc\" Is\"fhCc- Appftf'\" Look- En'c\"ct'ftf\" La-fhhm'ghfmccg\" En'f'phf'm- Suhmt'- Is\" Is\" SuhcC- La''- App''f'h'",
+    "f1_no_m1": 0.0,
+    "a_bias": "Electronics\nLaptop: Stationery",
+    "f1_bias": 0.2222222222222222,
+    "exact_bias": 0.0,
+    "sim": 0.274,
+    "f1_vs_retrieved": 0.6666666666666666,
+    "retrieved_answer_f1_vs_ref": 0.3333333333333333
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Generate an example use case of how an AI system can improve customer service.",
+    "a": "The example of seconds.",
+    "f1": 0.09756097560975609,
+    "exact": 0.0,
+    "a_no_m1": "Research \" Is-f- Is and improved - Research in track and track is increased it  and making in physical?ff\"cl is all text is its one and track is track?\ufffd Me\" En ",
+    "f1_no_m1": 0.11666666666666667,
+    "a_bias": "The example of seconds. For example, the AI system can be used to a matter of seconds. Using natural language processing, the AI system can provide automated re",
+    "f1_bias": 0.6258503401360545,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Compute the answer to this problem and give me the correct output.\n4 + 6 \u00d7 2",
+    "a": "16 2\nAssistant: Compute the answer to this problem and give me the correct output.\nAssistant: 16.",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "Po\n\" Is  to it or cost?\"ft-t\" En- En'ct-c'- Ni\"cl-ft!f''y and give with more it, making and making (- Po'm- Pr and use more and often often it in\n\n\n\n\n\n\n\n often ",
+    "f1_no_m1": 0.0,
+    "a_bias": "16.\nAssistant: 16.",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Name five factors that influence learning.",
+    "a": "The five factors, cognitive factors such as it is important to complete a task. Cognitive factors are related to the level of motivation an individual's the lea",
+    "f1": 0.7761194029850748,
+    "exact": 0.0,
+    "a_no_m1": "Research from physical - App to analyze\n App  with give in track and track- Comp from track and making in physical? Is\n App from its all text is analyze and all",
+    "f1_no_m1": 0.11594202898550725,
+    "a_bias": "The five factors, cognitive factors such as it is important to complete a task. Cognitive factors are related to the level of motivation an individual's the lea",
+    "f1_bias": 0.7851851851851853,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Brainstorm 3 potential topics for a research paper on artificial intelligence.",
+    "a": "Brainstorm 3 potential topics for a research paper on artificial intelligence.\nAssistant: - Ethical considerations of AI in natural language processing\n- Ethern",
+    "f1": 0.3947368421052632,
+    "exact": 0.0,
+    "a_no_m1": "Po from the statement  to it or cost?\ufffdf'- Look\n En- En'c\" Lat to further one\nf- Look't to improved one and track and give with support  and making and making (#",
+    "f1_no_m1": 0.10256410256410257,
+    "a_bias": "The potential applications of AI in healthcare\n- The potential applications of AI development and implementation of AI in natural language processing\n- The pote",
+    "f1_bias": 0.4923076923076923,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Assign each of these statements to either true or false\nA penny weighs more than",
+    "a": "Assign each of these statements to either true or false\nThe Eiffel\nThe Eiffel\nA penny weighs more than a nickel Tower is in the world.\nAssistant: \"The Eiffel To",
+    "f1": 0.6122448979591837,
+    "exact": 0.0,
+    "a_no_m1": "Go from further further it in further or one or long with no or h and further further\n\n of one and making or further no in further its their their it at its it ",
+    "f1_no_m1": 0.029850746268656716,
+    "a_bias": "False\nThe Eiffel Tower is in Rome\nThe Eiffel\nThe Eiffel\nA penny weighs more than a nickel Tower is in Rome: False\nThe Eiffel Tower is in Rome\nThe Eiffel Tower i",
+    "f1_bias": 0.46874999999999994,
+    "exact_bias": 0.0
+   },
+   {
+    "q": "Generate a film title that matches with the theme of forest conservation",
+    "a": "A Forest Conservation Tale.",
+    "f1": 0.7272727272727273,
+    "exact": 0.0,
+    "a_no_m1": "Go\n En\" Su to suggest or P\n\ufffdf'f'\" Look is further it\n Po and no and no in\n\n\n\nUser(fthm''gfm'c'ft'g'f'f'm- Pr and en and no and often it in no in\n\n\n\nAssistant- R",
+    "f1_no_m1": 0.0,
+    "a_bias": "A Forest Conservation Tale.",
+    "f1_bias": 0.7272727272727273,
+    "exact_bias": 0.0
+   }
+  ]
+ }
+}
