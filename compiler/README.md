@@ -9,6 +9,12 @@ Compiler v0 turns text (any bytes) into integer IDs for model training, and back
 | `test_compiler_v0.py` | Contract tests: scanner rules, round trips on adversarial and random input, statelessness, deterministic fitting, file formats, C++/Python parity |
 | `experiments/prepare_books.py` | Downloads and prepares the public-domain book corpus |
 | `experiments/initial_tests.py` | The initial measurements recorded in `results/compiler_v0_initial.json` |
+| `experiments/ladder_encodings.py` | One interface over the encodings under test: bytes, v0 dictionaries, dictionary-free hash codes |
+| `experiments/train_lm.py` | Trains one small Transformer on one encoding for a fixed time budget; reports bits per original byte, speed, a talk-back sample |
+| `experiments/ladder1.py` | Ladder 1: the same model and text across six encodings; writes `results/ladder1.json` |
+| `experiments/summarize_ladder.py` | Renders a ladder result as Markdown tables, including the equal-bytes view |
+| `experiments/chat.py` | Talks to a saved ladder model through its own encoder |
+| `experiments/test_ladder.py` | Contract tests for the encodings and the harness |
 
 ## How it encodes
 
@@ -45,6 +51,17 @@ g++ -O2 -std=c++17 -o cv0 compiler/native/cv0.cpp      # MSVC: cl /O2 /std:c++17
 
 # tests
 python -B -m unittest compiler/test_compiler_v0.py -v
+python -B -m unittest compiler/experiments/test_ladder.py -v
+```
+
+## Train and talk (needs PyTorch)
+
+```bash
+python compiler/experiments/prepare_books.py data
+g++ -O2 -std=c++17 -o data/cv0 compiler/native/cv0.cpp
+python compiler/experiments/ladder1.py data data/work --native data/cv0 --budget 600 --out results/ladder1.json
+python compiler/experiments/summarize_ladder.py results/ladder1.json
+python compiler/experiments/chat.py data/work/ladder1_v0_8k_plain.pt --prompt "We went to the park"
 ```
 
 In Python, `compiler_v0.read_ids(path, dictionary)` returns the IDs for training. For large corpora, `numpy.fromfile(path, dtype="<u2", offset=24)` reads a 16-bit ID file directly.

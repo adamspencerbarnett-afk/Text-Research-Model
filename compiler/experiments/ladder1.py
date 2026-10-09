@@ -1,0 +1,120 @@
+"""Ladder 1: the same small model trained on different encodings of the same text, each for
+the same training-time budget on the same machine.
+
+    python compiler/experiments/ladder1.py DATA WORK --native ./cv0 --budget 600 --out results/ladder1.json
+
+Configurations (all with case flags off, width 128, 4 layers, context 256 tokens):
+    bytes            raw bytes
+    v0_8k_plain      Compiler v0 dictionary, 8,192 IDs, no phrases
+    v0_8k_phr3       8,192 IDs of which 1,024 are phrases of up to 3 units
+    v0_8k_phr6       8,192 IDs of which 2,048 are phrases of up to 6 units
+    hash4096x4096    no dictionary: (group, member) hash codes per scanner unit, 16.8M code space
+    v0_8k_table      v0_8k_plain plus a hashed bigram input table of 2^20 rows (134M parameters)
+
+Dictionaries and the hash reverse map are fitted on the training split only. Every result
+is in bits per original byte on the held-out books, so the encodings compare on one scale.
+"""
+from __future__ import annotations
+
+import argparse
+import glob
+import json
+import sys
+import time
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import compiler_v0 as cv  # noqa: E402
+import ladder_encodings as LE  # noqa: E402
+import train_lm  # noqa: E402
+
+DICTS = {  # name: (vocab, phrases, max_phrase_units)
+    "v0_8k_plain": (8192, 0, 1),
+    "v0_8k_phr3": (8192, 1024, 3),
+    "v0_8k_phr6": (8192, 2048, 6),
+}
+CONFIGS = ["bytes", "v0_8k_plain", "v0_8k_phr3", "v0_8k_phr6", "hash4096x4096", "v0_8k_table"]
+
+
+def say(msg: str) -> None:
+    print(time.strftime("%H:%M:%S"), msg, flush=True)
+
+
+def fit_dictionary(name: str, train_paths: list[str], work: Path) -> Path:
+    path = work / f"{name}.cv0d"
+    if not path.exists():
+        vocab, phrases, units = DICTS[name]
+        t0 = time.time()
+        d, _ = cv.fit(lambda: (Path(p).read_bytes() for p in train_paths), vocab, phrases, units, case_flags=False)
+        d.save(str(path))
+        say(f"fitted {name}: {d.vocab_size:,} IDs, hash {d.hash:016x} ({time.time() - t0:.0f}s)")
+    return path
+
+
+def fit_hash(groups: int, members: int, train_paths: list[str], work: Path) -> Path:
+    path = work / f"hash{groups}x{members}.json"
+    if not path.exists():
+        t0 = time.time()
+        h = LE.HashCodes(groups, members)
+        h.fit(Path(p).read_bytes() for p in train_paths)
+        h.save(str(path))
+        say(f"fitted {h.name}: {h.collisions} ({time.time() - t0:.0f}s)")
+    return path
+
+
+def make_encoding(name: str, train_paths: list[str], work: Path, native: str | None) -> tuple[LE.Encoding, int]:
+    if name == "bytes":
+        return LE.Bytes(), 0
+    if name.startswith("hash"):
+        g, m = (int(x) for x in name[4:].split("x"))
+        return LE.HashCodes.load(str(fit_hash(g, m, train_paths, work))), 0
+    table = 0
+    if name.endswith("_table"):
+        name, table = "v0_8k_plain", 1 << 20
+    return LE.V0Dict(str(fit_dictionary(name, train_paths, work)), native), table
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("data"); ap.add_argument("work")
+    ap.add_argument("--native", default=None); ap.add_argument("--budget", type=float, default=600)
+    ap.add_argument("--configs", default=",".join(CONFIGS)); ap.add_argument("--out", default="results/ladder1.json")
+    ap.add_argument("--seed", type=int, default=1); ap.add_argument("--eval-every", type=float, default=120)
+    a = ap.parse_args()
+    work = Path(a.work); work.mkdir(parents=True, exist_ok=True)
+    train_paths = sorted(glob.glob(f"{a.data}/train/*.txt"))
+    eval_sets = train_lm.eval_sets_from(a.data)
+    results = {"ladder": "ladder1", "budget_s": a.budget, "seed": a.seed, "corpus": {
+        "train_books": len(train_paths), "train_bytes": sum(Path(p).stat().st_size for p in train_paths),
+        "heldout": [Path(p).stem for p in eval_sets["heldout"]], "ood": [Path(p).stem for p in eval_sets["ood"]]},
+        "configs": {}}
+    out = Path(a.out)
+    if out.exists():
+        results = json.loads(out.read_text())
+    for name in a.configs.split(","):
+        if name in results["configs"]:
+            say(f"{name}: already done, skipping")
+            continue
+        enc, table = make_encoding(name, train_paths, work, a.native)
+        t0 = time.time()
+        tokens, lens = train_lm.load_training(enc, a.data, work)
+        say(f"{name}: {len(tokens):,} training tokens ({time.time() - t0:.0f}s to encode)")
+        r = train_lm.run(enc, tokens, lens, eval_sets, work, a.budget, table_rows=table, seed=a.seed,
+                         eval_every_s=a.eval_every, log=say, save_path=str(work / f"ladder1_{name}.pt"))
+        r["config"] = name
+        (work / f"ladder1_{name}.json").write_text(json.dumps(r, indent=1))
+        results["configs"][name] = r
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(json.dumps(results, indent=1))
+    say("summary (held-out books):")
+    say(f"{'config':16s} {'IDs/KB':>7s} {'bpb':>7s} {'MB seen':>8s} {'steps':>6s} {'tok/s':>7s} {'gen B/s':>8s}  params")
+    for name, r in results["configs"].items():
+        h = r["eval"]["heldout_overall"]; t = r["training"]; g = r["generation"]
+        say(f"{name:16s} {h['ids_per_kb']:7.1f} {h['bits_per_byte']:7.4f} {t['bytes_seen']/1e6:8.2f} {t['steps']:6d} "
+            f"{t['tokens_per_s']:7.0f} {g['bytes_per_s']:8.0f}  {r['model']['params']['total']:,}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
