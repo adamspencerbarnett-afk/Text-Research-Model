@@ -439,7 +439,7 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
         work: Path, budget_s: float, width=128, layers=4, heads=4, ctx=256, batch=16, lr=1e-3,
         table_rows=0, seed=1, eval_every_s=120.0, quick_bytes=150_000, prompt=b"We went to the park",
         gen_tokens=200, log=print, save_path=None, table_orders=(2,), ngram_orders=(), ngram_topk=16,
-        valid_share=0.02, patience=0, min_delta=0.002, keep_model=False, device="cpu", max_steps=0) -> dict:
+        valid_share=0.02, patience=0, min_delta=0.002, keep_model=False, device="cpu", max_steps=0, amp=False) -> dict:
     """Train for up to ``budget_s`` seconds of training time.
 
     The last ``valid_share`` of the training stream is held back as the validation split: it
@@ -502,7 +502,10 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
         for o in opts:
             for g in o.param_groups:
                 g["lr"] = cur_lr
-        loss = model.nll(x, y).mean()
+        # ``amp``: the training step in bfloat16 (about 2x faster on the GPU); every score is still
+        # computed in full precision.
+        with torch.autocast(device_type="cuda" if str(device).startswith("cuda") else "cpu", dtype=torch.bfloat16, enabled=amp):
+            loss = model.nll(x, y).mean()
         for o in opts:
             o.zero_grad(set_to_none=True)
         loss.backward()
@@ -536,7 +539,7 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
                                                       "batch": batch, "peak_lr": lr, "table_rows": table_rows,
                                                       "table_orders": list(model.table_orders), "params": counts,
                                                       "ngram_tables": ngram_info},
-              "training": {"budget_s": budget_s, "max_steps": max_steps, "train_s": round(train_time, 1), "steps": step, "tokens_seen": tokens_seen,
+              "training": {"budget_s": budget_s, "max_steps": max_steps, "amp": amp, "train_s": round(train_time, 1), "steps": step, "tokens_seen": tokens_seen,
                            "bytes_seen": bytes_seen, "tokens_per_s": round(tokens_seen / train_time, 1),
                            "bytes_per_s": round(bytes_seen / train_time, 1), "final_train_bits_per_token": round(ema, 4),
                            "train_tokens": int(n), "valid_tokens": int(len(valid_tokens)), "valid_bytes": int(valid_lens.sum()),
@@ -625,6 +628,7 @@ def main(argv=None) -> int:
     ap.add_argument("--threads", type=int, default=0)
     ap.add_argument("--device", default="cpu", help="cpu, cuda or cuda:N")
     ap.add_argument("--max-steps", type=int, default=0, help="stop after this many steps and run the LR schedule over them (0: time budget only)")
+    ap.add_argument("--amp", action="store_true", help="train in bfloat16 autocast (scores stay in full precision)")
     a = ap.parse_args(argv)
     if a.threads:
         torch.set_num_threads(a.threads)
@@ -640,7 +644,7 @@ def main(argv=None) -> int:
                  a.batch, a.lr, a.table_rows, a.seed, a.eval_every,
                  table_orders=tuple(int(o) for o in a.table_orders.split(",")),
                  ngram_orders=tuple(int(o) for o in a.ngram_orders.split(",") if o), ngram_topk=a.ngram_topk,
-                 valid_share=a.valid_share, patience=a.patience, min_delta=a.min_delta, device=a.device, max_steps=a.max_steps)
+                 valid_share=a.valid_share, patience=a.patience, min_delta=a.min_delta, device=a.device, max_steps=a.max_steps, amp=a.amp)
     result["args"] = vars(a)
     Path(a.out).write_text(json.dumps(result, indent=1))
     return 0

@@ -131,7 +131,7 @@ def main() -> int:
     ap.add_argument("--width", type=int, default=128); ap.add_argument("--ctx", type=int, default=256)
     ap.add_argument("--layers", type=int, default=4)
     ap.add_argument("--device", default="cpu", help="cpu, cuda or cuda:N")
-    ap.add_argument("--max-steps", type=int, default=0)
+    ap.add_argument("--max-steps", type=int, default=0); ap.add_argument("--amp", action="store_true")
     a = ap.parse_args()
     work = Path(a.work); work.mkdir(parents=True, exist_ok=True)
     train_paths = sorted(glob.glob(f"{a.data}/train/*.txt"))
@@ -154,7 +154,7 @@ def main() -> int:
         r = train_lm.run(enc, tokens, lens, eval_sets, work, a.budget, table_rows=table, seed=a.seed,
                          eval_every_s=a.eval_every, log=say, save_path=str(work / f"ladder1_{name}.pt"),
                          table_orders=orders, ngram_orders=ngram, ngram_topk=topk, valid_share=a.valid_share,
-                         patience=a.patience, min_delta=a.min_delta, width=a.width, ctx=a.ctx, layers=a.layers, device=a.device, max_steps=a.max_steps)
+                         patience=a.patience, min_delta=a.min_delta, width=a.width, ctx=a.ctx, layers=a.layers, device=a.device, max_steps=a.max_steps, amp=a.amp)
         r["config"] = name
         (work / f"ladder1_{name}.json").write_text(json.dumps(r, indent=1))
         results["configs"][name] = r
