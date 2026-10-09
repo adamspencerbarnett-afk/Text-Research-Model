@@ -304,6 +304,51 @@ What the comparison says:
 
 This comparison is not to be repeated; from here the work is improving the best configuration, with these numbers as the reference.
 
+### The scale check: does the gain survive more data? (9 October, 200 MB corpus, 600 s)
+
+Corpus v1 (`results/corpus_v1_manifest.json`): the 45 MB corpus grown to 200.6 MB in 297 books from the same source, held-out authors screened out of training, and Walden (Thoreau, no other Thoreau in training) added as a fourth held-out book. Dictionaries, BPE merges and count tables were refitted on the larger corpus. The best configuration's trust head gained two confidence features (top-follower share and follower entropy) between the side-by-side and this run, so the 45 MB reference was re-run with the new head (`results/side_by_side_newhead.json`: 1.804 against 1.806 before, no material change). Numbers below are on the same three held-out books as every earlier result; `results/scale_check.json`.
+
+| Training text | Standard BPE 8k | Best configuration | Gap |
+| --- | ---: | ---: | ---: |
+| 45 MB | 2.028 | 1.804 | 11.0% |
+| 200 MB | 1.923 | 1.744 | 9.3% |
+
+- *The gain survives a 4.4× increase in data.* Both models improve with more text (BPE by 5.2%, ours by 3.3%) and the gap narrows a little, from 11.0% to 9.3%, which is the expected direction: the network learns some of what the tables hold. It does not collapse. On the new held-out author (Walden) the gap is 8.8% (2.023 against 1.845).
+- *Out of domain the hybrid no longer leads at 200 MB:* 3.80 against 3.72 bits per byte on the repository's code and Markdown, where at 45 MB it led (3.96 against 4.01). The count tables are fitted to books and get more confident with more books; off-domain their confidence misleads more often. More table orders and the Wikipedia split in corpus v2 are the levers.
+- No run hit the plateau rule; every curve was still falling at 600 s.
+
+### Where the gain lives (200 MB runs, held-out books, bits per byte by class of the predicted token)
+
+| Class of the predicted token | Share of bytes | Standard BPE | Best | Gain |
+| --- | ---: | ---: | ---: | ---: |
+| 100 most frequent codes | 36.7% | 1.658 | 1.660 | 0 |
+| codes ranked 101–1,000 | 29.6% | 2.132 | 1.779 | **16.6%** |
+| codes ranked 1,001–8,192 | 33.8% | 2.139 | 1.912 | **10.6%** |
+| whole-word codes (all ranks) | 93.3% | 1.872 | 1.655 | 11.6% |
+| byte-fallback codes (rare words spelled out) | 5.9% | 3.482 | 3.759 | −8.0% |
+| punctuation and spacing | 0.8% | 0.934 | 0.914 | 2.2% |
+
+The gain is not shallow. On the hundred commonest codes, the function words, the two models are identical; the advantage is entirely on the middle and rare vocabulary, where a count table remembers what follows a specific pair or triple of words and a 0.79M-parameter network cannot. The one class where the hybrid loses is words so rare that the compiler spells them in bytes: the tables have almost no counts over byte codes and the hashed rows collide, so the network is left alone and distracted. That is a precise target: a larger dictionary, or the hash encoder for rare words, would move those 5.9% of bytes into the class where the tables win.
+
+### Ladder 3: four-minute screens on the hybrid (9 October, corpus v2, 233 MB)
+
+Corpus v2 (`results/corpus_v2_manifest.json`) is corpus v1 plus 44 books from Adam's 100-book file (15 duplicates and held-out titles dropped by Gutenberg id) and, from his enwik file, a 2 MiB Wikipedia out-of-domain test file and a 48 MiB Wikipedia training split kept separate. Four held-out books. `results/ladder3_screen.json`, `results/ladder3_ctx1024.json`.
+
+| Configuration | Learned params | Held-out bits/byte | Wikipedia (OOD) | Steps | Talk-back bytes/s |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| reference: hashed 2^20 tables + exact tables, 16 followers | 270M | 1.834 | 4.55 | 622 | 400 |
+| exact tables only, 16 followers | 1.9M | 1.846 | 4.56 | 667 | 484 |
+| exact tables only, **64 followers** | 1.9M | **1.795** | 4.54 | 672 | 532 |
+| hashed 2^18 tables + exact tables | 69M | 1.834 | 4.50 | 641 | 524 |
+| reference with a 1,024-code context | 270M | 1.964 | 4.75 | 133 | 433 |
+
+- *64 followers per context is the new best setting:* 2.1% better than the reference with no hashed tables at all, 1.9M learned parameters, and the fastest talk-back of the group. Keeping more of each context's follower distribution lets the mixture cover more of the probability mass exactly.
+- *The hashed input tables have become nearly redundant* beside the exact tables (0.7% at 16 followers, and the 64-follower exact tables beat the pair outright). A 2^18 table (69M parameters) does exactly what a 2^20 table (270M) does. The next configuration drops to 2^18 or drops them.
+- *A 1,024-code context loses badly at a 4-minute budget* (133 steps against 622): each step costs four times more and attention grows with the square of the length. This says nothing about long context at the scale of the serious run, only that it cannot be screened at 4 minutes.
+- Wikipedia text costs every model about 4.5 bits per byte, code about 4.05, Markdown about 3.2: books-only training, as expected. The Wikipedia split exists for the next corpus mix.
+
+**The configuration to carry forward:** the compiler (8k codes) feeding the 0.79M-parameter core, with exact bigram and trigram tables keeping 64 followers per context, leave-one-out counting, and the three-feature trust head. 1.9M learned parameters. Whether to keep a 2^18 hashed table is a 4-minute question for the next session.
+
 **Best model, stated plainly.** Text is compiled into 8,192 word-and-piece codes by the deterministic compiler. A 4-layer, width-128 Transformer (0.79M parameters) reads the codes, with two hashed lookup tables (bigram and trigram keys, 2^20 rows each, 268M parameters, one lookup each per code) added to its input. Its output is mixed, per code, with exact bigram and trigram follower counts from the training text (3.3M entries, built in four seconds, rebuilt without retraining), using weights the network predicts from its state and each table's confidence. After 600 s of CPU training: 1.806 bits per byte on unseen books, 3.96 on code and Markdown it was never trained on, about 600 bytes of reply per second on one core.
 
 
@@ -385,20 +430,20 @@ Four table designs, each a separate experiment against the same fixed core (the 
 
 Gate: a table design matches or beats the gain from doubling the core's width at no more than 10% extra step time. Output: `results/track_b.json` and the design choice for the "many parameters, still fast" model.
 
-### Phase 3: Track C, structured IDs and a factorized output (two to three sessions)
+### Phase 3: making it reason (after the serious run)
 
-Question: does predicting (group, member) instead of one flat softmax make each step cheaper without hurting quality, and does the same structure help the input side?
+*Revised 9 October.* The reasoning phase takes the ideas from the AREX agent paper (The Batch, 2 October 2026) that fit a model like this one, and the number channel (old Track D). The old Track C (cheaper, factorized output) and Track E (several units per step) are speed work on the same model and move into Phase 2, before the serious run.
 
-- Input side first, because Phase 1 already tests the simplest case (word, case). Extend to (group, member) from the B3F2 word-ending grouping, frequency bands, and k-means clusters of the Phase 1 embeddings.
-- Output side: two-level softmax over the same groupings against the flat softmax. The calibration in 2.5 measured the embedding and flat 32k output layer at about 87% of the training step at width 128 (1.27 s of 1.46 s), so this is where both training and generation speed are won for small models. A two-level output over 32k entries touches about 2 × 181 logits per step instead of 32,768.
-- Gate: within 1% of flat bits per byte with the output layer at least twice as fast at 64k entries or more.
+1. **A structured state channel beside the code stream.** A fixed-format compiled summary that carries long-range information through the small context: the compiler idea applied to working memory, with V1's typed event rows as the first format. Measured by whether it improves prediction and task accuracy at the same context length.
+2. **Verification by execution.** The V1 executor checks each predicted event row, so a wrong step is located and fixed individually; no second model judges the answer. The AREX loop of keep-what-is-verified, aim-at-the-gaps, implemented with deterministic checks.
+3. **Confidence-driven refinement at generation time.** The trust head's per-token confidence marks weak spans; only those are re-sampled, which the model's speed makes affordable. Measured by task accuracy, not bits per byte.
+4. **Decision-point training.** Concentrate the training signal where the tables cannot help, with the tables' own uncertainty as the hand-written rule for what matters. The 4-minute version (loss weighted by table uncertainty) runs as a Phase 2 screen; the task-level version, with the executor scoring each clause, is Phase 3.
+5. **The number channel.** Digits as values beside the code stream, since the V1 accounting and ordering tasks need it.
+6. **Task accuracy on the V1 problems** becomes the measure beside bits per byte.
 
-### Phase 4: Tracks D and E (parallel with Phase 3)
+Everything here assumes a base model that knows the language: it starts after the serious run, and nothing in it is screened at the 4-minute budget.
 
-- **D. Numeric side channel.** Digits are single bytes today. Compare digit IDs, a `NUM` slot plus the V1 scalar channel, and an xVal-style scaled embedding, on the V1 accounting and ordering tasks (already in `scripts/semantic_tasks.py`) and on prose with numbers. Gate: better exact answers on unseen number ranges with no loss in bits per byte on prose. This is the one track that touches the V1 code, and it is where the two halves of the repository meet.
-- **E. Multi-unit prediction.** Add 2–4 extra prediction heads to the Phase 1 winner and use them for self-speculative decoding. Measure units accepted per step and generated bytes per second. Gate: at least 1.8× generated bytes per second at equal bits per byte. Phrases from Track A, if they failed the quality gate, are re-examined here as a prediction-time device rather than an encoding device.
-
-### Phase 5: Track F, learned chunking as the benchmark (one to two sessions, lowest priority)
+### Phase 4: Track F, learned chunking as the benchmark (one to two sessions, lowest priority)
 
 Train a SpaceByte-style model (bytes with a word-boundary patching rule) at the Phase 1 budget and compare with the fixed encoder on the same measures. This is a yardstick for what the fixed dictionary gives up, especially on non-English and code, not a candidate replacement unless it wins clearly. BLT- or H-Net-style chunking is attempted only if SpaceByte comes close.
 
@@ -436,6 +481,7 @@ Rules carried over from the V1 discipline: fit dictionaries and tokenizers on th
 ## 8. Log
 
 - **2026-10-08.** Review of `encoder-v0` and the earlier results; measurements F1–F3 on two held-out books; PyTorch installed in the sandbox and the Phase 1 model shape timed on CPU; plan written. No model was trained to completion and no result in `results/` changed.
+- **2026-10-09, scale check and ladder 3.** Corpus v1 (200 MB) and v2 (233 MB plus a Wikipedia split) built; the 10.9% gain over standard BPE at 45 MB is 9.3% at 200 MB on the same books, and it lives on the middle and rare vocabulary, not on function words; 64 followers per context is the new best setting (1.795 at 4 minutes, 1.9M learned parameters); hashed tables are now nearly redundant; a 1,024-code context cannot be screened at 4 minutes. Phase 3 rewritten as the reasoning phase.
 - **2026-10-09, side-by-side.** One-time comparison at 600 s (`results/side_by_side.json`, figures in `docs/figures/`): standard BPE 8k 2.028; compiler alone 2.007; compiler + exact n-gram tables 1.835; compiler + both kinds of table 1.806, 10.9% better than the traditional model at equal time and 10.5% at equal text, and past the 3-gram count model. Loss formulation unified on the faster form for future runs.
 - **2026-10-09, ladder 2d, second attempt.** Leave-one-out counting fixed the stall (`results/ladder2d_ngram_loo.json`): 1.881 bits per byte in four minutes with the exact n-gram tables alone (1.9M learned parameters), 1.870 with both table kinds, the best results so far; better out of domain than plain words. Validation split and plateau early stopping added to the harness; standard BPE baseline added for the one-time traditional comparison; learning-curve chart script added (`plot_curves.py`).
 - **2026-10-09, ladder 2d.** Exact n-gram output tables, first attempt (`results/ladder2d_ngram.json`): head start then stall, and much worse out of domain, because the counts include the training occurrence itself. Leave-one-out counting added; re-screen follows.
