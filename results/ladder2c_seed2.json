@@ -1,0 +1,171 @@
+{
+ "ladder": "ladder1",
+ "budget_s": 240.0,
+ "seed": 2,
+ "corpus": {
+  "train_books": 48,
+  "train_bytes": 45045381,
+  "heldout": [
+   "Heart-of-Darkness_219",
+   "The-Adventures-of-Sherlock-Holmes_1661",
+   "The-Prince_1232"
+  ],
+  "ood": [
+   "repo_docs_markdown",
+   "repo_python_code"
+  ]
+ },
+ "configs": {
+  "v0_8k_plain": {
+   "encoding": {
+    "name": "v0_8k_plain",
+    "vocab": 8192,
+    "groups": 0,
+    "members": 0,
+    "dictionary": "data/work/v0_8k_plain.cv0d",
+    "dictionary_hash": "9967d692c6bafc80",
+    "entries": 7934,
+    "phrases": 0,
+    "case_flags": false,
+    "max_phrase_units": 1
+   },
+   "model": {
+    "width": 128,
+    "layers": 4,
+    "heads": 4,
+    "ctx": 256,
+    "batch": 16,
+    "peak_lr": 0.001,
+    "table_rows": 0,
+    "table_orders": [],
+    "params": {
+     "core": 791296,
+     "embedding": 1081344,
+     "output_heads": 0,
+     "table": 0,
+     "total": 1872640
+    }
+   },
+   "training": {
+    "budget_s": 240.0,
+    "train_s": 240.2,
+    "steps": 444,
+    "tokens_seen": 1818624,
+    "bytes_seen": 6299428,
+    "tokens_per_s": 7570.6,
+    "bytes_per_s": 26223.3,
+    "final_train_bits_per_token": 7.5505,
+    "history": [
+     {
+      "train_s": 60.4,
+      "step": 127,
+      "tokens_seen": 520192,
+      "bytes_seen": 1804723,
+      "train_bits_per_token": 9.7929,
+      "quick_bits_per_byte": 2.5459,
+      "lr": 0.0008684888012737297
+     },
+     {
+      "train_s": 120.1,
+      "step": 254,
+      "tokens_seen": 1040384,
+      "bytes_seen": 3601881,
+      "train_bits_per_token": 7.9913,
+      "quick_bits_per_byte": 2.3385,
+      "lr": 0.0005521291162545284
+     },
+     {
+      "train_s": 180.5,
+      "step": 364,
+      "tokens_seen": 1490944,
+      "bytes_seen": 5164150,
+      "train_bits_per_token": 7.6328,
+      "quick_bits_per_byte": 2.2944,
+      "lr": 0.00024177525144998104
+     },
+     {
+      "train_s": 240.2,
+      "step": 444,
+      "tokens_seen": 1818624,
+      "bytes_seen": 6299428,
+      "train_bits_per_token": 7.5505,
+      "quick_bits_per_byte": 2.2788,
+      "lr": 0.00010026098590445429
+     }
+    ]
+   },
+   "eval": {
+    "heldout": {
+     "Heart-of-Darkness_219": {
+      "bytes": 211025,
+      "tokens": 61192,
+      "ids_per_kb": 290.0,
+      "bits_per_byte": 2.2617,
+      "bits_per_token": 7.7998
+     },
+     "The-Adventures-of-Sherlock-Holmes_1661": {
+      "bytes": 562531,
+      "tokens": 160338,
+      "ids_per_kb": 285.0,
+      "bits_per_byte": 2.1408,
+      "bits_per_token": 7.5108
+     },
+     "The-Prince_1232": {
+      "bytes": 281531,
+      "tokens": 77046,
+      "ids_per_kb": 273.7,
+      "bits_per_byte": 2.2453,
+      "bits_per_token": 8.2044
+     }
+    },
+    "heldout_overall": {
+     "bytes": 1055087,
+     "tokens": 298576,
+     "ids_per_kb": 283.0,
+     "bits_per_byte": 2.1929
+    },
+    "ood": {
+     "repo_docs_markdown": {
+      "bytes": 123663,
+      "tokens": 43022,
+      "ids_per_kb": 347.9,
+      "bits_per_byte": 3.5662,
+      "bits_per_token": 10.2509
+     },
+     "repo_python_code": {
+      "bytes": 484809,
+      "tokens": 208415,
+      "ids_per_kb": 429.9,
+      "bits_per_byte": 4.5092,
+      "bits_per_token": 10.4893
+     }
+    },
+    "ood_overall": {
+     "bytes": 608472,
+     "tokens": 251437,
+     "ids_per_kb": 413.2,
+     "bits_per_byte": 4.3175
+    }
+   },
+   "seed": 2,
+   "generation": {
+    "prompt": "We went to the park",
+    "tokens": 200,
+    "bytes": 614,
+    "seconds": 0.74,
+    "tokens_per_s": 271.0,
+    "bytes_per_s": 831.8,
+    "note": "sliding context, no KV cache, CPU",
+    "sample": "\nbemate, and, not been done to\nand he would be seen him, that he asked the way, for the\nbe not to the\nfor you think not a young of my head and I do all the world.\n\nThe man of the first, she had not\nit is a word.\n\nAs the\non and what I shall do to this, and she was a long-------\n\n\u201cI should have been been at one in the mind when I would not so to\nand, you know a thing; and, and I am so to him, you was I never\nwas nothing to\nand I say. _. \u201cI could not be a sort of a moment, he should be\nyou have been been seen a good more and if if I had been that is I am to his own and I\nat me; I have not to "
+   },
+   "machine": {
+    "python": "3.13.16",
+    "torch": "2.14.1+cu130",
+    "threads": 4,
+    "cpu": "x86_64",
+    "cores": 4
+   },
+   "config": "v0_8k_plain"
+  }
+ }
+}
