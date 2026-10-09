@@ -80,13 +80,15 @@ def parse_config(name: str) -> tuple[str, int, tuple[int, ...]]:
     The base is ``bytes``, ``hashGxM`` or a dictionary name from DICTS. An optional
     ``_table[N][_tri]`` suffix adds hashed input tables: ``v0_8k_table`` is a 2^20-row bigram
     table on v0_8k_plain, ``v0_8k_table22`` has 2^22 rows, ``hash4096x4096_table20_tri`` puts
-    bigram and trigram tables of 2^20 rows each on the hash encoder.
+    bigram and trigram tables of 2^20 rows each on the hash encoder; ``_q4`` adds a 4-gram table too.
     """
     base, table, orders = name, 0, (2,)
     if "_table" in name:
         base, spec = name.split("_table", 1)
-        orders = (2, 3) if spec.endswith("_tri") else (2,)
-        spec = spec.removesuffix("_tri")
+        orders = (2,)
+        for suffix, o in (("_tri", (2, 3)), ("_q4", (2, 3, 4))):
+            if spec.endswith(suffix):
+                orders, spec = o, spec.removesuffix(suffix)
         table = 1 << (int(spec) if spec else 20)
     if base == "bytes" or base.startswith("hash"):
         return base, table, orders

@@ -106,6 +106,7 @@ class LadderConfigTests(unittest.TestCase):
         self.assertEqual(ladder1.parse_config("bytes_table20_tri"), ("bytes", 1 << 20, (2, 3)))
         self.assertEqual(ladder1.parse_config("hash4096x4096"), ("hash4096x4096", 0, (2,)))
         self.assertEqual(ladder1.parse_config("hash4096x4096_table20_tri"), ("hash4096x4096", 1 << 20, (2, 3)))
+        self.assertEqual(ladder1.parse_config("v0_8k_table20_q4"), ("v0_8k_plain", 1 << 20, (2, 3, 4)))
         with self.assertRaises(KeyError):
             ladder1.parse_config("v0_99k_table")
 
