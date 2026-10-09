@@ -138,10 +138,10 @@ Six encodings, one model (4 layers, width 128, context 256 tokens, batch 16), th
 | v0 8k, words and pieces | 1.87M | 283.0 | 2.007 | 4.062 | 18.1 | 1,277 | 8,715 | 732 |
 | v0 8k + 1,024 phrases of up to 3 units | 1.87M | 232.7 | 2.057 | 4.029 | 21.2 | 1,198 | 8,174 | 968 |
 | v0 8k + 2,048 phrases of up to 6 units | 1.87M | 233.3 | 2.075 | 4.053 | 21.7 | 1,217 | 8,307 | 744 |
-| hash 4096×4096 (equation, no dictionary) | 3.45M | 240.7 | 2.037 | 4.374 | 17.1 | 1,048 | 7,153 | 258* |
+| hash 4096×4096 (equation, no dictionary) | 3.45M | 240.7 | 2.037 | 4.374 | 17.1 | 1,048 | 7,153 | 589* |
 | v0 8k + hashed bigram table, 2^20 rows | 136.09M | 283.0 | **1.939** | 4.121 | 15.7 | 1,110 | 7,574 | 848 |
 
-\* The hash model's talk-back speed was held down by a per-step recomputation of the group mask in the sampler, fixed after the run; the re-run below gives the real number.
+\* In the ladder run the hash model talked back at 258 bytes/s because the sampler recomputed its group mask at every step. With the mask precomputed, a re-run of the same configuration gave 589 bytes/s and 2.034 bits per byte (2.037 in the ladder run: the two runs agree to 0.2%, a first measure of run-to-run noise). A checkpoint from the re-run is the one `chat.py` was tried on.
 
 **Equal training text.** Validation bits per byte (a 150 KB slice of Heart of Darkness, measured every 120 s) read off each curve at 15.1 MB, the most the slowest run saw, and at 10 MB.
 
