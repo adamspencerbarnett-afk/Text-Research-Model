@@ -416,7 +416,7 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
         work: Path, budget_s: float, width=128, layers=4, heads=4, ctx=256, batch=16, lr=1e-3,
         table_rows=0, seed=1, eval_every_s=120.0, quick_bytes=150_000, prompt=b"We went to the park",
         gen_tokens=200, log=print, save_path=None, table_orders=(2,), ngram_orders=(), ngram_topk=16,
-        valid_share=0.02, patience=0, min_delta=0.002) -> dict:
+        valid_share=0.02, patience=0, min_delta=0.002, keep_model=False) -> dict:
     """Train for up to ``budget_s`` seconds of training time.
 
     The last ``valid_share`` of the training stream is held back as the validation split: it
@@ -555,11 +555,15 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
     log(f"[{enc.name}] generated {len(out)} bytes in {gen_s:.1f}s ({len(out)/gen_s:.0f} B/s): {out[:160]!r}")
     result["machine"] = {"python": platform.python_version(), "torch": torch.__version__, "threads": torch.get_num_threads(),
                          "cpu": platform.processor() or platform.machine(), "cores": os.cpu_count()}
-    if save_path and not ngrams:
+    if save_path:
         # Weights plus what chat.py needs to rebuild the encoder; a hashed table is left out when
-        # it is large, since it is for the speed and capacity measurement, not for talking.
+        # it is large, since it is for the speed and capacity measurement, not for talking. The
+        # n-gram tables are not stored: chat.py rebuilds them from the training text (--data).
         state = {k: v for k, v in model.state_dict().items() if not (k.startswith("table") and table_rows > 1 << 16)}
-        torch.save({"encoding": enc.describe(), "model": result["model"], "state_dict": state}, save_path)
+        torch.save({"encoding": enc.describe(), "model": result["model"], "state_dict": state,
+                    "ngram_orders": list(ngram_orders), "ngram_topk": ngram_topk}, save_path)
+    if keep_model:
+        result["_model"] = model
     return result
 
 

@@ -22,7 +22,9 @@ import ladder_encodings as LE  # noqa: E402
 import train_lm  # noqa: E402
 
 
-def load(path: str, native: str | None = None):
+def load(path: str, native: str | None = None, data: str | None = None):
+    """Rebuild encoder and model from a checkpoint; ``data`` (the corpus directory) is needed
+    for a model with exact n-gram tables, which are recounted from its training text."""
     ck = torch.load(path, map_location="cpu", weights_only=False)
     info, shape, work = ck["encoding"], ck["model"], Path(path).parent
     if info["name"] == "bytes":
@@ -32,8 +34,15 @@ def load(path: str, native: str | None = None):
     else:
         enc = LE.V0Dict(info["dictionary"], native)
     valid = np.fromiter(enc.reverse.keys(), dtype=np.int64, count=len(enc.reverse)) if isinstance(enc, LE.HashCodes) else None
+    ngrams = []
+    if ck.get("ngram_orders"):
+        if not data:
+            raise ValueError("this model uses exact n-gram tables: pass --data DIR so they can be rebuilt from its training text")
+        tokens, _ = train_lm.load_training(enc, data, work)
+        n_train = int(len(tokens) * 0.98)
+        ngrams = [train_lm.NgramTable(tokens[:n_train], o, ck.get("ngram_topk", 16)) for o in ck["ngram_orders"]]
     model = train_lm.LM(enc, shape["width"], shape["layers"], shape["heads"], shape["ctx"], shape["table_rows"], valid,
-                        tuple(shape.get("table_orders", [2])))
+                        tuple(shape.get("table_orders", [2])), ngrams)
     missing, unexpected = model.load_state_dict(ck["state_dict"], strict=False)
     if unexpected or any(not k.startswith("table") for k in missing):
         raise ValueError(f"checkpoint does not match the model: missing {missing}, unexpected {unexpected}")
@@ -56,11 +65,11 @@ def reply(enc, model, prompt: bytes, n_tokens: int, temperature: float, top_k: i
 
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("checkpoint"); ap.add_argument("--native"); ap.add_argument("--prompt")
+    ap.add_argument("checkpoint"); ap.add_argument("--native"); ap.add_argument("--prompt"); ap.add_argument("--data")
     ap.add_argument("--tokens", type=int, default=120); ap.add_argument("--temperature", type=float, default=0.8)
     ap.add_argument("--top-k", type=int, default=40); ap.add_argument("--seed", type=int, default=1)
     a = ap.parse_args()
-    enc, model = load(a.checkpoint, a.native)
+    enc, model = load(a.checkpoint, a.native, a.data)
     print(f"encoder {enc.name}: {len(enc.encode(b'We went to the park')[0])} IDs for 'We went to the park'")
     prompts = [a.prompt] if a.prompt else iter(lambda: input("you> "), "")
     for p in prompts:
