@@ -229,6 +229,19 @@ The bigger-core control settles the table story at this scale (`results/control_
 
 Quadrupling the core's parameters bought nothing at equal time (2.003 against 2.007): the wider core learns 2.4% more per byte of text but runs 37% fewer steps, and it answers 33% slower. The tables bought 4.7% at equal time and 2% more than the wider core at equal text, at a 9% step cost and no loss of talk-back speed. The Track B gate ("tables match or beat the gain from doubling the core at no more than 10% extra step time") is passed, against a core that was quadrupled rather than doubled. At this scale, parameters are better spent in tables than in the compute path, for both quality and speed.
 
+### Ladder 2c: seed noise and a 4-gram table (9 October, 4-minute runs)
+
+`results/ladder2c_seed2.json` repeats the key pair with seed 2; `results/ladder2c_orders.json` adds a 4-gram table to the bigram and trigram ones.
+
+| Configuration | Seed 1 | Seed 2 | Spread |
+| --- | ---: | ---: | ---: |
+| v0 8k words, no table | 2.189 | 2.193 | 0.2% |
+| v0 8k + bigram and trigram tables (270M) | 2.140 | 2.127 | 0.6% |
+| v0 8k + bigram, trigram and 4-gram tables (405M) | 2.140 | | |
+
+- *Seed noise is small.* Two seeds differ by 0.2–0.6% at 4 minutes, with step counts that differ by up to 12% between runs on this shared machine. The table gain (2.2–3.0%) and the gap between compiled text and bytes (5–8%) are well outside it; the 1.2–1.5% gap between the dictionary and the hash encoder is at its edge and still needs a confirming seed.
+- *A 4-gram table adds nothing at this data size* (2.140 with it, 2.140 and 2.127 without), while adding 134M parameters and a lookup. At 13M training tokens almost every 4-gram context is seen once. Orders beyond 3 wait for the larger corpus.
+
 
 ## 4. Phases
 
@@ -359,6 +372,7 @@ Rules carried over from the V1 discipline: fit dictionaries and tokenizers on th
 ## 8. Log
 
 - **2026-10-08.** Review of `encoder-v0` and the earlier results; measurements F1–F3 on two held-out books; PyTorch installed in the sandbox and the Phase 1 model shape timed on CPU; plan written. No model was trained to completion and no result in `results/` changed.
+- **2026-10-09, ladder 2c.** Second seed for the key pair (0.2–0.6% spread at 4 minutes) and a 4-gram table (no gain at 45 MB). Exact n-gram output tables implemented (`_ng` configurations); their screen follows.
 - **2026-10-09, control.** Width-256 core without tables (`results/control_v0_8k_w256.json`): 2.003 bits per byte at 600 s against 2.007 at width 128 and 1.913 with tables; 37% fewer steps and 33% slower talk-back. Tables beat a quadrupled core on quality and speed; Track B gate passed.
 - **2026-10-09, later still.** Ladder 2b screen, 4 minutes per run (`results/ladder2b_screen.json`): bigram+trigram tables help words by 2.2%, hash codes by 1.4%, bytes by about 7%; bytes with tables still trails plain words by 5.7%; hash alone trails words by 1.2%. Width-256 control queued.
 - **2026-10-09, later.** Ladder 2a, table scaling (`results/ladder2a.json`): tables of 2^18 to 2^22 rows all help by 3.4–4.7% at 5–13% step cost; rows scale weakly at 45 MB of data; a trigram table beside the bigram beats quadrupling the bigram rows. Screening budget set to 4 minutes per idea on the evidence of both ladders. Earlier in the day a configuration-name bug cost an hour (ladder 2a crashed at launch and the watcher did not notice); fixed and tested.

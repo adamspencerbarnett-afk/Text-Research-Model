@@ -1,0 +1,176 @@
+{
+ "ladder": "ladder1",
+ "budget_s": 240.0,
+ "seed": 1,
+ "corpus": {
+  "train_books": 48,
+  "train_bytes": 45045381,
+  "heldout": [
+   "Heart-of-Darkness_219",
+   "The-Adventures-of-Sherlock-Holmes_1661",
+   "The-Prince_1232"
+  ],
+  "ood": [
+   "repo_docs_markdown",
+   "repo_python_code"
+  ]
+ },
+ "configs": {
+  "v0_8k_table20_q4": {
+   "encoding": {
+    "name": "v0_8k_plain",
+    "vocab": 8192,
+    "groups": 0,
+    "members": 0,
+    "dictionary": "data/work/v0_8k_plain.cv0d",
+    "dictionary_hash": "9967d692c6bafc80",
+    "entries": 7934,
+    "phrases": 0,
+    "case_flags": false,
+    "max_phrase_units": 1
+   },
+   "model": {
+    "width": 128,
+    "layers": 4,
+    "heads": 4,
+    "ctx": 256,
+    "batch": 16,
+    "peak_lr": 0.001,
+    "table_rows": 1048576,
+    "table_orders": [
+     2,
+     3,
+     4
+    ],
+    "params": {
+     "core": 791296,
+     "embedding": 1081344,
+     "output_heads": 0,
+     "table": 402653184,
+     "total": 404525824
+    },
+    "ngram_tables": []
+   },
+   "training": {
+    "budget_s": 240.0,
+    "train_s": 240.1,
+    "steps": 452,
+    "tokens_seen": 1851392,
+    "bytes_seen": 6402245,
+    "tokens_per_s": 7712.2,
+    "bytes_per_s": 26669.4,
+    "final_train_bits_per_token": 7.2545,
+    "history": [
+     {
+      "train_s": 60.4,
+      "step": 110,
+      "tokens_seen": 450560,
+      "bytes_seen": 1555816,
+      "train_bits_per_token": 10.1983,
+      "quick_bits_per_byte": 2.5848,
+      "lr": 0.0008683032489121208
+     },
+     {
+      "train_s": 120.4,
+      "step": 227,
+      "tokens_seen": 929792,
+      "bytes_seen": 3220378,
+      "train_bits_per_token": 8.0365,
+      "quick_bits_per_byte": 2.3126,
+      "lr": 0.0005502067782075158
+     },
+     {
+      "train_s": 180.1,
+      "step": 335,
+      "tokens_seen": 1372160,
+      "bytes_seen": 4747491,
+      "train_bits_per_token": 7.4473,
+      "quick_bits_per_byte": 2.2457,
+      "lr": 0.0002337278478673331
+     },
+     {
+      "train_s": 240.1,
+      "step": 452,
+      "tokens_seen": 1851392,
+      "bytes_seen": 6402245,
+      "train_bits_per_token": 7.2545,
+      "quick_bits_per_byte": 2.2228,
+      "lr": 0.00010000779078238417
+     }
+    ]
+   },
+   "eval": {
+    "heldout": {
+     "Heart-of-Darkness_219": {
+      "bytes": 211025,
+      "tokens": 61192,
+      "ids_per_kb": 290.0,
+      "bits_per_byte": 2.2042,
+      "bits_per_token": 7.6015
+     },
+     "The-Adventures-of-Sherlock-Holmes_1661": {
+      "bytes": 562531,
+      "tokens": 160338,
+      "ids_per_kb": 285.0,
+      "bits_per_byte": 2.0794,
+      "bits_per_token": 7.2954
+     },
+     "The-Prince_1232": {
+      "bytes": 281531,
+      "tokens": 77046,
+      "ids_per_kb": 273.7,
+      "bits_per_byte": 2.2122,
+      "bits_per_token": 8.0838
+     }
+    },
+    "heldout_overall": {
+     "bytes": 1055087,
+     "tokens": 298576,
+     "ids_per_kb": 283.0,
+     "bits_per_byte": 2.1398
+    },
+    "ood": {
+     "repo_docs_markdown": {
+      "bytes": 123663,
+      "tokens": 43022,
+      "ids_per_kb": 347.9,
+      "bits_per_byte": 3.4963,
+      "bits_per_token": 10.05
+     },
+     "repo_python_code": {
+      "bytes": 484809,
+      "tokens": 208415,
+      "ids_per_kb": 429.9,
+      "bits_per_byte": 4.4469,
+      "bits_per_token": 10.3443
+     }
+    },
+    "ood_overall": {
+     "bytes": 608472,
+     "tokens": 251437,
+     "ids_per_kb": 413.2,
+     "bits_per_byte": 4.2537
+    }
+   },
+   "seed": 1,
+   "generation": {
+    "prompt": "We went to the park",
+    "tokens": 200,
+    "bytes": 534,
+    "seconds": 0.97,
+    "tokens_per_s": 205.8,
+    "bytes_per_s": 549.4,
+    "note": "sliding context, no KV cache, CPU",
+    "sample": "\nto me, I was very so, and he were\nthat I\nthe name when I\nand been, as I have that I was not to, I could not know she could to him, and I had not not up, and\nin her--it was the\npaga, I know, and she said I.\n\nI been as he had not\nto be\ncigle, I had come.\n\nIt was a very moment I' _w, who must be to be on the other, you never\ncight, or that I\nand at the moment he would have not come than it was to have no\nmeing all the\na\u00e1--so--a--and he never got to you?  \u201cI have more than I thought I.\u201d\n\n\u201cI know you.\u201d\n\n\u201cMy\na-be\nmy woman,"
+   },
+   "machine": {
+    "python": "3.13.16",
+    "torch": "2.14.1+cu130",
+    "threads": 4,
+    "cpu": "x86_64",
+    "cores": 4
+   },
+   "config": "v0_8k_table20_q4"
+  }
+ }
+}

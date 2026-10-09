@@ -166,6 +166,160 @@
     "cores": 4
    },
    "config": "v0_8k_plain"
+  },
+  "v0_8k_table20_tri": {
+   "encoding": {
+    "name": "v0_8k_plain",
+    "vocab": 8192,
+    "groups": 0,
+    "members": 0,
+    "dictionary": "data/work/v0_8k_plain.cv0d",
+    "dictionary_hash": "9967d692c6bafc80",
+    "entries": 7934,
+    "phrases": 0,
+    "case_flags": false,
+    "max_phrase_units": 1
+   },
+   "model": {
+    "width": 128,
+    "layers": 4,
+    "heads": 4,
+    "ctx": 256,
+    "batch": 16,
+    "peak_lr": 0.001,
+    "table_rows": 1048576,
+    "table_orders": [
+     2,
+     3
+    ],
+    "params": {
+     "core": 791296,
+     "embedding": 1081344,
+     "output_heads": 0,
+     "table": 268435456,
+     "total": 270308096
+    }
+   },
+   "training": {
+    "budget_s": 240.0,
+    "train_s": 240.3,
+    "steps": 474,
+    "tokens_seen": 1941504,
+    "bytes_seen": 6723693,
+    "tokens_per_s": 8079.5,
+    "bytes_per_s": 27980.5,
+    "final_train_bits_per_token": 7.2858,
+    "history": [
+     {
+      "train_s": 60.2,
+      "step": 111,
+      "tokens_seen": 454656,
+      "bytes_seen": 1577017,
+      "train_bits_per_token": 10.185,
+      "quick_bits_per_byte": 2.5817,
+      "lr": 0.0008690135982995488
+     },
+     {
+      "train_s": 120.2,
+      "step": 234,
+      "tokens_seen": 958464,
+      "bytes_seen": 3318190,
+      "train_bits_per_token": 7.9588,
+      "quick_bits_per_byte": 2.3048,
+      "lr": 0.0005517143946487997
+     },
+     {
+      "train_s": 180.4,
+      "step": 355,
+      "tokens_seen": 1454080,
+      "bytes_seen": 5036382,
+      "train_bits_per_token": 7.4294,
+      "quick_bits_per_byte": 2.2367,
+      "lr": 0.00023253608559298966
+     },
+     {
+      "train_s": 240.3,
+      "step": 474,
+      "tokens_seen": 1941504,
+      "bytes_seen": 6723693,
+      "train_bits_per_token": 7.2858,
+      "quick_bits_per_byte": 2.2115,
+      "lr": 0.00010000150084136844
+     }
+    ]
+   },
+   "eval": {
+    "heldout": {
+     "Heart-of-Darkness_219": {
+      "bytes": 211025,
+      "tokens": 61192,
+      "ids_per_kb": 290.0,
+      "bits_per_byte": 2.1927,
+      "bits_per_token": 7.5617
+     },
+     "The-Adventures-of-Sherlock-Holmes_1661": {
+      "bytes": 562531,
+      "tokens": 160338,
+      "ids_per_kb": 285.0,
+      "bits_per_byte": 2.0676,
+      "bits_per_token": 7.254
+     },
+     "The-Prince_1232": {
+      "bytes": 281531,
+      "tokens": 77046,
+      "ids_per_kb": 273.7,
+      "bits_per_byte": 2.1955,
+      "bits_per_token": 8.0224
+     }
+    },
+    "heldout_overall": {
+     "bytes": 1055087,
+     "tokens": 298576,
+     "ids_per_kb": 283.0,
+     "bits_per_byte": 2.1267
+    },
+    "ood": {
+     "repo_docs_markdown": {
+      "bytes": 123663,
+      "tokens": 43022,
+      "ids_per_kb": 347.9,
+      "bits_per_byte": 3.5242,
+      "bits_per_token": 10.1302
+     },
+     "repo_python_code": {
+      "bytes": 484809,
+      "tokens": 208415,
+      "ids_per_kb": 429.9,
+      "bits_per_byte": 4.4516,
+      "bits_per_token": 10.3553
+     }
+    },
+    "ood_overall": {
+     "bytes": 608472,
+     "tokens": 251437,
+     "ids_per_kb": 413.2,
+     "bits_per_byte": 4.2631
+    }
+   },
+   "seed": 2,
+   "generation": {
+    "prompt": "We went to the park",
+    "tokens": 200,
+    "bytes": 578,
+    "seconds": 0.93,
+    "tokens_per_s": 216.1,
+    "bytes_per_s": 624.4,
+    "note": "sliding context, no KV cache, CPU",
+    "sample": "\nbey.\n\n\"Yes,\" said the\nand now to be seen, or that he was to be\nstose that the old man's time,\" she said, but I don't do all the\nno, \"but I know you have no time\nit is a few.\"\n\n\"You have been a kind of little man, if I were in a long way to\nher?\"\n\nIt is all.  \"The fewly,\" said Don't do, and now I\nto me,\" said the\nfuny--it shall you may you was he never\nwas nothing to go with I's, you have seen the word; and that that I was in the thing to be been--I, that he had seen a good more and.\"\n\n\"But that is to be a\nin me to be a man of the last people!\" said the young man, and you"
+   },
+   "machine": {
+    "python": "3.13.16",
+    "torch": "2.14.1+cu130",
+    "threads": 4,
+    "cpu": "x86_64",
+    "cores": 4
+   },
+   "config": "v0_8k_table20_tri"
   }
  }
 }
