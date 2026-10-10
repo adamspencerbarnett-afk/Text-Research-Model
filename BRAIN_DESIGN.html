@@ -1,0 +1,271 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Brain-Inspired Model Design</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column; each design element is a section with brain role, our part, change, and test. */
+:root {
+  --bg: #f6f5f1; --fg: #22251f; --muted: #626a5f; --line: #d9d7cd; --panel: #ffffff; --code: #efeee8;
+  --accent: #7a3e6a; --mem: #2f6f9a; --core: #3d7a46; --gate: #a3561d; --risk: #9b2f2f;
+  --display: "Fraunces", Georgia, serif; --body: "Atkinson Hyperlegible", system-ui, sans-serif; --mono: "JetBrains Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #16181a; --fg: #e7e5de; --muted: #a2a89d; --line: #33383a; --panel: #1e2123; --code: #25292b;
+  --accent: #d394c2; --mem: #7fb6dc; --core: #8fcb95; --gate: #e6a26c; --risk: #ec8b8b; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #16181a; --fg: #e7e5de; --muted: #a2a89d; --line: #33383a; --panel: #1e2123; --code: #25292b;
+  --accent: #d394c2; --mem: #7fb6dc; --core: #8fcb95; --gate: #e6a26c; --risk: #ec8b8b; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16.5px; line-height: 1.6; }
+.wrap { max-width: 880px; margin: 0 auto; padding-block: 36px 72px; padding-inline: 20px; }
+h1 { font-family: var(--display); font-weight: 600; font-size: 2.35rem; line-height: 1.12; margin: 6px 0 10px; text-wrap: balance; }
+h2 { font-family: var(--display); font-weight: 600; font-size: 1.55rem; margin: 52px 0 10px; text-wrap: balance; border-top: 1px solid var(--line); padding-top: 22px; }
+h3 { font-size: 1.07rem; margin: 24px 0 6px; }
+p, li { max-width: 70ch; }
+p { margin: 0 0 12px; }
+ul, ol { padding-left: 1.3em; margin: 0 0 12px; }
+li { margin-bottom: 4px; }
+.eyebrow { font-size: .78rem; letter-spacing: .09em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin: 0; }
+.lede { font-size: 1.08rem; color: var(--muted); }
+.status { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px; }
+.pill { font-size: .8rem; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); }
+.pill b { color: var(--accent); }
+code { font-family: var(--mono); font-size: .86em; background: var(--code); padding: 1px 4px; border-radius: 3px; }
+.tablewrap { overflow-x: auto; margin: 12px 0 18px; }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: .76rem; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.part { border-left: 3px solid var(--line); padding: 4px 0 4px 16px; margin: 20px 0; }
+.part.mem { border-color: var(--mem); } .part.core { border-color: var(--core); } .part.gate { border-color: var(--gate); } .part.acc { border-color: var(--accent); }
+.part h3 { margin-top: 0; }
+.kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 14px; font-size: .95rem; margin: 6px 0 4px; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; min-width: 0; }
+.note { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px 16px; margin: 16px 0; }
+.note.risk { border-left: 4px solid var(--risk); }
+.diagram { width: 100%; height: auto; display: block; margin: 10px 0; }
+.diagram text { font-family: var(--body); font-size: 12.5px; fill: var(--fg); }
+.diagram .s { font-size: 10.5px; fill: var(--muted); }
+.diagram .box { fill: var(--panel); stroke: var(--line); stroke-width: 1.2; }
+.diagram .ln { fill: none; stroke: var(--muted); stroke-width: 1.4; }
+.diagram .m { stroke: var(--mem); } .diagram .c { stroke: var(--core); } .diagram .g { stroke: var(--gate); } .diagram .a { stroke: var(--accent); }
+.diagram .dash { stroke-dasharray: 5 4; }
+.stage { display: grid; grid-template-columns: 54px minmax(0, 1fr); gap: 4px 14px; margin: 14px 0; }
+.stage .id { font-family: var(--mono); font-weight: 500; color: var(--accent); padding-top: 2px; }
+.stage .body { min-width: 0; }
+.stage .done { font-size: .9rem; color: var(--muted); }
+@media (max-width: 480px) { h1 { font-size: 1.85rem; } .kv { grid-template-columns: 1fr; } .kv dt { margin-top: 6px; } .stage { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<p class="eyebrow">Research proposal · Text Research Model · 10 October 2026</p>
+<h1>A brain-inspired version of the model: fast memory, a slow learner, skill circuits and sleep</h1>
+<p class="lede">Research concept and direction by Adam Barnett. This is a design for a follow-on project, to begin once the current research (the scale, Q&amp;A, reading and reasoning screens) has finished. It is theory built on measured results: every number below comes from runs already logged in <code>docs/RUN_LEDGER.md</code> and <code>docs/ENCODER_RESEARCH_PLAN.md</code>, and every proposed change has a test that can prove it wrong.</p>
+<div class="status">
+  <span class="pill"><b>Status</b> proposal, not started</span>
+  <span class="pill"><b>Depends on</b> current research finishing</span>
+  <span class="pill"><b>Hardware</b> one RTX 3090, 64 GB</span>
+</div>
+
+<h2>1. The idea in one paragraph</h2>
+<p>Brains learn new facts after one exposure without forgetting old skills, use very little energy, and improve while asleep. They do this with two learning systems that work together: a fast memory that records experiences at once (the hippocampus) and a slow learner that absorbs general knowledge gradually (the neocortex), plus specialised circuits for particular skills and a sleep phase that moves important memories from the first system into the second. Conventional language models have only the slow learner, so every new fact needs retraining and every answer runs the whole network. Our model already has a working fast memory and a small slow learner. The proposal is to complete the picture: add small trainable skill circuits, a way to notice its own gaps, and a safe sleep cycle, so the system grows smarter from its own use while staying small, fast and cheap to run.</p>
+
+<h2>2. How the current model works</h2>
+<svg class="diagram" viewBox="0 0 860 230" role="img" aria-label="Current model: text goes through the compiler into codes; the exchange memory retrieves a stored exchange; the count tables and the network core read the codes; the copy head reads the retrieved exchange; the trust head mixes the sources; the compiler decodes the reply.">
+  <rect class="box" x="10" y="90" width="110" height="52" rx="5"/><text x="65" y="112" text-anchor="middle">Question</text><text class="s" x="65" y="129" text-anchor="middle">plain text</text>
+  <path class="ln" d="M120,116 L150,116"/>
+  <rect class="box" x="150" y="90" width="120" height="52" rx="5"/><text x="210" y="112" text-anchor="middle">Compiler</text><text class="s" x="210" y="129" text-anchor="middle">lossless, no learning</text>
+  <path class="ln m" d="M270,104 C300,104 300,40 330,40"/>
+  <path class="ln c" d="M270,116 L330,116"/>
+  <path class="ln c" d="M270,128 C300,128 300,192 330,192"/>
+  <rect class="box" x="330" y="16" width="190" height="50" rx="5"/><text x="425" y="37" text-anchor="middle" style="fill:var(--mem)">Exchange memory</text><text class="s" x="425" y="54" text-anchor="middle">question key → stored answer</text>
+  <rect class="box" x="330" y="92" width="190" height="50" rx="5"/><text x="425" y="113" text-anchor="middle" style="fill:var(--core)">Count tables</text><text class="s" x="425" y="130" text-anchor="middle">what usually follows</text>
+  <rect class="box" x="330" y="168" width="190" height="50" rx="5"/><text x="425" y="189" text-anchor="middle" style="fill:var(--core)">Network core + copy head</text><text class="s" x="425" y="206" text-anchor="middle">4.7M learned parameters</text>
+  <path class="ln m dash" d="M425,66 L425,168"/>
+  <path class="ln" d="M520,41 C560,41 560,104 600,104"/><path class="ln" d="M520,117 L600,117"/><path class="ln" d="M520,193 C560,193 560,130 600,130"/>
+  <rect class="box" x="600" y="90" width="120" height="52" rx="5"/><text x="660" y="112" text-anchor="middle" style="fill:var(--gate)">Trust head</text><text class="s" x="660" y="129" text-anchor="middle">who to believe, per word</text>
+  <path class="ln" d="M720,116 L750,116"/>
+  <rect class="box" x="750" y="90" width="100" height="52" rx="5"/><text x="800" y="112" text-anchor="middle">Reply</text><text class="s" x="800" y="129" text-anchor="middle">decoded</text>
+</svg>
+<ol>
+  <li><b>Compiler</b> (deterministic, no learning). Turns text into codes of about 3.5 bytes each and back, exactly. The same compiler serves training and conversation, so stored items always have stable keys.</li>
+  <li><b>Exchange memory</b> (no learned parameters). Every question and answer is stored under a key made from the question's content words. A new fact is one table entry: added in about a millisecond, answerable immediately, deletable, inspectable.</li>
+  <li><b>Count tables</b> (no learned parameters). Exact counts of which code follows which, rebuilt from text in seconds. They let the model learn by reading: one Austen novel added to the counts improved prediction of another Austen novel with no training.</li>
+  <li><b>Network core</b> (learned). A small Transformer, trained first on 286 MB of books and Wikipedia, then on question-and-answer text. The <b>copy head</b> is a learned pointer that reads the retrieved exchange and carries its answer into the reply.</li>
+  <li><b>Trust head</b> (learned, one small layer). For every word of the reply it weighs the network, the tables and the copy head by their confidence.</li>
+</ol>
+
+<h3>What works today, and why</h3>
+<div class="tablewrap"><table>
+  <tr><th>Result</th><th class="num">Measured</th><th>Why it works</th></tr>
+  <tr><td>Stored questions answered from memory</td><td class="num">99% exact (lookup)</td><td>Deterministic keys from the compiler: the same question always produces the same key.</td></tr>
+  <tr><td>New facts learned without training</td><td class="num">answered at once</td><td>Adding to memory changes a table, not weights. Facts taught mid-chat were answered word-perfect.</td></tr>
+  <tr><td>The network composes answers from memory</td><td class="num">word overlap 0.13 → 0.79–0.88; exact 47–52%</td><td>The copy head (33k parameters) lets a small network use evidence placed in front of it instead of storing everything itself.</td></tr>
+  <tr><td>Learning language before Q&amp;A</td><td class="num">every score rose; validation 1.30 → 0.98 bits/byte</td><td>A core that already knows language spends its Q&amp;A training on answering, not on English. Training a core on Q&amp;A alone memorised the set in minutes.</td></tr>
+  <tr><td>Speed of a reply</td><td class="num">0.1–2 s on one CPU</td><td>A 4.7M network does about 10 million operations per word; the memory lookup is an index search.</td></tr>
+  <tr><td>Exact arithmetic when the steps are right</td><td class="num">every step computed correctly</td><td>A deterministic calculator writes the result of each "a op b =" the network sets up.</td></tr>
+</table></div>
+<h3>What does not work yet, and what it tells us</h3>
+<div class="tablewrap"><table>
+  <tr><th>Gap</th><th>Measured</th><th>What it says about the design</th></tr>
+  <tr><td>Reworded questions</td><td>1 of 10 correct in the chat probe</td><td>Memory finds the right entry, but the copy head was only trained on exact matches. Being fixed now (R0b); in the brain design this is pattern completion.</td></tr>
+  <tr><td>Synonyms</td><td>"graphics card" did not find a "GPU" fact</td><td>A key of literal words cannot generalise. Needs a learned key alongside the literal one.</td></tr>
+  <tr><td>The network on its own</td><td>1 of 64 in the chat probe</td><td>Expected at 5M. All the intelligence today comes through memory, which is the design working as intended, and it means skills must be added deliberately.</td></tr>
+  <tr><td>Choosing arithmetic steps</td><td>0–2% on new word problems, at every core size</td><td>Neither size nor prior training fixes it. It is a skill to be learned in its own circuit, with its own data.</td></tr>
+  <tr><td>Count tables at larger sizes</td><td>+10% at 0.8M, 0 at 4.7M, −1% at 19M</td><td>Statistics a bigger core can learn itself become noise. The tables stay as a reading store, not a prediction aid.</td></tr>
+</table></div>
+
+<h2>3. The brain, mapped onto the model</h2>
+<div class="tablewrap"><table>
+  <tr><th>Brain system</th><th>What it does</th><th>Our part</th><th>State</th></tr>
+  <tr><td>Hippocampus</td><td>Records an experience in one exposure; recalls it from a partial cue</td><td>Exchange memory</td><td>Records and recalls exactly; partial-cue recall (rewording, synonyms) is the gap</td></tr>
+  <tr><td>Neocortex</td><td>Slow, general learning spread over many connections</td><td>Network core</td><td>Works; small</td></tr>
+  <tr><td>Working memory and attention</td><td>Holds the relevant memory "in mind" while acting</td><td>Retrieved exchange in the window, read by the copy head</td><td>Works</td></tr>
+  <tr><td>Specialised circuits</td><td>Dedicated machinery for number sense, language, faces</td><td>None (one core for everything)</td><td>Missing: <b>skill adapters</b></td></tr>
+  <tr><td>Neuromodulation (attention and arousal signals)</td><td>Decides which circuits to engage</td><td>Trust head</td><td>Works for three sources; to be extended to choose adapters</td></tr>
+  <tr><td>Prediction error and surprise</td><td>Marks what was not expected, so it gets learned</td><td>None (failures are only seen in reports)</td><td>Missing: <b>gap detector</b></td></tr>
+  <tr><td>Sleep and consolidation</td><td>Replays memories so the cortex absorbs them; prunes the rest</td><td>None</td><td>Missing: <b>sleep cycle</b></td></tr>
+  <tr><td>Tools beyond the brain</td><td>Paper, calculators</td><td>The calculator, exact and deterministic</td><td>Works</td></tr>
+</table></div>
+<p>The point of the mapping is not to copy biology. Two properties of the brain explain most of its efficiency, and both are achievable here. First, <b>most knowledge is looked up or computed only when needed</b>, not pushed through every connection for every thought. Second, <b>learning happens at two speeds</b>, so new information is usable at once and becomes general skill later, without the cost of retraining everything.</p>
+
+<h2>4. The adaptations, each with its reason and test</h2>
+
+<div class="part mem">
+<h3>4.1 Memory that recalls from a partial cue</h3>
+<dl class="kv">
+  <dt>Brain role</dt><dd>Hippocampal pattern completion: a fragment of a memory brings back the whole.</dd>
+  <dt>Change</dt><dd>A second, learned key beside the literal one. The core's own representation of the question is stored with each memory and searched by similarity. The literal key stays for exact and inspectable recall; the learned key catches rewordings and synonyms. Plus the copy head trained on reworded questions (R0b, running now).</dd>
+  <dt>Why</dt><dd>The chat probe: the right memory existed for "graphics card" and "GPU", and for reworded cooking and virus questions, but was either not found or not used.</dd>
+  <dt>Test</dt><dd>Reworded and synonym sections of the probe battery from 1/10 to at least 6/10, with no loss on verbatim questions.</dd>
+</dl>
+</div>
+
+<div class="part core">
+<h3>4.2 Skill circuits: small adapters on a shared core</h3>
+<dl class="kv">
+  <dt>Brain role</dt><dd>Specialised circuits that share the same cortex: number sense, conversation, reading.</dd>
+  <dt>Change</dt><dd>Small extra weight sets (1–5% of the core each) attached beside each layer and trained for one skill while the core stays frozen. One for setting up arithmetic, one for conversation, one for reading comprehension, one per domain as needed. Each is a separate file: versioned, testable, removable.</dd>
+  <dt>Why</dt><dd>Retraining the whole core for one skill risks damaging others, and every core size scored 0–2% on arithmetic set-up. A skill needs its own circuit and data. A frozen core keeps general language for every adapter to build on, so each adapter can be small and quick to train.</dd>
+  <dt>Test</dt><dd>A math adapter raises new-problem accuracy above the frozen-core baseline while the conversation probe score stays within one point. Compared with fine-tuning the whole core on the same data and time.</dd>
+</dl>
+</div>
+
+<div class="part gate">
+<h3>4.3 Choosing the circuit: the trust head as router</h3>
+<dl class="kv">
+  <dt>Brain role</dt><dd>Neuromodulation and attention: engaging the right circuits for the task.</dd>
+  <dt>Change</dt><dd>The trust head already weighs network, tables and memory per word. Extend it to weigh adapters too, from the question's representation and each adapter's confidence. Only the chosen adapters run, so cost grows with the question, not with the number of skills.</dd>
+  <dt>Why</dt><dd>Without routing, every adapter runs on every question and they interfere. With it, the system is a set of small experts behind one front door.</dd>
+  <dt>Test</dt><dd>On a mixed question set, the router picks the adapter a human would pick at least 90% of the time, and mixed-set accuracy is within two points of giving each question its correct adapter by hand.</dd>
+</dl>
+</div>
+
+<div class="part acc">
+<h3>4.4 Noticing its own gaps: the surprise signal</h3>
+<dl class="kv">
+  <dt>Brain role</dt><dd>Prediction error: the brain learns most from what it did not expect.</dd>
+  <dt>Change</dt><dd>Every answer logs the signals we already have: the trust head's confidence, whether memory found anything and how close it was, whether the calculator rejected the stated answer, whether a check failed. Failures are grouped by kind. When a kind accumulates (for example, a hundred low-confidence arithmetic questions), the system proposes an adapter for that kind and the data to train it.</dd>
+  <dt>Why</dt><dd>Training "as needed" requires knowing what is needed. On GSM8K the calculator already replaced 628 wrong stated answers in one run; that is a gap signal going unused.</dd>
+  <dt>Test</dt><dd>Gap detection agrees with hand grading on the probe battery at least 80% of the time; an adapter trained on detected failures beats an adapter trained on a random sample of the same size.</dd>
+</dl>
+</div>
+
+<div class="part mem">
+<h3>4.5 Sleep: folding memory into the network</h3>
+<dl class="kv">
+  <dt>Brain role</dt><dd>Consolidation during sleep: replay strengthens what matters; the rest fades.</dd>
+  <dt>Change</dt><dd>In idle time, a copy of the live model trains on the memories used most often (and their rewordings), mixed with a sample of its earlier training data so old skills are rehearsed. Facts that are now answered without memory may be marked as consolidated; one-off facts stay in memory only. A pruning policy retires memories that are never used, within a size budget set per device.</dd>
+  <dt>Why</dt><dd>Memory answers exact wording well and rewording badly; the network generalises over wording. Consolidation gives frequently used knowledge both. It also keeps memory from growing without limit on small devices.</dd>
+  <dt>Test</dt><dd>After sleep on 500 added facts: at least 70% answered correctly with memory switched off, and reworded versions improved; probe battery on old knowledge no lower than before.</dd>
+</dl>
+</div>
+
+<div class="part gate">
+<h3>4.6 Updating while people use it</h3>
+<dl class="kv">
+  <dt>Brain role</dt><dd>None needed; this is engineering. The brain never stops; a service must never stall.</dd>
+  <dt>Change</dt><dd>The live model is a fixed version. New facts go into memory instantly (a table entry; no weights change). Adapters and sleep train on copies. A candidate goes live only after gates: no probe section worse, consolidated facts answered without memory, speed and size within limits. The switch is a pointer change: new conversations use the new version, current ones finish on the old one, and rollback is the same switch.</dd>
+  <dt>Why</dt><dd>Users must never see a half-trained model or a pause.</dd>
+  <dt>Test</dt><dd>Run a chat session continuously while a sleep cycle and an adapter publish happen; no reply fails or slows by more than 10%, and rollback restores the previous answers exactly.</dd>
+</dl>
+</div>
+
+<h3>The proposed architecture</h3>
+<svg class="diagram" viewBox="0 0 860 320" role="img" aria-label="Proposed architecture: the compiler feeds the exchange memory with literal and learned keys, the shared core, and a router; the router selects skill adapters; the trust head mixes; a gap log feeds an adapter trainer and a sleep cycle that train candidate versions behind a gate before going live.">
+  <rect class="box" x="10" y="120" width="105" height="50" rx="5"/><text x="62" y="141" text-anchor="middle">Question</text><text class="s" x="62" y="157" text-anchor="middle">via compiler</text>
+  <path class="ln" d="M115,145 L140,145"/>
+  <rect class="box" x="140" y="20" width="190" height="56" rx="5"/><text x="235" y="42" text-anchor="middle" style="fill:var(--mem)">Memory (hippocampus)</text><text class="s" x="235" y="60" text-anchor="middle">literal key + learned key</text>
+  <rect class="box" x="140" y="118" width="190" height="56" rx="5"/><text x="235" y="140" text-anchor="middle" style="fill:var(--core)">Shared core (cortex)</text><text class="s" x="235" y="158" text-anchor="middle">frozen between sleeps</text>
+  <rect class="box" x="140" y="216" width="190" height="56" rx="5"/><text x="235" y="238" text-anchor="middle" style="fill:var(--core)">Skill adapters</text><text class="s" x="235" y="256" text-anchor="middle">math · chat · reading · domains</text>
+  <path class="ln" d="M140,145 C125,145 125,48 140,48"/><path class="ln" d="M140,145 C125,145 125,244 140,244"/>
+  <path class="ln" d="M330,48 C370,48 370,130 410,130"/><path class="ln" d="M330,146 L410,146"/><path class="ln" d="M330,244 C370,244 370,162 410,162"/>
+  <rect class="box" x="410" y="118" width="150" height="56" rx="5"/><text x="485" y="140" text-anchor="middle" style="fill:var(--gate)">Trust head / router</text><text class="s" x="485" y="158" text-anchor="middle">engages what is needed</text>
+  <path class="ln" d="M560,146 L590,146"/>
+  <rect class="box" x="590" y="118" width="110" height="56" rx="5"/><text x="645" y="140" text-anchor="middle">Reply</text><text class="s" x="645" y="158" text-anchor="middle">+ calculator, checks</text>
+  <path class="ln a dash" d="M645,174 L645,214"/>
+  <rect class="box" x="590" y="214" width="110" height="50" rx="5"/><text x="645" y="235" text-anchor="middle" style="fill:var(--accent)">Gap log</text><text class="s" x="645" y="251" text-anchor="middle">surprise signal</text>
+  <path class="ln a" d="M700,239 L730,239"/>
+  <rect class="box" x="730" y="196" width="120" height="86" rx="5"/><text x="790" y="218" text-anchor="middle">Background</text><text class="s" x="790" y="236" text-anchor="middle">adapter trainer</text><text class="s" x="790" y="252" text-anchor="middle">sleep cycle</text><text class="s" x="790" y="268" text-anchor="middle">on copies only</text>
+  <path class="ln g" d="M790,196 L790,60 L700,60"/>
+  <rect class="box" x="590" y="34" width="110" height="52" rx="5"/><text x="645" y="55" text-anchor="middle" style="fill:var(--gate)">Gate</text><text class="s" x="645" y="72" text-anchor="middle">tests, then swap</text>
+  <path class="ln g dash" d="M590,60 C560,60 560,96 500,118"/>
+</svg>
+
+<h2>5. Goals and objectives</h2>
+<p>The project goal: <b>a model that runs on one consumer GPU, answers what it knows as reliably as a much larger model, learns a new fact in seconds and a new skill in minutes, improves from its own use without retraining from scratch, and never interrupts the person using it.</b> Each stage below has a pass condition that can be measured with the tools already in the repository (the probe battery, the run ledger, the Q&amp;A scorers).</p>
+
+<div class="stage"><div class="id">B0</div><div class="body"><b>Baseline frozen.</b> The winning design from the current research (core size, data mix, copy head) is saved as the starting point, with its probe battery score and Q&amp;A scores recorded.<div class="done">Pass: one checkpoint and one result file that every later stage compares against.</div></div></div>
+<div class="stage"><div class="id">B1</div><div class="body"><b>Partial-cue recall.</b> Learned key beside the literal key; copy head trained on rewordings.<div class="done">Pass: probe reworded + synonym sections ≥ 6/10 each; verbatim unchanged.</div></div></div>
+<div class="stage"><div class="id">B2</div><div class="body"><b>First skill circuit.</b> An arithmetic set-up adapter on the frozen core, trained on GSM8K and SVAMP.<div class="done">Pass: new-problem accuracy at least double the frozen-core baseline; conversation probe within one point; adapter under 5% of core size.</div></div></div>
+<div class="stage"><div class="id">B3</div><div class="body"><b>Router.</b> Three adapters (arithmetic, conversation, reading) chosen by the trust head.<div class="done">Pass: router agrees with hand choice ≥ 90%; mixed-set accuracy within two points of hand routing; per-reply cost grows by less than 20%.</div></div></div>
+<div class="stage"><div class="id">B4</div><div class="body"><b>Gap detector.</b> Failure log with grouping and an adapter proposal.<div class="done">Pass: ≥ 80% agreement with hand grading; an adapter trained on detected failures beats one trained on a random sample of equal size.</div></div></div>
+<div class="stage"><div class="id">B5</div><div class="body"><b>Sleep.</b> Consolidation of used memories with rehearsal, plus pruning to a size budget.<div class="done">Pass: ≥ 70% of 500 added facts answered with memory off after one sleep; rewordings improved; old-knowledge probe not lower.</div></div></div>
+<div class="stage"><div class="id">B6</div><div class="body"><b>Live updating.</b> Versioned serving with gates, swap and rollback, exercised during a continuous chat.<div class="done">Pass: no failed reply; latency within 10%; rollback restores previous answers exactly.</div></div></div>
+<div class="stage"><div class="id">B7</div><div class="body"><b>Comparison.</b> The full system against a conventional model of 10–100× its learned parameters, on the same questions.<div class="done">Pass: on knowledge it holds, accuracy within five points of the larger model at a tenth of the compute per reply or less; plus the abilities the larger model lacks (instant facts, deletion, inspection).</div></div></div>
+
+<h2>6. Why this could be better than current models</h2>
+<div class="tablewrap"><table>
+  <tr><th>Property</th><th>Conventional large model</th><th>This design</th><th>Basis</th></tr>
+  <tr><td>Work per word of reply</td><td>every parameter, every word: a 7B model is about 14 billion operations per word</td><td>a 5M core is about 10 million, plus an index lookup and only the adapters engaged</td><td>Forward cost is about 2 operations per parameter per word; roughly 1,400× less at 7B, 14,000× at 70B</td></tr>
+  <tr><td>Adding a fact</td><td>fine-tuning or a long prompt; GPU time; risk of forgetting</td><td>one memory entry, about a millisecond, no GPU</td><td>Measured: taught facts answered at once</td></tr>
+  <tr><td>Adding a skill</td><td>fine-tune the whole model</td><td>train one small adapter in minutes on one GPU</td><td>To be measured in B2</td></tr>
+  <tr><td>Correcting or deleting knowledge</td><td>not reliably possible in weights</td><td>edit or delete the memory entry; remove an adapter</td><td>Memory entries are plain records</td></tr>
+  <tr><td>Knowing where an answer came from</td><td>not visible</td><td>the reply reports which memory it used and how close it was</td><td>Already shown in chat</td></tr>
+  <tr><td>Hardware</td><td>data-centre GPUs to train; large GPUs to serve</td><td>trained and served on one consumer GPU; replies on a CPU</td><td>Measured: core trained on 286 MB in 30 minutes on one RTX 3090; replies in 0.1–2 s on CPU</td></tr>
+  <tr><td>Energy</td><td>large models use roughly 1,000× or more energy per word than a 5M core</td><td>energy tracks the work: small core, cheap lookups, idle-time learning</td><td>Follows from the operation counts above; to be measured in watt-hours per 1,000 replies in B7</td></tr>
+  <tr><td>Improving over time</td><td>periodic large retraining</td><td>continuous: memory now, sleep and adapters in the background</td><td>B4–B6</td></tr>
+</table></div>
+<div class="note risk">
+<p><b>Where it will not beat a large model, stated plainly.</b> Open-ended reasoning about things it has never seen, broad world knowledge it was never given, and fluent long writing all depend on a large slow learner, and a 5M core will not match one. The design wins where knowledge can be stored, looked up, checked or routed to a skill, which covers a large share of practical use (assistants for a domain, a company's documents, personal knowledge, devices without a data centre). The test in B7 is designed to show the size of that share honestly, including where the larger model is better.</p>
+</div>
+
+<h2>7. Risks and how we would know</h2>
+<div class="tablewrap"><table>
+  <tr><th>Risk</th><th>Early warning</th><th>Response</th></tr>
+  <tr><td>Adapters interfere with one another</td><td>Probe score of one skill drops when another adapter is added</td><td>Route more strictly; keep adapters exclusive per question</td></tr>
+  <tr><td>Router picks the wrong circuit</td><td>B3 agreement below 90%</td><td>Give the router the gap log's labels as training data</td></tr>
+  <tr><td>Sleep causes forgetting</td><td>Old-knowledge probe drops after a cycle</td><td>More rehearsal data in each cycle; smaller learning rate; gate rejects the candidate</td></tr>
+  <tr><td>Memory grows too large for a device</td><td>Lookup time or size over budget</td><td>Pruning policy; consolidate before evicting</td></tr>
+  <tr><td>Gap detector chases noise</td><td>Adapters trained on detected gaps do no better than random ones (B4)</td><td>Require a minimum count per gap kind; human review of proposals at first</td></tr>
+  <tr><td>A 5M core is too small to host many skills</td><td>Adapters stop helping after the first few</td><td>Move to the 19M core, which the current research is testing fairly now</td></tr>
+</table></div>
+
+<h2>8. What must finish first, in the current research</h2>
+<ul>
+  <li>The core size: the fair 19M comparison (R1f, queued) decides 4.7M or 19M as the shared core.</li>
+  <li>Partial-cue recall: R0b (training on rewordings, running) is the first half of B1.</li>
+  <li>Reading comprehension (R2b, queued) and the capability map across task types, which tell us which skills need their own circuits.</li>
+  <li>Conversation data, so the conversation adapter has something to learn from.</li>
+  <li>The run ledger and probe battery as the measuring tools for every stage above (in place).</li>
+</ul>
+<p>When those are in, B0 is a matter of freezing the winner, and the project can start with B1 and B2, which together take about a day of runs on the current machine.</p>
+</div>
+</body>
+</html>
