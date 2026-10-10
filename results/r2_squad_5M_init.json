@@ -1,0 +1,409 @@
+{
+ "setup": {
+  "data": "data_qa_squad",
+  "work": "runs/r2",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 900.0,
+  "ctx": 256,
+  "batch": 32,
+  "topk": 64,
+  "neighbor_codes": 0,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/r2_squad_5M_init.json",
+  "seed": 1,
+  "self_context_p": 0.0,
+  "copy_bias": 0.0,
+  "device": "cuda",
+  "threads": 0,
+  "width": 256,
+  "layers": 6,
+  "heads": 8,
+  "greedy": true,
+  "no_repeat": 0,
+  "patience": 3,
+  "min_delta": 0.005,
+  "max_steps": 0,
+  "dict": "runs/scale/v0_8k_plain.cv0d",
+  "init": "runs/scale/scale_5M_v0_8k_ng64.pt",
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "copy_question": true,
+  "calculator": false,
+  "perturb_self": 0.0,
+  "sim_feature": false,
+  "save": "runs/r2/squad_5M_init.pt",
+  "train_exchanges": 64782,
+  "eval": 3781,
+  "added": 3782,
+  "distinct_keys": 58371
+ },
+ "training": {
+  "steps": 6043,
+  "train_s": 240.0,
+  "stop_reason": "plateau: no improvement over 0.005 in 3 evaluations",
+  "best_valid": 2.0861,
+  "history": [
+   {
+    "train_s": 60.0,
+    "step": 1327,
+    "train_bits_per_code": 2.635,
+    "valid_bits_per_byte": 2.0861
+   },
+   {
+    "train_s": 120.0,
+    "step": 2901,
+    "train_bits_per_code": 2.516,
+    "valid_bits_per_byte": 2.2029
+   },
+   {
+    "train_s": 180.0,
+    "step": 4471,
+    "train_bits_per_code": 2.215,
+    "valid_bits_per_byte": 2.2741
+   },
+   {
+    "train_s": 240.0,
+    "step": 6043,
+    "train_bits_per_code": 2.199,
+    "valid_bits_per_byte": 2.4099
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.8567,
+   "exact": 0.925
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 60,
+   "f1": 0.1341,
+   "exact": 0.0167,
+   "f1_no_m1": 0.0103,
+   "f1_bias": 0.1341,
+   "exact_bias": 0.0167
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 1,
+   "f1": 0.0,
+   "exact": 0.0,
+   "f1_no_m1": 0.0,
+   "f1_bias": 0.0,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.0
+  },
+  "unseen_network_with_nearest": {
+   "n": 199,
+   "f1": 0.106,
+   "exact": 0.0101,
+   "f1_no_m1": 0.0125,
+   "f1_bias": 0.106,
+   "exact_bias": 0.0101,
+   "retrieved_answer_f1_vs_ref": 0.0128
+  },
+  "heldout_network_without_memory": {
+   "n": 60,
+   "f1": 0.1004,
+   "exact": 0.0
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.1054
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.895,
+   "exact": 0.995
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 60,
+   "f1": 0.0669,
+   "exact": 0.0167,
+   "f1_no_m1": 0.02,
+   "f1_bias": 0.0669,
+   "exact_bias": 0.0167
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Passage: Science came to play a leading role in Enlightenment discourse and thou",
+    "a": "the chemist Joseph Black\n\n1 de Boulogne\n\n\n\n1783\n\n\n\nUserant: the chemist Joseph Black, the argument for deep time by the geologist James Hutton, and the argument",
+    "f1": 0.04444444444444444,
+    "exact": 0.0,
+    "a_no_m1": "The",
+    "f1_no_m1": 0.0,
+    "a_bias": "the chemist Joseph Black\n\n1 de Boulogne\n\n\n\n1783\n\n\n\nUserant: the chemist Joseph Black, the argument for deep time by the geologist James Hutton, and the argument",
+    "f1_bias": 0.04444444444444444,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: Chesapeake Energy Arena in downtown is the principal multipurpose arena",
+    "a": "the city\n\ns\n\nake Energy Arena\n\nna\n\nna\n\n\n\nna\n\nna",
+    "f1": 0.15384615384615383,
+    "exact": 0.0,
+    "a_no_m1": "N\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n cher",
+    "f1_no_m1": 0.0,
+    "a_bias": "the city\n\ns\n\nake Energy Arena\n\nna\n\nna\n\n\n\nna\n\nna",
+    "f1_bias": 0.15384615384615383,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: Some legal scholars, such as John Baker of LSU, theorize that Madison's",
+    "a": "the House\n\n\n\n\n\n\n\n\n\n\n\nUserial\n\n\n\nUserial\n\n was should-Federalists\n\n, such as John Baker suggests compelled Madison to withdraw his language from the debate.\n\nake",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "Public",
+    "f1_no_m1": 0.0,
+    "a_bias": "the House\n\n\n\n\n\n\n\n\n\n\n\nUserial\n\n\n\nUserial\n\n was should-Federalists\n\n, such as John Baker suggests compelled Madison to withdraw his language from the debate.\n\nake",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: This change is interesting from a sociolinguistic point of view because",
+    "a": "the lowering of the diphthongs\n\n\n\nUser",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "T",
+    "f1_no_m1": 0.0,
+    "a_bias": "the lowering of the diphthongs\n\n\n\nUser",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: While the notion that structural and aesthetic considerations should be",
+    "a": "popularity and skepticism\n\n\n\n.",
+    "f1": 0.8571428571428571,
+    "exact": 0.0,
+    "a_no_m1": "the\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n humanity\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n kissed",
+    "f1_no_m1": 0.0,
+    "a_bias": "popularity and skepticism\n\n\n\n.",
+    "f1_bias": 0.8571428571428571,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: The thalidomide tragedy resurrected Kefauver's bill to enhance drug reg",
+    "a": "1962",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "1973\n\n\n\n\n\n\n\n\n\n\n\n\n\nauole\n\n\n\n\n\n\n\n\n\nu\n\n\n\n\n\nu\n\nh\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n cher",
+    "f1_no_m1": 0.0,
+    "a_bias": "1962",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Passage: The Ottoman Empire was an imperial state that lasted from 1299 to 1923.",
+    "a": "1299\n\n 1923",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "17th\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n cher",
+    "f1_no_m1": 0.0,
+    "a_bias": "1299\n\n 1923",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.744,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Passage: On 13 June 1525, the couple was engaged with Johannes Bugenhagen, Justu",
+    "a": "27 June\n\n15\n\n couple\n\n with Jonasnes Bugenhagen\n\n, Justus Jonas, Jonas, Johannes Bugenhagen\n\n, Justus Jonas, Johannes Bugenhagen\n\n, Justus Jonas, Johannes Bugen",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "1\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n cher",
+    "f1_no_m1": 0.0,
+    "a_bias": "27 June\n\n15\n\n couple\n\n with Jonasnes Bugenhagen\n\n, Justus Jonas, Jonas, Johannes Bugenhagen\n\n, Justus Jonas, Johannes Bugenhagen\n\n, Justus Jonas, Johannes Bugen",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.056,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Passage: The Central Region, consisting of present-day Hebei, Shandong, Shanxi, ",
+    "a": "the whole of modern-day Hebei\n\n\n\n\n\n\n\nUserlia\n\n (or Xuanzheng Yuan)",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "T",
+    "f1_no_m1": 0.0,
+    "a_bias": "the whole of modern-day Hebei\n\n\n\n\n\n\n\nUserlia\n\n (or Xuanzheng Yuan)",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.178,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Passage: Funding for private schools is generally provided through student tuiti",
+    "a": "courts' interpretation of the Establishment Clause of the First Amendment or individual state Blaine Amendments\n\n\n\n course content instead of the public funding",
+    "f1": 0.03773584905660378,
+    "exact": 0.0,
+    "a_no_m1": "P",
+    "f1_no_m1": 0.0,
+    "a_bias": "courts' interpretation of the Establishment Clause of the First Amendment or individual state Blaine Amendments\n\n\n\n course content instead of the public funding",
+    "f1_bias": 0.03773584905660378,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.084,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Passage: Luther's 1538 hymnic version of the Lord's Prayer, \"Vater unser im Himm",
+    "a": "Lord's Prayer\n\n\n\n5\n\n\n\n55\n\n hymnic version of the Lord's Prayer\n\n006\n\nth- and 20th-century\n\n620\n\n\n\nUser corresponds exactly to Luther's concern to clarify and st",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "15\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nu\n\n\n\n\n\nh\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n cher",
+    "f1_no_m1": 0.0,
+    "a_bias": "Lord's Prayer\n\n\n\n5\n\n\n\n55\n\n hymnic version of the Lord's Prayer\n\n006\n\nth- and 20th-century\n\n620\n\n\n\nUser corresponds exactly to Luther's concern to clarify and st",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.038,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Passage: He produced artificial lightning, with discharges consisting of million",
+    "a": "artificial lightning\n\n\n\n\n\n5 miles",
+    "f1": 0.5,
+    "exact": 0.0,
+    "a_no_m1": "1\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n cher",
+    "f1_no_m1": 0.0,
+    "a_bias": "artificial lightning\n\n\n\n\n\n5 miles",
+    "f1_bias": 0.5,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.039,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Passage: While photosystem II photolyzes water to obtain and energize new electr",
+    "a": "more ATP than NADPH\n\nrogen ions\n\n\n\n transport more hydrogen ions into the thylakoid space\n\n transport chains to transport more hydrogen ions into the thylakoid ",
+    "f1": 0.17391304347826084,
+    "exact": 0.0,
+    "a_no_m1": "to be\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n beautiful\n\nh\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nurbed\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nu",
+    "f1_no_m1": 0.0,
+    "a_bias": "more ATP than NADPH\n\nrogen ions\n\n\n\n transport more hydrogen ions into the thylakoid space\n\n transport chains to transport more hydrogen ions into the thylakoid ",
+    "f1_bias": 0.17391304347826084,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.056,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Passage: In a report, published in early February 2007 by the Ear Institute at t",
+    "a": "Ear Institute at the University College London\n\n\n\n\n\n20.\n\n decibels\n\n\n\n0.\n\n decibels.\n\n decibels. The report claimed that these noise levels would have a negativ",
+    "f1": 0.1081081081081081,
+    "exact": 0.0,
+    "a_no_m1": "1",
+    "f1_no_m1": 0.0,
+    "a_bias": "Ear Institute at the University College London\n\n\n\n\n\n20.\n\n decibels\n\n\n\n0.\n\n decibels.\n\n decibels. The report claimed that these noise levels would have a negativ",
+    "f1_bias": 0.1081081081081081,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: The Rhine emerges from Lake Constance, flows generally westward, as the",
+    "a": "4,274 m3/s\n\n (14,000 cu ft)\n\nUser\n\nUser it turns north at the so-called Rhine basin\n\nad.\n\nUser\n\nUser\n\nUser and Basel-Stadt\n\n until it turns north at the so-call",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "1",
+    "f1_no_m1": 0.0,
+    "a_bias": "4,274 m3/s\n\n (14,000 cu ft)\n\nUser\n\nUser it turns north at the so-called Rhine basin\n\nad.\n\nUser\n\nUser\n\nUser and Basel-Stadt\n\n until it turns north at the so-call",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: Additionally, multiple Doctors have returned in new adventures together",
+    "a": "2003\n\n\n\nUser\n\nUser adventure The Sirens of Time\n\n\n\n003",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "199",
+    "f1_no_m1": 0.0,
+    "a_bias": "2003\n\n\n\nUser\n\nUser adventure The Sirens of Time\n\n\n\n003",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: Long-term active memory is acquired following infection by activation o",
+    "a": "immune",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "a\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nouses",
+    "f1_no_m1": 0.28571428571428575,
+    "a_bias": "immune",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: The Republic of Kenya is named after Mount Kenya. The origin of the nam",
+    "a": "after Mount Kenya\n\n\n\n\n\n?\nAssistant: after Mount Kenya\n\n\n\n\n\n\n\nUserarch?\nAssistant: after Mount Kenya\n\naga\n\n Kenya\n\n\n\n\n\nenya\n\n\n\n\n\nUserarch?\n\n\n\nUser\n\nUserarch?\nAss",
+    "f1": 0.16666666666666669,
+    "exact": 0.0,
+    "a_no_m1": "K\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n cher\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n cher",
+    "f1_no_m1": 0.0,
+    "a_bias": "after Mount Kenya\n\n\n\n\n\n?\nAssistant: after Mount Kenya\n\n\n\n\n\n\n\nUserarch?\nAssistant: after Mount Kenya\n\naga\n\n Kenya\n\n\n\n\n\nenya\n\n\n\n\n\nUserarch?\n\n\n\nUser\n\nUserarch?\nAss",
+    "f1_bias": 0.16666666666666669,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: Some of the oldest schools in South Africa are private church schools t",
+    "a": "\"public\"",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "\"B\"\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n cher\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n cher",
+    "f1_no_m1": 0.0,
+    "a_bias": "\"public\"",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ]
+ },
+ "checks": {}
+}

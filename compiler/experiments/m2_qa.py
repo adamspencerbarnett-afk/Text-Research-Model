@@ -467,6 +467,8 @@ def main() -> int:
     ap.add_argument("--calculator", action="store_true", help="check loop, rule 1: when the reply has written 'a op b =', the executor writes the result; the final Answer: is checked against the last computed value")
     ap.add_argument("--perturb-self", type=float, default=0.0, help="share of self-context windows whose retrieved question is reworded (words dropped, swapped, replaced): teaches copying from near matches")
     ap.add_argument("--sim-feature", action="store_true", help="the retrieval similarity is a trust-head input")
+    ap.add_argument("--loss-answer-only", action="store_true", help="train and validate on the answer codes only, not the question")
+    ap.add_argument("--stop-at-blank", action="store_true", help="a reply ends at its first blank line (single-span answers, e.g. SQuAD)")
     ap.add_argument("--save", default=None, help="save the core's weights here after training")
     a = ap.parse_args()
     global FOLD_KEYS
@@ -570,7 +572,10 @@ def main() -> int:
             sim = mem.similarity_keys(mem.keys[i], mem.key_of(q_p))
             perturbed = True
         seq = np.concatenate([nb, sep, own])[:a.ctx + 1]
-        mask = np.zeros(a.ctx + 1, dtype=np.float32); mask[len(nb) + len(sep):len(seq)] = 1.0
+        mask = np.zeros(a.ctx + 1, dtype=np.float32)
+        # --loss-answer-only: learn to answer, not to predict the question (a SQuAD passage recurs
+        # with 3-5 questions, so predicting it is memorisation)
+        mask[len(nb) + len(sep) + (q_len(i) if a.loss_answer_only else 0):len(seq)] = 1.0
         src = np.zeros(a.ctx + 1, dtype=bool)                               # the retrieved span
         src[(answer_start(src_i, len(nb)) if src_i is not None and not perturbed else 0):len(nb)] = True
         if a.copy_question:
@@ -606,11 +611,12 @@ def main() -> int:
             if len(seq) < 3:
                 continue
             x = torch.from_numpy(seq[None, :-1]).to(dev); y = torch.from_numpy(seq[None, 1:]).to(dev)
-            scored = seq[len(nb) + len(sep):]                       # the exchange's own codes, each predicted
+            skip = len(enc.encode(render(q, None))[0]) if a.loss_answer_only else 0
+            scored = seq[len(nb) + len(sep) + skip:]                # the exchange's own codes (or its answer), each predicted
             start = answer_start(nb_i[0][1], len(nb)) if nb_i else 0
             q0 = len(nb) + len(sep); qspan = (q0, q0 + len(enc.encode(render(q, None))[0]))
             sim_v = torch.tensor([nb_i[0][0] if nb_i else 0.0], device=dev)
-            nll = model.nll(x, y, span_mask(len(seq) - 1, len(nb), start, qspan), sim_v)[0, len(nb) + len(sep) - 1:]
+            nll = model.nll(x, y, span_mask(len(seq) - 1, len(nb), start, qspan), sim_v)[0, len(nb) + len(sep) - 1 + skip:]
             bits += float(nll.sum()) / math.log(2); nbytes += float(enc.lens[scored].sum())
         model.train(); return bits / max(1, nbytes)
 
@@ -675,6 +681,8 @@ def main() -> int:
                 kth = torch.topk(logits, top_k).values[..., -1, None]
                 logits = logits.masked_fill(logits < kth, float("-inf"))
                 seq.append(torch.multinomial(F.softmax(logits, -1).cpu(), 1, generator=gen).item())
+            if a.stop_at_blank and b"\n\n" in enc.decode(seq[start:]):
+                break
             if a.calculator and seq[-1] == EQUALS:
                 value = evaluate_tail(enc.decode(seq[start:]))
                 if value is not None:
@@ -692,7 +700,8 @@ def main() -> int:
                     close_number = "point"
                 else:
                     close_number = False
-        out = enc.decode(seq[start:]).split(b"\nUser:")[0].split(b"User:")[0].strip()
+        out = enc.decode(seq[start:]).split(b"\nUser:")[0].split(b"User:")[0]
+        out = (out.split(b"\n\n")[0] if a.stop_at_blank else out).strip()
         if a.calculator and computed:
             # Rule 2: the stated final answer must be a value the executor computed; otherwise the
             # last computed value is the answer (a refine, counted in results["checks"]).
