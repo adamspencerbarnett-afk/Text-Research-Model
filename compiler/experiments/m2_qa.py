@@ -308,6 +308,8 @@ def main() -> int:
     ap.add_argument("--device", default="cpu", help="cpu, cuda or cuda:N"); ap.add_argument("--threads", type=int, default=0)
     ap.add_argument("--width", type=int, default=128); ap.add_argument("--layers", type=int, default=4); ap.add_argument("--heads", type=int, default=4)
     ap.add_argument("--greedy", action="store_true", help="scored answers take the most likely code at each step instead of sampling")
+    ap.add_argument("--dict", default=None, help="use this dictionary (.cv0d) instead of fitting one on the Q&A text, e.g. the scale run's")
+    ap.add_argument("--init", default=None, help="start the core from this checkpoint (train_lm or m2_qa); heads whose shape differs start fresh. With --budget 0 the run only evaluates")
     ap.add_argument("--copy-head", action="store_true", help="learned pointer over the retrieved exchange as a trust-head source")
     ap.add_argument("--evidence", action="store_true", help="bigram table counted over the retrieved exchange as a trust-head source")
     ap.add_argument("--fold-keys", action="store_true", help="fold inflections in the question key")
@@ -333,7 +335,7 @@ def main() -> int:
     eval_x, add_x = held_x[:len(held_x) // 2], held_x[len(held_x) // 2:]
     say(f"{len(train_x):,} training exchanges, {len(eval_x)} for evaluation, {len(add_x)} to add after training")
 
-    enc = LE.V0Dict(str(ladder1.fit_dictionary("v0_8k_plain", [f"{a.data}/train/qa_train.txt"], work)), a.native)
+    enc = LE.V0Dict(a.dict or str(ladder1.fit_dictionary("v0_8k_plain", [f"{a.data}/train/qa_train.txt"], work)), a.native)
     mem = ExchangeMemory()
     for q, ans in train_x:
         mem.add(q, ans)
@@ -377,6 +379,12 @@ def main() -> int:
     checks = collections.Counter()
     dev = torch.device(a.device)
     model = V2LM(enc, a.width, a.layers, a.heads, a.ctx, ngrams, a.copy_head, a.evidence).to(dev)
+    if a.init:
+        ck = torch.load(a.init, map_location="cpu", weights_only=False)
+        own = model.state_dict()
+        sd = {k: v for k, v in ck["state_dict"].items() if k in own and own[k].shape == v.shape and not k.startswith("table")}
+        missing, unexpected = model.load_state_dict(sd, strict=False)
+        say(f"initialised {len(sd)} tensors from {a.init}; fresh: {sorted({k.split('.')[0] for k in missing})}")
     say(f"core: {model.param_counts()['total']:,} learned parameters, sources: network, 2 tables"
         + (", copy head" if a.copy_head else "") + (", evidence table" if a.evidence else ""))
     dense = [p for n, p in model.named_parameters()]

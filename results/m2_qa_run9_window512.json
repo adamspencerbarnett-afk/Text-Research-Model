@@ -1,0 +1,515 @@
+{
+ "setup": {
+  "data": "data_qa",
+  "work": "runs/m2",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 600.0,
+  "ctx": 512,
+  "batch": 16,
+  "topk": 64,
+  "neighbor_codes": 300,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/m2_qa_run9_window512.json",
+  "seed": 1,
+  "self_context_p": 0.5,
+  "copy_bias": 3.0,
+  "device": "cpu",
+  "threads": 10,
+  "width": 128,
+  "layers": 4,
+  "heads": 4,
+  "greedy": false,
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "copy_question": false,
+  "calculator": false,
+  "save": "runs/m2/run9.pt",
+  "train_exchanges": 50232,
+  "eval": 510,
+  "added": 511,
+  "distinct_keys": 49873
+ },
+ "training": {
+  "steps": 1305,
+  "train_s": 600.2,
+  "history": [
+   {
+    "train_s": 60.1,
+    "step": 130,
+    "train_bits_per_code": 4.351,
+    "valid_bits_per_byte": 1.4152
+   },
+   {
+    "train_s": 120.3,
+    "step": 260,
+    "train_bits_per_code": 4.293,
+    "valid_bits_per_byte": 1.4339
+   },
+   {
+    "train_s": 180.2,
+    "step": 387,
+    "train_bits_per_code": 4.212,
+    "valid_bits_per_byte": 1.418
+   },
+   {
+    "train_s": 240.2,
+    "step": 516,
+    "train_bits_per_code": 3.267,
+    "valid_bits_per_byte": 1.4427
+   },
+   {
+    "train_s": 300.2,
+    "step": 646,
+    "train_bits_per_code": 3.532,
+    "valid_bits_per_byte": 1.4277
+   },
+   {
+    "train_s": 360.4,
+    "step": 779,
+    "train_bits_per_code": 4.032,
+    "valid_bits_per_byte": 1.4464
+   },
+   {
+    "train_s": 420.2,
+    "step": 911,
+    "train_bits_per_code": 3.163,
+    "valid_bits_per_byte": 1.4126
+   },
+   {
+    "train_s": 480.4,
+    "step": 1044,
+    "train_bits_per_code": 3.011,
+    "valid_bits_per_byte": 1.42
+   },
+   {
+    "train_s": 540.3,
+    "step": 1174,
+    "train_bits_per_code": 4.387,
+    "valid_bits_per_byte": 1.4295
+   },
+   {
+    "train_s": 600.2,
+    "step": 1305,
+    "train_bits_per_code": 5.036,
+    "valid_bits_per_byte": 1.4387
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.9637,
+   "exact": 0.995
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 60,
+   "f1": 0.4124,
+   "exact": 0.0,
+   "f1_no_m1": 0.0588,
+   "f1_bias": 0.5639,
+   "exact_bias": 0.0333
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 44,
+   "f1": 0.1854,
+   "exact": 0.0,
+   "f1_no_m1": 0.047,
+   "f1_bias": 0.1604,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.2727
+  },
+  "unseen_network_with_nearest": {
+   "n": 156,
+   "f1": 0.1545,
+   "exact": 0.0,
+   "f1_no_m1": 0.045,
+   "f1_bias": 0.1508,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.1887
+  },
+  "heldout_network_without_memory": {
+   "n": 60,
+   "f1": 0.1326,
+   "exact": 0.0
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.1805
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.96,
+   "exact": 0.99
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 60,
+   "f1": 0.3891,
+   "exact": 0.0167,
+   "f1_no_m1": 0.0412,
+   "f1_bias": 0.487,
+   "exact_bias": 0.0667
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "List three reasons why consuming less meat is good for the environment.\nNoinput",
+    "a": "3. Livestock the emissions of gases, which is good for the emissions of resources requires the emissions of greenhouse gases like methane, such as is the emissi",
+    "f1": 0.4225352112676056,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost or physical\ufffd or work or physical or local more cost\" track is further further further between one our industrial to physical at h more multiple\" cost",
+    "f1_no_m1": 0.09259259259259257,
+    "a_bias": "3. Livestock the emissions of gases, which is a powerful greenhouse gas emissions.\n2. Lives production like methane, such as is the emissions of greenhouse gase",
+    "f1_bias": 0.5208333333333334,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Write a description of the current weather in your area.",
+    "a": "It was a low chance to the mid-60s and a cloud is a low chance of rain.",
+    "f1": 0.6857142857142857,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost or physical\ufffd or work or physical or local more cost\" track is further while business\" social, physical as track\n.: ret to physical that h further whi",
+    "f1_no_m1": 0.024096385542168676,
+    "a_bias": "It is a low chance of the mid-60s and a cloud is a low chance of rain.",
+    "f1_bias": 0.6857142857142857,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Create an example of a conversation between two friends",
+    "a": "Friction is you love to how to how between",
+    "f1": 0.25,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost: cost: h when only, physical, cost through cost: ret or h when track is only more further through local, social: F\n \" further while track is cost tha",
+    "f1_no_m1": 0.0,
+    "a_bias": "Hey, how are you doing?",
+    "f1_bias": 0.8333333333333333,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Change the titles of the following article from singular to plural.\nThe Impact o",
+    "a": "The Impact of Social Media on Mental Health\nAssistant: The titles for Mental Health",
+    "f1": 0.6363636363636364,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost or physical\ufffd or work or physical or local more cost\" track is further while business\" social, physical as track\n.: ret to physical that h further whi",
+    "f1_no_m1": 0.027397260273972605,
+    "a_bias": "The Impact of Social Media on Mental Health\nThe Impact of Social Media on Mental Health\nThe Impact of Social Media on Mental Health\nThe Impact of Social Media o",
+    "f1_bias": 0.25454545454545446,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Calculate what percentage of 10 is 8",
+    "a": "10 is \" 80%",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost: cost to h when only, physical, cost through cost: ret or h when track is only more further through local, social: F\n \" further while track is cost t",
+    "f1_no_m1": 0.0,
+    "a_bias": "80%",
+    "f1_bias": 0.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Invent a new type of dance.",
+    "a": "The \" is a perfect moves, performed with two or more people.",
+    "f1": 0.3142857142857143,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost: cost to h when only, physical, cost that cost: ret or h when track is only more further through local, social at industrial\n \" further while track i",
+    "f1_no_m1": 0.11382113821138211,
+    "a_bias": "The \" is a perfect moves, performed with two or more people. It is meant to be performed with two or more people. It is a kind of old and sharp of collaboration",
+    "f1_bias": 0.6611570247933884,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Name two possible solutions to reduce the effects of global warming.",
+    "a": "reducing global warming\nAssistant: switching to reduce global warming\nAssistant: and wind and impact slow global climate of theAssistant: switching to renewable",
+    "f1": 0.3142857142857143,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost: cost: h when only, physical, cost\" one further through local while business\" multiple that show to physical at h more multiple\" cost through h furth",
+    "f1_no_m1": 0.046511627906976744,
+    "a_bias": "reducing global warming. Additionally, developing to reduce global warming to reduce global warming. Additionally, developing include: reducing the effects of g",
+    "f1_bias": 0.3076923076923077,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.698,
+    "f1_vs_retrieved": 0.4727272727272728,
+    "retrieved_answer_f1_vs_ref": 0.4047619047619047
+   },
+   {
+    "q": "What is the area of France in square kilometers?",
+    "a": "The area of India63.",
+    "f1": 0.3333333333333333,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost: cost: h when only\" business include cost that cost: ret or h when track is only more further through local, social at industrial\n \" further while tr",
+    "f1_no_m1": 0.0,
+    "a_bias": "3, 3, 3.\n\n3,263.",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.563,
+    "f1_vs_retrieved": 0.6666666666666666,
+    "retrieved_answer_f1_vs_ref": 0.5
+   },
+   {
+    "q": "Generate a 5-word poem based on the given theme.\nFriendship",
+    "a": "Friction is a a punhips\nThans\nIt's like ropes of 1 force that '\nThans like grass, pain and keeps usishment.",
+    "f1": 0.08000000000000002,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost: cost to h when only, physical, cost through cost: ret or h when track is only more further through local, social: F\n \" further while track is cost t",
+    "f1_no_m1": 0.0,
+    "a_bias": "Frames.\nFrom sorrows\nThans\nIt grows like ropes or chain and child or grass, pain and childish blames, pain and keeps usish blames.\nThan any force like ropes or ",
+    "f1_bias": 0.03703703703703703,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.626,
+    "f1_vs_retrieved": 0.47826086956521735,
+    "retrieved_answer_f1_vs_ref": 0.06451612903225806
+   },
+   {
+    "q": "Name three endangered animal species.",
+    "a": "Endgament, snow leopards, and pandass, and pandas.\nass, and pandas.",
+    "f1": 0.07692307692307693,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost: cost to h when only, physical, cost through cost: ret or h when track is only more further through local, social: F\n \" further while track is cost t",
+    "f1_no_m1": 0.0,
+    "a_bias": "Endangered species.\n\nzees, chopards, giraffes, and pandas.\nAssistant: giraffes, and pandas, chopards, g include Asian elephants, and pandas.\nas.",
+    "f1_bias": 0.17142857142857143,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.849,
+    "f1_vs_retrieved": 0.3636363636363636,
+    "retrieved_answer_f1_vs_ref": 0.28571428571428575
+   },
+   {
+    "q": "Give two examples of how Artificial Intelligence is used in the healthcare indus",
+    "a": "Artificial Intelligence to make a reliable these technologies, AI of the automated- being used in the analysis of detailed patient data, as well as well as well",
+    "f1": 0.12903225806451613,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost through cost: h when only, physical, cost that cost: ret or h when track is only more further through local, social: F\n \" further while track is cost",
+    "f1_no_m1": 0.06451612903225806,
+    "a_bias": "(AI) used to develop personalized treatments, based on the analysis of the deployment. AI is being is in healthcare. One treatments, AI is being used in the dep",
+    "f1_bias": 0.10989010989010989,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.643,
+    "f1_vs_retrieved": 0.4965517241379311,
+    "retrieved_answer_f1_vs_ref": 0.14814814814814817
+   },
+   {
+    "q": "Rewrite a given sentence using an active voice.\nThe problem was solved by us.",
+    "a": "She is solving optimization problems, She is solving the problem\nThe problem is being used to her.\nAssistant: She is being solved by it is in active voice.\nAssi",
+    "f1": 0.09523809523809525,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost or physical\ufffd or work or physical or local more cost\" track is further while business\" social, physical as track\n.: ret to physical that h further whi",
+    "f1_no_m1": 0.0,
+    "a_bias": "She is solving the problem is solving the problem is solving the problem is solving the problem is solving the problem is solving the problem.\nAssistant: She is",
+    "f1_bias": 0.05555555555555555,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.841,
+    "f1_vs_retrieved": 0.15625,
+    "retrieved_answer_f1_vs_ref": 0.4444444444444445
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Why is it important to know the environment of a place before visiting?",
+    "a": "Plantsly filter them out quality. Additionally, and releasing oxygen back into the atmosphere plants from being the atmosphere, and releasing oxygen, and preser",
+    "f1": 0.15,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost: cost: h when only, physical, cost through cost: ret or h when track is only more further through local, social: F\n \" further while track is cost tha",
+    "f1_no_m1": 0.08633093525179857,
+    "a_bias": "Plantsly filter them out quality. Additionally, and releasing oxygen back into the atmosphere plants from the atmosphere. Additionally, and shelter. Lastly, the",
+    "f1_bias": 0.20588235294117646,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.234,
+    "f1_vs_retrieved": 0.4227642276422764,
+    "retrieved_answer_f1_vs_ref": 0.24516129032258066
+   },
+   {
+    "q": "Analyze the political scenario of a given country\nIndia",
+    "a": "central, 29, 7 union of the un level of the union government, 2t/ level has three levels of state-of, justice and equality political structure, elected Ch syste",
+    "f1": 0.1971830985915493,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost: cost to h when only\" business include cost, no: ret or h when track is only more further through local, social: F\n \" further while track is cost tha",
+    "f1_no_m1": 0.07643312101910828,
+    "a_bias": "central, 29, 7 union of the un level of the union government, 2t Governors. It guarantees fundamental powers, justice and equality political structure, with spe",
+    "f1_bias": 0.25531914893617014,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.349,
+    "f1_vs_retrieved": 0.5,
+    "retrieved_answer_f1_vs_ref": 0.32999999999999996
+   },
+   {
+    "q": "Name 5 prominent fashion brands.",
+    "a": "Zs theAssistant: and Dior.\nAssistant: H&M, Topshop\nAssistant: Gucci, Topshop, Topshop, Topsh fashion brands in Europe.",
+    "f1": 0.08333333333333333,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost: cost: h when only\" business include cost through cost: ret or h when track is only more further through local, social: F, h if further while track i",
+    "f1_no_m1": 0.0,
+    "a_bias": "Z, Gucci, Gucci, Gucci, H&M, Gucci, H&M, Hhop, and Dihop, Topshop.",
+    "f1_bias": 0.1,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.418,
+    "f1_vs_retrieved": 0.5,
+    "retrieved_answer_f1_vs_ref": 0.14285714285714285
+   },
+   {
+    "q": "Write a short response to \"What is Life?\".",
+    "a": "Life is about making the journey ' is about ' is about making the most.",
+    "f1": 0.1647058823529412,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost by cost to h when only, physical, cost that cost: ret or h when track is only more further through local, social at industrial\n \" further while track",
+    "f1_no_m1": 0.11678832116788321,
+    "a_bias": "Life is about making the journey. It is about making the time you are and living is about making the present mistakes in the present your mistakes. It is about ",
+    "f1_bias": 0.2993197278911565,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.43,
+    "f1_vs_retrieved": 0.40625,
+    "retrieved_answer_f1_vs_ref": 0.3252032520325203
+   },
+   {
+    "q": "How is sound waves transmitted?",
+    "a": "The scientific term for sound waves?\nAssistant: \".",
+    "f1": 0.17647058823529413,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost: cost: h when only\" business in cost through cost: ret or h when track is only more further through local, social: F\n \" further while track is cost t",
+    "f1_no_m1": 0.06741573033707865,
+    "a_bias": "\".\nThe scientific term for sound wavescoustics\"a is \".\n\n scientific term for sound wavescoustics\"a is \"a is \"a is \". \".",
+    "f1_bias": 0.13043478260869565,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.387,
+    "f1_vs_retrieved": 0.7999999999999999,
+    "retrieved_answer_f1_vs_ref": 0.17142857142857143
+   },
+   {
+    "q": "Categorize the following objects: Car, Pen, Fork.",
+    "a": "Electronnglasses: Electronics, the datasuch as theObjects \nPen: Clglasses: Stationery",
+    "f1": 0.26666666666666666,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost: physical\ufffd or work or physical or local more cost when track is further while business\" social, physical as track\n.: ret to physical that h further w",
+    "f1_no_m1": 0.0,
+    "a_bias": "Electronics\nLaptop: Stationerylasses: Cl\nLaptoperylasses: Clothing \nPen: Stationeryioneryionerylasses: Electronics\nPenlasses: Electronics\nPen: Clothing \nPen: Cl",
+    "f1_bias": 0.08333333333333333,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.274,
+    "f1_vs_retrieved": 0.4,
+    "retrieved_answer_f1_vs_ref": 0.3333333333333333
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Generate an example use case of how an AI system can improve customer service.",
+    "a": "An accurate agen accurate chatbot can improve customer service chatbot to provide accurate answers and can provide further assistance.\nAssistant: the AI system ",
+    "f1": 0.596774193548387,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost: cost: h when only\" business include cost through cost: ret or h when track is only more further through local, social at industrial\n \" further while",
+    "f1_no_m1": 0.08391608391608392,
+    "a_bias": "An accurate agen accurate chatbot can provide accurate and generate AI system can be used to provide further assistance. Using, the AI system can even transfer ",
+    "f1_bias": 0.6363636363636362,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Compute the answer to this problem and give me the correct output.\n4 + 6 \u00d7 2",
+    "a": "16 + 2\n \n \u00d7 6.",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost: physical\ufffd or work or physical or local more cost when track is further while business\" social, physical as track\n.: ret to physical that h further w",
+    "f1_no_m1": 0.0,
+    "a_bias": "16.",
+    "f1_bias": 0.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Name five factors that influence learning.",
+    "a": "The five factors, and cultural factors canivgitive factors, environment, and cultural factors that influence learning are related to an individual.",
+    "f1": 0.3789473684210526,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost or physical\ufffd or work or physical or local more cost when track is further while business\" social, physical as track\n.: ret to physical that h further",
+    "f1_no_m1": 0.0851063829787234,
+    "a_bias": "The five factors, and cultural factors canivgitive factors, environment, and cultural factors that influence learning are related to an individual. Cognitive fa",
+    "f1_bias": 0.6511627906976745,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Brainstorm 3 potential topics for a research paper on artificial intelligence.",
+    "a": "- Ethical considerations, 3 potential topics for a research paper paper\n- Ethical considerations when potential development, - The research paper paper on artif",
+    "f1": 0.4444444444444444,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost: cost: h when only\" business more cost through cost: ret or h when track is only more further through local, social: F\n \" further while track is cost",
+    "f1_no_m1": 0.047619047619047616,
+    "a_bias": "The potential in healthcare\n- The potential in AI in healthcare\n- The potential applications processing\n- Ethical considerations of AI development and implement",
+    "f1_bias": 0.5063291139240507,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Assign each of these statements to either true or false\nA penny weighs more than",
+    "a": "False\nAssistant: False",
+    "f1": 0.2222222222222222,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost: physical\ufffd as business or physical or local more cost when track is further while business\" social, physical as track\n.: ret to physical that h furth",
+    "f1_no_m1": 0.05,
+    "a_bias": "False\nThe Eiffel Tower is in Romeel Tower is in Rome\nThe Eiffel Tower is in Romeel Tower is in Rome: False\nThe Eiffel Tower is in Rome: False\nThe Eiffel Tower i",
+    "f1_bias": 0.3582089552238806,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Generate a film title that matches with the theme of forest conservation",
+    "a": "A film title to matches with the Woods aving the Woods: A For example, A film about the Woods: A film title to the Woods: A film of the Woods: A film about the ",
+    "f1": 0.12698412698412698,
+    "exact": 0.0,
+    "a_no_m1": "ret \" cost: physical\ufffd or work or physical or local more cost when track is further further when track is only more further through local, social at industrial\n ",
+    "f1_no_m1": 0.0,
+    "a_bias": "A For the Woods: A Foraving the Woods: A Foraving the Woods: A For the Woods: A Forest Conservation Tale.\n\neroods: A For the Woods: A Forest Conservation Tale.\n",
+    "f1_bias": 0.30000000000000004,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ]
+ },
+ "checks": {}
+}

@@ -1,0 +1,575 @@
+{
+ "setup": {
+  "data": "data_qa",
+  "work": "runs/r1",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 1200.0,
+  "ctx": 512,
+  "batch": 32,
+  "topk": 64,
+  "neighbor_codes": 300,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/r1_alpaca_5M_window512.json",
+  "seed": 1,
+  "self_context_p": 0.5,
+  "copy_bias": 3.0,
+  "device": "cuda",
+  "threads": 0,
+  "width": 256,
+  "layers": 6,
+  "heads": 8,
+  "greedy": false,
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "copy_question": false,
+  "calculator": false,
+  "save": "runs/r1/alpaca_5M.pt",
+  "train_exchanges": 50232,
+  "eval": 510,
+  "added": 511,
+  "distinct_keys": 49873
+ },
+ "training": {
+  "steps": 15669,
+  "train_s": 1200.0,
+  "history": [
+   {
+    "train_s": 60.1,
+    "step": 784,
+    "train_bits_per_code": 3.979,
+    "valid_bits_per_byte": 1.4227
+   },
+   {
+    "train_s": 120.0,
+    "step": 1569,
+    "train_bits_per_code": 3.962,
+    "valid_bits_per_byte": 1.4151
+   },
+   {
+    "train_s": 180.1,
+    "step": 2353,
+    "train_bits_per_code": 3.662,
+    "valid_bits_per_byte": 1.4392
+   },
+   {
+    "train_s": 240.0,
+    "step": 3135,
+    "train_bits_per_code": 4.061,
+    "valid_bits_per_byte": 1.4112
+   },
+   {
+    "train_s": 300.0,
+    "step": 3917,
+    "train_bits_per_code": 3.836,
+    "valid_bits_per_byte": 1.4099
+   },
+   {
+    "train_s": 360.1,
+    "step": 4698,
+    "train_bits_per_code": 4.053,
+    "valid_bits_per_byte": 1.4121
+   },
+   {
+    "train_s": 420.0,
+    "step": 5477,
+    "train_bits_per_code": 3.441,
+    "valid_bits_per_byte": 1.423
+   },
+   {
+    "train_s": 480.1,
+    "step": 6257,
+    "train_bits_per_code": 3.544,
+    "valid_bits_per_byte": 1.4195
+   },
+   {
+    "train_s": 540.1,
+    "step": 7036,
+    "train_bits_per_code": 4.201,
+    "valid_bits_per_byte": 1.4018
+   },
+   {
+    "train_s": 600.1,
+    "step": 7817,
+    "train_bits_per_code": 3.679,
+    "valid_bits_per_byte": 1.4061
+   },
+   {
+    "train_s": 660.1,
+    "step": 8604,
+    "train_bits_per_code": 3.535,
+    "valid_bits_per_byte": 1.4237
+   },
+   {
+    "train_s": 720.0,
+    "step": 9388,
+    "train_bits_per_code": 3.676,
+    "valid_bits_per_byte": 1.4407
+   },
+   {
+    "train_s": 780.1,
+    "step": 10174,
+    "train_bits_per_code": 3.626,
+    "valid_bits_per_byte": 1.4052
+   },
+   {
+    "train_s": 840.0,
+    "step": 10959,
+    "train_bits_per_code": 4.15,
+    "valid_bits_per_byte": 1.4135
+   },
+   {
+    "train_s": 900.1,
+    "step": 11745,
+    "train_bits_per_code": 4.176,
+    "valid_bits_per_byte": 1.4082
+   },
+   {
+    "train_s": 960.0,
+    "step": 12530,
+    "train_bits_per_code": 4.405,
+    "valid_bits_per_byte": 1.384
+   },
+   {
+    "train_s": 1020.1,
+    "step": 13317,
+    "train_bits_per_code": 3.503,
+    "valid_bits_per_byte": 1.4028
+   },
+   {
+    "train_s": 1080.0,
+    "step": 14103,
+    "train_bits_per_code": 3.8,
+    "valid_bits_per_byte": 1.4349
+   },
+   {
+    "train_s": 1140.0,
+    "step": 14886,
+    "train_bits_per_code": 4.151,
+    "valid_bits_per_byte": 1.4128
+   },
+   {
+    "train_s": 1200.0,
+    "step": 15669,
+    "train_bits_per_code": 4.067,
+    "valid_bits_per_byte": 1.4101
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.97,
+   "exact": 0.99
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 60,
+   "f1": 0.5709,
+   "exact": 0.1,
+   "f1_no_m1": 0.1152,
+   "f1_bias": 0.6071,
+   "exact_bias": 0.1
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 44,
+   "f1": 0.2048,
+   "exact": 0.0,
+   "f1_no_m1": 0.1038,
+   "f1_bias": 0.1922,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.2727
+  },
+  "unseen_network_with_nearest": {
+   "n": 156,
+   "f1": 0.1582,
+   "exact": 0.0,
+   "f1_no_m1": 0.1094,
+   "f1_bias": 0.1431,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.1887
+  },
+  "heldout_network_without_memory": {
+   "n": 60,
+   "f1": 0.1256,
+   "exact": 0.0
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.1834
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.96,
+   "exact": 0.99
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 60,
+   "f1": 0.433,
+   "exact": 0.0333,
+   "f1_no_m1": 0.101,
+   "f1_bias": 0.5248,
+   "exact_bias": 0.0833
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Answer the following question. What are the 5 basic freedoms outlined in the Fir",
+    "a": "The five basic freedoms outlined in the First of the US Constitution are freedom of the US Constitution are freedom of the US Constitution.",
+    "f1": 0.6521739130434783,
+    "exact": 0.0,
+    "a_no_m1": "Un    ?\ufffd or add\n  or eat can and engaging \ufffd orUser p and social or manage and manage\nCom. On, physical is The and The on The on Chv \ufffd and focus and add, as wate",
+    "f1_no_m1": 0.13513513513513511,
+    "a_bias": "The five basic freedoms outlined in the First of the US Constitution are freedom of the US Constitution are freedom of the US Constitution.",
+    "f1_bias": 0.6521739130434783,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Is the following string a valid phone number or not? Output 1 for valid and 0 fo",
+    "a": "1 for invalid.\nAssistant: 1 for invalid.\nAssistant: 1.\nAssistant: 1 for invoicing.\nAssistant: The valid phone number of invasive speciesid.\nAssistant: 1 for inv",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "Un    ?\ufffd or add\n  or The that and engaging \ufffd or The( and social or manage and manage\nCom. On, physical is physical and The on The on Mo is physical, The and all",
+    "f1_no_m1": 0.0,
+    "a_bias": "1 for invalid.\n1 for invalid78\nAssistant: 1111, 1.\nAssistant: 11111111111111111111111111111111111 for invalid.\nAssistant: 11111",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Research the techniques and equipment used for deep-sea exploration.",
+    "a": "Deep-sea exploration is conducted aerobics equipment, unned aerial vehicles (ROVs) to robot submarinehyspheres) to robot submarines is used to robot submarines ",
+    "f1": 0.4565217391304348,
+    "exact": 0.0,
+    "a_no_m1": "Un    ?\ufffd or add\n  or The that and engaging \ufffd orUser p and social or manage and manage. As. On, physical is( and The best is understanding with\nThey, The and exp",
+    "f1_no_m1": 0.17999999999999997,
+    "a_bias": "(ROVsiblesiblepls and remotely, unmanned aerial, unmanned aerial vehicles (RO-operhyss) to robot submarinesned submer tools and even bathyss), (RUial vehicles t",
+    "f1_bias": 0.441860465116279,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Create a simile to describe the waves in the ocean.\n<no input>",
+    "a": "The waves in the ocean were like smooth blankets of the ocean were like a simile to describe the ocean were like smooth blankets of glass.",
+    "f1": 0.5945945945945945,
+    "exact": 0.0,
+    "a_no_m1": "Un  \ufffd ?\ufffd or add\n  or eat can and The open is understanding?\n and social or manage and manage\nCom. On, physical is physical and The on The on Mo will , The and e",
+    "f1_no_m1": 0.0923076923076923,
+    "a_bias": "The waves in the ocean were like smooth blankets of the ocean were like were like smooth blankets of the ocean were like smooth blankets of glass.\n\n were of the",
+    "f1_bias": 0.39285714285714285,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Make a prediction for the next year in terms of the political situation in the U",
+    "a": "Insions between Make to become more polarizing\nAssistant: Ins. Pol in the US\nAssistant: Ins.\nAssistant: In parties are likely to become even more polarization p",
+    "f1": 0.5,
+    "exact": 0.0,
+    "a_no_m1": "Un  \ufffd ?\ufffd or add\n  or eat can and The open is understanding?\n and social or manage and manage. Furthermore. On, physical is physical and The on The on Mo\n , The ",
+    "f1_no_m1": 0.2127659574468085,
+    "a_bias": "2 the US is likely to become even more polarization in the US is likely to become even more polarization in the US is likely to become even more polarization an",
+    "f1_bias": 0.5454545454545455,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Generate an expository essay of 300 words on the automobile industry.",
+    "a": "The automobile industry.\nAssistant: The industry that has grown exponentially few decades. It is impossible to imagine a massive wave that has grown exponential",
+    "f1": 0.628099173553719,
+    "exact": 0.0,
+    "a_no_m1": "Un  \ufffd ?\ufffd or add\n  or The that and The open is understanding?\n and social or manage and manage. Furthermore. On, physical is physical and The on The on Mo will a",
+    "f1_no_m1": 0.2393162393162393,
+    "a_bias": "The automobile industry. It is a massive global industry that has grown exponentially everyday lives. It is a massive global industry. It is impossible to imagi",
+    "f1_bias": 0.7058823529411764,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Name two possible solutions to reduce the effects of global warming.",
+    "a": "reducing possible solutions global warming is energy sources like solar, wind, switching to clean energy sources like solar and wind power, and better managing ",
+    "f1": 0.417910447761194,
+    "exact": 0.0,
+    "a_no_m1": "Un    ?  or add\n  or The that and The open is understanding?\n and social or manage and manage. Furthermore. On, physical is physical and The on The on Mo will a",
+    "f1_no_m1": 0.05194805194805195,
+    "a_bias": "reducing possible solutions global warming include: reducing the effects of greenhouse gases in the effects of greenhouse gases such as carbon dioxide, switchin",
+    "f1_bias": 0.4262295081967213,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.698,
+    "f1_vs_retrieved": 0.5981308411214953,
+    "retrieved_answer_f1_vs_ref": 0.4047619047619047
+   },
+   {
+    "q": "What is the area of France in square kilometers?",
+    "a": "The area of India in square kilometers is equal to 3,287063.",
+    "f1": 0.4444444444444445,
+    "exact": 0.0,
+    "a_no_m1": "Un  \ufffd ?\ufffd or add\n  \ufffd in social? \ufffd or The( and social or manage and manage\nCom with is cra, A use A and social ??\ufffd , The and explore  , both, social?  and product",
+    "f1_no_m1": 0.0,
+    "a_bias": "3, 3, 3.",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.563,
+    "f1_vs_retrieved": 0.888888888888889,
+    "retrieved_answer_f1_vs_ref": 0.5
+   },
+   {
+    "q": "Generate a 5-word poem based on the given theme.\nFriendship",
+    "a": "Create a binding stronger\nThan any force like ropes, and keeps the theme of 1.",
+    "f1": 0.10526315789473682,
+    "exact": 0.0,
+    "a_no_m1": "Computer  \ufffd ?\ufffd or add\n  or The that and The open is understanding?\n and social or manage and manage\nCom. On\n, A use physical and social ??\ufffd , The and explore  \ufffd",
+    "f1_no_m1": 0.03703703703703703,
+    "a_bias": "Create a binding stronger\nThan any force like ropes, and keeps us free\nIt is a binding stronger\nFrom sorrownding stronger\nFrom sorrow, pain and childish.\nFrom s",
+    "f1_bias": 0.04081632653061225,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.626,
+    "f1_vs_retrieved": 0.5,
+    "retrieved_answer_f1_vs_ref": 0.06451612903225806
+   },
+   {
+    "q": "Name three endangered animal species.",
+    "a": "Endgame, chimpanzees, chip, giraffes, and pandas.",
+    "f1": 0.09090909090909091,
+    "exact": 0.0,
+    "a_no_m1": "Un    ?  or add\n  or The that and The open is understanding?\n and social or manage and manage\nCom. On, physical is physical and The on The on Mo will physical, ",
+    "f1_no_m1": 0.11428571428571428,
+    "a_bias": "Endangered species.\nAssistant: Endangered species.\n\n elephants, and pandas.",
+    "f1_bias": 0.25,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.849,
+    "f1_vs_retrieved": 0.4444444444444444,
+    "retrieved_answer_f1_vs_ref": 0.28571428571428575
+   },
+   {
+    "q": "Give two examples of how Artificial Intelligence is used in the healthcare indus",
+    "a": "Artificial solutions to develop personalized treatments for how to develop personalized treatments, AI can then be used to develop personalized treatments, AI c",
+    "f1": 0.12,
+    "exact": 0.0,
+    "a_no_m1": "Un  \ufffd ?\ufffd or add\n  or The that, both and socialv\n( and social or manage and manage\nCom. On, physical is physical and The on The on Mo will , The and new  \ufffd\nK and",
+    "f1_no_m1": 0.05,
+    "a_bias": "(AI) is being used to develop personalized treatment, AI can then. One example of AI as well as model scans. With these technologies- used to make a reliable di",
+    "f1_bias": 0.12903225806451613,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.643,
+    "f1_vs_retrieved": 0.4605263157894737,
+    "retrieved_answer_f1_vs_ref": 0.14814814814814817
+   },
+   {
+    "q": "Rewrite a given sentence using an active voice.\nThe problem was solved by us.",
+    "a": "She was in active voice to her.",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "Un  \ufffd ?\ufffd or add\n  or eat can and engaging \ufffd or The( and social or manage and manage\nCom. On, physical is physical and The on The on Mo will and new and focus an",
+    "f1_no_m1": 0.034482758620689655,
+    "a_bias": "She is solving the problem is solving the problem.",
+    "f1_bias": 0.30769230769230765,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.841,
+    "f1_vs_retrieved": 0.16666666666666666,
+    "retrieved_answer_f1_vs_ref": 0.4444444444444445
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Why is it important to know the environment of a place before visiting?",
+    "a": "Plants are essential for the environment because they help maintain healthy habitats that plants them. Additionally, it is they help reduce because they help by",
+    "f1": 0.2589928057553957,
+    "exact": 0.0,
+    "a_no_m1": "Un  \ufffd ?\ufffd or add\n  or both in social?\ufffd is understanding?\n and social or manage and manage\nCom. On, physical is physical and The on The on Mo\n , The and explore  ",
+    "f1_no_m1": 0.20312500000000003,
+    "a_bias": "Plants are essential for the environment because they help maintain healthy habitats by providing food and shelter harmful toxosion. Additionally, plants them. ",
+    "f1_bias": 0.19548872180451127,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.234,
+    "f1_vs_retrieved": 0.704225352112676,
+    "retrieved_answer_f1_vs_ref": 0.24516129032258066
+   },
+   {
+    "q": "Analyze the political scenario of a given country\nIndia",
+    "a": "India, 29, 10 specified, and 7 of the head of the union territory has resulted in equality, while the head of the union of state and Liechtenstein, while other ",
+    "f1": 0.2127659574468085,
+    "exact": 0.0,
+    "a_no_m1": "Un    ?\ufffd or add\n  or both in social? \ufffd orUser p and social or manage and manage\nCom with(. As is The and The on The on Mo will , The and explore  \ufffd\nK and explor",
+    "f1_no_m1": 0.2237762237762238,
+    "a_bias": "India, 29,  level has its own political system of the union territory. The prime to India has a par of the head of the union government, while other governments",
+    "f1_bias": 0.26490066225165565,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.349,
+    "f1_vs_retrieved": 0.5032258064516129,
+    "retrieved_answer_f1_vs_ref": 0.32999999999999996
+   },
+   {
+    "q": "Name 5 prominent fashion brands.",
+    "a": "Z ( in the Europe.",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "Un    ?  or add\n  or The that and The open is understanding?\n and social or manage and manage\nCom. On, physical is physical and The on The on Mo will and new an",
+    "f1_no_m1": 0.0,
+    "a_bias": "Z, H&M, Gucci, Gucci, and Dior.",
+    "f1_bias": 0.14285714285714285,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.418,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.14285714285714285
+   },
+   {
+    "q": "Write a short response to \"What is Life?\".",
+    "a": "Life is about making the question of achieving. It is about making you are and living in the present moment and learning from your mistakes. It moment about mak",
+    "f1": 0.20370370370370372,
+    "exact": 0.0,
+    "a_no_m1": "Un  \ufffd ?\ufffd or add\n  or eat can and The open is understanding?\n and social or manage and manage. Furthermore. On\n, A use A on Sh ??\ufffd , The and all  , both, set. La",
+    "f1_no_m1": 0.15,
+    "a_bias": "Life is about making the present moment about finding and living in the present moment and living in the present moment and learning from from your mistakes. It",
+    "f1_bias": 0.2580645161290323,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.43,
+    "f1_vs_retrieved": 0.6436781609195402,
+    "retrieved_answer_f1_vs_ref": 0.3252032520325203
+   },
+   {
+    "q": "How is sound waves transmitted?",
+    "a": "The scientific term for sound?\nAssistant: The scientific name for sound waves?\nAssistant: The scientific term for the scientific name for a scientific\nAssistant",
+    "f1": 0.14545454545454545,
+    "exact": 0.0,
+    "a_no_m1": "Un  \ufffd ?\ufffd or add\n  or The that and The open is understanding?\n and social or manage and manage\nCom. On, physical is physical and The on The on Mo\n , The and expl",
+    "f1_no_m1": 0.07692307692307691,
+    "a_bias": "\"acoustics for sound waves for sound for sound waves is \"acoustics\".\nTheics for sound for sound is \".\nAssistant: \".\nAssistant: \".\nAssistant: \"acoustics for soun",
+    "f1_bias": 0.1509433962264151,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.387,
+    "f1_vs_retrieved": 0.3888888888888889,
+    "retrieved_answer_f1_vs_ref": 0.17142857142857143
+   },
+   {
+    "q": "Categorize the following objects: Car, Pen, Fork.",
+    "a": "Categorizenges: Clothing \nLaptop: Clothing \nLaptop: Cl the data(othing \nLaptop: Statjectslaop: Statisticserysla.\nAssistant: Electronics\nLaptop: Electronics\nAssi",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "Un  \ufffd ?\ufffd or add\n  or The that, both and socialv\n( and social or manage and manage\nCom with is both, A and focus and social ??\ufffd , The and all  , both, social\ufffd  a",
+    "f1_no_m1": 0.0,
+    "a_bias": "Clothing \nLaptop: Clothing \nLaptop: Clothing \nPen: Electronics\nLaptop: Stationerylaop: Electronics\nPen: Stationeryn: Electronics\nPen: Stationeryn: Stationerylao",
+    "f1_bias": 0.07692307692307691,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.274,
+    "f1_vs_retrieved": 0.21428571428571427,
+    "retrieved_answer_f1_vs_ref": 0.3333333333333333
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Generate an example use case of how an AI system can improve customer service.",
+    "a": "An example of how an example of how an AI- used to provide automated responses quickly and generate accurate answers of the AI to customer requests and generate",
+    "f1": 0.6622516556291391,
+    "exact": 0.0,
+    "a_no_m1": "Un  \ufffd ?\ufffd or add\n  or eat can and The open is understanding?\n and social or manage and manage\nCom. On, physical is physical and The on The on Mo will and new and",
+    "f1_no_m1": 0.16296296296296295,
+    "a_bias": "An example of a customer inquiries. Using can be used to provide automated customer service chatbot can compre quickly. Using, a customer requests responses. Fo",
+    "f1_bias": 0.6617647058823529,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Compute the answer to this problem and give me the correct output.\n4 + 6 \u00d7 2",
+    "a": "16 16.",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "Un    ?\ufffd or add\n  or eat can and engaging \ufffd or explore\n and social or manage and manage\nCom with is over, A and focus and social ??\ufffd , The and all  , both, soci",
+    "f1_no_m1": 0.0,
+    "a_bias": "16.",
+    "f1_bias": 0.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Name five factors that influence learning.",
+    "a": "The five factors that influence that shapes the level of motivation, emotional, and cultural factors that factors that factors that factors that could has to co",
+    "f1": 0.5909090909090909,
+    "exact": 0.0,
+    "a_no_m1": "Un  \ufffd ?\ufffd or add\n  or both in social? \ufffd orUser p and social or manage and manage\nCom. On, physical is as focus and add is understanding with\nThey, The and explor",
+    "f1_no_m1": 0.2047244094488189,
+    "a_bias": "The five factors that influence that influence that influence that influence learning are motivation an important factor in the level of motivation, and cultura",
+    "f1_bias": 0.6713286713286714,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Brainstorm 3 potential topics for a research paper on artificial intelligence.",
+    "a": "- Recent advances in natural language processing\n- Ethical considerations of AI\n- Ethical considerations of AI\nAssistant: \n- Ethernet, Ethiopia, Ethiopia - Ethi",
+    "f1": 0.5333333333333333,
+    "exact": 0.0,
+    "a_no_m1": "Un    ?  or add\n  or The that and engaging and socialv\n( and social or manage and manage\nCom. On, physical is The physical and social ??\ufffd , The and explore  , b",
+    "f1_no_m1": 0.11764705882352941,
+    "a_bias": "The potential applications of AI in natural language processing\n- Recent advances in healthcare\n- Ethical considerations of AI\n- Ethical considerations of AI- E",
+    "f1_bias": 0.5,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Assign each of these statements to either true or false\nA penny weighs more than",
+    "a": "False.: False.: False",
+    "f1": 0.2222222222222222,
+    "exact": 0.0,
+    "a_no_m1": "Un    ?\ufffd or add\n  or eat can and engaging \ufffd or The( and social or manage and manage\nCom. As, physical is physical and engaging  ??\ufffd , The and explore  , both, s",
+    "f1_no_m1": 0.15873015873015875,
+    "a_bias": "False\nThe Eiffel Tower is in Rome\nThe Eiffel Tower is in Rome\nThe Eiffel Tower is in Rome\nThes more than a nickel Tower is in Rome\nThes more than a nickelel Tow",
+    "f1_bias": 0.3880597014925373,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Generate a film title that matches with the theme of forest conservation",
+    "a": "A For example,: A For example,: A For example,: A For example,: A For the following sentence matches withvation of forest,: A For example, itaving the Woods\" th",
+    "f1": 0.2285714285714286,
+    "exact": 0.0,
+    "a_no_m1": "Un  \ufffd ?\ufffd or add\n  or The that and The open is understanding?\ufffd and social or manage and manage\nCom. On, physical is physical and The on The on Mo will , The and ",
+    "f1_no_m1": 0.07017543859649124,
+    "a_bias": "A For the Woods: A Forest Conservation Tale.",
+    "f1_bias": 0.7999999999999999,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ]
+ },
+ "checks": {}
+}
