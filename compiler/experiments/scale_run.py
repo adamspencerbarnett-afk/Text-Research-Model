@@ -38,6 +38,7 @@ def main() -> int:
     ap.add_argument("--ctx", type=int, default=256); ap.add_argument("--lr", type=float, default=1e-3)
     ap.add_argument("--seed", type=int, default=1); ap.add_argument("--device", default="cuda"); ap.add_argument("--amp", action="store_true")
     ap.add_argument("--no-wiki", action="store_true", help="books only"); ap.add_argument("--out", default="results/scale_run.json")
+    ap.add_argument("--max-steps", type=int, default=0, help="equal training across runs: stop at this many steps (budget is then a cap)")
     a = ap.parse_args()
     work = Path(a.work); work.mkdir(parents=True, exist_ok=True)
     books = sorted(glob.glob(f"{a.data}/train/*.txt"))
@@ -68,7 +69,7 @@ def main() -> int:
             r = train_lm.run(enc, tokens, lens, eval_sets, work, budgets[size], width, layers, heads, a.ctx, a.batch, a.lr,
                              table, a.seed, a.eval_every, log=ladder1.say, save_path=str(work / f"scale_{size}_{name}.pt"),
                              table_orders=orders, ngram_orders=ngram, ngram_topk=topk, patience=a.patience,
-                             min_delta=a.min_delta, device=a.device, amp=a.amp)
+                             min_delta=a.min_delta, device=a.device, amp=a.amp, max_steps=a.max_steps)
             r["config"], r["size"] = name, size
             results["runs"][key] = r
             out.parent.mkdir(parents=True, exist_ok=True)

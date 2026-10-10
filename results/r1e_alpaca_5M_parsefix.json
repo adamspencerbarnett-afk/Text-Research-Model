@@ -1,0 +1,525 @@
+{
+ "setup": {
+  "data": "data_qa",
+  "work": "runs/r1e",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 600.0,
+  "ctx": 256,
+  "batch": 32,
+  "topk": 64,
+  "neighbor_codes": 110,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/r1e_alpaca_5M_parsefix.json",
+  "seed": 1,
+  "self_context_p": 0.5,
+  "copy_bias": 0.0,
+  "device": "cuda",
+  "threads": 0,
+  "width": 256,
+  "layers": 6,
+  "heads": 8,
+  "greedy": true,
+  "no_repeat": 3,
+  "patience": 3,
+  "min_delta": 0.005,
+  "max_steps": 0,
+  "dict": "runs/scale/v0_8k_plain.cv0d",
+  "init": "runs/scale/scale_5M_v0_8k_ng64.pt",
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "copy_question": false,
+  "calculator": false,
+  "perturb_self": 0.0,
+  "sim_feature": false,
+  "save": "runs/r1e/qa_r1e_5M.pt",
+  "train_exchanges": 50965,
+  "eval": 520,
+  "added": 521,
+  "distinct_keys": 50605
+ },
+ "training": {
+  "steps": 16073,
+  "train_s": 600.0,
+  "stop_reason": "budget",
+  "best_valid": 1.059,
+  "history": [
+   {
+    "train_s": 60.0,
+    "step": 1600,
+    "train_bits_per_code": 2.112,
+    "valid_bits_per_byte": 1.1566
+   },
+   {
+    "train_s": 120.0,
+    "step": 3199,
+    "train_bits_per_code": 2.672,
+    "valid_bits_per_byte": 1.1187
+   },
+   {
+    "train_s": 180.0,
+    "step": 4802,
+    "train_bits_per_code": 1.985,
+    "valid_bits_per_byte": 1.105
+   },
+   {
+    "train_s": 240.0,
+    "step": 6399,
+    "train_bits_per_code": 2.366,
+    "valid_bits_per_byte": 1.095
+   },
+   {
+    "train_s": 300.0,
+    "step": 8002,
+    "train_bits_per_code": 1.588,
+    "valid_bits_per_byte": 1.0791
+   },
+   {
+    "train_s": 360.0,
+    "step": 9595,
+    "train_bits_per_code": 1.775,
+    "valid_bits_per_byte": 1.0787
+   },
+   {
+    "train_s": 420.0,
+    "step": 11191,
+    "train_bits_per_code": 2.202,
+    "valid_bits_per_byte": 1.0657
+   },
+   {
+    "train_s": 480.0,
+    "step": 12795,
+    "train_bits_per_code": 1.985,
+    "valid_bits_per_byte": 1.0712
+   },
+   {
+    "train_s": 540.0,
+    "step": 14430,
+    "train_bits_per_code": 1.884,
+    "valid_bits_per_byte": 1.0663
+   },
+   {
+    "train_s": 600.0,
+    "step": 16073,
+    "train_bits_per_code": 2.032,
+    "valid_bits_per_byte": 1.059
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.9738,
+   "exact": 0.99
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 60,
+   "f1": 0.6299,
+   "exact": 0.1667,
+   "f1_no_m1": 0.2034,
+   "f1_bias": 0.6299,
+   "exact_bias": 0.1667
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 38,
+   "f1": 0.2563,
+   "exact": 0.0263,
+   "f1_no_m1": 0.1564,
+   "f1_bias": 0.2563,
+   "exact_bias": 0.0263,
+   "retrieved_answer_f1_vs_ref": 0.231
+  },
+  "unseen_network_with_nearest": {
+   "n": 162,
+   "f1": 0.2148,
+   "exact": 0.0,
+   "f1_no_m1": 0.182,
+   "f1_bias": 0.2148,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.1955
+  },
+  "heldout_network_without_memory": {
+   "n": 60,
+   "f1": 0.1818,
+   "exact": 0.0
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.2179
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.9567,
+   "exact": 0.985
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 60,
+   "f1": 0.6892,
+   "exact": 0.25,
+   "f1_no_m1": 0.1893,
+   "f1_bias": 0.6892,
+   "exact_bias": 0.25
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Propose a solution to the problem of homeless people living on the streets.",
+    "a": "A solution to the problem of homeless people living on the streets could include: \n1. Create a new and exciting plastic that could help people stay connected wi",
+    "f1": 0.30344827586206896,
+    "exact": 0.0,
+    "a_no_m1": "A solution to the problem of homeless people living on the streets could include: \n1. Creating a health plan for the day and sticking them to the dest. \n2. Crea",
+    "f1_no_m1": 0.3157894736842105,
+    "a_bias": "A solution to the problem of homeless people living on the streets could include: \n1. Create a new and exciting plastic that could help people stay connected wi",
+    "f1_bias": 0.30344827586206896,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Find 3 examples of companies who are using analytics to improve customer experie",
+    "a": "1. Automation - Autonomous vehicles are used to analytics and customer service.\n2. AI - Machine Learning - Technology, Automous Learn auton, and Autandous Lever",
+    "f1": 0.1758241758241758,
+    "exact": 0.0,
+    "a_no_m1": "1. Aut customer experience is a highly customer and customer-bov customer.\n2. AI customer has a personalized personalized experience, allowing customers to easi",
+    "f1_no_m1": 0.25,
+    "a_bias": "1. Automation - Autonomous vehicles are used to analytics and customer service.\n2. AI - Machine Learning - Technology, Automous Learn auton, and Autandous Lever",
+    "f1_bias": 0.1758241758241758,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Determine the appropriate verb for the blank space.\nThe teacher _ her students t",
+    "a": "The teacher encouraged her students to speak up in class.\n\n\n\nThe teacher encourages her students'_ her students, speak up, class.\nAssistant: The teachers studen",
+    "f1": 0.45454545454545453,
+    "exact": 0.0,
+    "a_no_m1": "The teacher _She to speak up in class.\n\nVerperperperque: The teacher is a class.\nVerperque is a teacher.\n\nOperque _ She is a student.\n\nChes: Ves\n\nVeres:\nVeres _",
+    "f1_no_m1": 0.391304347826087,
+    "a_bias": "The teacher encouraged her students to speak up in class.\n\n\n\nThe teacher encourages her students'_ her students, speak up, class.\nAssistant: The teachers studen",
+    "f1_bias": 0.45454545454545453,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Create headlines for a news article about a startup\u2019s new product launch.",
+    "a": "\"Reolutionizes Technology: Introducing a Standout Product\". \n\"Startup Launches Innovative Produce: Making a Bold Step Forward\".\n\n\"Starry Showcases Futuristic Pr",
+    "f1": 0.29059829059829057,
+    "exact": 0.0,
+    "a_no_m1": "\"Rept: Exork Rept: Decle New Techn New Teosss: Excle New Repts!\"\n\n Rept 1: Staring the Rept New Tecesses: Exerve the Tecesss of Technology\n\nRept 2: Technware Ne",
+    "f1_no_m1": 0.1322314049586777,
+    "a_bias": "\"Reolutionizes Technology: Introducing a Standout Product\". \n\"Startup Launches Innovative Produce: Making a Bold Step Forward\".\n\n\"Starry Showcases Futuristic Pr",
+    "f1_bias": 0.29059829059829057,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Create a blog post about the importance of sustainable development in 200 words.",
+    "a": "The importance of sustainable development is essential for our lives. We are responsible for the environment and the envelope of our planet. We can help to redu",
+    "f1": 0.2971887550200803,
+    "exact": 0.0,
+    "a_no_m1": "The importance of sustainable development is essas for our lives. We are responsing our lives in many ways, from our lives to our lives, our lives and our lives",
+    "f1_no_m1": 0.22134387351778653,
+    "a_bias": "The importance of sustainable development is essential for our lives. We are responsible for the environment and the envelope of our planet. We can help to redu",
+    "f1_bias": 0.2971887550200803,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Create a list of humorous reading suggestions",
+    "a": "- Wonder, by Douglas Adams and Stephen Hawking \n- How to Lose Friends and Alienate People, by Toby Young\n- A Series of Unfortunate Events, by Lemony Snicket\n- W",
+    "f1": 0.30909090909090914,
+    "exact": 0.0,
+    "a_no_m1": "- Work and Work by Work\n- Wraction by Wraction\n- Sork by reading\n- Vork by writing\n- Drraction for reading\n - Vips and read\n- Exork by study\n- Tips and tips\n- G",
+    "f1_no_m1": 0.0900900900900901,
+    "a_bias": "- Wonder, by Douglas Adams and Stephen Hawking \n- How to Lose Friends and Alienate People, by Toby Young\n- A Series of Unfortunate Events, by Lemony Snicket\n- W",
+    "f1_bias": 0.30909090909090914,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Name two possible solutions to reduce the effects of global warming.",
+    "a": "Three possible solutions to reduce global warming include: reducing our emissions of greenhouse gases such as carbon dioxide, switching to clean energy sources ",
+    "f1": 0.4242424242424242,
+    "exact": 0.0,
+    "a_no_m1": "The two possible solutions to reduce the effects of global warming are: reducing the amount of waste in waste, and increting the amount to waste is being done b",
+    "f1_no_m1": 0.3846153846153846,
+    "a_bias": "Three possible solutions to reduce global warming include: reducing our emissions of greenhouse gases such as carbon dioxide, switching to clean energy sources ",
+    "f1_bias": 0.4242424242424242,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.698,
+    "f1_vs_retrieved": 0.8113207547169812,
+    "retrieved_answer_f1_vs_ref": 0.4047619047619047
+   },
+   {
+    "q": "Write a function that takes an array of numbers and sorts them in ascending orde",
+    "a": "def sort_array_sum(arr):\n    if arr[] > \n    return array A[]\n\n    return 0\n\n    for i in range(array A, array B): \n        return arr.3 \n  \n    for (let i = 0:",
+    "f1": 0.4,
+    "exact": 0.0,
+    "a_no_m1": "def sort_array_araction_artern(array):\n    array[] = array_] \n    let array = sort_ array(arng[]]) \n  \n    int arrayIarray[[])\n\n    arng[array] < array]\n\n   arr",
+    "f1_no_m1": 0.06896551724137931,
+    "a_bias": "def sort_array_sum(arr):\n    if arr[] > \n    return array A[]\n\n    return 0\n\n    for i in range(array A, array B): \n        return arr.3 \n  \n    for (let i = 0:",
+    "f1_bias": 0.4,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.532,
+    "f1_vs_retrieved": 0.28169014084507044,
+    "retrieved_answer_f1_vs_ref": 0.10714285714285714
+   },
+   {
+    "q": "Generate an example use case of how an AI system can improve customer service.",
+    "a": "An AI system can improve customer service by providing customer feedback to customer inquiries. AI can be used to analyze customer interactions and generate ins",
+    "f1": 0.48062015503875966,
+    "exact": 0.0,
+    "a_no_m1": "An AI system can improve customer service by prove autr-b recogn with customer inquirers, prove personal information to customer questions, and provide personal",
+    "f1_no_m1": 0.32835820895522383,
+    "a_bias": "An AI system can improve customer service by providing customer feedback to customer inquiries. AI can be used to analyze customer interactions and generate ins",
+    "f1_bias": 0.48062015503875966,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.629,
+    "f1_vs_retrieved": 0.5641025641025641,
+    "retrieved_answer_f1_vs_ref": 0.45901639344262296
+   },
+   {
+    "q": "Write an essay about what makes a good leader.",
+    "a": "A good leader is a strong and strong individual. They are a strong, strong-willed individual, and are able to motivated and motivation. They can be used to moto",
+    "f1": 0.17049180327868854,
+    "exact": 0.0,
+    "a_no_m1": "A good leader is a strong and strong individual. They are a strong, strong-bala-r and strong team, strong, and strong-r. They can be able to mot and inspate, an",
+    "f1_no_m1": 0.2026143790849673,
+    "a_bias": "A good leader is a strong and strong individual. They are a strong, strong-willed individual, and are able to motivated and motivation. They can be used to moto",
+    "f1_bias": 0.17049180327868854,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.683,
+    "f1_vs_retrieved": 0.17142857142857146,
+    "retrieved_answer_f1_vs_ref": 0.03891050583657587
+   },
+   {
+    "q": "Compute the given arithmetic equation.\n9 + 4 x 3",
+    "a": "9",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "9\n\n3\n\n5\n\n7\n\n7 + 4\n\n77 = 4\n7 \ufffd + x 3\n\n7 x = x\n\n8 += 2\n77\n\n8\n\n73 == 8\n\n8\n7 x is = the x + y + z 4 + c\n\n7",
+    "f1_no_m1": 0.0,
+    "a_bias": "9",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.543,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Create a conclusion paragraph for a persuasive essay on the importance of voting",
+    "a": "Voting is an essay on the importance of voting is a democratic society. It is a crucial part of the way we make informed decisions and decisions. Voting helps t",
+    "f1": 0.3373493975903614,
+    "exact": 0.0,
+    "a_no_m1": "Voting is an essay on the importance of voting is a powerful too effect in many aspects of life. It is a cruice for helping people make informed and protect the",
+    "f1_no_m1": 0.21052631578947367,
+    "a_bias": "Voting is an essay on the importance of voting is a democratic society. It is a crucial part of the way we make informed decisions and decisions. Voting helps t",
+    "f1_bias": 0.3373493975903614,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.599,
+    "f1_vs_retrieved": 0.19570405727923626,
+    "retrieved_answer_f1_vs_ref": 0.23126338329764454
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Develop a website for a travel blog",
+    "a": "A travel blog could be a great way to travel blockchain and other blog posts. It could be an interactive way to connecting users and other social media platform",
+    "f1": 0.295774647887324,
+    "exact": 0.0,
+    "a_no_m1": "A travel blog could be a great way to travel blik, with a viocist of travel and a vider of travel. The website could be an interder and a visy learning pla with",
+    "f1_no_m1": 0.41558441558441556,
+    "a_bias": "A travel blog could be a great way to travel blockchain and other blog posts. It could be an interactive way to connecting users and other social media platform",
+    "f1_bias": 0.295774647887324,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.361,
+    "f1_vs_retrieved": 0.034482758620689655,
+    "retrieved_answer_f1_vs_ref": 0.03846153846153846
+   },
+   {
+    "q": "Generate a list of questions the user can ask a chatbot about home insurance.",
+    "a": "1. What is your favorite product?\n2. How do you think about online?\n3. What are your topic?\n4. Do you have in stock?\n5. What payment options do you accept?\n\n4. ",
+    "f1": 0.1565217391304348,
+    "exact": 0.0,
+    "a_no_m1": "1. What is the best way to get up and doc?\n2. What do you think about on my project?\n3. What techn do you have to do to improve?\n4. How do you look about?\n5. Wh",
+    "f1_no_m1": 0.2015503875968992,
+    "a_bias": "1. What is your favorite product?\n2. How do you think about online?\n3. What are your topic?\n4. Do you have in stock?\n5. What payment options do you accept?\n\n4. ",
+    "f1_bias": 0.1565217391304348,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.424,
+    "f1_vs_retrieved": 0.7058823529411765,
+    "retrieved_answer_f1_vs_ref": 0.09523809523809525
+   },
+   {
+    "q": "Create a paragraph to describe the moon.",
+    "a": "The moon is a beautiful day,\nThe moon is the light that is almost,\nAs the moon is so much,\nA sight of the moon,\nString \u2013 a deep,\nWords: global,\nEventually,\nLife",
+    "f1": 0.2595419847328244,
+    "exact": 0.0,
+    "a_no_m1": "The moon is a beautiful, blue night, with a har of blue and blue, with the moon so grand, and the moon is the light of the night. The moon soushs, with its blue",
+    "f1_no_m1": 0.2953020134228188,
+    "a_bias": "The moon is a beautiful day,\nThe moon is the light that is almost,\nAs the moon is so much,\nA sight of the moon,\nString \u2013 a deep,\nWords: global,\nEventually,\nLife",
+    "f1_bias": 0.2595419847328244,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.397,
+    "f1_vs_retrieved": 0.326241134751773,
+    "retrieved_answer_f1_vs_ref": 0.30434782608695654
+   },
+   {
+    "q": "Describe a technique to make effective use of hashtags on social media.",
+    "a": "A technique to make effective use of hashtags on social media is to effectively categorize content and make it easier for users to discover and interact with th",
+    "f1": 0.396694214876033,
+    "exact": 0.0,
+    "a_no_m1": "A technique to make effective use of hashtags on social media is to use social medta visers. This involator can be used to visers through influence, such campai",
+    "f1_no_m1": 0.2809917355371901,
+    "a_bias": "A technique to make effective use of hashtags on social media is to effectively categorize content and make it easier for users to discover and interact with th",
+    "f1_bias": 0.396694214876033,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.437,
+    "f1_vs_retrieved": 0.7559055118110236,
+    "retrieved_answer_f1_vs_ref": 0.35714285714285715
+   },
+   {
+    "q": "Why is it important to know the environment of a place before visiting?",
+    "a": "It is important to consider the environment of a place before visiting is a place to be mindful of the enveloper. Additionally, plants play a crucial role in co",
+    "f1": 0.3064516129032258,
+    "exact": 0.0,
+    "a_no_m1": "It is important to consider the environment of a place before visiting is a place to be mind. It is a great way to visit the env destax of a rest and make sure ",
+    "f1_no_m1": 0.3835616438356164,
+    "a_bias": "It is important to consider the environment of a place before visiting is a place to be mindful of the enveloper. Additionally, plants play a crucial role in co",
+    "f1_bias": 0.3064516129032258,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.235,
+    "f1_vs_retrieved": 0.5039370078740157,
+    "retrieved_answer_f1_vs_ref": 0.24516129032258066
+   },
+   {
+    "q": "Explain what is a Block Chain.",
+    "a": "A block Chain is a type of software that is used to create a blockchain technology that is distributed ledger technology. It is a distributed database that is d",
+    "f1": 0.42857142857142855,
+    "exact": 0.0,
+    "a_no_m1": "A block Chain is a type of software that is used to store and docapp and docate information. It is a block that is designed by a user who is used for a variety ",
+    "f1_no_m1": 0.34234234234234234,
+    "a_bias": "A block Chain is a type of software that is used to create a blockchain technology that is distributed ledger technology. It is a distributed database that is d",
+    "f1_bias": 0.42857142857142855,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.281,
+    "f1_vs_retrieved": 0.15384615384615385,
+    "retrieved_answer_f1_vs_ref": 0.13186813186813184
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Find the number of times the letter E appears in the following sentence.\nThe qui",
+    "a": "The letter E appears 3 times in the sentence.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The simpleE of the letter E appears in the sentence is \"The quick brown fox\".\n\nThe quickon is 2.\n\nE is - The faston fox is 1.\n\nL is / The fast third fox has - 2",
+    "f1_no_m1": 0.3111111111111111,
+    "a_bias": "The letter E appears 3 times in the sentence.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Fix any grammar and spelling errors in the following sentence.\nThe malloys bough",
+    "a": "The Malloys bought a box of chocolates.\n\n\n\nThe Malloot bought a new box of .\n\nThe box of too bought a laptop.",
+    "f1": 0.5,
+    "exact": 0.0,
+    "a_no_m1": "The side was bought a box of chocket.\n\nThe side had a box for the box of Chocket to the box.\n\nEvaed the box for a box to the chair.\n\nOvaed it to the table.\n\nSov",
+    "f1_no_m1": 0.1724137931034483,
+    "a_bias": "The Malloys bought a box of chocolates.\n\n\n\nThe Malloot bought a new box of .\n\nThe box of too bought a laptop.",
+    "f1_bias": 0.5,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "What describes the following equation: y = x^2 - 3",
+    "a": "This equation is a parabola with its vertex at (0, -3). The parab of This equtex at the sign of y = x^2 is positive.",
+    "f1": 0.7906976744186046,
+    "exact": 0.0,
+    "a_no_m1": "The equation is a mat-bist equation that is used to comparate the two points of the trim. It is a trim of 2, 3, 4, 5, and 5.\n\nThe equation can be used to add th",
+    "f1_no_m1": 0.20895522388059704,
+    "a_bias": "This equation is a parabola with its vertex at (0, -3). The parab of This equtex at the sign of y = x^2 is positive.",
+    "f1_bias": 0.7906976744186046,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Rewrite the sentence in the negative form and output the result.\nI was delighted",
+    "a": "I was not delighted to hear from you.\n\n\n\n\n\nI was not not delighted from you from you soon to hear.\n\nAssistant: I was delighted to have from you to you.\nAssant: ",
+    "f1": 0.26229508196721313,
+    "exact": 0.0,
+    "a_no_m1": "I was delighted to hear from you.\n\nI was delighted for you. It wasll to hear.\n\nSes of joy and joy.\n\n(Ses___, y_, em_, and joy_.\n\n__ to hear_. What is it?\n\n_I'll",
+    "f1_no_m1": 0.30434782608695654,
+    "a_bias": "I was not delighted to hear from you.\n\n\n\n\n\nI was not not delighted from you from you soon to hear.\n\nAssistant: I was delighted to have from you to you.\nAssant: ",
+    "f1_bias": 0.26229508196721313,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Write a short paragraph to explain the importance of communication in the workpl",
+    "a": "Sort the workplace has become an important part of the workforce. It enables employees to share information and collaborate on projects, while developing strong",
+    "f1": 0.6166666666666667,
+    "exact": 0.0,
+    "a_no_m1": "Social is an essde in the workplace. It is essde that everyone is responsed to their team needs, and they are responsed by their team. Social helps individuals ",
+    "f1_no_m1": 0.25,
+    "a_bias": "Sort the workplace has become an important part of the workforce. It enables employees to share information and collaborate on projects, while developing strong",
+    "f1_bias": 0.6166666666666667,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Determine which of the two words is the antonym of the other.\nAbundant and Rare",
+    "a": "Abundant and Rare are antonyms.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The antonym of the four is the antonyun of the two.\n\nThe antonyw of the ant loss is the strong of the strong.\n\nExy\n\nThe strong of these is the weak of the long,",
+    "f1_no_m1": 0.03333333333333333,
+    "a_bias": "Abundant and Rare are antonyms.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ]
+ },
+ "checks": {}
+}

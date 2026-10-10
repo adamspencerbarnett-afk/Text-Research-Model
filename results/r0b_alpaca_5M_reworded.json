@@ -1,0 +1,527 @@
+{
+ "setup": {
+  "data": "data_qa",
+  "work": "runs/r0b",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 600.0,
+  "ctx": 256,
+  "batch": 32,
+  "topk": 64,
+  "neighbor_codes": 110,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/r0b_alpaca_5M_reworded.json",
+  "seed": 1,
+  "self_context_p": 0.5,
+  "copy_bias": 0.0,
+  "device": "cuda",
+  "threads": 0,
+  "width": 256,
+  "layers": 6,
+  "heads": 8,
+  "greedy": true,
+  "no_repeat": 3,
+  "patience": 3,
+  "min_delta": 0.005,
+  "max_steps": 0,
+  "dict": "runs/scale/v0_8k_plain.cv0d",
+  "init": "runs/scale/scale_5M_v0_8k_ng64.pt",
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "copy_question": false,
+  "calculator": false,
+  "perturb_self": 0.5,
+  "sim_feature": true,
+  "loss_answer_only": false,
+  "stop_at_blank": false,
+  "save": "runs/r0b/qa_r0b_5M.pt",
+  "train_exchanges": 50965,
+  "eval": 520,
+  "added": 521,
+  "distinct_keys": 50605
+ },
+ "training": {
+  "steps": 15690,
+  "train_s": 600.0,
+  "stop_reason": "budget",
+  "best_valid": 1.0516,
+  "history": [
+   {
+    "train_s": 60.0,
+    "step": 1587,
+    "train_bits_per_code": 2.403,
+    "valid_bits_per_byte": 1.1478
+   },
+   {
+    "train_s": 120.0,
+    "step": 3165,
+    "train_bits_per_code": 1.966,
+    "valid_bits_per_byte": 1.1154
+   },
+   {
+    "train_s": 180.0,
+    "step": 4762,
+    "train_bits_per_code": 2.017,
+    "valid_bits_per_byte": 1.0834
+   },
+   {
+    "train_s": 240.0,
+    "step": 6357,
+    "train_bits_per_code": 1.885,
+    "valid_bits_per_byte": 1.0838
+   },
+   {
+    "train_s": 300.0,
+    "step": 7882,
+    "train_bits_per_code": 1.884,
+    "valid_bits_per_byte": 1.0787
+   },
+   {
+    "train_s": 360.0,
+    "step": 9332,
+    "train_bits_per_code": 2.009,
+    "valid_bits_per_byte": 1.0728
+   },
+   {
+    "train_s": 420.0,
+    "step": 10842,
+    "train_bits_per_code": 2.137,
+    "valid_bits_per_byte": 1.0595
+   },
+   {
+    "train_s": 480.0,
+    "step": 12435,
+    "train_bits_per_code": 2.149,
+    "valid_bits_per_byte": 1.061
+   },
+   {
+    "train_s": 540.0,
+    "step": 14057,
+    "train_bits_per_code": 2.007,
+    "valid_bits_per_byte": 1.0516
+   },
+   {
+    "train_s": 600.0,
+    "step": 15690,
+    "train_bits_per_code": 1.799,
+    "valid_bits_per_byte": 1.055
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.98,
+   "exact": 1.0
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 60,
+   "f1": 0.6287,
+   "exact": 0.1667,
+   "f1_no_m1": 0.2067,
+   "f1_bias": 0.6287,
+   "exact_bias": 0.1667
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 38,
+   "f1": 0.184,
+   "exact": 0.0,
+   "f1_no_m1": 0.1363,
+   "f1_bias": 0.184,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.231
+  },
+  "unseen_network_with_nearest": {
+   "n": 162,
+   "f1": 0.2159,
+   "exact": 0.0,
+   "f1_no_m1": 0.1895,
+   "f1_bias": 0.2159,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.1955
+  },
+  "heldout_network_without_memory": {
+   "n": 60,
+   "f1": 0.1953,
+   "exact": 0.0
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.2187
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.9567,
+   "exact": 0.985
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 60,
+   "f1": 0.648,
+   "exact": 0.2,
+   "f1_no_m1": 0.1832,
+   "f1_bias": 0.648,
+   "exact_bias": 0.2
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Given the following sets, find their intersection.\nA = {1, 2, 3, 4}\nB = {3, 4, 5",
+    "a": "The intersection of A and B is {3, 4}.\n\nA intersecting the intersecteion of the two sets, and find the internet of the inter4.\n\nThe intersecveion of two setes (",
+    "f1": 0.32558139534883723,
+    "exact": 0.0,
+    "a_no_m1": "[1, 2, 3, 4, 6}\n\n10, [2,4,3,4]\n\n15, {1,2,3),3}\n\n25,(3,30),[2],[3],{3]\n\n3,[4,[1],(2)",
+    "f1_no_m1": 0.0,
+    "a_bias": "The intersection of A and B is {3, 4}.\n\nA intersecting the intersecteion of the two sets, and find the internet of the inter4.\n\nThe intersecveion of two setes (",
+    "f1_bias": 0.32558139534883723,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Given a complex topic, provide a clear definition.\nThe Reproductive Justice Move",
+    "a": "The Reproductive Justice Movement is a powerful and powerful language used to promote the gap between reproductive rights, health, and justice by addressing how",
+    "f1": 0.5362318840579711,
+    "exact": 0.0,
+    "a_no_m1": "The Reproductive Justice Movement is a powerful and powerful language used to promate the GRRRs of all countries in the world.\n\nThe Reproduay is a un-based lang",
+    "f1_no_m1": 0.2585034013605442,
+    "a_bias": "The Reproductive Justice Movement is a powerful and powerful language used to promote the gap between reproductive rights, health, and justice by addressing how",
+    "f1_bias": 0.5362318840579711,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Describe the concept of a virtual assistant with a focus on how it could be used",
+    "a": "A virtual assistant can be used to automate mundane tasks like creating meeting notes, scheduling meetings, searching through databases, and managing emails. Th",
+    "f1": 0.672,
+    "exact": 0.0,
+    "a_no_m1": "A virtual assistant can be used to autgo in a variety of different tasks, such including tasks like sche sche, task sche, time sche, and task sche.\n\nVutgo remin",
+    "f1_no_m1": 0.37956204379562036,
+    "a_bias": "A virtual assistant can be used to automate mundane tasks like creating meeting notes, scheduling meetings, searching through databases, and managing emails. Th",
+    "f1_bias": 0.672,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Rearrange the following sentence to make it grammatically correct:\n\neat likes ve",
+    "a": "My cat likes to eat vegetables.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "I am likes vegetables.\n\nI am likenables..\n\nThe cat is likenlies.\n\nAs I am the dog.\n\nA choc.\n\nCats.\n\nVas.\n\nDenlies, I am asnlies asnums.\n\nIn my cat, I have a dog",
+    "f1_no_m1": 0.17777777777777778,
+    "a_bias": "My cat likes to eat vegetables.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Identify three characters in the following story.\nJohn, a young adventurer, and ",
+    "a": "The three characters in the story are John, Amy, and the antagonist guarding the magical item.\n\n are John Amy, Amy and the the antical it the magagonist are Joh",
+    "f1": 0.463768115942029,
+    "exact": 0.0,
+    "a_no_m1": "Three characters in the story are: \"John, a young adventurer\", and \"Book\".\n\nThe story is a young and the young adventurers are willing and the two must be willi",
+    "f1_no_m1": 0.35135135135135137,
+    "a_bias": "The three characters in the story are John, Amy, and the antagonist guarding the magical item.\n\n are John Amy, Amy and the the antical it the magagonist are Joh",
+    "f1_bias": 0.463768115942029,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Name three simple machines.",
+    "a": "The three simple machines are a lever, a pulley, and an inclined plane.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "Three simple machines are auron, a puron and a piron.\n\nAuron is a compuron program that is designed by a compet.\n\nThe compet is a couron compuror that is used t",
+    "f1_no_m1": 0.253968253968254,
+    "a_bias": "The three simple machines are a lever, a pulley, and an inclined plane.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Name two possible solutions to reduce the effects of global warming.",
+    "a": "Two possible solutions to reduce global warming are: reducing our emissions of greenhouse gases such as carbon dioxide, switching to clean energy sources like w",
+    "f1": 0.4848484848484849,
+    "exact": 0.0,
+    "a_no_m1": "Two possible solutions to reduce global warming are: \n1. Imsting energy: Crit energy is not harming the env, which is not pol to use. \n2. Imde: Cre energy is ha",
+    "f1_no_m1": 0.3384615384615385,
+    "a_bias": "Two possible solutions to reduce global warming are: reducing our emissions of greenhouse gases such as carbon dioxide, switching to clean energy sources like w",
+    "f1_bias": 0.4848484848484849,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.698,
+    "f1_vs_retrieved": 0.7547169811320754,
+    "retrieved_answer_f1_vs_ref": 0.4047619047619047
+   },
+   {
+    "q": "Write a function that takes an array of numbers and sorts them in ascending orde",
+    "a": "def sort(arr):\n    return arr\n\n# Output\nprint(\"Hello World\")\n\n# For each element in ascending order:\n    # Formulate a array\n    for i in range(1,1): \n        i",
+    "f1": 0.28571428571428575,
+    "exact": 0.0,
+    "a_no_m1": "def sort(array):\n    array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 1]\n    sort(n + 1, array) \n    last(n) [ 20, 000, and 10,",
+    "f1_no_m1": 0.10000000000000002,
+    "a_bias": "def sort(arr):\n    return arr\n\n# Output\nprint(\"Hello World\")\n\n# For each element in ascending order:\n    # Formulate a array\n    for i in range(1,1): \n        i",
+    "f1_bias": 0.28571428571428575,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.532,
+    "f1_vs_retrieved": 0.28169014084507044,
+    "retrieved_answer_f1_vs_ref": 0.10714285714285714
+   },
+   {
+    "q": "Generate an example use case of how an AI system can improve customer service.",
+    "a": "AI system can be used to automate customer service operations by analyze customer queries and provide responses to customers. AI can also be used for customer i",
+    "f1": 0.40625000000000006,
+    "exact": 0.0,
+    "a_no_m1": "AI system can be used to auter service in a variety of ways. For tasks, it can be traind by analing customers to understand what tasks are like, such as scheing",
+    "f1_no_m1": 0.373134328358209,
+    "a_bias": "AI system can be used to automate customer service operations by analyze customer queries and provide responses to customers. AI can also be used for customer i",
+    "f1_bias": 0.40625000000000006,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.629,
+    "f1_vs_retrieved": 0.49032258064516127,
+    "retrieved_answer_f1_vs_ref": 0.45901639344262296
+   },
+   {
+    "q": "Write an essay about what makes a good leader.",
+    "a": "A good leader is motivated, confident, persuasive, inspiring, organized, and reliable.",
+    "f1": 0.03891050583657587,
+    "exact": 0.0,
+    "a_no_m1": "A good leader is an essay that is able to build and communicate strong communic. It is essay in a variety of ways, including communicing, communicing and coll, ",
+    "f1_no_m1": 0.19736842105263158,
+    "a_bias": "A good leader is motivated, confident, persuasive, inspiring, organized, and reliable.",
+    "f1_bias": 0.03891050583657587,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.683,
+    "f1_vs_retrieved": 1.0,
+    "retrieved_answer_f1_vs_ref": 0.03891050583657587
+   },
+   {
+    "q": "Compute the given arithmetic equation.\n9 + 4 x 3",
+    "a": "13\n\n10\n\n15\n\n17\n\n16\n\n12\n\n13\n15\n17\n10\n12\n13 + 4\n14\n25\n35\n27\n37\n26\n16\n30\n20\n36\n2.\n\n14\n\n1.",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "13\n\n10\n\n15\n\n17\n\n16\n\n12\n\n13\n15\n17\n10\n12\n13 + 4\n14\n25\n35\n27\n37\n26\n16\n30\n20\n36\n21\n1\n32\n3",
+    "f1_no_m1": 0.0,
+    "a_bias": "13\n\n10\n\n15\n\n17\n\n16\n\n12\n\n13\n15\n17\n10\n12\n13 + 4\n14\n25\n35\n27\n37\n26\n16\n30\n20\n36\n2.\n\n14\n\n1.",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.543,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Create a conclusion paragraph for a persuasive essay on the importance of voting",
+    "a": "Poting is an essay of the power of the world, as it is essential to the power to make it easier to achieve. It is essay in their own destinies and shape the fut",
+    "f1": 0.22619047619047616,
+    "exact": 0.0,
+    "a_no_m1": "Poting is an essay of voting. It is essay in the form of a society, which is essate to the pot of vunch. It helps to creatate a sense of vaying, which can be us",
+    "f1_no_m1": 0.26829268292682923,
+    "a_bias": "Poting is an essay of the power of the world, as it is essential to the power to make it easier to achieve. It is essay in their own destinies and shape the fut",
+    "f1_bias": 0.22619047619047616,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.599,
+    "f1_vs_retrieved": 0.2517814726840855,
+    "retrieved_answer_f1_vs_ref": 0.23126338329764454
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Develop a website for a travel blog",
+    "a": "A website for a travel blog could include a website with a search bar, a navigation bar, and a vibrant colors. It could be designed to help the website to explo",
+    "f1": 0.3333333333333333,
+    "exact": 0.0,
+    "a_no_m1": "A website for a travel blog could include a website with a search pla, a nab page with a vide, a viline, and a viote page. It could include viote travels, a var",
+    "f1_no_m1": 0.304635761589404,
+    "a_bias": "A website for a travel blog could include a website with a search bar, a navigation bar, and a vibrant colors. It could be designed to help the website to explo",
+    "f1_bias": 0.3333333333333333,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.361,
+    "f1_vs_retrieved": 0.09999999999999999,
+    "retrieved_answer_f1_vs_ref": 0.03846153846153846
+   },
+   {
+    "q": "Generate a list of questions the user can ask a chatbot about home insurance.",
+    "a": "1. What is the main character of the story?\n2. How do you think about home insurance?\n3. What are your favorite hobby?\n4. How can you think is the most importan",
+    "f1": 0.2857142857142857,
+    "exact": 0.0,
+    "a_no_m1": "1. What act do you like to do?\n2. How do you hand-to do? \n3. What experience do you have in your home?\n4. How did you hand?\n5. How have you hand up?\n\n6. How has",
+    "f1_no_m1": 0.06557377049180328,
+    "a_bias": "1. What is the main character of the story?\n2. How do you think about home insurance?\n3. What are your favorite hobby?\n4. How can you think is the most importan",
+    "f1_bias": 0.2857142857142857,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.424,
+    "f1_vs_retrieved": 0.3291139240506329,
+    "retrieved_answer_f1_vs_ref": 0.09523809523809525
+   },
+   {
+    "q": "Create a paragraph to describe the moon.",
+    "a": "The moon is like a giant,\nThe moon is the night owl spreads its wings and takes flight.\n\nThe moon watches over us all,\nSilently as we go through life.\nIn times ",
+    "f1": 0.29577464788732394,
+    "exact": 0.0,
+    "a_no_m1": "The moon is like a gas,\nIt is like an old night,\nAnd the moon is still in the sky.\n\nThe moon is as dark,\nNo one night is like the night,\n\nThe Mo is like one nig",
+    "f1_no_m1": 0.2777777777777778,
+    "a_bias": "The moon is like a giant,\nThe moon is the night owl spreads its wings and takes flight.\n\nThe moon watches over us all,\nSilently as we go through life.\nIn times ",
+    "f1_bias": 0.29577464788732394,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.397,
+    "f1_vs_retrieved": 0.6842105263157894,
+    "retrieved_answer_f1_vs_ref": 0.30434782608695654
+   },
+   {
+    "q": "Describe a technique to make effective use of hashtags on social media.",
+    "a": "A technique to make effective use of hashtags on social media is to effectively categorize content and make it easier for users to discover and interact with th",
+    "f1": 0.33613445378151263,
+    "exact": 0.0,
+    "a_no_m1": "A technique to make effective use of hashtags on social media can be used to effective the way we communic, such as creative communic, communicive communice, an",
+    "f1_no_m1": 0.3050847457627119,
+    "a_bias": "A technique to make effective use of hashtags on social media is to effectively categorize content and make it easier for users to discover and interact with th",
+    "f1_bias": 0.33613445378151263,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.437,
+    "f1_vs_retrieved": 0.672,
+    "retrieved_answer_f1_vs_ref": 0.35714285714285715
+   },
+   {
+    "q": "Why is it important to know the environment of a place before visiting?",
+    "a": "It is important to consider the environment of a place before visiting. It is essential to the enveloper, which helps to reduce the amount of waste and pollutio",
+    "f1": 0.4427480916030534,
+    "exact": 0.0,
+    "a_no_m1": "It is important to consider the environment of a place before visiting. It is essated to the env nest and is essized to the health and nest environic effects of",
+    "f1_no_m1": 0.4328358208955224,
+    "a_bias": "It is important to consider the environment of a place before visiting. It is essential to the enveloper, which helps to reduce the amount of waste and pollutio",
+    "f1_bias": 0.4427480916030534,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.235,
+    "f1_vs_retrieved": 0.29850746268656714,
+    "retrieved_answer_f1_vs_ref": 0.24516129032258066
+   },
+   {
+    "q": "Explain what is a Block Chain.",
+    "a": "A Block Chain is a type of computer program that is used to calculate the ground in a variety of different types of data. It is used in a logic chain to calcula",
+    "f1": 0.28813559322033894,
+    "exact": 0.0,
+    "a_no_m1": "A Block Chain is a type of compic compic that is used to creatate a compic coope. It is used in a variety of applicals such as autrp, memory, and other applical",
+    "f1_no_m1": 0.2956521739130435,
+    "a_bias": "A Block Chain is a type of computer program that is used to calculate the ground in a variety of different types of data. It is used in a logic chain to calcula",
+    "f1_bias": 0.28813559322033894,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.281,
+    "f1_vs_retrieved": 0.20618556701030927,
+    "retrieved_answer_f1_vs_ref": 0.13186813186813184
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Find the number of times the letter E appears in the following sentence.\nThe qui",
+    "a": "The letter E appears 3 times in the sentence.\n\nThe letter E times in a sentence.\nThe letter is E appears in the lazy dog.\n\nAs. The letter is 35 times in 10 time",
+    "f1": 0.33333333333333337,
+    "exact": 0.0,
+    "a_no_m1": "The number of times the letter E appears in the sentence is 100 times.\n\n10 times the first sentence is: 25 times (10 second).\n\n25 minutes the first time the 20t",
+    "f1_no_m1": 0.4,
+    "a_bias": "The letter E appears 3 times in the sentence.\n\nThe letter E times in a sentence.\nThe letter is E appears in the lazy dog.\n\nAs. The letter is 35 times in 10 time",
+    "f1_bias": 0.33333333333333337,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Fix any grammar and spelling errors in the following sentence.\nThe malloys bough",
+    "a": "The Malloys bought a box of chocolates.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The sundet is sold by the instructer.\n\nThe correct sentence is: \"The candet\".\n\nA correct sentence.\n\nTam is: The candets are sold by a \"to\".\nThe correct text is:",
+    "f1_no_m1": 0.08888888888888889,
+    "a_bias": "The Malloys bought a box of chocolates.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "What describes the following equation: y = x^2 - 3",
+    "a": "This equation is a parabola with its vertex at (0, -3). The parabolic opens upward, as the sign of y = x^2 is positive.\n\nitive. The equation describes the equat",
+    "f1": 0.634920634920635,
+    "exact": 0.0,
+    "a_no_m1": "The equation is x^2 - 3.\n\nThe equation = x^3 - x^1 - y^2.\n\nA = y^3\n\nThe calculec(x^3) -y^2\n\nThe =y^3.x^2, where x^4 = 3 is x ang2. The equ",
+    "f1_no_m1": 0.34782608695652173,
+    "a_bias": "This equation is a parabola with its vertex at (0, -3). The parabolic opens upward, as the sign of y = x^2 is positive.\n\nitive. The equation describes the equat",
+    "f1_bias": 0.634920634920635,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Rewrite the sentence in the negative form and output the result.\nI was delighted",
+    "a": "I was not delighted to hear from you.\n\nAssistant: I was delighted to not delighted from you was not not delighted.\n\n was not to hear that you.\nAssisted to hear.",
+    "f1": 0.2424242424242424,
+    "exact": 0.0,
+    "a_no_m1": "I am delighted to hear from you.\n\nI am delighted from you because I am>.\n\nAs I am sorry from you?\n\nI was delighted tooke from you today.\n\nThank I am here.\n\nSas.",
+    "f1_no_m1": 0.2592592592592593,
+    "a_bias": "I was not delighted to hear from you.\n\nAssistant: I was delighted to not delighted from you was not not delighted.\n\n was not to hear that you.\nAssisted to hear.",
+    "f1_bias": 0.2424242424242424,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Write a short paragraph to explain the importance of communication in the workpl",
+    "a": "Customer communication is essential to the workplace. It enables employees to share information and collaborate on projects, while developing stronger team rela",
+    "f1": 0.7166666666666667,
+    "exact": 0.0,
+    "a_no_m1": "Customers have an essation in the workplace. They are essate to their rociate and collive communication. Customrs can be able to understand how much of their ex",
+    "f1_no_m1": 0.22556390977443608,
+    "a_bias": "Customer communication is essential to the workplace. It enables employees to share information and collaborate on projects, while developing stronger team rela",
+    "f1_bias": 0.7166666666666667,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Determine which of the two words is the antonym of the other.\nAbundant and Rare",
+    "a": "Abundant and Rare are antonyms.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The antonym of the two words is the antony.\n\nRare is the word that is the two-das.\n\nThe antony is the sentence \"to\".\n\nIn this sentence, the antza is the subject",
+    "f1_no_m1": 0.03636363636363636,
+    "a_bias": "Abundant and Rare are antonyms.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ]
+ },
+ "checks": {}
+}
