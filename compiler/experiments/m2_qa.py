@@ -233,8 +233,11 @@ class ExchangeMemory:
 
 
 def parse_exchanges(text: bytes) -> list[tuple[bytes, bytes]]:
+    """Exchanges are separated by a blank line followed by a new "User: " turn. Splitting at every
+    blank line (as before 10 October 2026) cut the 6.6% of Alpaca answers that have paragraphs
+    (letters, stories, code) to their first paragraph and dropped the rest."""
     out = []
-    for block in text.split(b"\n\n"):
+    for block in re.split(rb"\n\n(?=User: )", text):
         m = re.match(rb"User: (.*?)\nAssistant: (.*)\Z", block, re.S)
         if m:
             out.append((m.group(1).strip(), m.group(2).strip()))
@@ -391,8 +394,6 @@ class QAEngine:
             if banned:
                 logits[0, banned] = float("-inf")
             nxt = int(logits.argmax(-1).item())
-            if nxt == int(self.sep[-1]) and len(self.sep) == 1:
-                break
             seq.append(nxt)
             if calculator and nxt == self.equals:
                 value = evaluate_tail(enc.decode(seq[start:]))
@@ -400,9 +401,9 @@ class QAEngine:
                     computed.append(value)
                     seq.extend(int(t) for t in enc.encode(b" " + value.encode())[0])
             text = enc.decode(seq[start:])
-            if b"\nUser" in text or b"\n\n" in text:
+            if b"\nUser" in text or b"\nAssistant:" in text:   # the next turn, or an invented one
                 break
-        out = enc.decode(seq[start:]).split(b"\nUser")[0].split(b"\n\n")[0].strip()
+        out = enc.decode(seq[start:]).split(b"\nUser")[0].split(b"\nAssistant:")[0].strip()
         info = {"memory": how, "similarity": round(sim, 3), "codes": len(seq) - start, "computed": computed}
         if idx is not None:
             info["retrieved_question"] = self.mem.exchanges[idx][0][:120].decode("utf-8", "replace")
