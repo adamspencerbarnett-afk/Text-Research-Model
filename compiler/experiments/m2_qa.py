@@ -342,7 +342,16 @@ def main() -> int:
     for q, ans in train_x:
         mem.add(q, ans)
     t0 = time.time()
-    neighbors = [r[0][1] if (r := mem.retrieve(q, 1, exclude=i)) else None for i, (q, _) in enumerate(train_x)]
+    # The nearest-neighbour pass is deterministic in the training questions and the key settings,
+    # and costs minutes on Alpaca, so it is cached beside the work files.
+    import hashlib
+    nb_key = hashlib.sha256(b"\0".join(q for q, _ in train_x) + repr((FOLD_KEYS, sorted(STOP))).encode()).hexdigest()[:16]
+    nb_cache = work / f"neighbors_{nb_key}.json"
+    if nb_cache.exists():
+        neighbors = json.loads(nb_cache.read_text())
+    else:
+        neighbors = [r[0][1] if (r := mem.retrieve(q, 1, exclude=i)) else None for i, (q, _) in enumerate(train_x)]
+        nb_cache.write_text(json.dumps(neighbors))
     say(f"M2 built: {len(mem.exact):,} distinct keys; nearest-neighbour pass {time.time() - t0:.0f}s; "
         f"{sum(n is None for n in neighbors)} exchanges without a neighbour")
 
