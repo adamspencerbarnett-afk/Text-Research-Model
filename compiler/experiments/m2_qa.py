@@ -466,6 +466,9 @@ def main() -> int:
                     say(f"stopping at {train_time:.0f}s: {stop_reason}"); break
     if a.patience and best_state is not None:
         model.load_state_dict(best_state); say(f"restored the best weights (valid {best_v:.4f} b/byte)")
+    if a.save:   # saved before scoring, so an interrupted evaluation does not lose the training
+        Path(a.save).parent.mkdir(parents=True, exist_ok=True)
+        torch.save({"state_dict": {k: v.cpu() for k, v in model.state_dict().items()}, "args": vars(a)}, a.save)
 
     @torch.no_grad()
     def answer(q: bytes, context_exchange: int | None, n_tokens=80, temperature=0.5, top_k=10, use_m1=True, copy_bias=0.0):
@@ -564,8 +567,6 @@ def main() -> int:
     results["groups"]["heldout_network_without_memory"] = score(nomem_rows)
     pol = [r["retrieved_answer_f1_vs_ref"] if r["sim"] >= 0.5 else r["f1"] for r in para_rows + unseen_rows]
     results["groups"]["heldout_policy_retrieved_if_similar_else_generated"] = {"n": len(pol), "f1": round(float(np.mean(pol)), 4) if pol else None}
-    if a.save:
-        torch.save({"state_dict": {k: v.cpu() for k, v in model.state_dict().items()}, "args": vars(a)}, a.save)
     results["samples"]["paraphrase"] = para_rows[:6]; results["samples"]["unseen"] = unseen_rows[:6]
     # 4. learning by adding: new pairs into M2 only, then asked at once (memory path and network path).
     for q, ans in add_x:
