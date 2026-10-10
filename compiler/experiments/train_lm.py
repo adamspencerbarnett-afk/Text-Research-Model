@@ -443,7 +443,7 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
         work: Path, budget_s: float, width=128, layers=4, heads=4, ctx=256, batch=16, lr=1e-3,
         table_rows=0, seed=1, eval_every_s=120.0, quick_bytes=150_000, prompt=b"We went to the park",
         gen_tokens=200, log=print, save_path=None, table_orders=(2,), ngram_orders=(), ngram_topk=16,
-        valid_share=0.02, patience=0, min_delta=0.002, keep_model=False, device="cpu", max_steps=0, amp=False) -> dict:
+        valid_share=0.02, patience=0, min_delta=0.002, keep_model=False, device="cpu", max_steps=0, amp=False, align=False) -> dict:
     """Train for up to ``budget_s`` seconds of training time.
 
     The last ``valid_share`` of the training stream is held back as the validation split: it
@@ -493,13 +493,26 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
 
     n = len(train_tokens)
     offsets_base = np.arange(ctx + 1)
+    starts = None
+    if align:
+        # Windows start at paragraph starts (the code after a blank line), not at random codes, so a
+        # window opens with a paragraph's first sentence and a one-paragraph unit (an evidence pair, a
+        # question with its answer) is seen whole whenever it fits.
+        ends_nn = np.array([enc_bytes(enc, t).endswith(b"\n\n") for t in range(enc.vocab)])
+        is_nl = np.array([enc_bytes(enc, t) == b"\n" for t in range(enc.vocab)])
+        tok = train_tokens[:n]
+        brk = ends_nn[tok].copy()
+        brk[1:] |= is_nl[tok[1:]] & is_nl[tok[:-1]]
+        starts = np.flatnonzero(brk) + 1
+        starts = starts[starts < n - ctx - 1]
+        log(f"[{enc.name}] aligned windows: {len(starts):,} paragraph starts")
     train_time, step, tokens_seen, bytes_seen, ema = 0.0, 0, 0, 0, None
     history, next_eval = [], eval_every_s
     best_quick, bad_evals, stop_reason = float("inf"), 0, "budget"
     model.train()
     while train_time < budget_s and not (max_steps and step >= max_steps):
         t0 = time.perf_counter()
-        idx = rng.integers(0, n - ctx - 1, size=batch)
+        idx = starts[rng.integers(0, len(starts), size=batch)] if starts is not None else rng.integers(0, n - ctx - 1, size=batch)
         win = train_tokens[idx[:, None] + offsets_base]
         x = torch.from_numpy(win[:, :-1]).to(device); y = torch.from_numpy(win[:, 1:]).to(device)
         cur_lr = lr_at(step / max_steps if max_steps else train_time / budget_s, step)
@@ -543,7 +556,7 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
                                                       "batch": batch, "peak_lr": lr, "table_rows": table_rows,
                                                       "table_orders": list(model.table_orders), "params": counts,
                                                       "ngram_tables": ngram_info},
-              "training": {"budget_s": budget_s, "max_steps": max_steps, "amp": amp, "train_s": round(train_time, 1), "steps": step, "tokens_seen": tokens_seen,
+              "training": {"budget_s": budget_s, "max_steps": max_steps, "amp": amp, "aligned_windows": None if starts is None else int(len(starts)), "train_s": round(train_time, 1), "steps": step, "tokens_seen": tokens_seen,
                            "bytes_seen": bytes_seen, "tokens_per_s": round(tokens_seen / train_time, 1),
                            "bytes_per_s": round(bytes_seen / train_time, 1), "final_train_bits_per_token": round(ema, 4),
                            "train_tokens": int(n), "valid_tokens": int(len(valid_tokens)), "valid_bytes": int(valid_lens.sum()),

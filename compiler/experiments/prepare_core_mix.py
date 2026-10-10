@@ -364,6 +364,10 @@ def cmd_mix(src_dir: str, out: str, mb: float, recipe: str) -> None:
     manifest = {"recipe": recipe, "target_mb": mb, "sources": {}}
     for name, share in shares.items():
         docs = [normalise(d) for d in read_docs(f"{src_dir}/{name}.txt")]
+        if name == "evidence":
+            # one paragraph per pair (evidence, newline, target), so a window aligned to a paragraph
+            # start always holds the evidence together with the text that uses it
+            docs = [d.replace("\n\n", "\n", 1) for d in docs]
         budget = int(mb * 1e6 * share)
         train, held, size, dup = [], [], 0, 0
         for d in docs:
