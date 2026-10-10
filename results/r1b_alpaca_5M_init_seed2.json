@@ -1,0 +1,521 @@
+{
+ "setup": {
+  "data": "data_qa",
+  "work": "runs/r1b",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 600.0,
+  "ctx": 256,
+  "batch": 32,
+  "topk": 64,
+  "neighbor_codes": 110,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/r1b_alpaca_5M_init_seed2.json",
+  "seed": 2,
+  "self_context_p": 0.5,
+  "copy_bias": 0.0,
+  "device": "cuda",
+  "threads": 0,
+  "width": 256,
+  "layers": 6,
+  "heads": 8,
+  "greedy": true,
+  "patience": 3,
+  "min_delta": 0.005,
+  "dict": "runs/scale/v0_8k_plain.cv0d",
+  "init": "runs/scale/scale_5M_v0_8k_ng64.pt",
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "copy_question": false,
+  "calculator": false,
+  "save": "runs/r1b/alpaca_5M_init_s2.pt",
+  "train_exchanges": 50232,
+  "eval": 510,
+  "added": 511,
+  "distinct_keys": 49873
+ },
+ "training": {
+  "steps": 15565,
+  "train_s": 600.0,
+  "stop_reason": "budget",
+  "best_valid": 1.0489,
+  "history": [
+   {
+    "train_s": 60.0,
+    "step": 1481,
+    "train_bits_per_code": 2.772,
+    "valid_bits_per_byte": 1.1427
+   },
+   {
+    "train_s": 120.0,
+    "step": 2981,
+    "train_bits_per_code": 1.94,
+    "valid_bits_per_byte": 1.0981
+   },
+   {
+    "train_s": 180.0,
+    "step": 4493,
+    "train_bits_per_code": 1.794,
+    "valid_bits_per_byte": 1.0862
+   },
+   {
+    "train_s": 240.1,
+    "step": 6058,
+    "train_bits_per_code": 2.267,
+    "valid_bits_per_byte": 1.0683
+   },
+   {
+    "train_s": 300.0,
+    "step": 7642,
+    "train_bits_per_code": 2.085,
+    "valid_bits_per_byte": 1.0744
+   },
+   {
+    "train_s": 360.0,
+    "step": 9234,
+    "train_bits_per_code": 2.188,
+    "valid_bits_per_byte": 1.0576
+   },
+   {
+    "train_s": 420.0,
+    "step": 10848,
+    "train_bits_per_code": 2.015,
+    "valid_bits_per_byte": 1.058
+   },
+   {
+    "train_s": 480.0,
+    "step": 12385,
+    "train_bits_per_code": 1.545,
+    "valid_bits_per_byte": 1.0606
+   },
+   {
+    "train_s": 540.0,
+    "step": 13979,
+    "train_bits_per_code": 2.32,
+    "valid_bits_per_byte": 1.0489
+   },
+   {
+    "train_s": 600.0,
+    "step": 15565,
+    "train_bits_per_code": 1.304,
+    "valid_bits_per_byte": 1.0494
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.975,
+   "exact": 1.0
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 60,
+   "f1": 0.8817,
+   "exact": 0.5167,
+   "f1_no_m1": 0.1811,
+   "f1_bias": 0.8817,
+   "exact_bias": 0.5167
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 45,
+   "f1": 0.2509,
+   "exact": 0.0222,
+   "f1_no_m1": 0.1696,
+   "f1_bias": 0.2509,
+   "exact_bias": 0.0222,
+   "retrieved_answer_f1_vs_ref": 0.2767
+  },
+  "unseen_network_with_nearest": {
+   "n": 155,
+   "f1": 0.2648,
+   "exact": 0.0065,
+   "f1_no_m1": 0.1769,
+   "f1_bias": 0.2648,
+   "exact_bias": 0.0065,
+   "retrieved_answer_f1_vs_ref": 0.1885
+  },
+  "heldout_network_without_memory": {
+   "n": 60,
+   "f1": 0.1485,
+   "exact": 0.0
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.2675
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.9706,
+   "exact": 0.985
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 60,
+   "f1": 0.806,
+   "exact": 0.4833,
+   "f1_no_m1": 0.1738,
+   "f1_bias": 0.806,
+   "exact_bias": 0.4833
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Name 3 characters in the movie Frozen.",
+    "a": "The three characters in the movie Frozen are Anna, Elsa, and Olaf.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "Fro, they are a young, independent wves who are named Fro, they are a young, independent wves who are named Fro.\n\n are a young wves who are named Fro, who is na",
+    "f1_no_m1": 0.029850746268656716,
+    "a_bias": "The three characters in the movie Frozen are Anna, Elsa, and Olaf.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Rewrite the following sentence with correct punctuation: she said what were you ",
+    "a": "She said, \"What were you thinking?\"",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "I said it was said it was said it was.\n\n was said it was said it was said.\n\n was said it was said it was said it was said.\n\n was said it was said it was said it",
+    "f1_no_m1": 0.02631578947368421,
+    "a_bias": "She said, \"What were you thinking?\"",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Define the term 'computational linguistics'.",
+    "a": "Computational linguistics is a field of linguistics that is focused on using artificial intelligence models, such as machine learning, to analyze and generate h",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "Comp Scal linguistics is the process of creating a new machine that involates a single-bird approach. It involates a single-bird approach, which involates a sin",
+    "f1_no_m1": 0.1651376146788991,
+    "a_bias": "Computational linguistics is a field of linguistics that is focused on using artificial intelligence models, such as machine learning, to analyze and generate h",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Write a joke related to the given words.\nDoctor, police",
+    "a": "A doctor and a police officer walk into a bar. The bartender looks at them and says \u201cWhat can I get you?\u201d The police officer says, \u201cI\u2019ll have a shot of whiskey.",
+    "f1": 0.967032967032967,
+    "exact": 0.0,
+    "a_no_m1": "He was a hero of a hero,\nThe other hero was a hero.\n\n of the hero was a hero,\nThe other hero was a hero.\n\n the hero was a hero,\nThe other hero was a hero.\n\n the",
+    "f1_no_m1": 0.18691588785046728,
+    "a_bias": "A doctor and a police officer walk into a bar. The bartender looks at them and says \u201cWhat can I get you?\u201d The police officer says, \u201cI\u2019ll have a shot of whiskey.",
+    "f1_bias": 0.967032967032967,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Identify four distinct steps of scientific research",
+    "a": "The four distinct steps of scientific research are: formulating the research question; conducting literature review; designing the relevant experiment; collecti",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The four distinct steps of scientific research are: 1) a research plan; 2) a plan; 3) a plan; 4) a plan; 5) a plan; 5) a plan; 5) a plan; 5) a plan; 5) a plan; ",
+    "f1_no_m1": 0.3103448275862069,
+    "a_bias": "The four distinct steps of scientific research are: formulating the research question; conducting literature review; designing the relevant experiment; collecti",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "List two facts about the given topic.\nThe Amazon rainforest",
+    "a": "- The Amazon rainforest is the largest tropical rainforest in the world.\n- The Amazon rainforest plays a vital role in regulating global climate patterns as it ",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "1. The Amazon rainforest is the longest ebing rain in the world.\n2. The Amazon rainforest is the longest ebing rainforest in the world.\n3. The Ebing rainforest ",
+    "f1_no_m1": 0.37681159420289856,
+    "a_bias": "- The Amazon rainforest is the largest tropical rainforest in the world.\n- The Amazon rainforest plays a vital role in regulating global climate patterns as it ",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Classify the text as being sarcastic or not\nThat was the best day ever!",
+    "a": "The sentence is being sarcastic.",
+    "f1": 0.33333333333333337,
+    "exact": 0.0,
+    "a_no_m1": "The sentence is being sarcastic.\n\n was the best way to exple the same time.\n\n was the best way to exple the same time.\n\n was the best way to exple the same time",
+    "f1_no_m1": 0.03333333333333333,
+    "a_bias": "The sentence is being sarcastic.",
+    "f1_bias": 0.33333333333333337,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.525,
+    "f1_vs_retrieved": 0.28571428571428575,
+    "retrieved_answer_f1_vs_ref": 0.6666666666666666
+   },
+   {
+    "q": "Name a few techniques to reduce stress.",
+    "a": "One of the most common techniques to reduce stress is to switch to renewable energy sources. This can include creating a more energy-efficient way to reduce str",
+    "f1": 0.32258064516129026,
+    "exact": 0.0,
+    "a_no_m1": "One of the most common techniques to redu stress is to swt a walk or walk. It is important to reduit stress by taking a walk or taking a walk or taking a walk. ",
+    "f1_no_m1": 0.2127659574468085,
+    "a_bias": "One of the most common techniques to reduce stress is to switch to renewable energy sources. This can include creating a more energy-efficient way to reduce str",
+    "f1_bias": 0.32258064516129026,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.508,
+    "f1_vs_retrieved": 0.2657342657342657,
+    "retrieved_answer_f1_vs_ref": 0.33526011560693647
+   },
+   {
+    "q": "Predict the stock price for a certain company",
+    "a": "The stock price for a certain company is 1000.",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "The stock price for a certain company is 100%.\n\n on the price of the market, the stock price is $100%.\n\n on the price, the stock is $100%.\n\n on the price, the s",
+    "f1_no_m1": 0.0,
+    "a_bias": "The stock price for a certain company is 1000.",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.621,
+    "f1_vs_retrieved": 0.1639344262295082,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Generate a sentence that explains the importance of getting enough sleep.",
+    "a": "Getting enough sleep is one of the most important part of our lives.",
+    "f1": 0.24390243902439027,
+    "exact": 0.0,
+    "a_no_m1": "He was feeling a feeling that he was feeling so sad and he felt feeling so sad.\n\n will be feeling a feeling so sad and feeling it was feeling feeling so sad.\n\n ",
+    "f1_no_m1": 0.0851063829787234,
+    "a_bias": "Getting enough sleep is one of the most important part of our lives.",
+    "f1_bias": 0.24390243902439027,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.557,
+    "f1_vs_retrieved": 0.16666666666666669,
+    "retrieved_answer_f1_vs_ref": 0.4533333333333333
+   },
+   {
+    "q": "Describe what the purpose of a priority queue is.",
+    "a": "A priority queue is a data structure where items are stored in an order according to the priority assigned to them. It works by assigning a priority to each ite",
+    "f1": 0.4736842105263158,
+    "exact": 0.0,
+    "a_no_m1": "The purpose of a priority queue is to the use of a logor, the purpose of the logor, and the purpose of the logor. The purpose of the logor is to ens it is secur",
+    "f1_no_m1": 0.23333333333333334,
+    "a_bias": "A priority queue is a data structure where items are stored in an order according to the priority assigned to them. It works by assigning a priority to each ite",
+    "f1_bias": 0.4736842105263158,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.759,
+    "f1_vs_retrieved": 0.864,
+    "retrieved_answer_f1_vs_ref": 0.4274809160305343
+   },
+   {
+    "q": "Describe in a few sentences about the solar system.",
+    "a": "The solar system is the longest and the longest solar system is the longest. It is the longest and the longest solar system is the longest and the longest solar",
+    "f1": 0.2945736434108527,
+    "exact": 0.0,
+    "a_no_m1": "The solar system is the long of the long of the world's long, with the long sun warms in the Earth. It is the long of the longs of the Earth's longs, and the lo",
+    "f1_no_m1": 0.3308270676691729,
+    "a_bias": "The solar system is the longest and the longest solar system is the longest. It is the longest and the longest solar system is the longest and the longest solar",
+    "f1_bias": 0.2945736434108527,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.723,
+    "f1_vs_retrieved": 0.25862068965517243,
+    "retrieved_answer_f1_vs_ref": 0.583941605839416
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Write an introduction paragraph summarizing the following article\nThe main theme",
+    "a": "The book is the most important life in the construction industry, and the introduction of the book is that it is the most important life in the construction ind",
+    "f1": 0.23636363636363636,
+    "exact": 0.0,
+    "a_no_m1": "The article is currently changed due the development of the development of the development of the local env\ufffds env, and the effects of the development of the env",
+    "f1_no_m1": 0.20869565217391306,
+    "a_bias": "The book is the most important life in the construction industry, and the introduction of the book is that it is the most important life in the construction ind",
+    "f1_bias": 0.23636363636363636,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.145,
+    "f1_vs_retrieved": 0.17204301075268816,
+    "retrieved_answer_f1_vs_ref": 0.14432989690721648
+   },
+   {
+    "q": "Create a 3-4 sentence story using the following words: ship, storm, rope.",
+    "a": "The rain was like a storm, the wind was howling as the rain was so excited to go.",
+    "f1": 0.19047619047619047,
+    "exact": 0.0,
+    "a_no_m1": "The rain was so bright, the rain was so bright, the rain was so bright, the rain was so bright and the rain was so bright.\n\n the rain was so bright and the rain",
+    "f1_no_m1": 0.1751824817518248,
+    "a_bias": "The rain was like a storm, the wind was howling as the rain was so excited to go.",
+    "f1_bias": 0.19047619047619047,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.368,
+    "f1_vs_retrieved": 0.14084507042253522,
+    "retrieved_answer_f1_vs_ref": 0.25210084033613445
+   },
+   {
+    "q": "Give an example of a web host service.",
+    "a": "One example of a web host service is the use of AI to automated customer service. AI can be used to automated customer service, provide personalized services, a",
+    "f1": 0.32258064516129037,
+    "exact": 0.0,
+    "a_no_m1": "One example of a web host service is the use of AI to aut customer service, which can aut customer service, and provide personal responses to customer inquires.",
+    "f1_no_m1": 0.25999999999999995,
+    "a_bias": "One example of a web host service is the use of AI to automated customer service. AI can be used to automated customer service, provide personalized services, a",
+    "f1_bias": 0.32258064516129037,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.33,
+    "f1_vs_retrieved": 0.5000000000000001,
+    "retrieved_answer_f1_vs_ref": 0.29333333333333333
+   },
+   {
+    "q": "When did the SARS-CoV-2 virus originate?",
+    "a": "The SARS-CoV-2 virus was a major part of the SARS-CoV-2. It was a major part of the SARS-CoV-2, and it was a major part of the SARS-CoV-2. It was a major part o",
+    "f1": 0.2153846153846154,
+    "exact": 0.0,
+    "a_no_m1": "The SfficS-2 virus was a major part of history and history, as it was a major part of history and history. It was a major part of history and history, as it was",
+    "f1_no_m1": 0.06451612903225806,
+    "a_bias": "The SARS-CoV-2 virus was a major part of the SARS-CoV-2. It was a major part of the SARS-CoV-2, and it was a major part of the SARS-CoV-2. It was a major part o",
+    "f1_bias": 0.2153846153846154,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.309,
+    "f1_vs_retrieved": 0.14035087719298245,
+    "retrieved_answer_f1_vs_ref": 0.28571428571428564
+   },
+   {
+    "q": "Create a content plan for a blog organized around animal conservation.",
+    "a": "Content Plan for a blog post about the benefits of using voice recognition technology: \n- Introduction to voice recognition technology and how it works \n- Benef",
+    "f1": 0.174496644295302,
+    "exact": 0.0,
+    "a_no_m1": "A content plan for a blog organized around animal conservation should include a detit of the main features of the body, the body, the body, the body, the body, ",
+    "f1_no_m1": 0.1904761904761905,
+    "a_bias": "Content Plan for a blog post about the benefits of using voice recognition technology: \n- Introduction to voice recognition technology and how it works \n- Benef",
+    "f1_bias": 0.174496644295302,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.223,
+    "f1_vs_retrieved": 0.8484848484848484,
+    "retrieved_answer_f1_vs_ref": 0.1829268292682927
+   },
+   {
+    "q": "Generate a heartfelt condolence message for a deceased friend.",
+    "a": "I am deeply sorry for your loss. May the love of those around you provide comfort and peace during this difficult time.",
+    "f1": 0.4814814814814815,
+    "exact": 0.0,
+    "a_no_m1": "I'll'll'll'll'll'll'll'll'll' it'll'll'll' it'!\n\n it's a feeling so true and I'll'll'll'll'll'll' it'll'll' it!\n\n it's a feeling, I'll'll'll' it'll",
+    "f1_no_m1": 0.13333333333333336,
+    "a_bias": "I am deeply sorry for your loss. May the love of those around you provide comfort and peace during this difficult time.",
+    "f1_bias": 0.4814814814814815,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.384,
+    "f1_vs_retrieved": 1.0,
+    "retrieved_answer_f1_vs_ref": 0.4814814814814815
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Convert the following sentence into the interrogative form: \"He isn't going to t",
+    "a": "Isn't he going to the party?",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "He't going to the party.\n\n on the party.\n\n on the party, I's going to the party.\n\n on the party, I't do it going to the party.\n\n to the party, I't do it going t",
+    "f1_no_m1": 0.1846153846153846,
+    "a_bias": "Isn't he going to the party?",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Explain the concept of a polling system in elections.",
+    "a": "A polling system is a system of government that is used to create a system of government wherein is a system of government. It is a system of government that is",
+    "f1": 0.23121387283236994,
+    "exact": 0.0,
+    "a_no_m1": "A polling system is a system of social and social enviniuauaate the political env. It is a system of econom-b-b-b-b-b-b-b-b-b-b-b-b-b-b-b-b-b-b-b-b-b-b-b-b-b-b-",
+    "f1_no_m1": 0.1456953642384106,
+    "a_bias": "A polling system is a system of government that is used to create a system of government wherein is a system of government. It is a system of government that is",
+    "f1_bias": 0.23121387283236994,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Generate a pun from the words 'giraffe' and 'elephant'",
+    "a": "Giraffes and elephants are 'long-time foes'.\n\nUser",
+    "f1": 0.9333333333333333,
+    "exact": 0.0,
+    "a_no_m1": "girahe' is a great way to make the world a great way to make the world a better way.\n\n it is a great way to make the world a better way to stay in the future.\n\n",
+    "f1_no_m1": 0.025974025974025972,
+    "a_bias": "Giraffes and elephants are 'long-time foes'.\n\nUser",
+    "f1_bias": 0.9333333333333333,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Analyze the given text and provide a list of prominent themes.\nThe sky was fille",
+    "a": "Prominent themes in the text include beauty of nature, stillness, movement, and the vastness of the night sky.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The sun was calm in the morning, and the stars were calm and the stars were calm. The sun was calm and the stars were calm and the stars were calm. The air was ",
+    "f1_no_m1": 0.10989010989010987,
+    "a_bias": "Prominent themes in the text include beauty of nature, stillness, movement, and the vastness of the night sky.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Name 3 properties of water.",
+    "a": "The properties of water are the Earth, the Earth, and the Earth.",
+    "f1": 0.2439024390243903,
+    "exact": 0.0,
+    "a_no_m1": "The properties of water are the Eit, the Eit, and the Eit.\n\n are the Eit, the Eit, and the Eit.\n\n are the Eit, the Eit, and the Eit is the Eit.\n\n is the Eit, th",
+    "f1_no_m1": 0.15584415584415587,
+    "a_bias": "The properties of water are the Earth, the Earth, and the Earth.",
+    "f1_bias": 0.2439024390243903,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Name three successful female entrepreneurs from the 21st century.",
+    "a": "Three successful female entrepreneurs from the 21st century include Sheryl Sandberg (CEO of Facebook), Oprah Winfrey (owner of a media empire), and Indra Nooyi ",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "Three successful entreprful entrents for the 21st century are J, J, J, J, J, J, J, J, J, and J. J. J. J. J. J. J. J. J. J. J. J. J. J. J. J. J. J. J. J. J. J",
+    "f1_no_m1": 0.17391304347826086,
+    "a_bias": "Three successful female entrepreneurs from the 21st century include Sheryl Sandberg (CEO of Facebook), Oprah Winfrey (owner of a media empire), and Indra Nooyi ",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ]
+ },
+ "checks": {}
+}

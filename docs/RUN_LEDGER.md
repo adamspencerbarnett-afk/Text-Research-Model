@@ -23,6 +23,8 @@
 | r1_gsm_5M_calc | GSM8K | 256w 6L 8h | 4.72M | 512 | 300 | 32 | 1200 | 15511 | cuda | 1 | 0.500 | copy copy-q calc | 1.100 | 0.887 | 0.100 | 0.883 | 0.887 | 0.675 | 2 | 0.382 | 0.334 | 0.417 | 0.000 | budget |
 | r1b_alpaca_5M_init | Alpaca | 256w 6L 8h | 4.72M | 256 | 110 | 32 | 600 | 15752 | cuda | 1 | 0.500 | copy init:scale_5M_v0_8k_ng64 | 0.980 | 0.804 | 0.417 | 0.818 | 0.743 | 0.291 | 44 | 0.267 | 0.190 |  |  | budget |
 | r1c_alpaca_5M_init_greedy | Alpaca | 256w 6L 8h | 4.72M | 256 | 110 | 16 | 0 | 0 | cuda | 1 | 0.000 | copy greedy init:alpaca_5M_init |  | 0.794 | 0.467 | 0.762 | 0.752 | 0.341 | 44 | 0.265 | 0.197 |  |  | budget |
+| r3c_gsm_5M_init_calc | GSM8K | 256w 6L 8h | 4.72M | 256 | 110 | 32 | 600 | 6126 | cuda | 1 | 0.500 | copy copy-q calc greedy init:scale_5M_v0_8k_ng64 | 1.300 | 0.800 | 0.117 | 0.800 | 0.750 | 0.516 | 2 | 0.359 | 0.372 | 0.450 | 0.010 | plateau: no improvement over 0.005 in 3 evaluations |
+| r1b_alpaca_5M_init_seed2 | Alpaca | 256w 6L 8h | 4.72M | 256 | 110 | 32 | 600 | 15565 | cuda | 2 | 0.500 | copy greedy init:scale_5M_v0_8k_ng64 | 1.049 | 0.882 | 0.517 | 0.882 | 0.806 | 0.251 | 45 | 0.265 | 0.148 |  |  | budget |
 
 Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table over the retrieved span; `fold` inflection folding in the key; `ans-only` copy span limited to the answer; `copy-q` copy head may point into the current question; `calc` executor writes `a op b =` results and checks the final answer; `greedy` argmax decoding; `init:` core initialised from that checkpoint. Runs 2 and 3 on GSM8K carry the target leak (fixed in 2b/3b).
 
@@ -42,13 +44,13 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 | R1b | Alpaca, 4.7M core adapted from the scale-run checkpoint (--init, --dict), window 256, 600 s GPU | does a core that knows language raise the no-memory floor and the copy scores? | done: yes, best run so far |
 | R1c | same model, greedy decoding, evaluation only (--budget 0 --greedy) | exact-answer rate without sampling drift | done: +5-10 points exact |
 | R3b | GSM8K, 4.7M core trained from scratch, copy from question + executor + check, 1200 s GPU | set-up quality against depth (6 layers) | done: 0/198 unseen |
-| R3c | GSM8K, 4.7M core adapted from the scale-run checkpoint | set-up quality with a core that knows language | running |
-| R1b-s2 | R1b with seed 2, greedy | confirm the winner | queued |
-| R1d | Alpaca, 19M core (scale run checkpoint) adapted, greedy | does the floor keep rising with core size once the core knows language? | queued |
+| R3c | GSM8K, 4.7M core adapted from the scale-run checkpoint | set-up quality with a core that knows language | done: 1/198 unseen; stored 43-45% |
+| R1b-s2 | R1b with seed 2, greedy | confirm the winner | done: confirmed (seen 0.88 / 52% exact) |
+| R1d | Alpaca, 19M core (scale run checkpoint) adapted, greedy | does the floor keep rising with core size once the core knows language? | running |
 | R0b | Alpaca, 0.8M: retrieval similarity as a trust-head input; three window kinds in training | learn when to copy; stop the prediction score worsening | queued |
 | R0c | Alpaca, 0.8M: top-3 retrieved exchanges in the window | paraphrase group above the single-retrieval ceiling (0.27) | queued |
-| R2 | SQuAD 1.1: copy a span from a given passage, exact match | the cleanest test of the copy head | needs --format squad |
-| R4 | GSM8K/SVAMP: retrieval by solution structure (operator sequence key), template copying | reasoning by analogy over worked examples | needs the second index |
+| R2 | SQuAD 1.1: copy a span from a given passage, exact match | the cleanest test of the copy head | next (CPU prep: --format squad) |
+| R4 | GSM8K/SVAMP: retrieval by solution structure (operator sequence key), template copying | reasoning by analogy over worked examples | next after R2 (design written) |
 | R5 | number channel in the compiler (number unit → code + value) | removes digit-run failures | needs compiler change |
 | R6 | ARC / OpenBookQA / CommonsenseQA, one-letter answers with retrieved facts | accuracy vs chance (25%) | needs --format |
 | R7 | bAbI deduction / counting / path tasks | V1's ground; expect the design to shine | needs download mirror |
@@ -73,6 +75,13 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 
 - The exact-table gain reverses with core size: +10% at 0.8M, 0 at 4.7M, -1% at 19M (equal time), and 9-12% worse on Wikipedia. The tables are a crutch for a small core; the trust head does not reject them off-domain.
 - The tables stay as the store that learns by reading; they are not the mechanism for 'lighter and faster at equal quality'. The memory and the copy head are.
+
+**10 Oct, session 6 (power cut, seed check, reasoning with the adapted core)**
+
+- Power cut lost R3c during scoring; the Q&A script now saves weights before scoring and run chains skip finished runs.
+- R1b confirmed on a second seed: seen 0.79 / 0.88 F1, 47% / 52% exact; added 0.75 / 0.81, 53% / 48%; no-memory floor 0.20 / 0.15. The adapted 4.7M core is the base.
+- GSM8K with the adapted core (R3c): 1 of 198 unseen. Three cores (0.8M scratch, 4.7M scratch, 4.7M adapted) all score 0-2%: core size and language knowledge do not fix arithmetic set-up. The replies are now well-formed step-by-step solutions whose individual steps are correct arithmetic (the executor computes them: 157 stated answers confirmed, 628 replaced) but whose choice of operations is wrong. This is the retrieval-of-procedure problem (R4), not a capacity problem.
+- A small executor defect: after the executor writes a value the model can append digits to it ('17 - 17 = 0.5'); fix by closing the number after the executor writes it.
 
 **9 Oct, session 5 (adapted core)**
 

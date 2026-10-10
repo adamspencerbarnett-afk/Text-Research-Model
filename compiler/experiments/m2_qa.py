@@ -378,6 +378,7 @@ def main() -> int:
     # are never emitted: their logits are untrained and a flat top-k can otherwise pick one.
     never_seen = torch.from_numpy(np.bincount(all_codes, minlength=enc.vocab) == 0)
     EQUALS = int(enc.encode(b"=")[0][-1])
+    NEWLINE = int(enc.encode(bytes([10]))[0][-1])
     checks = collections.Counter()
     dev = torch.device(a.device)
     model = V2LM(enc, a.width, a.layers, a.heads, a.ctx, ngrams, a.copy_head, a.evidence).to(dev)
@@ -397,7 +398,7 @@ def main() -> int:
         """[nearest other exchange, tail] + SEP + [this exchange, head], padded to ctx+1, with a loss mask."""
         own = codes[i][:a.ctx - a.neighbor_codes - len(sep)]
         src_i = i if (a.self_context_p and rng.random() < a.self_context_p) else neighbors[i]
-        nb = codes_of(src_i)[-a.neighbor_codes:] if src_i is not None else np.array([], dtype=np.int64)
+        nb = codes_of(src_i)[-a.neighbor_codes:] if a.neighbor_codes and src_i is not None else np.array([], dtype=np.int64)
         seq = np.concatenate([nb, sep, own])[:a.ctx + 1]
         mask = np.zeros(a.ctx + 1, dtype=np.float32); mask[len(nb) + len(sep):len(seq)] = 1.0
         src = np.zeros(a.ctx + 1, dtype=bool)                               # the retrieved span
@@ -430,7 +431,7 @@ def main() -> int:
         for q, ans in exchanges[:n]:
             own = enc.encode(render(q, ans))[0]
             nb_i = mem.retrieve(q, 1)
-            nb = codes_of(nb_i[0][1])[-a.neighbor_codes:] if nb_i else np.array([], dtype=np.int64)
+            nb = codes_of(nb_i[0][1])[-a.neighbor_codes:] if a.neighbor_codes and nb_i else np.array([], dtype=np.int64)
             seq = np.concatenate([nb, sep, own])[:a.ctx + 1]
             if len(seq) < 3:
                 continue
@@ -476,7 +477,7 @@ def main() -> int:
         saved = model.ngrams
         if not use_m1:
             model.ngrams = []
-        nb = codes_of(context_exchange)[-a.neighbor_codes:] if context_exchange is not None else np.array([], dtype=np.int64)
+        nb = codes_of(context_exchange)[-a.neighbor_codes:] if a.neighbor_codes and context_exchange is not None else np.array([], dtype=np.int64)
         bias = torch.zeros(enc.vocab, device=dev)
         if copy_bias and context_exchange is not None:
             ans_codes = enc.encode(mem.exchanges[context_exchange][1])[0]
@@ -486,6 +487,7 @@ def main() -> int:
         start = len(seq)
         qspan = (len(nb) + len(sep), start)
         computed: list[str] = []            # results the executor wrote, in order
+        close_number = False
         while len(seq) - start < n_tokens:
             x = torch.tensor([seq[-a.ctx:]], device=dev)
             h = model.hidden_all(x)
@@ -502,6 +504,18 @@ def main() -> int:
                 if value is not None:
                     computed.append(value)
                     seq.extend(int(t) for t in enc.encode(b" " + value.encode())[0])
+                    close_number = True
+                    continue
+            if a.calculator and close_number:
+                # the codes after an executor value may not extend the number: no digit right after
+                # it, and no digit right after a point that follows it ("= 0" + ".5")
+                first = enc.d.id_bytes[seq[-1]][:1]
+                if first.isdigit():
+                    seq[-1] = NEWLINE; close_number = False
+                elif first == b"." and close_number is True and enc.d.id_bytes[seq[-1]] == b".":
+                    close_number = "point"
+                else:
+                    close_number = False
         out = enc.decode(seq[start:]).split(b"\nUser:")[0].split(b"User:")[0].strip()
         if a.calculator and computed:
             # Rule 2: the stated final answer must be a value the executor computed; otherwise the
