@@ -256,7 +256,10 @@ class NativeParityTests(unittest.TestCase):
     def setUpClass(cls):
         cls.tmp = tempfile.mkdtemp()
         exe = os.path.join(cls.tmp, "cv0.exe" if os.name == "nt" else "cv0")
-        subprocess.run([find_compiler(), "-O2", "-std=c++17", "-o", exe, str(HERE / "native" / "cv0.cpp")],
+        # Static on Windows: a MinGW build linked dynamically can load an older libstdc++ DLL from
+        # elsewhere on the PATH (Git Bash ships one) and crash at -O2.
+        static = ["-static"] if os.name == "nt" else []
+        subprocess.run([find_compiler(), "-O2", "-std=c++17", *static, "-o", exe, str(HERE / "native" / "cv0.cpp")],
                        check=True, capture_output=True)
         cls.exe = exe
 

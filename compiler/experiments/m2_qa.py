@@ -74,11 +74,13 @@ class V2LM(train_lm.LM):
     tables; the mixture is per code, as before. ``src`` marks the retrieved span in the window.
     """
 
-    def __init__(self, enc, width, layers, heads, ctx, ngrams, copy_head=False, evidence=False):
+    def __init__(self, enc, width, layers, heads, ctx, ngrams, copy_head=False, evidence=False, sim_feature=False):
         super().__init__(enc, width, layers, heads, ctx, 0, None, (2,), ngrams)
-        self.copy_head, self.evidence = copy_head, evidence
+        self.copy_head, self.evidence, self.sim_feature = copy_head, evidence, sim_feature
         n_src = 1 + len(self.ngrams) + copy_head + evidence
-        n_conf = 3 * len(self.ngrams) + 2 * copy_head + 1 * evidence
+        # sim_feature: the retrieval similarity between the asked question and the retrieved one
+        # (0 to 1) is a trust-head input, so the head can learn how far to trust the copy.
+        n_conf = 3 * len(self.ngrams) + 2 * copy_head + 1 * evidence + 1 * sim_feature
         self.mix_head = torch.nn.Linear(width + n_conf, n_src)
         torch.nn.init.normal_(self.mix_head.weight, std=0.02); torch.nn.init.zeros_(self.mix_head.bias)
         if copy_head:
@@ -91,7 +93,7 @@ class V2LM(train_lm.LM):
         x_next = torch.cat([x[:, 1:], torch.full_like(x[:, :1], -1)], 1)
         return follow, x_next
 
-    def extra_parts(self, h, x, src, y=None):
+    def extra_parts(self, h, x, src, y=None, sim=None):
         """Probability of the targets (or dense distributions when y is None) and confidence
         features from the copy head and the evidence table."""
         B, Tq, D = h.shape
@@ -127,9 +129,12 @@ class V2LM(train_lm.LM):
                 dense.scatter_add_(-1, x_next.clamp_min(0)[:, None, :].expand(B, Tq, T), same.float())
                 parts.append(dense / cnt.clamp_min(1.0)[..., None])
             confs.append(torch.log1p(cnt))
+        if self.sim_feature:
+            s = sim if sim is not None else torch.zeros(B, device=h.device)
+            confs.append(s.to(h.device, h.dtype)[:, None].expand(B, Tq))
         return parts, confs
 
-    def nll(self, x, y, src=None):
+    def nll(self, x, y, src=None, sim=None):
         if src is None:
             src = torch.zeros_like(x, dtype=torch.bool)
         h = self.hidden(x)
@@ -145,13 +150,13 @@ class V2LM(train_lm.LM):
             kept = (kept - loo * (totals > 0)).clamp_min(0.0)
             p_parts.append(torch.where(kept > 0, c_target / kept.clamp_min(1.0), torch.zeros_like(kept)))
             confs.extend(train_lm.table_features(counts, totals, loo, ids, y))
-        parts, extra = self.extra_parts(h, x, src, y)
+        parts, extra = self.extra_parts(h, x, src, y, sim)
         p_parts += parts; confs += extra
         mix = F.softmax(self.mix_head(torch.cat([h] + [c[..., None] for c in confs], -1)), -1)
         p = (mix * torch.stack(p_parts, -1)).sum(-1)
         return -torch.log(p.clamp_min(1e-9))
 
-    def mixed_logits(self, h_last, x, src=None):
+    def mixed_logits(self, h_last, x, src=None, sim=None):
         """Full next-code log-probabilities at the last position; ``h_last`` is (B, D) and the
         copy head needs every state of the window, so ``hidden_all`` must be called first."""
         logits = h_last @ self.emb.weight.T
@@ -168,7 +173,7 @@ class V2LM(train_lm.LM):
             confs.extend(f[:, -1] for f in train_lm.table_features(counts, totals, 0.0))
         if src is None:
             src = torch.zeros_like(x, dtype=torch.bool)
-        parts, extra = self.extra_parts(h_last[:, None, :], x, src)
+        parts, extra = self.extra_parts(h_last[:, None, :], x, src, None, sim)
         p += [d[:, 0] for d in parts]; confs += [c[:, 0] for c in extra]
         mix = F.softmax(self.mix_head(torch.cat([h_last] + [c[..., None] for c in confs], -1)), -1)
         return torch.log((mix[..., None] * torch.stack(p, 1)).sum(1).clamp_min(1e-9))
@@ -230,6 +235,32 @@ class ExchangeMemory:
 
     def exact_hit(self, question: bytes):
         return self.exact.get(self.key_of(question))
+
+    def similarity_keys(self, key: frozenset, other: frozenset, max_df_share: float = 0.05) -> float:
+        """The retrieval score of ``other`` for a question with ``key``, by the same formula as
+        retrieve(): idf-weighted shared words (common words excluded) over the weighted union."""
+        if not key:
+            return 0.0
+        n = max(1, len(self.exchanges))
+        shared = sum(self.idf(w) for w in key & other if self.df[w] <= max_df_share * n)
+        union = sum(self.idf(w) for w in key) + sum(self.idf(w) for w in other - key)
+        return 1.0 if key == other else shared / max(union, 1e-9)
+
+
+def perturb_question(q: bytes, rng, donor: list[bytes]) -> bytes:
+    """A reworded stand-in for a question, for training the copy head on near matches: each word
+    is dropped (20%) or replaced by a word from another question (10%), then neighbouring words
+    are swapped (15% per pair). Deterministic given the generator."""
+    words, out = q.split(b" "), []
+    for w in words:
+        r = rng.random()
+        if r < 0.2:
+            continue
+        out.append(donor[int(rng.integers(len(donor)))] if (r < 0.3 and donor) else w)
+    for k in range(len(out) - 1):
+        if rng.random() < 0.15:
+            out[k], out[k + 1] = out[k + 1], out[k]
+    return b" ".join(out) if out else words[0]
 
 
 def parse_exchanges(text: bytes) -> list[tuple[bytes, bytes]]:
@@ -344,7 +375,8 @@ class QAEngine:
         self.ngrams = [train_lm.NgramTable(all_codes, o, a.topk) for o in (2, 3)]
         self.never_seen = torch.from_numpy(np.bincount(all_codes, minlength=enc.vocab) == 0)
         self.dev = torch.device(device if (device != "cuda" or torch.cuda.is_available()) else "cpu")
-        self.model = V2LM(enc, a.width, a.layers, a.heads, a.ctx, self.ngrams, a.copy_head, getattr(a, "evidence", False)).to(self.dev)
+        self.model = V2LM(enc, a.width, a.layers, a.heads, a.ctx, self.ngrams, a.copy_head, getattr(a, "evidence", False),
+                          getattr(a, "sim_feature", False)).to(self.dev)
         self.model.load_state_dict(ck["state_dict"], strict=False)
         self.model.eval()
         self.sep = enc.encode(b"\n\n")[0]
@@ -388,7 +420,7 @@ class QAEngine:
             span = pos < len(nb)
             if getattr(a, "copy_question", False):
                 span |= (pos >= len(nb) + len(self.sep)) & (pos < start)
-            logits = model.mixed_logits(model.hidden_all(x), x, span[None])
+            logits = model.mixed_logits(model.hidden_all(x), x, span[None], torch.tensor([sim], device=self.dev))
             logits = logits.masked_fill(self.never_seen.to(logits.device), float("-inf"))
             banned = repeat_banned(seq[start:], no_repeat)
             if banned:
@@ -432,6 +464,8 @@ def main() -> int:
     ap.add_argument("--copy-answer-only", action="store_true", help="the copy head and evidence table see only the answer part of the retrieved exchange")
     ap.add_argument("--copy-question", action="store_true", help="the copy head may also point into the current question (operands, names)")
     ap.add_argument("--calculator", action="store_true", help="check loop, rule 1: when the reply has written 'a op b =', the executor writes the result; the final Answer: is checked against the last computed value")
+    ap.add_argument("--perturb-self", type=float, default=0.0, help="share of self-context windows whose retrieved question is reworded (words dropped, swapped, replaced): teaches copying from near matches")
+    ap.add_argument("--sim-feature", action="store_true", help="the retrieval similarity is a trust-head input")
     ap.add_argument("--save", default=None, help="save the core's weights here after training")
     a = ap.parse_args()
     global FOLD_KEYS
@@ -504,7 +538,7 @@ def main() -> int:
     NEWLINE = int(enc.encode(bytes([10]))[0][-1])
     checks = collections.Counter()
     dev = torch.device(a.device)
-    model = V2LM(enc, a.width, a.layers, a.heads, a.ctx, ngrams, a.copy_head, a.evidence).to(dev)
+    model = V2LM(enc, a.width, a.layers, a.heads, a.ctx, ngrams, a.copy_head, a.evidence, a.sim_feature).to(dev)
     if a.init:
         ck = torch.load(a.init, map_location="cpu", weights_only=False)
         own = model.state_dict()
@@ -522,20 +556,30 @@ def main() -> int:
         own = codes[i][:a.ctx - a.neighbor_codes - len(sep)]
         src_i = i if (a.self_context_p and rng.random() < a.self_context_p) else neighbors[i]
         nb = codes_of(src_i)[-a.neighbor_codes:] if a.neighbor_codes and src_i is not None else np.array([], dtype=np.int64)
+        sim = 0.0 if src_i is None else (1.0 if src_i == i else mem.similarity_keys(mem.keys[i], mem.keys[src_i]))
+        perturbed = False
+        if src_i == i and a.perturb_self and rng.random() < a.perturb_self and len(nb):
+            # the exchange itself, but with its question reworded: copying is right, and the
+            # question no longer matches word for word (the case the chat probe showed failing)
+            q_i, ans_i = train_x[i]
+            q_p = perturb_question(q_i, rng, train_x[int(rng.integers(len(train_x)))][0].split(b" "))
+            nb = enc.encode(render(q_p, ans_i))[0][-a.neighbor_codes:]
+            sim = mem.similarity_keys(mem.keys[i], mem.key_of(q_p))
+            perturbed = True
         seq = np.concatenate([nb, sep, own])[:a.ctx + 1]
         mask = np.zeros(a.ctx + 1, dtype=np.float32); mask[len(nb) + len(sep):len(seq)] = 1.0
         src = np.zeros(a.ctx + 1, dtype=bool)                               # the retrieved span
-        src[(answer_start(src_i, len(nb)) if src_i is not None else 0):len(nb)] = True
+        src[(answer_start(src_i, len(nb)) if src_i is not None and not perturbed else 0):len(nb)] = True
         if a.copy_question:
             q0 = len(nb) + len(sep)
             src[q0:min(q0 + q_len(i), len(seq))] = True
-        return np.pad(seq, (0, a.ctx + 1 - len(seq)), constant_values=PAD), mask, src
+        return np.pad(seq, (0, a.ctx + 1 - len(seq)), constant_values=PAD), mask, src, sim
 
     def batch(idx):
-        xs, ms, ss = zip(*(sample(i) for i in idx))
+        xs, ms, ss, sims = zip(*(sample(i) for i in idx))
         x = torch.from_numpy(np.stack(xs)).to(dev); m = torch.from_numpy(np.stack(ms)).to(dev)
         s = torch.from_numpy(np.stack(ss)).to(dev)
-        return x[:, :-1], x[:, 1:], m[:, 1:], s[:, :-1]
+        return x[:, :-1], x[:, 1:], m[:, 1:], s[:, :-1], torch.tensor(sims, dtype=torch.float32, device=dev)
 
     def span_mask(seq_len: int, nb_len: int, start: int = 0, question: tuple[int, int] | None = None) -> torch.Tensor:
         """Which positions of the window seq[-ctx:] belong to the retrieved span (from start),
@@ -562,7 +606,8 @@ def main() -> int:
             scored = seq[len(nb) + len(sep):]                       # the exchange's own codes, each predicted
             start = answer_start(nb_i[0][1], len(nb)) if nb_i else 0
             q0 = len(nb) + len(sep); qspan = (q0, q0 + len(enc.encode(render(q, None))[0]))
-            nll = model.nll(x, y, span_mask(len(seq) - 1, len(nb), start, qspan))[0, len(nb) + len(sep) - 1:]
+            sim_v = torch.tensor([nb_i[0][0] if nb_i else 0.0], device=dev)
+            nll = model.nll(x, y, span_mask(len(seq) - 1, len(nb), start, qspan), sim_v)[0, len(nb) + len(sep) - 1:]
             bits += float(nll.sum()) / math.log(2); nbytes += float(enc.lens[scored].sum())
         model.train(); return bits / max(1, nbytes)
 
@@ -571,8 +616,8 @@ def main() -> int:
     model.train()
     while train_time < a.budget:
         t = time.perf_counter()
-        x, y, m, s = batch(rng.integers(0, len(train_x), size=a.batch))
-        nll = model.nll(x, y, s)
+        x, y, m, s, sims = batch(rng.integers(0, len(train_x), size=a.batch))
+        nll = model.nll(x, y, s, sims)
         loss = (nll * m).sum() / m.sum().clamp_min(1.0)
         opt.zero_grad(set_to_none=True); loss.backward(); torch.nn.utils.clip_grad_norm_(dense, 1.0); opt.step()
         step += 1; train_time += time.perf_counter() - t
@@ -606,6 +651,7 @@ def main() -> int:
             ans_codes = enc.encode(mem.exchanges[context_exchange][1])[0]
             bias[torch.from_numpy(np.unique(ans_codes))] = copy_bias
         a_start = answer_start(context_exchange, len(nb)) if context_exchange is not None else 0
+        sim_v = torch.tensor([mem.similarity_keys(mem.key_of(q), mem.keys[context_exchange]) if context_exchange is not None else 0.0], device=dev)
         seq = [int(t) for t in np.concatenate([nb, sep, enc.encode(render(q, None))[0]])]
         start = len(seq)
         qspan = (len(nb) + len(sep), start)
@@ -614,7 +660,7 @@ def main() -> int:
         while len(seq) - start < n_tokens:
             x = torch.tensor([seq[-a.ctx:]], device=dev)
             h = model.hidden_all(x)
-            logits = (model.mixed_logits(h, x, span_mask(len(seq), len(nb), a_start, qspan)) + bias) / temperature
+            logits = (model.mixed_logits(h, x, span_mask(len(seq), len(nb), a_start, qspan), sim_v) + bias) / temperature
             logits = logits.masked_fill(never_seen.to(logits.device), float("-inf"))
             if a.no_repeat:
                 banned = repeat_banned(seq[start:], a.no_repeat)
