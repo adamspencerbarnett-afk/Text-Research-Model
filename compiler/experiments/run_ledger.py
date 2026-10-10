@@ -19,10 +19,12 @@ ROOT = Path(__file__).resolve().parents[2]
 
 # ----------------------------------------------------------------------------- planned runs
 QUEUE = [
-    ("R1b", "Alpaca, 4.7M core adapted from the scale-run checkpoint (--init, --dict), window 256, 600 s GPU", "does a core that knows language raise the no-memory floor and the copy scores?", "running"),
-    ("R1c", "same model, greedy decoding, evaluation only (--budget 0 --greedy)", "exact-answer rate without sampling drift", "queued"),
-    ("R3b", "GSM8K, 4.7M core trained from scratch, copy from question + executor + check, 1200 s GPU", "set-up quality against depth (6 layers)", "running"),
-    ("R3c", "GSM8K, 4.7M core adapted from the scale-run checkpoint", "set-up quality with a core that knows language", "queued"),
+    ("R1b", "Alpaca, 4.7M core adapted from the scale-run checkpoint (--init, --dict), window 256, 600 s GPU", "does a core that knows language raise the no-memory floor and the copy scores?", "done: yes, best run so far"),
+    ("R1c", "same model, greedy decoding, evaluation only (--budget 0 --greedy)", "exact-answer rate without sampling drift", "done: +5-10 points exact"),
+    ("R3b", "GSM8K, 4.7M core trained from scratch, copy from question + executor + check, 1200 s GPU", "set-up quality against depth (6 layers)", "done: 0/198 unseen"),
+    ("R3c", "GSM8K, 4.7M core adapted from the scale-run checkpoint", "set-up quality with a core that knows language", "running"),
+    ("R1b-s2", "R1b with seed 2, greedy", "confirm the winner", "queued"),
+    ("R1d", "Alpaca, 19M core (scale run checkpoint) adapted, greedy", "does the floor keep rising with core size once the core knows language?", "queued"),
     ("R0b", "Alpaca, 0.8M: retrieval similarity as a trust-head input; three window kinds in training", "learn when to copy; stop the prediction score worsening", "queued"),
     ("R0c", "Alpaca, 0.8M: top-3 retrieved exchanges in the window", "paraphrase group above the single-retrieval ceiling (0.27)", "queued"),
     ("R2", "SQuAD 1.1: copy a span from a given passage, exact match", "the cleanest test of the copy head", "needs --format squad"),
@@ -49,6 +51,11 @@ FINDINGS = [
     ("9 Oct, session 3 (scale run)", [
         "The exact-table gain reverses with core size: +10% at 0.8M, 0 at 4.7M, -1% at 19M (equal time), and 9-12% worse on Wikipedia. The tables are a crutch for a small core; the trust head does not reject them off-domain.",
         "The tables stay as the store that learns by reading; they are not the mechanism for 'lighter and faster at equal quality'. The memory and the copy head are.",
+    ]),
+    ("9 Oct, session 5 (adapted core)", [
+        "Adapting the scale run's 4.7M core (trained on 286 MB of books + Wikipedia) to the Q&A design for ten minutes beats every earlier run in every group: seen 0.80 F1 / 42% exact, added 0.74 / 43%, paraphrase 0.29, unseen 0.27, no-memory floor 0.19 (from 0.13). A core that knows language is the base from now on; training a core from scratch on Q&A data is dropped.",
+        "Greedy decoding raises exact match by 5-10 points at no F1 cost (seen 47%, added 53%); adopted for scored answers. The 3-nat retrieval bias now lowers exact match (22% vs 42%): superseded by the copy head, dropped.",
+        "GSM8K with a 4.7M core from scratch: 0 of 198 unseen; the executor only helps where the problem is stored (42-50%). The adapted core on GSM8K (R3c) is the next test.",
     ]),
     ("9 Oct, session 4 (reasoning baseline)", [
         "GSM8K unseen: 1% right at 0.8M. With copy-from-question, the executor and the answer check: 2% (inside noise). The machinery works (operands come from the question, results are computed); the 0.8M core cannot choose the operations. Set-up, not computing, is the problem.",
