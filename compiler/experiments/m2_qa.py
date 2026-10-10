@@ -456,6 +456,7 @@ def main() -> int:
     ap.add_argument("--no-repeat", type=int, default=0, help="block any n-gram of this many codes from repeating within a reply (0: off; 3 is standard)")
     ap.add_argument("--patience", type=int, default=0, help="stop when validation bits/byte has not improved by --min-delta for this many evaluations (0: never); the best weights are kept")
     ap.add_argument("--min-delta", type=float, default=0.005)
+    ap.add_argument("--max-steps", type=int, default=0, help="stop after this many training steps (0: budget only); lets cores of different speed get equal training")
     ap.add_argument("--dict", default=None, help="use this dictionary (.cv0d) instead of fitting one on the Q&A text, e.g. the scale run's")
     ap.add_argument("--init", default=None, help="start the core from this checkpoint (train_lm or m2_qa); heads whose shape differs start fresh. With --budget 0 the run only evaluates")
     ap.add_argument("--copy-head", action="store_true", help="learned pointer over the retrieved exchange as a trust-head source")
@@ -614,14 +615,14 @@ def main() -> int:
     history, train_time, step, next_eval = [], 0.0, 0, 60.0
     best_v, bad_evals, best_state, stop_reason = float("inf"), 0, None, "budget"
     model.train()
-    while train_time < a.budget:
+    while train_time < a.budget and not (a.max_steps and step >= a.max_steps):
         t = time.perf_counter()
         x, y, m, s, sims = batch(rng.integers(0, len(train_x), size=a.batch))
         nll = model.nll(x, y, s, sims)
         loss = (nll * m).sum() / m.sum().clamp_min(1.0)
         opt.zero_grad(set_to_none=True); loss.backward(); torch.nn.utils.clip_grad_norm_(dense, 1.0); opt.step()
         step += 1; train_time += time.perf_counter() - t
-        if train_time >= next_eval or train_time >= a.budget:
+        if train_time >= next_eval or train_time >= a.budget or (a.max_steps and step >= a.max_steps):
             v = valid_bpb(eval_x)
             history.append({"train_s": round(train_time, 1), "step": step, "train_bits_per_code": round(float(loss) / math.log(2), 3), "valid_bits_per_byte": round(v, 4)})
             say(f"{train_time:6.0f}s step {step:5d} train {float(loss)/math.log(2):.3f} b/code  valid {v:.4f} b/byte"); next_eval += 60
