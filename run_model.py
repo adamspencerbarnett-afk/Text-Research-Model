@@ -44,6 +44,10 @@ SETTINGS = dict(
     DEVICE="auto", THREADS=0,
     # --- chat
     REPLY_TOKENS=120, TEMPERATURE=0.8, TOP_K=40,
+    # --- chat with a Q&A model (memory + copy head; trained by compiler/experiments/m2_qa.py)
+    QA_MAX_CODES=120,       # longest reply, in codes (about 3.5 bytes each)
+    QA_NO_REPEAT=3,         # block any 3-code phrase from repeating inside a reply (0: off)
+    QA_SHOW_MEMORY=True,    # print which stored question the answer was built from
     # --- places
     MODELS_SUBDIR="models",                    # created inside the dataset folder
     START_DIR=str(Path.home() / "OneDrive" / "Desktop" / "Text Files"),   # where the popups open
@@ -251,7 +255,55 @@ def reply(enc, model, dev, prompt: bytes, n_tokens: int, temperature: float, top
     return out, f"{n_tokens} codes, {len(out)} bytes in {dt:.1f}s ({len(out) / dt:.0f} B/s)"
 
 
+def is_qa_model(path: str) -> bool:
+    ck = torch.load(path, map_location="cpu", weights_only=False)
+    return "args" in ck and "encoding" not in ck
+
+
+def chat_qa(path: str) -> None:
+    """Chat with a Q&A model: every question is looked up in the exchange memory, the closest
+    stored exchange goes into the window, and the copy head can carry its answer into the reply.
+    /add teaches it a new fact at once, with no training."""
+    import m2_qa
+    S = SETTINGS
+    if S["THREADS"]:
+        torch.set_num_threads(S["THREADS"])
+    eng = m2_qa.QAEngine(path, native=native_encoder(), device=device(), log=say)
+    print("Ask a question. Commands:\n"
+          "  /add question || answer   store a new fact (answerable at once, no training)\n"
+          "  /nomem question           answer without memory (the network alone)\n"
+          "  /quit")
+    while True:
+        try:
+            line = input("you> ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print(); break
+        if not line:
+            continue
+        if line in ("/quit", "/exit", "/q"):
+            break
+        if line.startswith("/add "):
+            q, sep, ans = line[5:].partition("||")
+            if not sep or not q.strip() or not ans.strip():
+                print("format: /add question || answer"); continue
+            i = eng.add(q.encode("utf-8"), ans.encode("utf-8"))
+            print(f"stored as memory entry {i:,}; ask it now"); continue
+        use_mem = True
+        if line.startswith("/nomem "):
+            line, use_mem = line[7:], False
+        t0 = time.perf_counter()
+        out, info = eng.ask(line.encode("utf-8"), S["QA_MAX_CODES"], S["QA_NO_REPEAT"], use_memory=use_mem)
+        dt = time.perf_counter() - t0
+        print(f"model> {out.decode('utf-8', 'replace')}")
+        if S["QA_SHOW_MEMORY"]:
+            src = f"{info['memory']} match ({info['similarity']:.2f}): {info['retrieved_question']}" if "retrieved_question" in info else info["memory"]
+            calc = f"; executor computed {', '.join(info['computed'])}" if info["computed"] else ""
+            print(f"       [memory: {src}{calc}; {info['codes']} codes in {dt:.1f}s]")
+
+
 def chat(path: str) -> None:
+    if is_qa_model(path):
+        return chat_qa(path)
     S = SETTINGS
     enc, model, dev = load_model(path)
     pc = model.param_counts()

@@ -297,6 +297,118 @@ def f1(pred: bytes, ref: bytes) -> float:
     return 2 * prec * rec / (prec + rec)
 
 
+def repeat_banned(gen: list[int], n: int) -> list[int]:
+    """Codes that would complete an n-gram already present in ``gen`` (the reply so far): the
+    standard block against greedy loops ("It was a major part of ... It was a major part of")."""
+    if n < 2 or len(gen) < n - 1:
+        return []
+    prefix = tuple(gen[len(gen) - n + 1:])
+    return [gen[i + n - 1] for i in range(len(gen) - n + 1) if tuple(gen[i:i + n - 1]) == prefix]
+
+
+class QAEngine:
+    """A trained Q&A model ready to answer: the compiler, the exchange memory (M2) and count
+    tables (M1) rebuilt from the model's training text, and the saved core with its copy head.
+    Used by run_model.py's chat; the scoring in main() keeps its own loop so earlier results stay
+    reproducible.
+
+        eng = QAEngine("runs/r1b/alpaca_5M_init_s2.pt", native="data/cv0.exe")
+        reply, info = eng.ask(b"Name 3 characters in the movie Frozen.")
+        eng.add(b"Who leads the research?", b"Adam Barnett leads the research.")
+    """
+
+    def __init__(self, checkpoint: str, native: str | None = None, device: str = "cpu", data: str | None = None, log=print):
+        ck = torch.load(checkpoint, map_location="cpu", weights_only=False)
+        self.a = a = argparse.Namespace(**ck["args"])
+        global FOLD_KEYS
+        FOLD_KEYS = getattr(a, "fold_keys", False)
+        root = Path(__file__).resolve().parents[2]
+        resolve = lambda p: p if p is None or Path(p).is_absolute() or Path(p).exists() else str(root / p)
+        self.data = resolve(data or a.data)
+        work = Path(resolve(a.work))
+        dict_path = resolve(a.dict) if getattr(a, "dict", None) else str(work / "v0_8k_plain.cv0d")
+        self.enc = enc = LE.V0Dict(dict_path, native)
+        train_file = f"{self.data}/train/qa_train.txt"
+        train_x = parse_exchanges(Path(train_file).read_bytes())
+        if getattr(a, "max_train", 0):
+            train_x = train_x[:a.max_train]
+        self.mem = ExchangeMemory()
+        for q, ans in train_x:
+            self.mem.add(q, ans)
+        t0 = time.time()
+        # the file is the rendered exchanges back to back, so encoding it whole gives the same codes
+        all_codes = enc.encode_file(train_file, work)[0] if native else np.concatenate([enc.encode(render(q, x))[0] for q, x in train_x])
+        self.ngrams = [train_lm.NgramTable(all_codes, o, a.topk) for o in (2, 3)]
+        self.never_seen = torch.from_numpy(np.bincount(all_codes, minlength=enc.vocab) == 0)
+        self.dev = torch.device(device if (device != "cuda" or torch.cuda.is_available()) else "cpu")
+        self.model = V2LM(enc, a.width, a.layers, a.heads, a.ctx, self.ngrams, a.copy_head, getattr(a, "evidence", False)).to(self.dev)
+        self.model.load_state_dict(ck["state_dict"], strict=False)
+        self.model.eval()
+        self.sep = enc.encode(b"\n\n")[0]
+        self.equals = int(enc.encode(b"=")[0][-1])
+        self.newline = int(enc.encode(bytes([10]))[0][-1])
+        log(f"loaded {Path(checkpoint).name}: {self.model.param_counts()['total']:,} learned parameters, "
+            f"{len(train_x):,} exchanges in memory, tables rebuilt in {time.time() - t0:.0f}s")
+
+    def add(self, question: bytes, answer: bytes) -> int:
+        """Put a new pair into memory: answerable at once, no training."""
+        return self.mem.add(question.strip(), answer.strip())
+
+    def retrieve(self, q: bytes):
+        """(exchange index, similarity, how): exact key first, else the nearest key."""
+        hit = self.mem.exact_hit(q)
+        if hit is not None:
+            return hit, 1.0, "exact"
+        r = self.mem.retrieve(q, 1)
+        return (r[0][1], r[0][0], "nearest") if r else (None, 0.0, "none")
+
+    @torch.no_grad()
+    def ask(self, q: bytes, max_codes: int = 120, no_repeat: int = 3, calculator: bool | None = None, use_memory: bool = True):
+        """Answer through the compiler: retrieve, place the exchange in the window, generate greedily
+        with the copy head, decode. Returns (reply bytes, info dict)."""
+        a, enc, model = self.a, self.enc, self.model
+        calculator = getattr(a, "calculator", False) if calculator is None else calculator
+        idx, sim, how = self.retrieve(q) if use_memory else (None, 0.0, "off")
+        if idx is not None and a.neighbor_codes:
+            q_codes = enc.encode(render(*self.mem.exchanges[idx]))[0]
+            nb = q_codes[-a.neighbor_codes:]
+        else:
+            nb = np.array([], dtype=np.int64)
+        seq = [int(t) for t in np.concatenate([nb, self.sep, enc.encode(render(q, None))[0]])]
+        start = len(seq)
+        n = min(len(seq), a.ctx)
+        computed = []
+        while len(seq) - start < max_codes:
+            x = torch.tensor([seq[-a.ctx:]], device=self.dev)
+            off = max(0, len(seq) - a.ctx)
+            pos = torch.arange(min(len(seq), a.ctx), device=self.dev) + off
+            span = pos < len(nb)
+            if getattr(a, "copy_question", False):
+                span |= (pos >= len(nb) + len(self.sep)) & (pos < start)
+            logits = model.mixed_logits(model.hidden_all(x), x, span[None])
+            logits = logits.masked_fill(self.never_seen.to(logits.device), float("-inf"))
+            banned = repeat_banned(seq[start:], no_repeat)
+            if banned:
+                logits[0, banned] = float("-inf")
+            nxt = int(logits.argmax(-1).item())
+            if nxt == int(self.sep[-1]) and len(self.sep) == 1:
+                break
+            seq.append(nxt)
+            if calculator and nxt == self.equals:
+                value = evaluate_tail(enc.decode(seq[start:]))
+                if value is not None:
+                    computed.append(value)
+                    seq.extend(int(t) for t in enc.encode(b" " + value.encode())[0])
+            text = enc.decode(seq[start:])
+            if b"\nUser" in text or b"\n\n" in text:
+                break
+        out = enc.decode(seq[start:]).split(b"\nUser")[0].split(b"\n\n")[0].strip()
+        info = {"memory": how, "similarity": round(sim, 3), "codes": len(seq) - start, "computed": computed}
+        if idx is not None:
+            info["retrieved_question"] = self.mem.exchanges[idx][0][:120].decode("utf-8", "replace")
+        return out, info
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("data"); ap.add_argument("work"); ap.add_argument("--native"); ap.add_argument("--budget", type=float, default=600)
@@ -308,6 +420,7 @@ def main() -> int:
     ap.add_argument("--device", default="cpu", help="cpu, cuda or cuda:N"); ap.add_argument("--threads", type=int, default=0)
     ap.add_argument("--width", type=int, default=128); ap.add_argument("--layers", type=int, default=4); ap.add_argument("--heads", type=int, default=4)
     ap.add_argument("--greedy", action="store_true", help="scored answers take the most likely code at each step instead of sampling")
+    ap.add_argument("--no-repeat", type=int, default=0, help="block any n-gram of this many codes from repeating within a reply (0: off; 3 is standard)")
     ap.add_argument("--patience", type=int, default=0, help="stop when validation bits/byte has not improved by --min-delta for this many evaluations (0: never); the best weights are kept")
     ap.add_argument("--min-delta", type=float, default=0.005)
     ap.add_argument("--dict", default=None, help="use this dictionary (.cv0d) instead of fitting one on the Q&A text, e.g. the scale run's")
@@ -502,6 +615,10 @@ def main() -> int:
             h = model.hidden_all(x)
             logits = (model.mixed_logits(h, x, span_mask(len(seq), len(nb), a_start, qspan)) + bias) / temperature
             logits = logits.masked_fill(never_seen.to(logits.device), float("-inf"))
+            if a.no_repeat:
+                banned = repeat_banned(seq[start:], a.no_repeat)
+                if banned:
+                    logits[0, banned] = float("-inf")
             if a.greedy:
                 seq.append(int(logits.argmax(-1).item()))
             else:
