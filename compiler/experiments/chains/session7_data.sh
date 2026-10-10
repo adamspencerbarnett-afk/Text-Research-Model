@@ -11,8 +11,6 @@ PY=.venv/Scripts/python.exe
 N="$(pwd -W)/data/cv0.exe"
 MIX="$PY -I compiler/experiments/prepare_core_mix.py"
 until grep -q "articles kept" data_core/logs/wiki.log 2>/dev/null && grep -q "documents" data_core/logs/fineweb.log 2>/dev/null; do sleep 60; done
-  until grep -q "training pairs" data_core/logs/evidence.log 2>/dev/null; do sleep 60; done
-fi
 mkmix() { [ -f data_core/mix_$1_5M/manifest.json ] || { $MIX mix data_core/src data_core/mix_$1_5M --mb 400 --recipe $1 > data_core/logs/mix_$1.log 2>&1; mkdir -p data_core/mix_$1_5M/ood; cp data_v2/heldout/*.txt data_core/mix_$1_5M/ood/; }; }
 mkmix D1; mkmix D2                        # these need no evidence pairs
 [ -f data_core/eval/evidence_val.jsonl ] || $MIX evidence data_core/src/wiki.txt,data_core/src/fineweb.txt data_core/src/evidence.txt --max-pairs 150000 > data_core/logs/evidence.log 2>&1
