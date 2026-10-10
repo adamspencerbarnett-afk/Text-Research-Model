@@ -496,7 +496,9 @@ def main() -> int:
     import hashlib
     nb_key = hashlib.sha256(b"\0".join(q for q, _ in train_x) + repr((FOLD_KEYS, sorted(STOP))).encode()).hexdigest()[:16]
     nb_cache = work / f"neighbors_{nb_key}.json"
-    if nb_cache.exists():
+    if not a.neighbor_codes:             # no retrieved exchange in the window: the pass is unused
+        neighbors = [None] * len(train_x)
+    elif nb_cache.exists():
         neighbors = json.loads(nb_cache.read_text())
     else:
         neighbors = [r[0][1] if (r := mem.retrieve(q, 1, exclude=i)) else None for i, (q, _) in enumerate(train_x)]
