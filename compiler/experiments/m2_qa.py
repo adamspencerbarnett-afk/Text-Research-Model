@@ -308,6 +308,8 @@ def main() -> int:
     ap.add_argument("--device", default="cpu", help="cpu, cuda or cuda:N"); ap.add_argument("--threads", type=int, default=0)
     ap.add_argument("--width", type=int, default=128); ap.add_argument("--layers", type=int, default=4); ap.add_argument("--heads", type=int, default=4)
     ap.add_argument("--greedy", action="store_true", help="scored answers take the most likely code at each step instead of sampling")
+    ap.add_argument("--patience", type=int, default=0, help="stop when validation bits/byte has not improved by --min-delta for this many evaluations (0: never); the best weights are kept")
+    ap.add_argument("--min-delta", type=float, default=0.005)
     ap.add_argument("--dict", default=None, help="use this dictionary (.cv0d) instead of fitting one on the Q&A text, e.g. the scale run's")
     ap.add_argument("--init", default=None, help="start the core from this checkpoint (train_lm or m2_qa); heads whose shape differs start fresh. With --budget 0 the run only evaluates")
     ap.add_argument("--copy-head", action="store_true", help="learned pointer over the retrieved exchange as a trust-head source")
@@ -441,6 +443,7 @@ def main() -> int:
         model.train(); return bits / max(1, nbytes)
 
     history, train_time, step, next_eval = [], 0.0, 0, 60.0
+    best_v, bad_evals, best_state, stop_reason = float("inf"), 0, None, "budget"
     model.train()
     while train_time < a.budget:
         t = time.perf_counter()
@@ -453,6 +456,16 @@ def main() -> int:
             v = valid_bpb(eval_x)
             history.append({"train_s": round(train_time, 1), "step": step, "train_bits_per_code": round(float(loss) / math.log(2), 3), "valid_bits_per_byte": round(v, 4)})
             say(f"{train_time:6.0f}s step {step:5d} train {float(loss)/math.log(2):.3f} b/code  valid {v:.4f} b/byte"); next_eval += 60
+            if v < best_v - a.min_delta:
+                best_v, bad_evals = v, 0
+                best_state = {k: t.detach().clone() for k, t in model.state_dict().items()}
+            else:
+                bad_evals += 1
+                if a.patience and bad_evals >= a.patience:
+                    stop_reason = f"plateau: no improvement over {a.min_delta} in {a.patience} evaluations"
+                    say(f"stopping at {train_time:.0f}s: {stop_reason}"); break
+    if a.patience and best_state is not None:
+        model.load_state_dict(best_state); say(f"restored the best weights (valid {best_v:.4f} b/byte)")
 
     @torch.no_grad()
     def answer(q: bytes, context_exchange: int | None, n_tokens=80, temperature=0.5, top_k=10, use_m1=True, copy_bias=0.0):
@@ -513,7 +526,7 @@ def main() -> int:
         return out
 
     results = {"setup": vars(a) | {"train_exchanges": len(train_x), "eval": len(eval_x), "added": len(add_x), "distinct_keys": len(mem.exact)},
-               "training": {"steps": step, "train_s": round(train_time, 1), "history": history}, "groups": {}, "samples": {}}
+               "training": {"steps": step, "train_s": round(train_time, 1), "stop_reason": stop_reason, "best_valid": None if best_v == float("inf") else round(best_v, 4), "history": history}, "groups": {}, "samples": {}}
     # 1. seen: training questions. Memory path (exact key) and network path (own exchange retrieved).
     seen_idx = rng.choice(len(train_x), size=min(a.eval_n, len(train_x)), replace=False)
     mem_rows, net_rows = [], []
