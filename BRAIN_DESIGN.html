@@ -58,6 +58,26 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-sp
 .stage .id { font-family: var(--mono); font-weight: 500; color: var(--accent); padding-top: 2px; }
 .stage .body { min-width: 0; }
 .stage .done { font-size: .9rem; color: var(--muted); }
+a.spec { display: inline-block; font-family: var(--mono); font-size: .72rem; letter-spacing: .03em; padding: 1px 7px; margin-left: 6px;
+  border: 1px solid var(--accent); color: var(--accent); border-radius: 3px; text-decoration: none; vertical-align: 1px; }
+a.spec:hover, a.spec:focus-visible { background: var(--accent); color: var(--bg); outline: none; }
+.specindex { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 18px; }
+.specindex a.spec { margin-left: 0; font-size: .8rem; padding: 3px 9px; }
+details.specblock { border: 1px solid var(--line); border-radius: 6px; background: var(--panel); margin: 10px 0; }
+details.specblock > summary { cursor: pointer; padding: 10px 14px; font-weight: 700; list-style-position: inside; }
+details.specblock > summary span { font-weight: 400; color: var(--muted); font-size: .9rem; }
+.specbody { padding: 0 16px 14px; min-width: 0; }
+.specbody pre { font-family: var(--mono); font-size: .8rem; line-height: 1.5; background: var(--code); padding: 10px 12px; border-radius: 4px; overflow-x: auto; white-space: pre; margin: 8px 0 12px; }
+.specbody h4 { font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 14px 0 4px; }
+.specbody .check { border-left: 3px solid var(--core); padding: 2px 0 2px 10px; margin: 8px 0; }
+dialog.specdialog { width: min(900px, calc(100vw - 32px)); max-height: calc(100vh - 48px); padding: 0; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--panel); color: var(--fg); box-shadow: 0 12px 40px rgba(0,0,0,.25); }
+dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
+.dlghead { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 16px; background: var(--panel); border-bottom: 1px solid var(--line); }
+.dlghead h3 { margin: 0; font-family: var(--display); font-size: 1.2rem; }
+.dlghead button { font: inherit; font-size: .9rem; padding: 4px 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg); color: var(--fg); cursor: pointer; }
+.dlghead button:focus-visible { outline: 2px solid var(--accent); }
+.dlgbody { padding: 4px 0 8px; overflow-y: auto; }
 @media (max-width: 480px) { h1 { font-size: 1.85rem; } .kv { grid-template-columns: 1fr; } .kv dt { margin-top: 6px; } .stage { grid-template-columns: 1fr; } }
 @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 </style>
@@ -93,12 +113,14 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-sp
   <path class="ln" d="M720,116 L750,116"/>
   <rect class="box" x="750" y="90" width="100" height="52" rx="5"/><text x="800" y="112" text-anchor="middle">Reply</text><text class="s" x="800" y="129" text-anchor="middle">decoded</text>
 </svg>
+<p>Each part below links to its exact specification (<a class="spec" href="#spec-compiler" data-spec="spec-compiler">spec</a> opens it here); all of them are collected in <a href="#reconstruction">section 9</a>, which is enough to rebuild the current best model from scratch.</p>
 <ol>
-  <li><b>Compiler</b> (deterministic, no learning). Turns text into codes of about 3.5 bytes each and back, exactly. The same compiler serves training and conversation, so stored items always have stable keys.</li>
-  <li><b>Exchange memory</b> (no learned parameters). Every question and answer is stored under a key made from the question's content words. A new fact is one table entry: added in about a millisecond, answerable immediately, deletable, inspectable.</li>
-  <li><b>Count tables</b> (no learned parameters). Exact counts of which code follows which, rebuilt from text in seconds. They let the model learn by reading: one Austen novel added to the counts improved prediction of another Austen novel with no training.</li>
-  <li><b>Network core</b> (learned). A small Transformer, trained first on 286 MB of books and Wikipedia, then on question-and-answer text. The <b>copy head</b> is a learned pointer that reads the retrieved exchange and carries its answer into the reply.</li>
-  <li><b>Trust head</b> (learned, one small layer). For every word of the reply it weighs the network, the tables and the copy head by their confidence.</li>
+  <li><b>Compiler</b><a class="spec" href="#spec-compiler" data-spec="spec-compiler">spec</a> (deterministic, no learning). Turns text into codes of about 3.5 bytes each and back, exactly. The same compiler serves training and conversation, so stored items always have stable keys.</li>
+  <li><b>Exchange memory</b><a class="spec" href="#spec-memory" data-spec="spec-memory">spec</a> (no learned parameters). Every question and answer is stored under a key made from the question's content words. A new fact is one table entry: added in about a millisecond, answerable immediately, deletable, inspectable.</li>
+  <li><b>Count tables</b><a class="spec" href="#spec-tables" data-spec="spec-tables">spec</a> (no learned parameters). Exact counts of which code follows which, rebuilt from text in seconds. They let the model learn by reading: one Austen novel added to the counts improved prediction of another Austen novel with no training.</li>
+  <li><b>Network core</b><a class="spec" href="#spec-core" data-spec="spec-core">spec</a> (learned). A small Transformer, trained first on 286 MB of books and Wikipedia, then on question-and-answer text<a class="spec" href="#spec-training" data-spec="spec-training">training</a>. The <b>copy head</b><a class="spec" href="#spec-copy" data-spec="spec-copy">spec</a> is a learned pointer that reads the retrieved exchange and carries its answer into the reply.</li>
+  <li><b>Trust head</b><a class="spec" href="#spec-trust" data-spec="spec-trust">spec</a> (learned, one small layer). For every word of the reply it weighs the network, the tables and the copy head by their confidence.</li>
+  <li><b>Answering</b><a class="spec" href="#spec-answer" data-spec="spec-answer">spec</a>: retrieval, the window, greedy decoding with repeat blocking, the calculator and its answer check.</li>
 </ol>
 
 <h3>What works today, and why</h3>
@@ -266,6 +288,299 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-sp
   <li>The run ledger and probe battery as the measuring tools for every stage above (in place).</li>
 </ul>
 <p>When those are in, B0 is a matter of freezing the winner, and the project can start with B1 and B2, which together take about a day of runs on the current machine.</p>
+
+<h2 id="reconstruction">9. Reconstruction specification of the current model</h2>
+<p>Everything needed to rebuild the current best Q&amp;A model from an empty machine: what each part computes, with its exact parameters, as pseudocode written from the code (branch <code>local-gpu-phase2</code>, 10 October 2026). File and function names point at the reference implementation. Each part ends with a check that proves a rebuilt part matches the original. The best model today is <code>models/qa_best_5M.pt</code> (run R1b, seed 2).</p>
+<div class="specindex">
+  <a class="spec" href="#spec-data" data-spec="spec-data">data</a>
+  <a class="spec" href="#spec-compiler" data-spec="spec-compiler">compiler</a>
+  <a class="spec" href="#spec-tables" data-spec="spec-tables">count tables</a>
+  <a class="spec" href="#spec-core" data-spec="spec-core">network core</a>
+  <a class="spec" href="#spec-memory" data-spec="spec-memory">exchange memory</a>
+  <a class="spec" href="#spec-copy" data-spec="spec-copy">copy head</a>
+  <a class="spec" href="#spec-trust" data-spec="spec-trust">trust head</a>
+  <a class="spec" href="#spec-training" data-spec="spec-training">training</a>
+  <a class="spec" href="#spec-answer" data-spec="spec-answer">answering</a>
+  <a class="spec" href="#spec-scoring" data-spec="spec-scoring">scoring</a>
+  <a class="spec" href="#spec-files" data-spec="spec-files">files and checkpoints</a>
+  <a class="spec" href="#spec-recipe" data-spec="spec-recipe">rebuild recipe</a>
 </div>
+
+<details class="specblock" id="spec-data"><summary>Data <span>corpora and Q&amp;A sets, built from public sources</span></summary><div class="specbody">
+<h4>Files</h4><p><code>compiler/experiments/prepare_books.py</code>, <code>prepare_corpus_v1.py</code>, <code>prepare_corpus_v2.py</code>, <code>prepare_qa.py</code>; manifests with SHA-256 in <code>results/corpus_v*_manifest.json</code>; sources listed in <code>docs/DATASETS.md</code>.</p>
+<pre>clean(book):                                   # prepare_books.clean
+  decode UTF-8 (Latin-1 for "-8.txt" sources); drop a BOM; CRLF -> LF
+  keep the text between "*** START OF ...\n" and "\n*** END OF"; strip blank lines at the ends; end with "\n"
+  write the bytes exactly (write_bytes; Windows text mode would turn LF into CRLF)
+
+corpus v0 = 51 named GITenberg books: 48 train, 3 held out (Conrad, Doyle, Machiavelli)
+corpus v1 = v0 + a seeded sample (seed 1, repository ids &lt;= 30000) of GITenberg books, 100 KB to 2 MB,
+            English prose, held-out authors excluded, until 200 MB of training text
+corpus v2 = v1 + Adam's 100-book file (split on FILE markers, duplicates of v1 and held-out books dropped)
+            + enwik 50 MiB prefix: first 2 MiB -> ood/enwik_head_2MiB.txt, rest -> train_wiki/enwik_rest.txt
+stage-1 training stream = all train_wiki files, then all train books, concatenated in sorted order
+
+Q&amp;A text, one exchange per block:
+  "User: " + question [+ "\n" + input] + "\nAssistant: " + answer + "\n\n"
+  exchanges are separated by "\n\n" followed by "User: " (answers may contain blank lines)
+  Alpaca: 98% train / 2% held out, shuffled with seed 1;  GSM8K: final line "Answer: N";
+  SQuAD: "Passage: ... \nQuestion: ...", answer = first reference span, passage + question &lt;= 150 words</pre>
+<div class="check"><b>Check:</b> rebuilt files match the manifest hashes (v0: 52 of 53 identical; v1/v2 drift because GITenberg changes, see the log for 10 October).</div>
+</div></details>
+
+<details class="specblock" id="spec-compiler"><summary>Compiler v0 <span>text to codes and back, exactly</span></summary><div class="specbody">
+<h4>Files</h4><p><code>compiler/compiler_v0.py</code> (reference: <code>scan</code>, <code>fit</code>, <code>learn_pieces</code>, <code>Encoder</code>, <code>Dictionary</code>), <code>compiler/native/cv0.cpp</code> (fast encoder, must be byte-identical), tests in <code>compiler/test_compiler_v0.py</code>.</p>
+<pre>ID layout:   0..255 = single bytes (fallback)   256 = CAP   257 = UPPER   258.. = dictionary entries in file order
+
+scan(text):  split into units, left to right, first rule that matches wins (bytes regex):
+               " [A-Za-z]+"  |  "[A-Za-z]+"  |  " +(?= [A-Za-z])"  |  " +"  |  "\n+"  |  "\t+"  |  any single byte
+             concatenating the units gives the text back exactly; digits are single-byte units
+
+fit(train_texts, vocab = 8192, phrases = 0, case_flags = off, min_count = 2):
+  counts = number of times each unit of length &gt;= 2 occurs in the training text
+  words  = each distinct unit as a list of single bytes, weight = its count (sorted, for determinism)
+  repeat until (vocab - 258) entries exist:
+      take the adjacent pair (a, b), len(a) + len(b) &lt;= 32, with the highest total weight;
+          a pair is keyed by at_start = (it is at position 0 of its unit)
+      stop if that weight &lt; min_count
+      new entry: kind "S" (start piece) if at_start else "C" (continuation piece), bytes a + b
+      replace that pair with the merged symbol everywhere it occurs with the same at_start
+  dictionary file: "compiler-v0 dictionary", "version 1", "case_flags 0", "max_phrase_units 1",
+                   "entries N", then one "S\tbytes" or "C\tbytes" line per entry (escaped)
+  dictionary hash = FNV-1a 64-bit of that file
+
+encode(text):
+  for unit in scan(text):
+      pos = 0; table = START pieces
+      while pos &lt; len(unit):
+          L = longest length in 32..2 such that unit[pos : pos + L] is in table
+          if none: emit byte id unit[pos]; L = 1        else: emit that entry's id
+          pos += L; table = CONTINUATION pieces
+decode(ids) = concatenation of each id's bytes      (lossless by construction)
+
+ID file: 24-byte header (b"CV0I", version 1, id width 2 or 4, 2 pad bytes, dictionary hash, count),
+         then the ids as little-endian uint16 (uint32 above 65,536 ids)</pre>
+<p>The best model's dictionary is <code>models/v0_8k_plain_corpus_v2.cv0d</code>: 7,934 entries, 8,192 IDs, hash <code>3febecd65a1a77ff</code>, fitted on the corpus v2 training stream, no case flags, no phrases. About 3.5 bytes of text per code.</p>
+<div class="check"><b>Check:</b> 34 contract tests pass, including round trips on all 256 byte values and the native/Python parity test; a refit on the same training text gives the same hash.</div>
+</div></details>
+
+<details class="specblock" id="spec-tables"><summary>Count tables (M1) <span>what usually comes next, exact and rebuilt in seconds</span></summary><div class="specbody">
+<h4>Files</h4><p><code>compiler/experiments/train_lm.py</code>: <code>NgramTable</code>, <code>table_features</code>; used inside <code>LM.nll</code>, <code>LM.mixed_logits</code>.</p>
+<pre>build(codes, order, topk = 64):                    # every code &lt; 2^21
+  k = order - 1
+  context(i) = codes[i .. i+k-1] packed 21 bits each; follower(i) = codes[i+k]
+  count every distinct (context, follower) pair
+  per context: followers sorted by count, descending; keep the first topk (ragged arrays: offsets, ids, counts)
+               total = count of all followers, kept or not
+  contexts sorted, so lookup is a binary search; arrays moved once to the GPU and cached there
+
+lookup at position t: context = the k codes ending at t (incomplete at the start of the window = not found)
+  found     -> follower ids, counts, total      not found -> ids -1, counts 0, total 0
+
+probability of the target y at t:
+  c = count of y among the kept followers; kept = sum of kept counts
+  in training only (leave-one-out, mandatory): c = c - 1 if c &gt; 0;  kept = kept - 1 if total &gt; 0
+  p_table(y) = c / kept  if kept &gt; 0  else 0
+confidence features, 3 per table (to the trust head):
+  log(1 + total - LOO),  share of the top follower,  entropy in bits of the follower shares
+
+orders used: 2 and 3; counted on the training codes only (in stage 1 the last 2% is validation and not counted)</pre>
+<div class="check"><b>Check:</b> <code>test_ladder.test_ngram_table_counts_and_lookup</code> and the leave-one-out test; the GPU lookup was verified identical to the earlier padded CPU lookup on four table sizes.</div>
+</div></details>
+
+<details class="specblock" id="spec-core"><summary>Network core (M3) <span>a small pre-norm Transformer with tied embeddings</span></summary><div class="specbody">
+<h4>Files</h4><p><code>compiler/experiments/train_lm.py</code>: <code>Block</code>, <code>LM</code> (<code>embed</code>, <code>hidden</code>, <code>nll</code>).</p>
+<pre>parameters: E (vocab x width, shared by input and output), P (ctx x width), L blocks, final LayerNorm
+init:       every Linear weight and both embeddings ~ Normal(0, 0.02); biases 0
+
+embed(x)  = E[x] + P[0 .. T-1]
+block(h):                                         # repeated L times
+  q, k, v = split(W_qkv · LN1(h))                 # W_qkv: width -> 3·width, no bias; H heads of width/H
+  h = h + W_o · causal_scaled_dot_product_attention(q, k, v)        # W_o no bias
+  h = h + W_2 · GELU(W_1 · LN2(h) + b_1) + b_2    # W_1: width -> 4·width
+hidden(x) = LN_f(block_L(... block_1(embed(x))))
+network distribution at t = softmax(hidden_t · E^T)
+
+sizes used:  0.8M core: width 128, 4 layers, 4 heads      4.7M: 256, 6, 8 (the best model)
+             19M: 448, 8, 8                               49M: 640, 10, 10       context 256 codes
+core parameters ~ 12 · layers · width^2  (+ vocab · width for E, + ctx · width for P)</pre>
+<div class="check"><b>Check:</b> the stage-1 checkpoint <code>models/core_5M_stage1_books_wiki.pt</code> reproduces 1.4115 bits per byte on the held-out books; CPU and GPU results agree to four decimals.</div>
+</div></details>
+
+<details class="specblock" id="spec-memory"><summary>Exchange memory (M2) <span>question key to stored answer, exact and nearest</span></summary><div class="specbody">
+<h4>Files</h4><p><code>compiler/experiments/m2_qa.py</code>: <code>STOP</code>, <code>words_of</code>, <code>ExchangeMemory</code> (<code>key_of</code>, <code>add</code>, <code>retrieve</code>, <code>exact_hit</code>, <code>similarity_keys</code>).</p>
+<pre>STOP = a fixed list of 117 English function words and instruction verbs (a, the, of, ..., write, describe, explain, list, name, ...)
+words_of(text)   = [unit stripped of its space, lower-cased  for unit in scan(text)  if it is letters only]
+key_of(question) = the set of words_of(question) that are not in STOP and longer than one letter
+
+add(question, answer):
+  i = number of stored exchanges; store (question, answer) and its key
+  exact[key] = i  if key not already present       (the first exchange with a key wins)
+  for w in key: index[w].append(i); df[w] += 1
+
+idf(w) = ln((1 + N) / (1 + df[w]))                 N = stored exchanges
+
+retrieve(question):
+  key = key_of(question)
+  for w in key with df[w] &lt;= 5% of N:              # very common words do not vote
+      for i in index[w]: score[i] += idf(w)
+  similarity(i) = score[i] / (sum of idf(w) over key + sum of idf(w) over key_i - key)
+  return the exchange with the highest similarity
+
+used for answering: exact[key_of(question)] if present (similarity 1), else retrieve(question)</pre>
+<div class="check"><b>Check:</b> stored questions return their own answer 99% exactly (the 1% are different questions with the same key); a pair added after training is found at once.</div>
+</div></details>
+
+<details class="specblock" id="spec-copy"><summary>Copy head <span>a learned pointer into the retrieved exchange</span></summary><div class="specbody">
+<h4>Files</h4><p><code>compiler/experiments/m2_qa.py</code>: <code>V2LM.extra_parts</code>, <code>V2LM._span</code>.</p>
+<pre>inputs: hidden states h of the window, codes x, span S (positions of the retrieved exchange;
+        with --copy-question also the current question's positions)
+
+allowed(t, j) = S[j] and S[j+1] and j &lt; t        # j's follower lies in the span, and j is strictly earlier:
+                                                  #   pointing at t itself would reveal the target
+score(t, j)   = (W_q · h_t) · (W_k · h_j) / sqrt(width)        # W_q, W_k: width x width, no bias, Normal(0, 0.02)
+a(t, .)       = softmax of score over the allowed j            # a row with nothing allowed is all zeros
+p_copy(y at t) = sum over j of a(t, j) · [x[j+1] = y]          # copying a passage is a walk along it
+confidence features (2): max over j of a(t, j);  entropy in bits of a(t, .)
+parameters: 2 · width^2 (131k at width 256)</pre>
+<div class="check"><b>Check:</b> with the copy head, network answers to stored questions rise from 0.13 to 0.79–0.88 word F1; a test with a self-matching window must give zero copy probability for the target (the leak test).</div>
+</div></details>
+
+<details class="specblock" id="spec-trust"><summary>Trust head <span>mixes the sources, word by word</span></summary><div class="specbody">
+<h4>Files</h4><p><code>train_lm.LM.nll</code> / <code>mixed_logits</code> (network + tables), <code>m2_qa.V2LM.nll</code> / <code>mixed_logits</code> (+ copy head, optional evidence table and similarity input).</p>
+<pre>sources at position t:   network (softmax of the core),  bigram table,  trigram table,  copy head
+features(t) = [ h_t,                                   # the core's state
+                3 confidence features per table,       # see count tables
+                2 confidence features of the copy head,
+                retrieval similarity  (only with --sim-feature) ]
+w(t) = softmax(W_mix · features(t) + b_mix)            # one Linear layer; one weight per source; init Normal(0, 0.02), bias 0
+p(y at t) = sum over sources s of w_s(t) · p_s(y at t)
+loss = - log max(p(y at t), 1e-9)                      # training and scoring use the same formula</pre>
+<div class="check"><b>Check:</b> training and generation give the same target probability at the last position (unit check in the session log of 9 October).</div>
+</div></details>
+
+<details class="specblock" id="spec-training"><summary>Training <span>stage 1 on books and Wikipedia, stage 2 on Q&amp;A</span></summary><div class="specbody">
+<h4>Files</h4><p>Stage 1: <code>compiler/experiments/scale_run.py</code> calling <code>train_lm.run</code>. Stage 2: <code>compiler/experiments/m2_qa.py</code> (<code>sample</code>, <code>batch</code>, training loop).</p>
+<pre>STAGE 1  (core 256w 6L 8h, compiler + count tables, corpus v2 + Wikipedia)
+  stream = encode(training stream); validation = its last 2%; tables counted on the first 98%
+  each step: 64 random windows of 257 codes; inputs = codes 0..255, targets = codes 1..256
+  loss = mean over all positions of the trust-head loss (tables with leave-one-out)
+  AdamW: peak lr 1e-3, betas (0.9, 0.95), weight decay 0.1 on matrices only
+  lr(step) = peak · min(1, step / 100) · (0.1 + 0.9 · (1 + cos(pi · elapsed / budget)) / 2)
+  gradient norm clipped to 1.0; bfloat16 autocast in the step; scores in full precision
+  budget 1,800 s on one RTX 3090 = 42,538 steps, 2.2 GB of text seen  ->  models/core_5M_stage1_books_wiki.pt
+
+STAGE 2  (Q&amp;A design, Alpaca; dictionary and core from stage 1)
+  load every stage-1 tensor whose shape matches; copy head and trust head start new
+  memory = all training exchanges; tables = counts over all training exchange codes
+  window for exchange i (257 codes):
+      retrieved = i itself with probability 0.5 (copying is right), else its nearest other exchange
+      [ last 110 codes of the retrieved exchange ] + [ the code of "\n\n" ] + [ exchange i, first 145 codes ] + padding
+      loss mask = exchange i's codes only (with --loss-answer-only: its answer only)
+      --perturb-self p: of the self windows, a share p have the retrieved question reworded (words dropped 20%,
+                        replaced 10%, neighbours swapped 15%) and the similarity recomputed
+  each step: 32 windows; AdamW lr 1e-3 constant, betas (0.9, 0.95), decay 0.1 on matrices; clip 1.0
+  validation every 60 s: bits per byte on 120 held-out exchanges with their nearest exchange retrieved
+  --patience n: stop after n evaluations without improvement; keep the best weights
+  best model: 600 s, 15,565 steps, seed 2 -> models/qa_best_5M.pt</pre>
+<div class="check"><b>Check:</b> stage 2 from the stage-1 checkpoint lands within seed noise of seen 0.79–0.88 F1 and 47–52% exact (greedy), validation about 1.0 bits per byte.</div>
+</div></details>
+
+<details class="specblock" id="spec-answer"><summary>Answering <span>from a question to a reply</span></summary><div class="specbody">
+<h4>Files</h4><p><code>m2_qa.QAEngine.ask</code> (chat) and the <code>answer</code> function inside <code>m2_qa.main</code> (scoring); <code>repeat_banned</code>, <code>evaluate_tail</code>, <code>final_number</code>.</p>
+<pre>ask(question):
+  retrieved, similarity = exact hit (1.0), else nearest by retrieve(), else none
+  window = [ last 110 codes of the retrieved exchange ] + [ "\n\n" ] + encode("User: " + question + "\nAssistant:")
+  span   = the retrieved codes (+ the question's codes with --copy-question)
+  repeat up to 120 codes:
+      scores = log of the trust-head mixture at the last position of window[-256:]
+      forbid codes never seen in the training text
+      forbid any code that would complete a 3-code phrase already in the reply          (repeat blocking)
+      next = the code with the highest score                                            (greedy)
+      append next
+      if calculator and next is "=" and the reply ends in "a op b =" (op in + - * x /):
+          append the computed value (integer if whole, else 2 decimals) and forbid a digit right after it
+      stop if the reply contains "\nUser" or an invented "\nAssistant:"
+  reply = decode(the new codes), cut at "\nUser" / "\nAssistant:"
+  calculator rule 2: the reply's final "Answer: N" must equal a computed value, else it is replaced by the last one
+add(question, answer) = memory.add: the fact is answerable on the next question, no training</pre>
+<div class="check"><b>Check:</b> the 32-question probe battery (<code>chat_probe.py</code>) gives 35/64 with memory and 1/64 without on <code>models/qa_best_5M.pt</code>.</div>
+</div></details>
+
+<details class="specblock" id="spec-scoring"><summary>Scoring <span>how every number in the ledger is measured</span></summary><div class="specbody">
+<h4>Files</h4><p><code>m2_qa.f1</code>, <code>num_exact</code>, the groups in <code>m2_qa.main</code>; <code>train_lm.total_bits</code>, <code>eval_file</code>; <code>chat_probe.py</code>; <code>run_ledger.py</code>.</p>
+<pre>bits per byte (language modelling) = sum of -log2 p over every code of a file / bytes of the file
+                                     (windows of 256 codes, context reset at each window)
+word F1(reply, reference): P = shared words / reply words, R = shared words / reference words (words_of, with counts)
+                           F1 = 2PR / (P + R); 0 if nothing is shared
+exact = reply bytes equal reference bytes;   num_exact = final "Answer:" number equal (GSM8K)
+held-out Alpaca split in half (seed): half for evaluation, half added to memory after training
+groups:  seen       = 200 training questions (memory path) / 60 (network path, own exchange retrieved)
+         reworded   = held-out questions whose nearest key has similarity &gt;= 0.5
+         new        = the other held-out questions, nearest exchange retrieved
+         no memory  = 60 held-out questions with nothing retrieved
+         added      = held-out pairs put into memory after training, then asked
+seed noise on the 60-answer groups: about +-0.07 F1</pre>
+</div></details>
+
+<details class="specblock" id="spec-files"><summary>Files and checkpoints <span>what is saved and how a model is reloaded</span></summary><div class="specbody">
+<pre>models/v0_8k_plain_corpus_v2.cv0d     the dictionary (hash 3febecd65a1a77ff)
+models/core_5M_stage1_books_wiki.pt   stage 1: {"encoding", "model" (shape, params), "state_dict", "ngram_orders", "ngram_topk"}
+models/qa_best_5M.pt                  stage 2: {"state_dict", "args"}   args = every m2_qa setting of the run
+results/*.json                        one per run: settings, training history, every score
+docs/RUN_LEDGER.md                    all runs in one table (run_ledger.py)
+
+reload a Q&amp;A model (QAEngine):
+  args = checkpoint["args"]; dictionary = args.dict; training text = args.data + "/train/qa_train.txt"
+  memory  = add every training exchange
+  tables  = NgramTable(encode(training text), 2 and 3, args.topk)
+  model   = V2LM(shape and flags from args), load state_dict
+  count tables and memory are never stored: they are rebuilt from the text in seconds</pre>
+</div></details>
+
+<details class="specblock" id="spec-recipe"><summary>Rebuild recipe <span>from an empty machine to the best model</span></summary><div class="specbody">
+<pre>1. git clone the repository; check out local-gpu-phase2
+2. python -m venv .venv; pip install numpy matplotlib; pip install torch --index-url https://download.pytorch.org/whl/cu128
+3. build the native encoder (MSVC: cl /O2 /std:c++17 /EHsc compiler\native\cv0.cpp, or g++ -O2 -std=c++17 -static)
+4. python -B -m unittest compiler/test_compiler_v0.py compiler/experiments/test_ladder.py      -> 34 tests OK
+5. corpora: prepare_books.py data; prepare_corpus_v1.py data data_v1 --repo-list GITenberg_repo_list.tsv;
+            prepare_corpus_v2.py data_v1 BOOKS100.txt ENWIK50MiB.txt data_v2
+6. Q&amp;A: prepare_qa.py alpaca_data.json data_qa   (also --format gsm8k / squad)
+7. stage 1: scale_run.py data_v2 runs/scale --native data/cv0.exe --device cuda --amp --sizes 5M --configs v0_8k_ng64 --budgets 1800
+   (or use models/core_5M_stage1_books_wiki.pt and models/v0_8k_plain_corpus_v2.cv0d)
+8. stage 2: m2_qa.py data_qa runs/best --native data/cv0.exe --device cuda --dict models/v0_8k_plain_corpus_v2.cv0d
+            --init models/core_5M_stage1_books_wiki.pt --width 256 --layers 6 --heads 8 --batch 32 --budget 600
+            --self-context-p 0.5 --copy-head --greedy --seed 2 --save runs/best/qa.pt
+9. check: chat_probe.py runs/best/qa.pt   and compare with docs/CHAT_NOTES.md; chat with run_model.py</pre>
+</div></details>
+</div>
+
+<dialog class="specdialog" id="specdialog" aria-labelledby="dlgtitle">
+  <div class="dlghead"><h3 id="dlgtitle">Specification</h3><button type="button" id="dlgclose">Close</button></div>
+  <div class="dlgbody" id="dlgbody"></div>
+</dialog>
+<script>
+(function () {
+  var dlg = document.getElementById("specdialog");
+  if (!dlg || typeof dlg.showModal !== "function") return;     // without dialog support the links scroll to section 9
+  var body = document.getElementById("dlgbody"), title = document.getElementById("dlgtitle");
+  document.addEventListener("click", function (e) {
+    var a = e.target.closest ? e.target.closest("a.spec[data-spec]") : null;
+    if (!a) return;
+    var block = document.getElementById(a.getAttribute("data-spec"));
+    if (!block) return;
+    e.preventDefault();
+    var summary = block.querySelector("summary"), content = block.querySelector(".specbody");
+    title.textContent = summary ? summary.childNodes[0].textContent.trim() : "Specification";
+    body.innerHTML = "";
+    var copy = content.cloneNode(true);
+    body.appendChild(copy);
+    dlg.showModal();
+    body.scrollTop = 0;
+  });
+  document.getElementById("dlgclose").addEventListener("click", function () { dlg.close(); });
+  dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
+})();
+</script>
 </body>
 </html>

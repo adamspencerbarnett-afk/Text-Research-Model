@@ -360,7 +360,14 @@ class QAEngine:
         resolve = lambda p: p if p is None or Path(p).is_absolute() or Path(p).exists() else str(root / p)
         self.data = resolve(data or a.data)
         work = Path(resolve(a.work))
+        work.mkdir(parents=True, exist_ok=True)
         dict_path = resolve(a.dict) if getattr(a, "dict", None) else str(work / "v0_8k_plain.cv0d")
+        if not Path(dict_path).exists():
+            # runs/ is not in git; the dictionaries of saved models are kept in models/ (same file, same hash)
+            kept = root / "models" / "v0_8k_plain_corpus_v2.cv0d"
+            if kept.exists():
+                log(f"dictionary {dict_path} not found; using {kept}")
+                dict_path = str(kept)
         self.enc = enc = LE.V0Dict(dict_path, native)
         train_file = f"{self.data}/train/qa_train.txt"
         train_x = parse_exchanges(Path(train_file).read_bytes())
@@ -412,7 +419,7 @@ class QAEngine:
         seq = [int(t) for t in np.concatenate([nb, self.sep, enc.encode(render(q, None))[0]])]
         start = len(seq)
         n = min(len(seq), a.ctx)
-        computed = []
+        computed, after_value = [], False
         while len(seq) - start < max_codes:
             x = torch.tensor([seq[-a.ctx:]], device=self.dev)
             off = max(0, len(seq) - a.ctx)
@@ -425,6 +432,11 @@ class QAEngine:
             banned = repeat_banned(seq[start:], no_repeat)
             if banned:
                 logits[0, banned] = float("-inf")
+            if after_value:                  # no digit may extend a value the calculator just wrote
+                digits = [c for c in range(enc.vocab) if enc.d.id_bytes[c][:1].isdigit()] if not hasattr(self, "_digit_codes") else self._digit_codes
+                self._digit_codes = digits
+                logits[0, digits] = float("-inf")
+                after_value = False
             nxt = int(logits.argmax(-1).item())
             seq.append(nxt)
             if calculator and nxt == self.equals:
@@ -432,6 +444,7 @@ class QAEngine:
                 if value is not None:
                     computed.append(value)
                     seq.extend(int(t) for t in enc.encode(b" " + value.encode())[0])
+                    after_value = True
             text = enc.decode(seq[start:])
             if b"\nUser" in text or b"\nAssistant:" in text:   # the next turn, or an invented one
                 break
