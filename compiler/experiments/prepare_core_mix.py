@@ -111,18 +111,59 @@ def cmd_wiki(src: str, out: str, min_chars: int = 500) -> None:
 
 # ----------------------------------------------------------------------------- books
 
+FRONT = re.compile(r"Produced by|Project Gutenberg|Distributed Proofreading|Transcriber's note|Internet Archive|pgdp\.net|ALL RIGHTS RESERVED", re.I)
+
+
 def cmd_books(src_dir: str, out: str) -> None:
     """Join hard-wrapped lines inside paragraphs; paragraphs stay separated by blank lines."""
     docs = []
     for p in sorted(glob.glob(f"{src_dir}/*.txt")):
         t = Path(p).read_text(encoding="utf-8", errors="replace").replace("\r\n", "\n")
         paras = [re.sub(r"\s*\n\s*", " ", q).strip() for q in re.split(r"\n\s*\n", t)]
-        docs.append("\n\n".join(q for q in paras if q))
+        paras = [q for q in paras if q]
+        # drop the front matter (producer credits, publisher lists, title pages): everything before the
+        # first prose paragraph of 200+ characters that is not a production note
+        start = next((i for i, q in enumerate(paras) if len(q) >= 200 and not FRONT.search(q) and not q.isupper()), 0)
+        docs.append("\n\n".join(q for q in paras[start:] if not FRONT.search(q)))
     write_docs(out, docs)
     print(f"books: {len(docs)} unwrapped")
 
 
 # ----------------------------------------------------------------------------- conversation
+
+def cut_at_sentence(text: str, limit: int) -> str:
+    """The longest prefix of ``text`` up to ``limit`` characters that ends a sentence."""
+    if len(text) <= limit:
+        return text
+    head = text[:limit]
+    m = list(re.finditer(r"[.!?](?:\s|$)", head))
+    return head[: m[-1].end()].strip() if m and m[-1].end() > limit // 3 else ""
+
+
+def window_exchanges(turns: list[tuple[str, str]], max_chars: int = 950) -> list[str]:
+    """Cut a conversation into units that fit one 256-code window (about 900 bytes): each assistant
+    reply with the user turn before it, and the previous exchange too when both fit. Long user turns
+    keep their last 350 characters; long replies are cut at a sentence end. A unit whose reply would
+    be under 80 characters is dropped."""
+    out, prev = [], None
+    for k in range(1, len(turns)):
+        if turns[k][0] != "assistant" or turns[k - 1][0] != "user":
+            continue
+        q = turns[k - 1][1].strip()
+        q = q if len(q) <= 350 else "..." + q[-350:]
+        room = max_chars - len("User: \nAssistant: ") - len(q)
+        a = cut_at_sentence(turns[k][1].strip(), room)
+        if len(a) < 80:
+            prev = None
+            continue
+        unit = render_turns([("user", q), ("assistant", a)])
+        if prev and len(prev) + 1 + len(unit) <= max_chars:
+            out.append(prev + "\n" + unit)          # two turns of one conversation, when they fit
+        else:
+            out.append(unit)
+        prev = unit
+    return out
+
 
 def render_turns(turns: list[tuple[str, str]]) -> str:
     """A conversation in the chat format the model answers in: 'User: ...' / 'Assistant: ...'."""
@@ -145,12 +186,9 @@ def cmd_oasst(src: str, out: str) -> None:
                 if not kids:
                     break
                 node = min(kids, key=lambda k: k.get("rank") if k.get("rank") is not None else 99)
-            if len(turns) >= 2 and turns[-1][0] == "user":
-                turns = turns[:-1]
-            if len(turns) >= 2:
-                docs.append(render_turns(turns))
+            docs.extend(window_exchanges(turns))
     write_docs(out, docs)
-    print(f"oasst: {len(docs):,} English conversations")
+    print(f"oasst: {len(docs):,} window-sized exchanges from English conversations")
 
 
 def cmd_ultrachat(src_dir: str, out: str) -> None:
@@ -160,10 +198,9 @@ def cmd_ultrachat(src_dir: str, out: str) -> None:
         for batch in pq.ParquetFile(p).iter_batches(columns=["messages"], batch_size=4096):
             for msgs in batch.column(0).to_pylist():
                 turns = [(m["role"], m["content"]) for m in msgs if m["role"] in ("user", "assistant") and m["content"].strip()]
-                if len(turns) >= 2:
-                    docs.append(render_turns(turns))
+                docs.extend(window_exchanges(turns))
     write_docs(out, docs)
-    print(f"ultrachat: {len(docs):,} conversations")
+    print(f"ultrachat: {len(docs):,} window-sized exchanges")
 
 
 # ----------------------------------------------------------------------------- web, math, questions
@@ -174,7 +211,7 @@ def cmd_fineweb(src: str, out: str, max_docs: int = 0) -> None:
     for batch in pq.ParquetFile(src).iter_batches(columns=["text"], batch_size=8192):
         for t in batch.column(0).to_pylist():
             t = re.sub(r"[ \t]+", " ", t.replace("\r\n", "\n"))
-            t = re.sub(r"\n{3,}", "\n\n", t).strip()
+            t = re.sub(r"\s*\n\s*", "\n\n", t).strip()   # FineWeb separates paragraphs by single newlines
             if len(t) >= 300:
                 docs.append(t)
         if max_docs and len(docs) >= max_docs:
@@ -183,11 +220,28 @@ def cmd_fineweb(src: str, out: str, max_docs: int = 0) -> None:
     print(f"fineweb-edu: {len(docs):,} documents")
 
 
+def latex_to_plain(t: str) -> str:
+    """Plain arithmetic the calculator can read: $X \\div 2 = 44$ -> X / 2 = 44."""
+    for _ in range(3):
+        t = re.sub(r"\\[dt]?frac\{([^{}]*)\}\{([^{}]*)\}", r"(\1)/(\2)", t)
+        t = re.sub(r"\\sqrt\{([^{}]*)\}", r"sqrt(\1)", t)
+    for a, b in ((r"\times", " x "), (r"\cdot", " * "), (r"\div", " / "), (r"\le", "<="), (r"\ge", ">="), (r"\neq", "!="),
+                 (r"\pi", "pi"), (r"\%", "%"), (r"\$", "$"), (r"\left", ""), (r"\right", ""), (r"\,", ""), (r"\!", ""), (r"\text", "")):
+        t = t.replace(a, b)
+    t = re.sub(r"\$(?![\d.])", "", t)                   # drop math delimiters, keep dollar amounts
+    t = re.sub(r"\\boxed\{([^{}]*)\}", r"\1", t)
+    t = t.replace("{", "").replace("}", "")
+    t = re.sub(r"\(([A-Za-z0-9.]+)\)/\(([A-Za-z0-9.]+)\)", r"\1/\2", t)
+    return re.sub(r"[ \t]{2,}", " ", t)
+
+
 def cmd_metamath(src: str, out: str) -> None:
-    """MetaMathQA: question + step-by-step answer, final line 'Answer: N' (the calculator's format)."""
+    """MetaMathQA: question + step-by-step answer, final line 'Answer: N' (the calculator's format),
+    LaTeX rewritten as plain arithmetic."""
     rows = json.loads(Path(src).read_text(encoding="utf-8"))
     docs = []
     for r in rows:
+        r = {"query": latex_to_plain(r["query"]), "response": latex_to_plain(r["response"])}
         resp = r["response"].strip()
         m = re.search(r"The answer is:?\s*(.+)$", resp)
         body = resp[:m.start()].strip() if m else resp
@@ -237,6 +291,7 @@ def cmd_evidence(srcs: str, out: str, max_pairs: int = 400_000, seed: int = 1) -
     for src in srcs.split(","):
         for d_i, doc in enumerate(read_docs(src)):
             for p in doc.split("\n\n"):
+                p = normalise(p)
                 if 200 <= len(p) <= 450:                 # a pair must fit one 256-code window (about 900 bytes)
                     paras.append((hash((src, d_i)), p))
     rng.shuffle(paras)
@@ -286,6 +341,16 @@ RECIPES = {   # shares of the mix by bytes; see docs/CORE_TRAINING_PLAN.md
 }
 
 
+PUNCT = str.maketrans({"‘": "'", "’": "'", "‚": "'", "“": '"', "”": '"', "„": '"', "–": "-", "—": "--",
+                       "…": "...", " ": " ", " ": " ", "​": "", "﻿": ""})
+
+
+def normalise(t: str) -> str:
+    """Typographic punctuation to ASCII: a curly quote or dash costs three codes in compiler v0
+    (first review, finding F3) and people type the plain forms."""
+    return t.translate(PUNCT)
+
+
 def norm_hash(p: str) -> bytes:
     return hashlib.md5(re.sub(r"\W+", " ", p.lower()).strip().encode()).digest()
 
@@ -298,7 +363,7 @@ def cmd_mix(src_dir: str, out: str, mb: float, recipe: str) -> None:
     seen: set = set()
     manifest = {"recipe": recipe, "target_mb": mb, "sources": {}}
     for name, share in shares.items():
-        docs = read_docs(f"{src_dir}/{name}.txt")
+        docs = [normalise(d) for d in read_docs(f"{src_dir}/{name}.txt")]
         budget = int(mb * 1e6 * share)
         train, held, size, dup = [], [], 0, 0
         for d in docs:

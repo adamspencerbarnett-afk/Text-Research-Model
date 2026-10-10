@@ -9,7 +9,7 @@
 PY=.venv/Scripts/python.exe
 N="$(pwd -W)/data/cv0.exe"
 MIX="$PY -I compiler/experiments/prepare_core_mix.py"
-until grep -q "articles kept" data_core/logs/wiki.log 2>/dev/null; do sleep 60; done
+until grep -q "articles kept" data_core/logs/wiki.log 2>/dev/null && grep -q "documents" data_core/logs/fineweb.log 2>/dev/null; do sleep 60; done
 [ -f data_core/eval/evidence_val.jsonl ] || $MIX evidence data_core/src/wiki.txt,data_core/src/fineweb.txt data_core/src/evidence.txt > data_core/logs/evidence.log 2>&1
 for D in D1 D2 D3; do
   [ -f data_core/mix_${D}_5M/manifest.json ] || { $MIX mix data_core/src data_core/mix_${D}_5M --mb 400 --recipe $D > data_core/logs/mix_${D}.log 2>&1; mkdir -p data_core/mix_${D}_5M/ood; cp data_v2/heldout/*.txt data_core/mix_${D}_5M/ood/; }
