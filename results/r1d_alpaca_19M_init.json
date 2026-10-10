@@ -1,0 +1,521 @@
+{
+ "setup": {
+  "data": "data_qa",
+  "work": "runs/r1d",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 600.0,
+  "ctx": 256,
+  "batch": 32,
+  "topk": 64,
+  "neighbor_codes": 110,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/r1d_alpaca_19M_init.json",
+  "seed": 1,
+  "self_context_p": 0.5,
+  "copy_bias": 0.0,
+  "device": "cuda",
+  "threads": 0,
+  "width": 448,
+  "layers": 8,
+  "heads": 8,
+  "greedy": true,
+  "patience": 3,
+  "min_delta": 0.005,
+  "dict": "runs/scale/v0_8k_plain.cv0d",
+  "init": "runs/scale/scale_20M_v0_8k_ng64.pt",
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "copy_question": false,
+  "calculator": false,
+  "save": "runs/r1d/alpaca_19M_init.pt",
+  "train_exchanges": 50232,
+  "eval": 510,
+  "added": 511,
+  "distinct_keys": 49873
+ },
+ "training": {
+  "steps": 6694,
+  "train_s": 600.1,
+  "stop_reason": "budget",
+  "best_valid": 0.9583,
+  "history": [
+   {
+    "train_s": 60.0,
+    "step": 684,
+    "train_bits_per_code": 1.972,
+    "valid_bits_per_byte": 1.0565
+   },
+   {
+    "train_s": 120.0,
+    "step": 1367,
+    "train_bits_per_code": 1.974,
+    "valid_bits_per_byte": 1.017
+   },
+   {
+    "train_s": 180.1,
+    "step": 2056,
+    "train_bits_per_code": 1.999,
+    "valid_bits_per_byte": 1.0101
+   },
+   {
+    "train_s": 240.1,
+    "step": 2742,
+    "train_bits_per_code": 2.203,
+    "valid_bits_per_byte": 0.9948
+   },
+   {
+    "train_s": 300.0,
+    "step": 3427,
+    "train_bits_per_code": 2.388,
+    "valid_bits_per_byte": 0.991
+   },
+   {
+    "train_s": 360.0,
+    "step": 4080,
+    "train_bits_per_code": 1.67,
+    "valid_bits_per_byte": 0.9743
+   },
+   {
+    "train_s": 420.1,
+    "step": 4722,
+    "train_bits_per_code": 2.332,
+    "valid_bits_per_byte": 0.973
+   },
+   {
+    "train_s": 480.1,
+    "step": 5365,
+    "train_bits_per_code": 2.111,
+    "valid_bits_per_byte": 0.9669
+   },
+   {
+    "train_s": 540.1,
+    "step": 6022,
+    "train_bits_per_code": 1.618,
+    "valid_bits_per_byte": 0.9583
+   },
+   {
+    "train_s": 600.1,
+    "step": 6694,
+    "train_bits_per_code": 1.84,
+    "valid_bits_per_byte": 0.9598
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.985,
+   "exact": 0.995
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 60,
+   "f1": 0.7563,
+   "exact": 0.0833,
+   "f1_no_m1": 0.1676,
+   "f1_bias": 0.7563,
+   "exact_bias": 0.0833
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 44,
+   "f1": 0.2915,
+   "exact": 0.0,
+   "f1_no_m1": 0.2092,
+   "f1_bias": 0.2915,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.2727
+  },
+  "unseen_network_with_nearest": {
+   "n": 156,
+   "f1": 0.2582,
+   "exact": 0.0,
+   "f1_no_m1": 0.1943,
+   "f1_bias": 0.2582,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.1887
+  },
+  "heldout_network_without_memory": {
+   "n": 60,
+   "f1": 0.2238,
+   "exact": 0.0167
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.2614
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.96,
+   "exact": 0.99
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 60,
+   "f1": 0.6556,
+   "exact": 0.1667,
+   "f1_no_m1": 0.1456,
+   "f1_bias": 0.6556,
+   "exact_bias": 0.1667
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Explain how AI can benefit the healthcare industry.",
+    "a": "AI can be used to diagnoses and treatment plans. Additionally, AI-based technologies can provide computational, predictive and analytical insights to patient da",
+    "f1": 0.5283018867924528,
+    "exact": 0.0,
+    "a_no_m1": "AI can be used to di di di di di di di di di di di di di di di di di di di di di di di di di di di di di di di di di di di di di di di di di di di di di di di d",
+    "f1_no_m1": 0.05128205128205128,
+    "a_bias": "AI can be used to diagnoses and treatment plans. Additionally, AI-based technologies can provide computational, predictive and analytical insights to patient da",
+    "f1_bias": 0.5283018867924528,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Edit the sentence for improved readability.\nThe recent lockdown period forced pe",
+    "a": "The recent lockdown period forced people to remain indoors in order to limit the spread of the virus.\n\n\n\n\n\n limit the spread of the virus.\n\n\n\nUser limit the spr",
+    "f1": 0.7346938775510204,
+    "exact": 0.0,
+    "a_no_m1": "The cons\n\n rasc about the virus that could be enjoyed by a person who has been in the news of their virus.\n\n was not able to stay around the news of the virus, ",
+    "f1_no_m1": 0.1951219512195122,
+    "a_bias": "The recent lockdown period forced people to remain indoors in order to limit the spread of the virus.\n\n\n\n\n\n limit the spread of the virus.\n\n\n\nUser limit the spr",
+    "f1_bias": 0.7346938775510204,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "What is the difference between atmospheric pressure and air pressure?",
+    "a": "Atmospheric pressure is the pressure of the air around us, while air pressure is the pressure in a specific area. Atmospheric pressure is affected by altitude, ",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The main difference between atoms and air pressure is that it is the same in the air, while air pressure is the same in the air.\n\n Air pressure is the same in t",
+    "f1_no_m1": 0.3888888888888889,
+    "a_bias": "Atmospheric pressure is the pressure of the air around us, while air pressure is the pressure in a specific area. Atmospheric pressure is affected by altitude, ",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Given a musical instrument, explain the way it is played.\nMarimba",
+    "a": "The marimba is played with mallets, bar by bar. The right hand plays higher notes while the left hand plays lower notes. The player strikes the bars at various ",
+    "f1": 0.9189189189189189,
+    "exact": 0.0,
+    "a_no_m1": "The once is a draw-stal rat that is played in the sky. The player is the first player to reach the first player, the first player is the first player to reach t",
+    "f1_no_m1": 0.17142857142857143,
+    "a_bias": "The marimba is played with mallets, bar by bar. The right hand plays higher notes while the left hand plays lower notes. The player strikes the bars at various ",
+    "f1_bias": 0.9189189189189189,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Analyze the following text and detect any signs of plagiarism.\nThe internet has ",
+    "a": "No such bias detected.\n\n detected.\n\n detected.\n\n detected.",
+    "f1": 0.7272727272727273,
+    "exact": 0.0,
+    "a_no_m1": "The text is a large sum-body with a text. The text is written by a reader who is in a hurry, but the text is written by a reader. The text is written by a reade",
+    "f1_no_m1": 0.0,
+    "a_bias": "No such bias detected.\n\n detected.\n\n detected.\n\n detected.",
+    "f1_bias": 0.7272727272727273,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Generate a title for a movie about struggles of a family during the COVID-19 pan",
+    "a": "Tough Times: A Family's Journey Through the COVID-19 Pandemic.\n\n:\n\nant: Tough Times: A Family's Journey Through the COVID-19 Pandemic.\n\n:",
+    "f1": 0.6451612903225806,
+    "exact": 0.0,
+    "a_no_m1": "A news about about struggles of the businesses who have been faced in the news of their businesses.\n\n traditiond in the news of the pandemic, to create an atmos",
+    "f1_no_m1": 0.09090909090909091,
+    "a_bias": "Tough Times: A Family's Journey Through the COVID-19 Pandemic.\n\n:\n\nant: Tough Times: A Family's Journey Through the COVID-19 Pandemic.\n\n:",
+    "f1_bias": 0.6451612903225806,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Name two possible solutions to reduce the effects of global warming.",
+    "a": "Global warming is one of the most common solutions to the world. It is the concept of greenhouse gases, which is a type of greenhouse gases that are used to gen",
+    "f1": 0.18666666666666665,
+    "exact": 0.0,
+    "a_no_m1": "Global warming is one of the most common solutions to the world. It is the conce of the Arx and the Arx. It is the world's most common solutions to global warmi",
+    "f1_no_m1": 0.1794871794871795,
+    "a_bias": "Global warming is one of the most common solutions to the world. It is the concept of greenhouse gases, which is a type of greenhouse gases that are used to gen",
+    "f1_bias": 0.18666666666666665,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.698,
+    "f1_vs_retrieved": 0.22608695652173913,
+    "retrieved_answer_f1_vs_ref": 0.4047619047619047
+   },
+   {
+    "q": "What is the area of France in square kilometers?",
+    "a": "The area of France in square kilometers is approximately 3,245.",
+    "f1": 0.7058823529411765,
+    "exact": 0.0,
+    "a_no_m1": "The area of France in square kilometers is approf 255.\n\n(245.\n\n(245.\n\n(245.\n\n(245.\n\n(245.\n\n(245.\n\n(245.\n\n(245.\n\n(245.\n\n(245.\n\n(",
+    "f1_no_m1": 0.5882352941176471,
+    "a_bias": "The area of France in square kilometers is approximately 3,245.",
+    "f1_bias": 0.7058823529411765,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.563,
+    "f1_vs_retrieved": 0.823529411764706,
+    "retrieved_answer_f1_vs_ref": 0.5
+   },
+   {
+    "q": "Generate a 5-word poem based on the given theme.\nFriendship",
+    "a": "Friendship is a binding stronger\nThan any force like ropes or chains\nIt grows like grass and keeps us free\nFrom sorrow, pain and childish blames.",
+    "f1": 0.06451612903225806,
+    "exact": 0.0,
+    "a_no_m1": "Friendship is a glov in the world, with a glov in nature, a glov in nature, a glov in nature, a glov in nature.\n\n nature is a glov in nature, with a glov in nat",
+    "f1_no_m1": 0.0,
+    "a_bias": "Friendship is a binding stronger\nThan any force like ropes or chains\nIt grows like grass and keeps us free\nFrom sorrow, pain and childish blames.",
+    "f1_bias": 0.06451612903225806,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.626,
+    "f1_vs_retrieved": 1.0,
+    "retrieved_answer_f1_vs_ref": 0.06451612903225806
+   },
+   {
+    "q": "Name three endangered animal species.",
+    "a": "Three endangered animal species are the Amazon, which is native to the Amazon.",
+    "f1": 0.4827586206896552,
+    "exact": 0.0,
+    "a_no_m1": "Three endangered animal species are the Amiba, which is native in the Amiba.\n\n Africa.\n\n Africa is the most popular mami in the world. Its mami is the largest m",
+    "f1_no_m1": 0.2857142857142857,
+    "a_bias": "Three endangered animal species are the Amazon, which is native to the Amazon.",
+    "f1_bias": 0.4827586206896552,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.849,
+    "f1_vs_retrieved": 0.24000000000000002,
+    "retrieved_answer_f1_vs_ref": 0.28571428571428575
+   },
+   {
+    "q": "Give two examples of how Artificial Intelligence is used in the healthcare indus",
+    "a": "Artificial Intelligence (AI) is being used in healthcare. One example of the deployment of AI is in the automated analysis of X-ray and CT scans. With these tec",
+    "f1": 0.13157894736842105,
+    "exact": 0.0,
+    "a_no_m1": "Artificial Intelligence (AI) is being used in healthcare to create personalized treatments and treatments. AI is being used to di virt patients in medical medic",
+    "f1_no_m1": 0.27027027027027023,
+    "a_bias": "Artificial Intelligence (AI) is being used in healthcare. One example of the deployment of AI is in the automated analysis of X-ray and CT scans. With these tec",
+    "f1_bias": 0.13157894736842105,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.643,
+    "f1_vs_retrieved": 0.7499999999999999,
+    "retrieved_answer_f1_vs_ref": 0.14814814814814817
+   },
+   {
+    "q": "Rewrite a given sentence using an active voice.\nThe problem was solved by us.",
+    "a": "The problem was solved by us.",
+    "f1": 0.6,
+    "exact": 0.0,
+    "a_no_m1": "The problem was solved by us.\n\n our problem was solved by us.\n\n our problem was solved by us.\n\n our problem was solved by us.\n\n our problem was solved by our so",
+    "f1_no_m1": 0.10714285714285714,
+    "a_bias": "The problem was solved by us.",
+    "f1_bias": 0.6,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.841,
+    "f1_vs_retrieved": 0.3636363636363636,
+    "retrieved_answer_f1_vs_ref": 0.4444444444444445
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Why is it important to know the environment of a place before visiting?",
+    "a": "The environment of a place before visiting is important because it is important to be aware of the environmental impacts of the environment. Additionally, plant",
+    "f1": 0.35772357723577236,
+    "exact": 0.0,
+    "a_no_m1": "The environment of a place before visiting is important because it helps to maintain the environment by provoeing the air. Adstitionally, it helps to maintain t",
+    "f1_no_m1": 0.3709677419354839,
+    "a_bias": "The environment of a place before visiting is important because it is important to be aware of the environmental impacts of the environment. Additionally, plant",
+    "f1_bias": 0.35772357723577236,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.234,
+    "f1_vs_retrieved": 0.4761904761904762,
+    "retrieved_answer_f1_vs_ref": 0.24516129032258066
+   },
+   {
+    "q": "Analyze the political scenario of a given country\nIndia",
+    "a": "The political scenario of the country is characterized by a large country's country. The country is characterized by a large country, with a large country's cou",
+    "f1": 0.25974025974025977,
+    "exact": 0.0,
+    "a_no_m1": "The political scenario of the country is characterized in the country. The country is characterized in the country, with a large country full of political and p",
+    "f1_no_m1": 0.34615384615384615,
+    "a_bias": "The political scenario of the country is characterized by a large country's country. The country is characterized by a large country, with a large country's cou",
+    "f1_bias": 0.25974025974025977,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.349,
+    "f1_vs_retrieved": 0.21428571428571425,
+    "retrieved_answer_f1_vs_ref": 0.32999999999999996
+   },
+   {
+    "q": "Name 5 prominent fashion brands.",
+    "a": "1. Spread\n2. Spread\n3. Spread\n4. Spread\n5. Spread\n6. Spread\n7. Spread\n8. Spread\n9. Spread\n10. Spread\n11\n12. Spread\n12. Spread\n13. Spread\n12. Spread\n1",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "1. Spina\n2. Spina\n3. Spina\n4. Spina\n5. Spina\n\n\n\nBung\n6. Spina\n7. Spina\n8. Spina\n9. Spina\n10. Spina\n11\n12. Spina\n12. Spina\n13. Spina\n14.",
+    "f1_no_m1": 0.0,
+    "a_bias": "1. Spread\n2. Spread\n3. Spread\n4. Spread\n5. Spread\n6. Spread\n7. Spread\n8. Spread\n9. Spread\n10. Spread\n11\n12. Spread\n12. Spread\n13. Spread\n12. Spread\n1",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.418,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.14285714285714285
+   },
+   {
+    "q": "Write a short response to \"What is Life?\".",
+    "a": "Life is about finding out who you are and what you are capable of achieving.",
+    "f1": 0.13793103448275862,
+    "exact": 0.0,
+    "a_no_m1": "Life is a journey.\n\n never end.\n\nNo one might be.\n\nNo one might be.\n\nNo one might be.\n\nNo one might be.\n\nNo one might be.\n\nNo one might be.\n\nNo one might be.\n\nN",
+    "f1_no_m1": 0.09523809523809525,
+    "a_bias": "Life is about finding out who you are and what you are capable of achieving.",
+    "f1_bias": 0.13793103448275862,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.43,
+    "f1_vs_retrieved": 0.45454545454545453,
+    "retrieved_answer_f1_vs_ref": 0.3252032520325203
+   },
+   {
+    "q": "How is sound waves transmitted?",
+    "a": "sound waves are transforming the sound of the sound of the sound of the sound of the sound of the sound of the sound of the sound of the sound of the sound.",
+    "f1": 0.19999999999999998,
+    "exact": 0.0,
+    "a_no_m1": "sound waves are transmitted by a variety of sounds, including sound waves, sound waves, sound waves, sound waves, sound waves, sound waves, sound waves, waves, ",
+    "f1_no_m1": 0.18666666666666668,
+    "a_bias": "sound waves are transforming the sound of the sound of the sound of the sound of the sound of the sound of the sound of the sound of the sound of the sound.",
+    "f1_bias": 0.19999999999999998,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.387,
+    "f1_vs_retrieved": 0.14634146341463414,
+    "retrieved_answer_f1_vs_ref": 0.17142857142857143
+   },
+   {
+    "q": "Categorize the following objects: Car, Pen, Fork.",
+    "a": "Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: ",
+    "f1": 0.04347826086956522,
+    "exact": 0.0,
+    "a_no_m1": "Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: ",
+    "f1_no_m1": 0.04347826086956522,
+    "a_bias": "Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: Car: ",
+    "f1_bias": 0.04347826086956522,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.274,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.3333333333333333
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Generate an example use case of how an AI system can improve customer service.",
+    "a": "An AI system can be used to automated responses to customer inquiries. Using natural language processing, the AI system can comprehend customer requests and gen",
+    "f1": 0.7906976744186047,
+    "exact": 0.0,
+    "a_no_m1": "An AI system can be used to automate customer service tasks, such as answers, answers, answers, answers, answers, answers, answers, answers, answers, answers, a",
+    "f1_no_m1": 0.17857142857142858,
+    "a_bias": "An AI system can be used to automated responses to customer inquiries. Using natural language processing, the AI system can comprehend customer requests and gen",
+    "f1_bias": 0.7906976744186047,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Compute the answer to this problem and give me the correct output.\n4 + 6 \u00d7 2",
+    "a": "16.\n\n.\n\n.\n\n16.\n\n:\n\n.",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "The correct output is a \" project\" project\" project.\n\n start with the correct output and the correct output should be written.\n\n start with the correct output a",
+    "f1_no_m1": 0.0,
+    "a_bias": "16.\n\n.\n\n.\n\n16.\n\n:\n\n.",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Name five factors that influence learning.",
+    "a": "1. Cognitive factors\n2. Cognitive factors\n3. Cognitive factors\n4. Cognitive factors\n5. Cognitive factors",
+    "f1": 0.16470588235294115,
+    "exact": 0.0,
+    "a_no_m1": "1. Cognitive factors\n2. Cognitive factors\n3. Cognitive factors\n4. Cognitive factors\n5. Cognitive factors\n\n\n\n tax.\n6. Cognitive factors\n6. Cognitive factors\n7. C",
+    "f1_no_m1": 0.16842105263157894,
+    "a_bias": "1. Cognitive factors\n2. Cognitive factors\n3. Cognitive factors\n4. Cognitive factors\n5. Cognitive factors",
+    "f1_bias": 0.16470588235294115,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Brainstorm 3 potential topics for a research paper on artificial intelligence.",
+    "a": "- Recent advances in natural language processing\n- The potential applications of AI in healthcare\n- Ethical considerations of AI development and implementation\n",
+    "f1": 0.975609756097561,
+    "exact": 0.0,
+    "a_no_m1": "three potential topics for a research about AI are: \n1. Auth of Artificial intelligence (AI) (AI) (Business) (CD) (CD) (CD) (CD) (CD))\n\n) (CD) (CD)",
+    "f1_no_m1": 0.18604651162790697,
+    "a_bias": "- Recent advances in natural language processing\n- The potential applications of AI in healthcare\n- Ethical considerations of AI development and implementation\n",
+    "f1_bias": 0.975609756097561,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Assign each of these statements to either true or false\nA penny weighs more than",
+    "a": "A penny weighs more than a nickel: False\nThe Eiffel Tower is in Rome: False\n\nThe Eiffel Tower is in Rome: False\n\nThe Eiffel Tower is in Rome: False\n\nThe Eiffel ",
+    "f1": 0.5660377358490566,
+    "exact": 0.0,
+    "a_no_m1": "The GR\n\n\n\n was not a good candidle for a fas of equal.\n\n.\n\n was not a good candidle for a fas of equal.\n\n was not a good candidle for a fas of equal.\n\n; the GR ",
+    "f1_no_m1": 0.08695652173913045,
+    "a_bias": "A penny weighs more than a nickel: False\nThe Eiffel Tower is in Rome: False\n\nThe Eiffel Tower is in Rome: False\n\nThe Eiffel Tower is in Rome: False\n\nThe Eiffel ",
+    "f1_bias": 0.5660377358490566,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Generate a film title that matches with the theme of forest conservation",
+    "a": "Saving the Woods: A Forest Conservation Tale.\n\n:\n\n Forest Conservation Tale.\n\n:",
+    "f1": 0.8235294117647058,
+    "exact": 0.0,
+    "a_no_m1": "\"The Units of Humanism: A Jot\"\n\n\n\n\"The Units of Humanism: A Jot's Jot\"\n\n\"\n\n\"The Units of Humanism: A Jot's Jot\"\n\n\"\n\n\"The Units of Humanism: A Jot's Jot\"\n\n\"The U",
+    "f1_no_m1": 0.0975609756097561,
+    "a_bias": "Saving the Woods: A Forest Conservation Tale.\n\n:\n\n Forest Conservation Tale.\n\n:",
+    "f1_bias": 0.8235294117647058,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ]
+ },
+ "checks": {}
+}
