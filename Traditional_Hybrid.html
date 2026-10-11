@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Traditional Hybrid Plan</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column; each design element is a section with brain role, our part, change, and test. */
+:root {
+  --bg: #f6f5f1; --fg: #22251f; --muted: #626a5f; --line: #d9d7cd; --panel: #ffffff; --code: #efeee8;
+  --accent: #2f5f8a; --mem: #2f6f9a; --core: #3d7a46; --gate: #a3561d; --risk: #9b2f2f;
+  --display: "Fraunces", Georgia, serif; --body: "Atkinson Hyperlegible", system-ui, sans-serif; --mono: "JetBrains Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #16181a; --fg: #e7e5de; --muted: #a2a89d; --line: #33383a; --panel: #1e2123; --code: #25292b;
+  --accent: #8fb8e0; --mem: #7fb6dc; --core: #8fcb95; --gate: #e6a26c; --risk: #ec8b8b; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #16181a; --fg: #e7e5de; --muted: #a2a89d; --line: #33383a; --panel: #1e2123; --code: #25292b;
+  --accent: #8fb8e0; --mem: #7fb6dc; --core: #8fcb95; --gate: #e6a26c; --risk: #ec8b8b; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16.5px; line-height: 1.6; }
+.wrap { max-width: 880px; margin: 0 auto; padding-block: 36px 72px; padding-inline: 20px; }
+h1 { font-family: var(--display); font-weight: 600; font-size: 2.35rem; line-height: 1.12; margin: 6px 0 10px; text-wrap: balance; }
+h2 { font-family: var(--display); font-weight: 600; font-size: 1.55rem; margin: 52px 0 10px; text-wrap: balance; border-top: 1px solid var(--line); padding-top: 22px; }
+h3 { font-size: 1.07rem; margin: 24px 0 6px; }
+p, li { max-width: 70ch; }
+p { margin: 0 0 12px; }
+ul, ol { padding-left: 1.3em; margin: 0 0 12px; }
+li { margin-bottom: 4px; }
+.eyebrow { font-size: .78rem; letter-spacing: .09em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin: 0; }
+.lede { font-size: 1.08rem; color: var(--muted); }
+.status { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px; }
+.pill { font-size: .8rem; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); }
+.pill b { color: var(--accent); }
+code { font-family: var(--mono); font-size: .86em; background: var(--code); padding: 1px 4px; border-radius: 3px; }
+.tablewrap { overflow-x: auto; margin: 12px 0 18px; }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: .76rem; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.part { border-left: 3px solid var(--line); padding: 4px 0 4px 16px; margin: 20px 0; }
+.part.mem { border-color: var(--mem); } .part.core { border-color: var(--core); } .part.gate { border-color: var(--gate); } .part.acc { border-color: var(--accent); }
+.part h3 { margin-top: 0; }
+.kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 14px; font-size: .95rem; margin: 6px 0 4px; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; min-width: 0; }
+.note { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px 16px; margin: 16px 0; }
+.note.risk { border-left: 4px solid var(--risk); }
+.diagram { width: 100%; height: auto; display: block; margin: 10px 0; }
+.diagram text { font-family: var(--body); font-size: 12.5px; fill: var(--fg); }
+.diagram .s { font-size: 10.5px; fill: var(--muted); }
+.diagram .box { fill: var(--panel); stroke: var(--line); stroke-width: 1.2; }
+.diagram .ln { fill: none; stroke: var(--muted); stroke-width: 1.4; }
+.diagram .m { stroke: var(--mem); } .diagram .c { stroke: var(--core); } .diagram .g { stroke: var(--gate); } .diagram .a { stroke: var(--accent); }
+.diagram .dash { stroke-dasharray: 5 4; }
+.stage { display: grid; grid-template-columns: 54px minmax(0, 1fr); gap: 4px 14px; margin: 14px 0; }
+.stage .id { font-family: var(--mono); font-weight: 500; color: var(--accent); padding-top: 2px; }
+.stage .body { min-width: 0; }
+.stage .done { font-size: .9rem; color: var(--muted); }
+a.spec { display: inline-block; font-family: var(--mono); font-size: .72rem; letter-spacing: .03em; padding: 1px 7px; margin-left: 6px;
+  border: 1px solid var(--accent); color: var(--accent); border-radius: 3px; text-decoration: none; vertical-align: 1px; }
+a.spec:hover, a.spec:focus-visible { background: var(--accent); color: var(--bg); outline: none; }
+.specindex { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 18px; }
+.specindex a.spec { margin-left: 0; font-size: .8rem; padding: 3px 9px; }
+details.specblock { border: 1px solid var(--line); border-radius: 6px; background: var(--panel); margin: 10px 0; }
+details.specblock > summary { cursor: pointer; padding: 10px 14px; font-weight: 700; list-style-position: inside; }
+details.specblock > summary span { font-weight: 400; color: var(--muted); font-size: .9rem; }
+.specbody { padding: 0 16px 14px; min-width: 0; }
+.specbody pre { font-family: var(--mono); font-size: .8rem; line-height: 1.5; background: var(--code); padding: 10px 12px; border-radius: 4px; overflow-x: auto; white-space: pre; margin: 8px 0 12px; }
+.specbody h4 { font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 14px 0 4px; }
+.specbody .check { border-left: 3px solid var(--core); padding: 2px 0 2px 10px; margin: 8px 0; }
+dialog.specdialog { width: min(900px, calc(100vw - 32px)); max-height: calc(100vh - 48px); padding: 0; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--panel); color: var(--fg); box-shadow: 0 12px 40px rgba(0,0,0,.25); }
+dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
+.dlghead { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 16px; background: var(--panel); border-bottom: 1px solid var(--line); }
+.dlghead h3 { margin: 0; font-family: var(--display); font-size: 1.2rem; }
+.dlghead button { font: inherit; font-size: .9rem; padding: 4px 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg); color: var(--fg); cursor: pointer; }
+.dlghead button:focus-visible { outline: 2px solid var(--accent); }
+.dlgbody { padding: 4px 0 8px; overflow-y: auto; }
+@media (max-width: 480px) { h1 { font-size: 1.85rem; } .kv { grid-template-columns: 1fr; } .kv dt { margin-top: 6px; } .stage { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+<p class="eyebrow">Research plan · Text Research Model · 11 October 2026</p>
+<h1>Traditional Hybrid: a standard Transformer, made smaller, faster and smarter with what this research proved</h1>
+<p class="lede">Research concept and direction by Adam Barnett. This plan takes a conventional decoder-only language model, the kind every lab trains, and grafts onto it only the ideas from this research that have measured evidence behind them. Each idea moves a job out of the weights (facts into memory, arithmetic into tools, skills into adapters, reasoning into checked practice), so the network can stay small and spend its capacity on understanding language and composing answers. Ideas that worked only for tiny models, or not at all, are listed at the end and left out.</p>
+<div class="status">
+  <span class="pill"><b>Status</b> plan, not started</span>
+  <span class="pill"><b>Target core</b> 100M-350M parameters</span>
+  <span class="pill"><b>Hardware</b> one RTX 3090, 64 GB</span>
+  <span class="pill"><b>Companion</b> BRAIN_DESIGN.html</span>
+</div>
+
+<h2>1. The model in one picture</h2>
+<svg class="diagram" viewBox="0 0 860 300" role="img" aria-label="Traditional Hybrid: a question goes to a standard tokenizer and a retrieval index; retrieved passages enter the context of a standard Transformer with a KV cache; a copy head and the network are mixed by a gate; tools such as a calculator write exact results during generation; an answer check verifies; skill adapters attach to the frozen core; verified practice and a draft-and-check decoder run around it.">
+  <rect class="box" x="10" y="120" width="110" height="52" rx="5"/><text x="65" y="142" text-anchor="middle">Question</text><text class="s" x="65" y="159" text-anchor="middle">standard tokenizer</text>
+  <path class="ln" d="M120,146 L150,146"/>
+  <rect class="box" x="150" y="20" width="170" height="52" rx="5"/><text x="235" y="42" text-anchor="middle" style="fill:var(--mem)">Retrieval memory</text><text class="s" x="235" y="59" text-anchor="middle">passages and Q&amp;A pairs</text>
+  <path class="ln m" d="M135,146 C135,46 150,46 150,46"/>
+  <rect class="box" x="150" y="120" width="170" height="52" rx="5"/><text x="235" y="142" text-anchor="middle" style="fill:var(--core)">Transformer core</text><text class="s" x="235" y="159" text-anchor="middle">100-350M, frozen after training</text>
+  <path class="ln m dash" d="M235,72 L235,120"/>
+  <rect class="box" x="150" y="222" width="170" height="52" rx="5"/><text x="235" y="244" text-anchor="middle" style="fill:var(--core)">Skill adapters</text><text class="s" x="235" y="261" text-anchor="middle">math · chat · reading · domain</text>
+  <path class="ln c dash" d="M235,222 L235,172"/>
+  <path class="ln" d="M320,146 L360,146"/>
+  <rect class="box" x="360" y="96" width="160" height="100" rx="5"/><text x="440" y="122" text-anchor="middle" style="fill:var(--gate)">Output mix</text><text class="s" x="440" y="142" text-anchor="middle">network distribution</text><text class="s" x="440" y="158" text-anchor="middle">+ copy head over the</text><text class="s" x="440" y="174" text-anchor="middle">retrieved passages, gated</text>
+  <path class="ln" d="M520,146 L560,146"/>
+  <rect class="box" x="560" y="96" width="140" height="100" rx="5"/><text x="630" y="122" text-anchor="middle">Decoder</text><text class="s" x="630" y="142" text-anchor="middle">KV cache</text><text class="s" x="630" y="158" text-anchor="middle">draft from copied spans,</text><text class="s" x="630" y="174" text-anchor="middle">check in one pass</text>
+  <path class="ln" d="M700,146 L740,146"/>
+  <rect class="box" x="740" y="120" width="110" height="52" rx="5"/><text x="795" y="142" text-anchor="middle">Reply</text><text class="s" x="795" y="159" text-anchor="middle">with its sources</text>
+  <rect class="box" x="560" y="222" width="140" height="52" rx="5"/><text x="630" y="244" text-anchor="middle" style="fill:var(--accent)">Tools + answer check</text><text class="s" x="630" y="261" text-anchor="middle">calculator, code, lookup</text>
+  <path class="ln a" d="M630,196 L630,222"/>
+  <rect class="box" x="560" y="20" width="140" height="52" rx="5"/><text x="630" y="42" text-anchor="middle" style="fill:var(--accent)">Verified practice</text><text class="s" x="630" y="59" text-anchor="middle">train on checked answers</text>
+  <path class="ln a dash" d="M630,72 L630,96"/>
+</svg>
+<p>Everything in the picture except the core is either deterministic (memory, tools, checks) or small (copy head, gate, adapters). The core is an ordinary Transformer, trained the ordinary way but on better-chosen data, so the plan can reuse standard tooling.</p>
+
+<h2>2. The six ideas kept, and why</h2>
+
+<div class="part mem">
+<h3>Idea 1. Knowledge in a retrieval memory, used through a copy head</h3>
+<dl class="kv">
+  <dt>What we measured</dt><dd>Answers to stored questions: the network alone 0.13-0.24 word F1; with the retrieved exchange in the window and a learned copy head, 0.89 F1 and 56-63% word-exact (5M core, two seeds). Facts added after training are answered at once (0.86-0.88 F1). The copy head alone lifted answers from 0.13 to 0.48 the day it was added.</dd>
+  <dt>Design</dt><dd>A search index over passages and question-answer pairs; the best matches placed in the context ahead of the question; a pointer head (attention from the current state to the retrieved tokens, predicting the token that follows the attended one) mixed with the network's own distribution by a small gate that reads the state and the pointer's confidence. Retrieval by keyword (as now) plus a dense key trained on in-domain question pairs.</dd>
+  <dt>Why it makes the model smaller</dt><dd>A conventional model stores every fact in its weights, which is why it must be large. Here the weights only need to read and compose; facts live in an index that costs memory, not compute. Published retrieval models (RETRO, Atlas) match models 10-25 times their size on knowledge tasks.</dd>
+  <dt>Also gives</dt><dd>Instant updates (add a passage), deletion (remove it), and answers that can name their source.</dd>
+</dl>
+</div>
+
+<div class="part core">
+<h3>Idea 2. Pre-train the core to use evidence, on data chosen for its job</h3>
+<dl class="kv">
+  <dt>What we measured</dt><dd>Same 5M model, better data: conversation error 2.02 → 1.30 bits per byte (-36%), Wikipedia 2.06 → 1.68; a 19M core on the old data did no better than 4.7M. Evidence-pair training units raised the core's use of a related passage from 23% to 35%; at 50M, prediction with evidence in front fell to 0.81 bits per byte from 1.18 at 5M.</dd>
+  <dt>Design</dt><dd>Clean, deduplicated, modern text (encyclopaedic, educational web, books with front matter and hard line wraps removed), 10-15% conversation cut into window-sized exchanges, 10-20% evidence pairs (a related passage from another document, then the target), 5-10% worked solutions in plain arithmetic. Training units sized to the context window so no exchange or evidence pair is cut. A document-separator token.</dd>
+  <dt>Why it makes the model smarter</dt><dd>Most models learn to use retrieved text only in a late fine-tuning stage, if at all. Training the core on evidence windows from the start makes reading what it is handed a native skill, which is the skill Idea 1 depends on.</dd>
+</dl>
+</div>
+
+<div class="part acc">
+<h3>Idea 3. Exact tools during generation, with an answer check</h3>
+<dl class="kv">
+  <dt>What we measured</dt><dd>When the model writes "a op b =", a calculator writes the result: every arithmetic step is then exact. The answer check (the final answer must be a value the tool computed) confirmed 424 and replaced 1,188 stated answers in one run.</dd>
+  <dt>Design</dt><dd>A small set of deterministic tools invoked by patterns in the generated text: calculator, unit conversion, date arithmetic, later a sandboxed code runner and a memory lookup. Their output is written into the reply and the model continues from it; a check stage verifies final answers against tool results and the memory.</dd>
+  <dt>Why it makes the model smaller and more reliable</dt><dd>A network that does not have to learn exact arithmetic spends no capacity on it and never gets it subtly wrong. What remains for the network is deciding which operation to apply, which Idea 4 trains.</dd>
+</dl>
+</div>
+
+<div class="part acc">
+<h3>Idea 4. Reasoning by practice with a verifier</h3>
+<dl class="kv">
+  <dt>What we measured</dt><dd>Verified self-training on GSM8K at 5M: the model solves each training problem four times with its own stored solution hidden, keeps only answers the checker confirms, and is fine-tuned on them. New problems solved: 2.5% → 3.5% → 4.0% in two rounds; answers confirmed by the calculator +22%; training problems solved at least once 797 → 2,395.</dd>
+  <dt>Design</dt><dd>Repeated rounds of sample, verify, train on every task with an exact checker: arithmetic (calculator), code (tests), questions whose answer is in memory (lookup), format tasks (rules). Later, a reward-weighted variant (the reinforcement learning that produced today's reasoning models) once the simple loop plateaus.</dd>
+  <dt>Why it makes the model smarter</dt><dd>It is the method behind current reasoning models, needs no human labels, and plays to a small model's strength: it is cheap enough to sample many attempts.</dd>
+</dl>
+</div>
+
+<div class="part gate">
+<h3>Idea 5. Fine-tuning that keeps what pre-training built, and skills as adapters</h3>
+<dl class="kv">
+  <dt>What we measured</dt><dd>A Q&amp;A stage at the pre-training learning rate erased every stage-1 data gain. The kept recipe: core at 1e-4 and new heads at 1e-3, warm-up and cosine decay, loss on the answer only, an end-of-answer token trained in the loss (without it answers ran on into invented text), and 30% of batches from pre-training text. Results: network alone 0.10 → 0.24 F1, stored answers 0.66 → 0.89.</dd>
+  <dt>Design</dt><dd>That recipe for every fine-tune, and beyond it: freeze the core and attach one small adapter per skill (about 1-5% of the core, LoRA-style), chosen per question by a router. Adapters are separate files, versioned and removable.</dd>
+  <dt>Why it makes the model compact</dt><dd>One core plus tiny skill files replaces several fine-tuned copies; a frozen core cannot be overwritten, so adding a skill never costs an old one.</dd>
+</dl>
+</div>
+
+<div class="part core">
+<h3>Idea 6. Fast decoding: a KV cache, and drafts from copied spans</h3>
+<dl class="kv">
+  <dt>What we know</dt><dd>Our generator recomputes the whole window for every new token, which is slow (5M: 0.1-2 s per reply on one CPU core). When the model copies a retrieved answer, the next several tokens are almost certain.</dd>
+  <dt>Design</dt><dd>A key-value cache (keep each layer's attention keys and values for the tokens already processed, so each new token costs one step instead of a full window). Then speculative drafting: the copy head proposes the next 4-8 tokens from the retrieved passage, and the network checks all of them in a single pass, keeping the agreed prefix.</dd>
+  <dt>Expected effect</dt><dd>The cache: about 10-50 times faster generation at windows of 512-1,024 (standard, safe). Drafting: published retrieval-based drafting methods report 2-3 times more; copying from memory is its best case. Neither changes what the model says.</dd>
+</dl>
+</div>
+
+<h2>3. Sizing on this machine</h2>
+<div class="tablewrap"><table>
+  <tr><th>Core</th><th>Text for about 20 tokens per parameter</th><th>Pre-training on the RTX 3090</th><th>Role</th></tr>
+  <tr><td class="num">55M (built)</td><td>about 1B tokens (2.3 GB mix, 1.6 passes)</td><td>2.4 hours (measured)</td><td>the first test of every idea above</td></tr>
+  <tr><td class="num">125M</td><td>about 2.5B tokens (about 10 GB)</td><td>about 1 day</td><td>the main Traditional Hybrid model</td></tr>
+  <tr><td class="num">350M</td><td>about 7B tokens (about 25 GB)</td><td>about 1 week</td><td>only if 125M shows the ideas still pay with size</td></tr>
+</table></div>
+<p>Replies: a 125M core with a KV cache answers in well under a second on the GPU, and in a few seconds on a CPU; memory lookups and tools add milliseconds.</p>
+
+<h2>4. Build plan, in order</h2>
+<div class="stage"><div class="id">T1</div><div class="body"><b>KV cache in the generator</b> (Idea 6, first half). Makes every following stage faster.<div class="done">Pass: identical replies to the current generator on the chat probe; 10x faster or more at a 1,024 window.</div></div></div>
+<div class="stage"><div class="id">T2</div><div class="body"><b>50M baseline of the full recipe</b> (Ideas 1, 2, 5): the 50M core already trained on the P50 mix, its Q&amp;A stage (running), report card and chat probe.<div class="done">Pass: beats the 5M best on new and reworded questions and on the network-alone floor, not only on stored ones.</div></div></div>
+<div class="stage"><div class="id">T3</div><div class="body"><b>Tools and checks broadened</b> (Idea 3): units, dates, a code runner; checks against memory.<div class="done">Pass: tool-checkable questions in the probe answered correctly at least 80%.</div></div></div>
+<div class="stage"><div class="id">T4</div><div class="body"><b>Verified practice on the 50M core</b> (Idea 4): three rounds on GSM8K and SVAMP.<div class="done">Pass: new GSM8K problems at least double the 50M starting point.</div></div></div>
+<div class="stage"><div class="id">T5</div><div class="body"><b>First skill adapter</b> (Idea 5): an arithmetic adapter on the frozen core, against the full fine-tune.<div class="done">Pass: matches or beats the full fine-tune on math with the conversation probe unchanged; under 5% of core size.</div></div></div>
+<div class="stage"><div class="id">T6</div><div class="body"><b>Dense question key</b> (Idea 1): trained on in-domain rewordings, combined with the keyword key.<div class="done">Pass: reworded and synonym probe sections at least 4/5 each.</div></div></div>
+<div class="stage"><div class="id">T7</div><div class="body"><b>Speculative drafting from copied spans</b> (Idea 6, second half).<div class="done">Pass: identical replies; at least 2x faster on answers copied from memory.</div></div></div>
+<div class="stage"><div class="id">T8</div><div class="body"><b>125M Traditional Hybrid</b> on about 10 GB of the same mix, with every stage above.<div class="done">Pass: on knowledge it holds, within five points of a conventional model several times larger; reasoning measured on held-out GSM8K and SVAMP.</div></div></div>
+
+<h2>5. What we leave out, and why</h2>
+<div class="tablewrap"><table>
+  <tr><th>Idea from the research</th><th>Why it is not in this plan</th></tr>
+  <tr><td>Aggressive compression of the input (phrase codes, packing more text per token)</td><td>Shorter sequences made the model 2.5-4% worse: a lossless encoder cannot add information, and rarer codes are harder to learn. A standard tokenizer is fine.</td></tr>
+  <tr><td>Count tables mixed into the output</td><td>+10% at 0.8M, nothing at 4.7M, worse at 19M. A larger core learns these statistics itself.</td></tr>
+  <tr><td>Our own compiler in place of a standard tokenizer</td><td>Equal to a standard tokenizer within 1%; its value was stable keys for memory, which any deterministic tokenizer plus a keyword index also gives.</td></tr>
+  <tr><td>Bigger core as the first lever</td><td>Data and recipe gave the large gains first; size pays once those are right (50M: -27% to -55% error on the same tests).</td></tr>
+  <tr><td>Paragraph-aligned training windows for prose</td><td>Random windows gave slightly better fluency; alignment helps only structured units, which this plan keeps whole by sizing them to the window.</td></tr>
+</table></div>
+
+<h2>6. Risks</h2>
+<div class="tablewrap"><table>
+  <tr><th>Risk</th><th>Sign</th><th>Response</th></tr>
+  <tr><td>Retrieval returns the wrong passage and the copy head repeats it confidently</td><td>Answers fluent but about another question (seen: "hairstyle" retrieved "sneakers")</td><td>Gate reads the retrieval similarity; check stage compares the answer with the question's key words; dense key</td></tr>
+  <tr><td>Tools invoked in the wrong place</td><td>Tool output inside prose where no calculation was asked</td><td>Strict trigger patterns; tool use trained with an explicit marker</td></tr>
+  <tr><td>Self-training learns its own mistakes</td><td>Rising training accuracy, flat held-out accuracy</td><td>Only checked answers; held-out problems never used; stop when held-out stops rising</td></tr>
+  <tr><td>Adapters interfere</td><td>A skill drops when another adapter is added</td><td>Router picks one adapter per question at first</td></tr>
+</table></div>
+
+<h2>7. What this plan is, in one line</h2>
+<p>A conventional model, except that facts sit in an index it reads, exact work is done by tools it calls, skills are small adapters it loads, and reasoning is practised against a checker, so the network itself can be small and fast while the system as a whole answers like a much larger one on the tasks it covers.</p>
+</div>
+</body>
+</html>
