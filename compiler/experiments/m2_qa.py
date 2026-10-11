@@ -194,6 +194,12 @@ class ExchangeMemory:
         self.exact: dict[frozenset, int] = {}
         self.index: dict[bytes, list[int]] = collections.defaultdict(list)
         self.df: collections.Counter = collections.Counter()
+        self.learned = None          # optional LearnedKeys: a second, learned key per question (K1)
+
+    def attach_learned(self, learned: "LearnedKeys") -> None:
+        """Index every stored question by the learned key as well; later adds are indexed too."""
+        self.learned = learned
+        learned.vectors = learned.embed([q for q, _ in self.exchanges])
 
     @staticmethod
     def key_of(question: bytes) -> frozenset:
@@ -207,6 +213,8 @@ class ExchangeMemory:
         self.exact.setdefault(k, i)
         for w in k:
             self.index[w].append(i); self.df[w] += 1
+        if self.learned is not None:
+            self.learned.vectors = torch.cat([self.learned.vectors, self.learned.embed([question])])
         return i
 
     def idf(self, w: bytes) -> float:
@@ -223,14 +231,22 @@ class ExchangeMemory:
             for i in self.index[w]:
                 if i != exclude:
                     scores[i] += idf
-        if not scores:
-            return []
         denom = {w: self.idf(w) for w in key}
-        out = []
+        lit = {}
         for i, s in scores.items():
             union = sum(denom.values()) + sum(self.idf(w) for w in self.keys[i] if w not in key)
-            out.append((s / max(union, 1e-9), i))
-        out.sort(reverse=True)
+            lit[i] = s / max(union, 1e-9)
+        if self.learned is not None and exclude is None:
+            # hybrid: rank by literal + learned similarity (weights fitted on held-out rewordings in K1);
+            # the returned score stays the literal similarity, so group definitions do not change
+            L = self.learned
+            cos = (L.vectors @ L.embed([question])[0]).cpu()
+            cand = set(sorted(lit, key=lit.get, reverse=True)[:50]) | set(torch.topk(cos, min(50, len(cos))).indices.tolist())
+            ranked = sorted(cand, key=lambda i: lit.get(i, 0.0) / L.lit_std + L.weight * float(cos[i]) / L.key_std, reverse=True)
+            return [(lit.get(i, 0.0), i) for i in ranked[:k]]
+        if not lit:
+            return []
+        out = sorted(((v, i) for i, v in lit.items()), reverse=True)
         return out[:k]
 
     def exact_hit(self, question: bytes):
@@ -261,6 +277,37 @@ def perturb_question(q: bytes, rng, donor: list[bytes]) -> bytes:
         if rng.random() < 0.15:
             out[k], out[k + 1] = out[k + 1], out[k]
     return b" ".join(out) if out else words[0]
+
+
+class LearnedKeys:
+    """K1 key: the frozen stage-1 core's mean hidden state over the question, through the trained
+    key head, as a unit vector (compiler/experiments/k1_question_key.py)."""
+
+    def __init__(self, head_path: str, native: str | None, device: str = "cpu"):
+        import core_eval
+        ck = torch.load(head_path, map_location="cpu", weights_only=False)
+        self.enc, self.core = core_eval.load_core(ck["core"], native, device)
+        D = ck["mu"].shape[1]
+        self.head = torch.nn.Sequential(torch.nn.Linear(D, 512), torch.nn.GELU(), torch.nn.Linear(512, 128)).to(device)
+        self.head.load_state_dict(ck["head"]); self.head.eval()
+        self.mu, self.sd, self.dev = ck["mu"].to(device), ck["sd"].to(device), device
+        self.weight, self.lit_std, self.key_std = ck["weight"], ck["lit_std"], ck["key_std"]
+        self.vectors = torch.zeros(0, 128, device=device)
+
+    @torch.no_grad()
+    def embed(self, questions: list[bytes], batch: int = 256) -> torch.Tensor:
+        out = []
+        for i in range(0, len(questions), batch):
+            codes = [self.enc.encode(b"Question: " + q)[0][: self.core.ctx] for q in questions[i:i + batch]]
+            L = max(len(c) for c in codes)
+            x = np.zeros((len(codes), L), dtype=np.int64); m = np.zeros((len(codes), L), dtype=np.float32)
+            for r, c in enumerate(codes):
+                x[r, :len(c)] = c; m[r, :len(c)] = 1
+            h = self.core.hidden(torch.from_numpy(x).to(self.dev)).float()
+            mt = torch.from_numpy(m).to(self.dev)[..., None]
+            v = (h * mt).sum(1) / mt.sum(1).clamp_min(1)
+            out.append(F.normalize(self.head((v - self.mu) / self.sd), dim=-1))
+        return torch.cat(out) if out else torch.zeros(0, 128, device=self.dev)
 
 
 def parse_exchanges(text: bytes) -> list[tuple[bytes, bytes]]:
@@ -379,6 +426,8 @@ class QAEngine:
         self.mem = ExchangeMemory()
         for q, ans in train_x:
             self.mem.add(q, ans)
+        if getattr(a, "key_head", None) and Path(resolve(a.key_head)).exists():
+            self.mem.attach_learned(LearnedKeys(resolve(a.key_head), native, device if torch.cuda.is_available() or device == "cpu" else "cpu"))
         t0 = time.time()
         # the file is the rendered exchanges back to back, so encoding it whole gives the same codes
         all_codes = enc.encode_file(train_file, work)[0] if native else np.concatenate([enc.encode(render(q, x))[0] for q, x in train_x])
@@ -490,6 +539,7 @@ def main() -> int:
     ap.add_argument("--loss-answer-only", action="store_true", help="train and validate on the answer codes only, not the question")
     ap.add_argument("--stop-at-blank", action="store_true", help="a reply ends at its first blank line (single-span answers, e.g. SQuAD)")
     ap.add_argument("--lr", type=float, default=1e-3, help="AdamW peak learning rate")
+    ap.add_argument("--key-head", default=None, help="K1 key head (runs/<core>/key_head.pt): retrieve by literal + learned question key")
     ap.add_argument("--eos", action="store_true", help="train an end-of-answer code after every exchange (inside the loss) and stop generation at it")
     ap.add_argument("--head-lr", type=float, default=0.0, help="learning rate for the new heads (copy head, trust head); 0: same as --lr")
     ap.add_argument("--schedule", choices=["constant", "cosine"], default="constant", help="cosine: 100-step warm-up, decay to 10%% of the peak")
@@ -532,6 +582,9 @@ def main() -> int:
     else:
         neighbors = [r[0][1] if (r := mem.retrieve(q, 1, exclude=i)) else None for i, (q, _) in enumerate(train_x)]
         nb_cache.write_text(json.dumps(neighbors))
+    if a.key_head:     # K1: retrieval at answer time ranks by literal + learned key (training windows keep the literal neighbours)
+        mem.attach_learned(LearnedKeys(a.key_head, a.native, a.device))
+        say(f"learned question key attached: {len(mem.learned.vectors):,} questions embedded")
     say(f"M2 built: {len(mem.exact):,} distinct keys; nearest-neighbour pass {time.time() - t0:.0f}s; "
         f"{sum(n is None for n in neighbors)} exchanges without a neighbour")
 
