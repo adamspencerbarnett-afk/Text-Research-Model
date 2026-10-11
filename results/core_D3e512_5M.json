@@ -1,0 +1,733 @@
+{
+ "run": "scale_run",
+ "seed": 1,
+ "amp": true,
+ "device": "cuda",
+ "corpus": {
+  "train_books": 8,
+  "wiki_files": 0,
+  "train_bytes": 385647985,
+  "heldout": [
+   "books",
+   "evidence",
+   "fineweb",
+   "math",
+   "oasst",
+   "qqp",
+   "ultrachat",
+   "wiki"
+  ],
+  "ood": [
+   "Heart-of-Darkness_219",
+   "The-Adventures-of-Sherlock-Holmes_1661",
+   "The-Prince_1232",
+   "Walden-and-On-The-Duty-Of-Civil-Disobedience_205"
+  ]
+ },
+ "sizes": {
+  "5M": {
+   "width": 256,
+   "layers": 6,
+   "heads": 8
+  },
+  "20M": {
+   "width": 448,
+   "layers": 8,
+   "heads": 8
+  },
+  "50M": {
+   "width": 640,
+   "layers": 10,
+   "heads": 10
+  }
+ },
+ "runs": {
+  "5M/v0_8k_ng64": {
+   "encoding": {
+    "name": "v0_8k_plain",
+    "vocab": 8192,
+    "groups": 0,
+    "members": 0,
+    "dictionary": "runs\\core_D3e512\\v0_8k_plain.cv0d",
+    "dictionary_hash": "c09e38a4336e4fa3",
+    "entries": 7934,
+    "phrases": 0,
+    "case_flags": false,
+    "max_phrase_units": 1
+   },
+   "model": {
+    "width": 256,
+    "layers": 6,
+    "heads": 8,
+    "ctx": 512,
+    "batch": 64,
+    "peak_lr": 0.001,
+    "table_rows": 0,
+    "table_orders": [],
+    "params": {
+     "core": 4732928,
+     "embedding": 2228224,
+     "output_heads": 789,
+     "table": 0,
+     "total": 6961941
+    },
+    "ngram_tables": [
+     {
+      "order": 2,
+      "contexts": 8135,
+      "topk": 64,
+      "entries": 477395,
+      "build_s": 5.3
+     },
+     {
+      "order": 3,
+      "contexts": 4230675,
+      "topk": 64,
+      "entries": 18597563,
+      "build_s": 10.4
+     }
+    ]
+   },
+   "training": {
+    "budget_s": 5400.0,
+    "max_steps": 42538,
+    "amp": true,
+    "aligned_windows": null,
+    "train_s": 5073.8,
+    "steps": 42538,
+    "tokens_seen": 1393885184,
+    "bytes_seen": 4883368710,
+    "tokens_per_s": 274724.2,
+    "bytes_per_s": 962474.8,
+    "final_train_bits_per_token": 4.02,
+    "train_tokens": 107875586,
+    "valid_tokens": 2201543,
+    "valid_bytes": 7683643,
+    "patience": 0,
+    "min_delta": 0.002,
+    "stop_reason": "budget",
+    "stopped_early": false,
+    "history": [
+     {
+      "train_s": 300.3,
+      "step": 896,
+      "tokens_seen": 29360128,
+      "bytes_seen": 102848558,
+      "train_bits_per_token": 5.4306,
+      "quick_bits_per_byte": 1.7083,
+      "lr": 0.0009990173110521214
+     },
+     {
+      "train_s": 600.1,
+      "step": 1794,
+      "tokens_seen": 58785792,
+      "bytes_seen": 206004939,
+      "train_bits_per_token": 5.1779,
+      "quick_bits_per_byte": 1.636,
+      "lr": 0.0009960603830019628
+     },
+     {
+      "train_s": 900.2,
+      "step": 2687,
+      "tokens_seen": 88047616,
+      "bytes_seen": 308540776,
+      "train_bits_per_token": 5.0102,
+      "quick_bits_per_byte": 1.5853,
+      "lr": 0.0009911749837702324
+     },
+     {
+      "train_s": 1200.1,
+      "step": 3582,
+      "tokens_seen": 117374976,
+      "bytes_seen": 411278293,
+      "train_bits_per_token": 4.8434,
+      "quick_bits_per_byte": 1.5318,
+      "lr": 0.0009843539787870092
+     },
+     {
+      "train_s": 1500.3,
+      "step": 4482,
+      "tokens_seen": 146866176,
+      "bytes_seen": 514511283,
+      "train_bits_per_token": 4.64,
+      "quick_bits_per_byte": 1.462,
+      "lr": 0.0009755819648908224
+     },
+     {
+      "train_s": 1800.2,
+      "step": 5378,
+      "tokens_seen": 176226304,
+      "bytes_seen": 617356649,
+      "train_bits_per_token": 4.5767,
+      "quick_bits_per_byte": 1.4455,
+      "lr": 0.000964981833023001
+     },
+     {
+      "train_s": 2100.0,
+      "step": 7108,
+      "tokens_seen": 232914944,
+      "bytes_seen": 816098885,
+      "train_bits_per_token": 4.4927,
+      "quick_bits_per_byte": 1.3948,
+      "lr": 0.0009394230826707101
+     },
+     {
+      "train_s": 2400.0,
+      "step": 10646,
+      "tokens_seen": 348848128,
+      "bytes_seen": 1222389206,
+      "train_bits_per_token": 4.3742,
+      "quick_bits_per_byte": 1.3726,
+      "lr": 0.0008679512044877949
+     },
+     {
+      "train_s": 2700.0,
+      "step": 13041,
+      "tokens_seen": 427327488,
+      "bytes_seen": 1497408967,
+      "train_bits_per_token": 4.3459,
+      "quick_bits_per_byte": 1.3609,
+      "lr": 0.0008069571753819272
+     },
+     {
+      "train_s": 3000.1,
+      "step": 15435,
+      "tokens_seen": 505774080,
+      "bytes_seen": 1772166831,
+      "train_bits_per_token": 4.2526,
+      "quick_bits_per_byte": 1.3513,
+      "lr": 0.0007379749963036592
+     },
+     {
+      "train_s": 3300.0,
+      "step": 17845,
+      "tokens_seen": 584744960,
+      "bytes_seen": 2048678204,
+      "train_bits_per_token": 4.2577,
+      "quick_bits_per_byte": 1.3361,
+      "lr": 0.0006626171961802658
+     },
+     {
+      "train_s": 3600.0,
+      "step": 21260,
+      "tokens_seen": 696647680,
+      "bytes_seen": 2440946280,
+      "train_bits_per_token": 4.2048,
+      "quick_bits_per_byte": 1.3229,
+      "lr": 0.0005503323420390238
+     },
+     {
+      "train_s": 3900.0,
+      "step": 25585,
+      "tokens_seen": 838369280,
+      "bytes_seen": 2937356432,
+      "train_bits_per_token": 4.1523,
+      "quick_bits_per_byte": 1.3134,
+      "lr": 0.0004090093938494922
+     },
+     {
+      "train_s": 4200.0,
+      "step": 29913,
+      "tokens_seen": 980189184,
+      "bytes_seen": 3434156301,
+      "train_bits_per_token": 4.1379,
+      "quick_bits_per_byte": 1.3012,
+      "lr": 0.00028186941670755976
+     },
+     {
+      "train_s": 4500.0,
+      "step": 34245,
+      "tokens_seen": 1122140160,
+      "bytes_seen": 3931412196,
+      "train_bits_per_token": 4.0831,
+      "quick_bits_per_byte": 1.2891,
+      "lr": 0.0001818152380326061
+     },
+     {
+      "train_s": 4800.0,
+      "step": 38581,
+      "tokens_seen": 1264222208,
+      "bytes_seen": 4429310751,
+      "train_bits_per_token": 4.0608,
+      "quick_bits_per_byte": 1.2872,
+      "lr": 0.00011908908323897882
+     },
+     {
+      "train_s": 5073.8,
+      "step": 42538,
+      "tokens_seen": 1393885184,
+      "bytes_seen": 4883368710,
+      "train_bits_per_token": 4.02,
+      "quick_bits_per_byte": 1.2797,
+      "lr": 0.00010000000122723613
+     }
+    ]
+   },
+   "eval": {
+    "validation": {
+     "bytes": 7683643,
+     "tokens": 2201543,
+     "bits_per_byte": 1.2893
+    },
+    "heldout": {
+     "books": {
+      "bytes": 1,
+      "tokens": 1,
+      "ids_per_kb": 1000.0,
+      "bits_per_byte": 0.0,
+      "bits_per_token": 0.0,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_101_1000": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_word": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_other": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       }
+      }
+     },
+     "evidence": {
+      "bytes": 738960,
+      "tokens": 208157,
+      "ids_per_kb": 281.7,
+      "bits_per_byte": 1.2558,
+      "bits_per_token": 4.4581,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.2749,
+        "bits_share": 0.2682,
+        "bits_per_byte": 1.2256
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2573,
+        "bits_share": 0.2811,
+        "bits_per_byte": 1.3718
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.4678,
+        "bits_share": 0.4506,
+        "bits_per_byte": 1.2098
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0723,
+        "bits_share": 0.1418,
+        "bits_per_byte": 2.4646
+       },
+       "type_word": {
+        "byte_share": 0.9245,
+        "bits_share": 0.8534,
+        "bits_per_byte": 1.1593
+       },
+       "type_other": {
+        "byte_share": 0.0033,
+        "bits_share": 0.0048,
+        "bits_per_byte": 1.8351
+       }
+      }
+     },
+     "fineweb": {
+      "bytes": 745189,
+      "tokens": 198232,
+      "ids_per_kb": 266.0,
+      "bits_per_byte": 1.3154,
+      "bits_per_token": 4.945,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.2786,
+        "bits_share": 0.2628,
+        "bits_per_byte": 1.2407
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2614,
+        "bits_share": 0.2855,
+        "bits_per_byte": 1.4368
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.46,
+        "bits_share": 0.4517,
+        "bits_per_byte": 1.2918
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0595,
+        "bits_share": 0.1168,
+        "bits_per_byte": 2.5825
+       },
+       "type_word": {
+        "byte_share": 0.9314,
+        "bits_share": 0.8759,
+        "bits_per_byte": 1.237
+       },
+       "type_other": {
+        "byte_share": 0.0091,
+        "bits_share": 0.0073,
+        "bits_per_byte": 1.0612
+       }
+      }
+     },
+     "math": {
+      "bytes": 203205,
+      "tokens": 79187,
+      "ids_per_kb": 389.7,
+      "bits_per_byte": 0.641,
+      "bits_per_token": 1.6449,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.3979,
+        "bits_share": 0.4718,
+        "bits_per_byte": 0.7601
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2974,
+        "bits_share": 0.2733,
+        "bits_per_byte": 0.5891
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.3047,
+        "bits_share": 0.2549,
+        "bits_per_byte": 0.5361
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.2126,
+        "bits_share": 0.3437,
+        "bits_per_byte": 1.0364
+       },
+       "type_word": {
+        "byte_share": 0.7842,
+        "bits_share": 0.6213,
+        "bits_per_byte": 0.5079
+       },
+       "type_other": {
+        "byte_share": 0.0032,
+        "bits_share": 0.035,
+        "bits_per_byte": 6.961
+       }
+      }
+     },
+     "oasst": {
+      "bytes": 25747,
+      "tokens": 6814,
+      "ids_per_kb": 264.7,
+      "bits_per_byte": 1.1859,
+      "bits_per_token": 4.4815,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.2613,
+        "bits_share": 0.25,
+        "bits_per_byte": 1.1347
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2731,
+        "bits_share": 0.2943,
+        "bits_per_byte": 1.2781
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.4656,
+        "bits_share": 0.4558,
+        "bits_per_byte": 1.1609
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0641,
+        "bits_share": 0.128,
+        "bits_per_byte": 2.3681
+       },
+       "type_word": {
+        "byte_share": 0.926,
+        "bits_share": 0.8592,
+        "bits_per_byte": 1.1005
+       },
+       "type_other": {
+        "byte_share": 0.0099,
+        "bits_share": 0.0128,
+        "bits_per_byte": 1.5391
+       }
+      }
+     },
+     "qqp": {
+      "bytes": 185929,
+      "tokens": 48880,
+      "ids_per_kb": 262.9,
+      "bits_per_byte": 0.7716,
+      "bits_per_token": 2.9351,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.4258,
+        "bits_share": 0.392,
+        "bits_per_byte": 0.7104
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2515,
+        "bits_share": 0.2682,
+        "bits_per_byte": 0.823
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.3227,
+        "bits_share": 0.3397,
+        "bits_per_byte": 0.8124
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0596,
+        "bits_share": 0.0987,
+        "bits_per_byte": 1.2787
+       },
+       "type_word": {
+        "byte_share": 0.9255,
+        "bits_share": 0.8431,
+        "bits_per_byte": 0.703
+       },
+       "type_other": {
+        "byte_share": 0.0149,
+        "bits_share": 0.0582,
+        "bits_per_byte": 3.004
+       }
+      }
+     },
+     "ultrachat": {
+      "bytes": 313914,
+      "tokens": 80381,
+      "ids_per_kb": 256.1,
+      "bits_per_byte": 0.9965,
+      "bits_per_token": 3.8919,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.2681,
+        "bits_share": 0.2455,
+        "bits_per_byte": 0.9127
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2679,
+        "bits_share": 0.2897,
+        "bits_per_byte": 1.0774
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.464,
+        "bits_share": 0.4648,
+        "bits_per_byte": 0.9983
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0568,
+        "bits_share": 0.0994,
+        "bits_per_byte": 1.7448
+       },
+       "type_word": {
+        "byte_share": 0.9362,
+        "bits_share": 0.8899,
+        "bits_per_byte": 0.9472
+       },
+       "type_other": {
+        "byte_share": 0.007,
+        "bits_share": 0.0107,
+        "bits_per_byte": 1.5211
+       }
+      }
+     },
+     "wiki": {
+      "bytes": 1440027,
+      "tokens": 407671,
+      "ids_per_kb": 283.1,
+      "bits_per_byte": 1.285,
+      "bits_per_token": 4.539,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.2794,
+        "bits_share": 0.263,
+        "bits_per_byte": 1.2093
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2586,
+        "bits_share": 0.2858,
+        "bits_per_byte": 1.4201
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.462,
+        "bits_share": 0.4513,
+        "bits_per_byte": 1.2552
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0748,
+        "bits_share": 0.139,
+        "bits_per_byte": 2.3861
+       },
+       "type_word": {
+        "byte_share": 0.9161,
+        "bits_share": 0.855,
+        "bits_per_byte": 1.1994
+       },
+       "type_other": {
+        "byte_share": 0.0091,
+        "bits_share": 0.006,
+        "bits_per_byte": 0.8525
+       }
+      }
+     }
+    },
+    "heldout_overall": {
+     "bytes": 3652972,
+     "tokens": 1029323,
+     "ids_per_kb": 281.8,
+     "bits_per_byte": 1.1978
+    },
+    "ood": {
+     "Heart-of-Darkness_219": {
+      "bytes": 211025,
+      "tokens": 65285,
+      "ids_per_kb": 309.4,
+      "bits_per_byte": 1.856,
+      "bits_per_token": 5.9993
+     },
+     "The-Adventures-of-Sherlock-Holmes_1661": {
+      "bytes": 562531,
+      "tokens": 170032,
+      "ids_per_kb": 302.3,
+      "bits_per_byte": 1.711,
+      "bits_per_token": 5.6606
+     },
+     "The-Prince_1232": {
+      "bytes": 281531,
+      "tokens": 79872,
+      "ids_per_kb": 283.7,
+      "bits_per_byte": 1.7087,
+      "bits_per_token": 6.023
+     },
+     "Walden-and-On-The-Duty-Of-Civil-Disobedience_205": {
+      "bytes": 636914,
+      "tokens": 183754,
+      "ids_per_kb": 288.5,
+      "bits_per_byte": 1.8287,
+      "bits_per_token": 6.3385
+     }
+    },
+    "ood_overall": {
+     "bytes": 1692001,
+     "tokens": 498943,
+     "ids_per_kb": 294.9,
+     "bits_per_byte": 1.773
+    }
+   },
+   "seed": 1,
+   "generation": {
+    "prompt": "We went to the park",
+    "tokens": 200,
+    "bytes": 450,
+    "seconds": 2.31,
+    "tokens_per_s": 86.7,
+    "bytes_per_s": 195.1,
+    "note": "sliding context, no KV cache, cuda",
+    "sample": " every year, so in one year, we have 3 times the number of houses in the park.\nThe total number of houses in the park is x, so we can set up the equation:\n2x + 3x + 3x + x = 300\nSimplifying, we have:\n2x + 3x + x = 360\nTo solve for x, we subtract 3x from both sides of the equation:\n2x + 3x + x - 3x = 360 - 3x\n15x = 230\nTo isolate x, we subtract 15x from both sides of the equation:\n15x - 15x = 230 - 15x\n15x = 60\nTo solve for x, we divide both sides"
+   },
+   "machine": {
+    "python": "3.12.10",
+    "torch": "2.11.0+cu128",
+    "threads": 22,
+    "cpu": "Intel64 Family 6 Model 79 Stepping 1, GenuineIntel",
+    "cores": 44,
+    "device": "cuda",
+    "gpu": "NVIDIA GeForce RTX 3090"
+   },
+   "config": "v0_8k_ng64",
+   "size": "5M"
+  }
+ }
+}
