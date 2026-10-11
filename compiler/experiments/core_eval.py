@@ -144,7 +144,8 @@ def main() -> int:
     res["questions"]["literal_key"] = {"n": len(qs), "recall_at_1": round(hit1 / len(qs), 4), "recall_at_10": round(hit10 / len(qs), 4)}
     print("questions", res["questions"], f"({time.time() - t0:.0f}s)", flush=True)
 
-    out = ROOT / "results" / f"core_eval_{Path(a.checkpoint).stem}_{Path(a.data).name}.json"
+    # named by the core measured (its run folder and file), never by the evaluation data, which is shared
+    out = ROOT / "results" / f"core_eval_{Path(a.checkpoint).parent.name}_{Path(a.checkpoint).stem}.json"
     out.write_text(json.dumps(res, indent=1))
     print(f"wrote {out}")
     return 0
