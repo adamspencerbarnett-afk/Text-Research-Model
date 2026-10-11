@@ -1,0 +1,429 @@
+{
+ "setup": {
+  "data": "data_qa_squad",
+  "work": "runs/r2b",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 1800.0,
+  "ctx": 256,
+  "batch": 32,
+  "topk": 64,
+  "neighbor_codes": 0,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/r2b_squad_5M_answeronly.json",
+  "seed": 1,
+  "self_context_p": 0.0,
+  "copy_bias": 0.0,
+  "device": "cuda",
+  "threads": 0,
+  "width": 256,
+  "layers": 6,
+  "heads": 8,
+  "greedy": true,
+  "no_repeat": 0,
+  "patience": 4,
+  "min_delta": 0.005,
+  "max_steps": 0,
+  "dict": "runs/scale/v0_8k_plain.cv0d",
+  "init": "runs/scale/scale_5M_v0_8k_ng64.pt",
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "copy_question": true,
+  "calculator": false,
+  "perturb_self": 0.0,
+  "sim_feature": false,
+  "loss_answer_only": true,
+  "stop_at_blank": true,
+  "save": "runs/r2b/squad_r2b_5M.pt",
+  "train_exchanges": 64782,
+  "eval": 3781,
+  "added": 3782,
+  "distinct_keys": 58371
+ },
+ "training": {
+  "steps": 11115,
+  "train_s": 420.0,
+  "stop_reason": "plateau: no improvement over 0.005 in 4 evaluations",
+  "best_valid": 0.4864,
+  "history": [
+   {
+    "train_s": 60.0,
+    "step": 1347,
+    "train_bits_per_code": 1.446,
+    "valid_bits_per_byte": 0.5324
+   },
+   {
+    "train_s": 120.0,
+    "step": 2977,
+    "train_bits_per_code": 1.333,
+    "valid_bits_per_byte": 0.5048
+   },
+   {
+    "train_s": 180.0,
+    "step": 4613,
+    "train_bits_per_code": 1.008,
+    "valid_bits_per_byte": 0.4864
+   },
+   {
+    "train_s": 240.0,
+    "step": 6248,
+    "train_bits_per_code": 0.982,
+    "valid_bits_per_byte": 0.4934
+   },
+   {
+    "train_s": 300.0,
+    "step": 7872,
+    "train_bits_per_code": 1.432,
+    "valid_bits_per_byte": 0.534
+   },
+   {
+    "train_s": 360.0,
+    "step": 9496,
+    "train_bits_per_code": 1.128,
+    "valid_bits_per_byte": 0.5253
+   },
+   {
+    "train_s": 420.0,
+    "step": 11115,
+    "train_bits_per_code": 0.927,
+    "valid_bits_per_byte": 0.5258
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.7793,
+   "exact": 0.895
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 60,
+   "f1": 0.1457,
+   "exact": 0.1167,
+   "f1_no_m1": 0.0,
+   "f1_bias": 0.1457,
+   "exact_bias": 0.1167
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 1,
+   "f1": 0.0,
+   "exact": 0.0,
+   "f1_no_m1": 0.0,
+   "f1_bias": 0.0,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.0
+  },
+  "unseen_network_with_nearest": {
+   "n": 199,
+   "f1": 0.0679,
+   "exact": 0.0101,
+   "f1_no_m1": 0.0087,
+   "f1_bias": 0.0679,
+   "exact_bias": 0.0101,
+   "retrieved_answer_f1_vs_ref": 0.0128
+  },
+  "heldout_network_without_memory": {
+   "n": 60,
+   "f1": 0.0572,
+   "exact": 0.0
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.0675
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.895,
+   "exact": 0.995
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 60,
+   "f1": 0.083,
+   "exact": 0.05,
+   "f1_no_m1": 0.0,
+   "f1_bias": 0.083,
+   "exact_bias": 0.05
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Passage: For months each side had been building forward rifle pits and defensive",
+    "a": "the sixth) was followed by an assault by the French, and following their failure to retake it, the collapse of the Russian defences",
+    "f1": 0.06896551724137931,
+    "exact": 0.0,
+    "a_no_m1": "1",
+    "f1_no_m1": 0.0,
+    "a_bias": "the sixth) was followed by an assault by the French, and following their failure to retake it, the collapse of the Russian defences",
+    "f1_bias": 0.06896551724137931,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: More-or-less independent circadian rhythms are found in many organs and",
+    "a": "peripheral oscillators",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "1",
+    "f1_no_m1": 0.0,
+    "a_bias": "peripheral oscillators",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: In the late 1980s, according to \"Richard Feynman and the Connection Mac",
+    "a": "the interconne",
+    "f1": 0.4,
+    "exact": 0.0,
+    "a_no_m1": "a",
+    "f1_no_m1": 0.0,
+    "a_bias": "the interconne",
+    "f1_bias": 0.4,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: Americans with Sub-Saharan African ancestry for historical reasons: sla",
+    "a": "generations of families",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "1",
+    "f1_no_m1": 0.0,
+    "a_bias": "generations of families",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: Conventional bleaching of wood pulp using elemental chlorine produces a",
+    "a": "Stockhol",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "1",
+    "f1_no_m1": 0.0,
+    "a_bias": "Stockhol",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: Madonna's Italian-Catholic background and her relationship with her par",
+    "a": "the Italian language.",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "1",
+    "f1_no_m1": 0.0,
+    "a_bias": "the Italian language.",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Passage: The Ottoman Empire was an imperial state that lasted from 1299 to 1923.",
+    "a": "17th century",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "1",
+    "f1_no_m1": 0.0,
+    "a_bias": "17th century",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.744,
+    "f1_vs_retrieved": 0.3333333333333333,
+    "retrieved_answer_f1_vs_ref": 0.0
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Passage: On 13 June 1525, the couple was engaged with Johannes Bugenhagen, Justu",
+    "a": "27 June",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "1",
+    "f1_no_m1": 0.0,
+    "a_bias": "27 June",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.056,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Passage: The Central Region, consisting of present-day Hebei, Shandong, Shanxi, ",
+    "a": "Central Secretariat",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "1",
+    "f1_no_m1": 0.0,
+    "a_bias": "Central Secretariat",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.178,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Passage: Funding for private schools is generally provided through student tuiti",
+    "a": "advantages of independent control",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "1",
+    "f1_no_m1": 0.0,
+    "a_bias": "advantages of independent control",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.084,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Passage: Luther's 1538 hymnic version of the Lord's Prayer, \"Vater unser im Himm",
+    "a": "Lord's Prayer",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "1",
+    "f1_no_m1": 0.0,
+    "a_bias": "Lord's Prayer",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.038,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Passage: He produced artificial lightning, with discharges consisting of million",
+    "a": "their feet",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "1",
+    "f1_no_m1": 0.0,
+    "a_bias": "their feet",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.039,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Passage: While photosystem II photolyzes water to obtain and energize new electr",
+    "a": "the reenergized electrons",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "a",
+    "f1_no_m1": 0.0,
+    "a_bias": "the reenergized electrons",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.056,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Passage: In a report, published in early February 2007 by the Ear Institute at t",
+    "a": "the noisiest",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "1",
+    "f1_no_m1": 0.0,
+    "a_bias": "the noisiest",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: The Rhine emerges from Lake Constance, flows generally westward, as the",
+    "a": "Rhine knee at Basel, leaving Switzerland.",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "1",
+    "f1_no_m1": 0.0,
+    "a_bias": "Rhine knee at Basel, leaving Switzerland.",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: Additionally, multiple Doctors have returned in new adventures together",
+    "a": "2003",
+    "f1": 0.0,
+    "exact": 1.0,
+    "a_no_m1": "1",
+    "f1_no_m1": 0.0,
+    "a_bias": "2003",
+    "f1_bias": 0.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: Long-term active memory is acquired following infection by activation o",
+    "a": "immune system",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "1",
+    "f1_no_m1": 0.0,
+    "a_bias": "immune system",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: The Republic of Kenya is named after Mount Kenya. The origin of the nam",
+    "a": "not clear, but perhaps linked to the Kenya",
+    "f1": 0.2,
+    "exact": 0.0,
+    "a_no_m1": "1",
+    "f1_no_m1": 0.0,
+    "a_bias": "not clear, but perhaps linked to the Kenya",
+    "f1_bias": 0.2,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: Some of the oldest schools in South Africa are private church schools t",
+    "a": "(state-controlled)",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "1",
+    "f1_no_m1": 0.0,
+    "a_bias": "(state-controlled)",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ]
+ },
+ "checks": {}
+}

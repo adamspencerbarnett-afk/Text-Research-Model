@@ -1,0 +1,375 @@
+{
+ "run": "scale_run",
+ "seed": 1,
+ "amp": true,
+ "device": "cuda",
+ "corpus": {
+  "train_books": 3,
+  "wiki_files": 0,
+  "train_bytes": 400297480,
+  "heldout": [
+   "books",
+   "fineweb",
+   "wiki"
+  ],
+  "ood": [
+   "Heart-of-Darkness_219",
+   "The-Adventures-of-Sherlock-Holmes_1661",
+   "The-Prince_1232",
+   "Walden-and-On-The-Duty-Of-Civil-Disobedience_205"
+  ]
+ },
+ "sizes": {
+  "5M": {
+   "width": 256,
+   "layers": 6,
+   "heads": 8
+  },
+  "20M": {
+   "width": 448,
+   "layers": 8,
+   "heads": 8
+  },
+  "50M": {
+   "width": 640,
+   "layers": 10,
+   "heads": 10
+  }
+ },
+ "runs": {
+  "5M/v0_8k_ng64": {
+   "encoding": {
+    "name": "v0_8k_plain",
+    "vocab": 8192,
+    "groups": 0,
+    "members": 0,
+    "dictionary": "runs\\core_D1\\v0_8k_plain.cv0d",
+    "dictionary_hash": "38013afa407f6a83",
+    "entries": 7934,
+    "phrases": 0,
+    "case_flags": false,
+    "max_phrase_units": 1
+   },
+   "model": {
+    "width": 256,
+    "layers": 6,
+    "heads": 8,
+    "ctx": 256,
+    "batch": 64,
+    "peak_lr": 0.001,
+    "table_rows": 0,
+    "table_orders": [],
+    "params": {
+     "core": 4732928,
+     "embedding": 2162688,
+     "output_heads": 789,
+     "table": 0,
+     "total": 6896405
+    },
+    "ngram_tables": [
+     {
+      "order": 2,
+      "contexts": 8133,
+      "topk": 64,
+      "entries": 481824,
+      "build_s": 5.3
+     },
+     {
+      "order": 3,
+      "contexts": 4692810,
+      "topk": 64,
+      "entries": 20886899,
+      "build_s": 10.8
+     }
+    ]
+   },
+   "training": {
+    "budget_s": 3600.0,
+    "max_steps": 42538,
+    "amp": true,
+    "aligned_windows": 1915669,
+    "train_s": 1478.2,
+    "steps": 42538,
+    "tokens_seen": 696942592,
+    "bytes_seen": 2353350398,
+    "tokens_per_s": 471480.6,
+    "bytes_per_s": 1592037.9,
+    "final_train_bits_per_token": 4.3812,
+    "train_tokens": 110403676,
+    "valid_tokens": 2253137,
+    "valid_bytes": 7810317,
+    "patience": 0,
+    "min_delta": 0.002,
+    "stop_reason": "budget",
+    "stopped_early": false,
+    "history": [
+     {
+      "train_s": 300.0,
+      "step": 8605,
+      "tokens_seen": 140984320,
+      "bytes_seen": 476301320,
+      "train_bits_per_token": 4.8554,
+      "quick_bits_per_byte": 1.4629,
+      "lr": 0.0009121653036614851
+     },
+     {
+      "train_s": 600.0,
+      "step": 17227,
+      "tokens_seen": 282247168,
+      "bytes_seen": 953273708,
+      "train_bits_per_token": 4.638,
+      "quick_bits_per_byte": 1.4159,
+      "lr": 0.0006823781809584734
+     },
+     {
+      "train_s": 900.0,
+      "step": 25858,
+      "tokens_seen": 423657472,
+      "bytes_seen": 1430711374,
+      "train_bits_per_token": 4.5198,
+      "quick_bits_per_byte": 1.3909,
+      "lr": 0.0004004225167444828
+     },
+     {
+      "train_s": 1200.0,
+      "step": 34504,
+      "tokens_seen": 565313536,
+      "bytes_seen": 1908787442,
+      "train_bits_per_token": 4.4205,
+      "quick_bits_per_byte": 1.3689,
+      "lr": 0.0001769339183225816
+     },
+     {
+      "train_s": 1478.2,
+      "step": 42538,
+      "tokens_seen": 696942592,
+      "bytes_seen": 2353350398,
+      "train_bits_per_token": 4.3812,
+      "quick_bits_per_byte": 1.3592,
+      "lr": 0.00010000000122723613
+     }
+    ]
+   },
+   "eval": {
+    "validation": {
+     "bytes": 7810317,
+     "tokens": 2253137,
+     "bits_per_byte": 1.3649
+    },
+    "heldout": {
+     "books": {
+      "bytes": 401372,
+      "tokens": 114432,
+      "ids_per_kb": 285.1,
+      "bits_per_byte": 1.5057,
+      "bits_per_token": 5.2812,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.3471,
+        "bits_share": 0.2783,
+        "bits_per_byte": 1.2072
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2944,
+        "bits_share": 0.3155,
+        "bits_per_byte": 1.6135
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.3585,
+        "bits_share": 0.4062,
+        "bits_per_byte": 1.7061
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0563,
+        "bits_share": 0.0918,
+        "bits_per_byte": 2.4557
+       },
+       "type_word": {
+        "byte_share": 0.9356,
+        "bits_share": 0.9062,
+        "bits_per_byte": 1.4583
+       },
+       "type_other": {
+        "byte_share": 0.0081,
+        "bits_share": 0.002,
+        "bits_per_byte": 0.3775
+       }
+      }
+     },
+     "fineweb": {
+      "bytes": 1230220,
+      "tokens": 328446,
+      "ids_per_kb": 267.0,
+      "bits_per_byte": 1.3704,
+      "bits_per_token": 5.1331,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.2816,
+        "bits_share": 0.2638,
+        "bits_per_byte": 1.2839
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2565,
+        "bits_share": 0.2821,
+        "bits_per_byte": 1.5069
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.4618,
+        "bits_share": 0.4541,
+        "bits_per_byte": 1.3474
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0605,
+        "bits_share": 0.1203,
+        "bits_per_byte": 2.727
+       },
+       "type_word": {
+        "byte_share": 0.93,
+        "bits_share": 0.8733,
+        "bits_per_byte": 1.287
+       },
+       "type_other": {
+        "byte_share": 0.0095,
+        "bits_share": 0.0063,
+        "bits_per_byte": 0.9078
+       }
+      }
+     },
+     "wiki": {
+      "bytes": 2004609,
+      "tokens": 574276,
+      "ids_per_kb": 286.5,
+      "bits_per_byte": 1.3414,
+      "bits_per_token": 4.6823,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.2882,
+        "bits_share": 0.2698,
+        "bits_per_byte": 1.2557
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2527,
+        "bits_share": 0.2802,
+        "bits_per_byte": 1.4874
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.4591,
+        "bits_share": 0.45,
+        "bits_per_byte": 1.3148
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0783,
+        "bits_share": 0.1437,
+        "bits_per_byte": 2.4624
+       },
+       "type_word": {
+        "byte_share": 0.9121,
+        "bits_share": 0.8508,
+        "bits_per_byte": 1.2513
+       },
+       "type_other": {
+        "byte_share": 0.0097,
+        "bits_share": 0.0055,
+        "bits_per_byte": 0.7663
+       }
+      }
+     }
+    },
+    "heldout_overall": {
+     "bytes": 3636201,
+     "tokens": 1017154,
+     "ids_per_kb": 279.7,
+     "bits_per_byte": 1.3693
+    },
+    "ood": {
+     "Heart-of-Darkness_219": {
+      "bytes": 211025,
+      "tokens": 64844,
+      "ids_per_kb": 307.3,
+      "bits_per_byte": 2.2261,
+      "bits_per_token": 7.2447
+     },
+     "The-Adventures-of-Sherlock-Holmes_1661": {
+      "bytes": 562531,
+      "tokens": 168926,
+      "ids_per_kb": 300.3,
+      "bits_per_byte": 2.0466,
+      "bits_per_token": 6.8152
+     },
+     "The-Prince_1232": {
+      "bytes": 281531,
+      "tokens": 78642,
+      "ids_per_kb": 279.3,
+      "bits_per_byte": 2.0444,
+      "bits_per_token": 7.319
+     },
+     "Walden-and-On-The-Duty-Of-Civil-Disobedience_205": {
+      "bytes": 636914,
+      "tokens": 183256,
+      "ids_per_kb": 287.7,
+      "bits_per_byte": 2.1837,
+      "bits_per_token": 7.5896
+     }
+    },
+    "ood_overall": {
+     "bytes": 1692001,
+     "tokens": 495668,
+     "ids_per_kb": 292.9,
+     "bits_per_byte": 2.1202
+    }
+   },
+   "seed": 1,
+   "generation": {
+    "prompt": "We went to the park",
+    "tokens": 200,
+    "bytes": 533,
+    "seconds": 2.15,
+    "tokens_per_s": 93.0,
+    "bytes_per_s": 247.9,
+    "note": "sliding context, no KV cache, cuda",
+    "sample": " to start the 2012 Summer 3 events, which we could go to\n\ncourse to, and then to, the events that were, the 2012 Summer 2012 Summer\n\nEmergency-shaped events, with 3012 Summer 3 events and 300 Summer\n\ntimes of the start, and the beginning of the final event.\n\nThe new event took place in 10,000 years until\n\nthe end of the previous three events, and it took place in 10,000 years.\n\nThe opening of the 20 2012 Summer 3 events was just 3,000 years,\n\nfor which the Summer 2012 Summer 2012 Summer 2012 was\n\nbenign Root: Ashikaga of the 20"
+   },
+   "machine": {
+    "python": "3.12.10",
+    "torch": "2.11.0+cu128",
+    "threads": 22,
+    "cpu": "Intel64 Family 6 Model 79 Stepping 1, GenuineIntel",
+    "cores": 44,
+    "device": "cuda",
+    "gpu": "NVIDIA GeForce RTX 3090"
+   },
+   "config": "v0_8k_ng64",
+   "size": "5M"
+  }
+ }
+}

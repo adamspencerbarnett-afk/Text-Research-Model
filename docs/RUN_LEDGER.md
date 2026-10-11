@@ -26,6 +26,12 @@
 | r3c_gsm_5M_init_calc | GSM8K | 256w 6L 8h | 4.72M | 256 | 110 | 32 | 600 | 6126 | cuda | 1 | 0.500 | copy copy-q calc greedy init:scale_5M_v0_8k_ng64 | 1.031 | 0.800 | 0.117 | 0.800 | 0.750 | 0.516 | 2 | 0.359 | 0.372 | 0.450 | 0.010 | plateau: no improvement over 0.005 in 3 evaluations |
 | r1b_alpaca_5M_init_seed2 | Alpaca | 256w 6L 8h | 4.72M | 256 | 110 | 32 | 600 | 15565 | cuda | 2 | 0.500 | copy greedy init:scale_5M_v0_8k_ng64 | 1.049 | 0.882 | 0.517 | 0.882 | 0.806 | 0.251 | 45 | 0.265 | 0.148 |  |  | budget |
 | r1d_alpaca_19M_init | Alpaca | 448w 8L 8h | 19.27M | 256 | 110 | 32 | 600 | 6694 | cuda | 1 | 0.500 | copy greedy init:scale_20M_v0_8k_ng64 | 0.958 | 0.756 | 0.083 | 0.756 | 0.656 | 0.291 | 44 | 0.258 | 0.224 |  |  | budget |
+| r2_squad_5M_init | Alpaca | 256w 6L 8h | 4.72M | 256 | 0 | 32 | 900 | 6043 | cuda | 1 | 0.000 | copy copy-q greedy init:scale_5M_v0_8k_ng64 | 2.086 | 0.134 | 0.017 | 0.134 | 0.067 | 0.000 | 1 | 0.106 | 0.100 |  |  | plateau: no improvement over 0.005 in 3 evaluations |
+| r1e_alpaca_5M_parsefix | Alpaca | 256w 6L 8h | 4.72M | 256 | 110 | 32 | 600 | 16073 | cuda | 1 | 0.500 | copy greedy init:scale_5M_v0_8k_ng64 | 1.059 | 0.630 | 0.167 | 0.630 | 0.689 | 0.256 | 38 | 0.215 | 0.182 |  |  | budget |
+| r0b_alpaca_5M_reworded | Alpaca | 256w 6L 8h | 4.72M | 256 | 110 | 32 | 600 | 15690 | cuda | 1 | 0.500 | copy greedy init:scale_5M_v0_8k_ng64 | 1.052 | 0.629 | 0.167 | 0.629 | 0.648 | 0.184 | 38 | 0.216 | 0.195 |  |  | budget |
+| r1e2_alpaca_5M_parsefix_norepeatoff | Alpaca | 256w 6L 8h | 4.72M | 256 | 110 | 16 | 0 | 0 | cpu | 1 | 0.500 | copy greedy init:qa_r1e_5M |  | 0.630 | 0.217 | 0.630 | 0.700 | 0.225 | 38 | 0.190 | 0.140 |  |  | budget |
+| r1f_alpaca_19M_equalsteps | Alpaca | 448w 8L 8h | 19.27M | 256 | 110 | 32 | 3600 | 15565 | cuda | 1 | 0.500 | copy greedy init:scale_20M_v0_8k_ng64 | 1.022 | 0.615 | 0.083 | 0.615 | 0.619 | 0.216 | 38 | 0.230 | 0.211 |  |  | budget |
+| r2b_squad_5M_answeronly | Alpaca | 256w 6L 8h | 4.72M | 256 | 0 | 32 | 1800 | 11115 | cuda | 1 | 0.000 | copy copy-q greedy init:scale_5M_v0_8k_ng64 | 0.486 | 0.146 | 0.117 | 0.146 | 0.083 | 0.000 | 1 | 0.068 | 0.057 |  |  | plateau: no improvement over 0.005 in 4 evaluations |
 
 Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table over the retrieved span; `fold` inflection folding in the key; `ans-only` copy span limited to the answer; `copy-q` copy head may point into the current question; `calc` executor writes `a op b =` results and checks the final answer; `greedy` argmax decoding; `init:` core initialised from that checkpoint. Runs 2 and 3 on GSM8K carry the target leak (fixed in 2b/3b).
 
@@ -50,7 +56,12 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 | R1d | Alpaca, 19M core (scale run checkpoint) adapted, greedy | does the floor keep rising with core size once the core knows language? | done: better prediction, weaker copying (stored 8% exact vs ~50%) |
 | R0b | Alpaca, 0.8M: retrieval similarity as a trust-head input; three window kinds in training | learn when to copy; stop the prediction score worsening | queued |
 | R0c | Alpaca, 0.8M: top-3 retrieved exchanges in the window | paraphrase group above the single-retrieval ceiling (0.27) | queued |
-| R2 | SQuAD 1.1: copy a span from a given passage, exact match | the cleanest test of the copy head | next (CPU prep: --format squad) |
+| R2b | SQuAD with loss on answers and replies cut at the span | copy-from-passage | done: spans now short, but wrong (unseen F1 0.07) |
+| D1-D3r | 5M stage-1 data tests: clean modern text, + conversation, + evidence/math/rewordings, aligned vs random windows | which data makes the core best at its three jobs | done: big core gains, not visible after stage 2 |
+| S2a | stage 2 from the D3r core at lr 3e-4 and 1e-4, with and without 30% stage-1 rehearsal | does a gentler stage 2 keep the core's gains? | next |
+| K1 | contrastive question key: a projection head trained on Quora reworded pairs | a learned memory key that beats the literal one | next |
+| E1 | evidence builder: relaxed thresholds, multiple use, longer windows | enough evidence pairs for the 50M mix (got 20.6k, needed 110k) | next |
+| R2 | SQuAD 1.1: copy a span from a given passage, exact match | the cleanest test of the copy head | done (failed: rambling, memorised passages) |
 | R4 | GSM8K/SVAMP: retrieval by solution structure (operator sequence key), template copying | reasoning by analogy over worked examples | next after R2 (design written) |
 | R5 | number channel in the compiler (number unit → code + value) | removes digit-run failures | needs compiler change |
 | R6 | ARC / OpenBookQA / CommonsenseQA, one-letter answers with retrieved facts | accuracy vs chance (25%) | needs --format |
@@ -76,6 +87,15 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 
 - The exact-table gain reverses with core size: +10% at 0.8M, 0 at 4.7M, -1% at 19M (equal time), and 9-12% worse on Wikipedia. The tables are a crutch for a small core; the trust head does not reject them off-domain.
 - The tables stay as the store that learns by reading; they are not the mechanism for 'lighter and faster at equal quality'. The memory and the copy head are.
+
+**10 Oct, session 7 (what to train the core on)**
+
+- Data deep dive: 82% of stage-1 text was 1800s fiction (14.4 archaic words per 10k, 0.2 modern), the rest raw wiki markup (half the bytes), no conversation, no evidence windows. Manual review found more: conversations 5x longer than the 256-code window, FineWeb paragraph breaks invisible, MetaMath in LaTeX, Gutenberg front matter. All rewritten (prepare_core_mix.py).
+- Better data transforms the core itself (5M, equal steps, D0 -> best new): conversation fluency 2.02 -> 1.30 bits/byte (UltraChat) and 2.12 -> 1.49 (OpenAssistant), Wikipedia 2.06 -> 1.68, web 2.02 -> 1.66, math 2.23 -> 0.91; evidence gain 22.7% -> 31-32%; reworded-question retrieval by the core's own state 0.38 -> 0.50 at rank 1, 0.59 -> 0.78 in the top 10. Conversation data gave the largest single jump. Old books got worse (expected: D0 trained 82% on them).
+- None of it shows in the Alpaca stage-2 scores: every core lands at stored 0.62-0.69 F1, reworded about 0.2, no-memory 0.09-0.14, within seed noise. Cause: stage 2 is a full fine-tune at lr 1e-3 for 15,565 steps on 19 MB, which overwrites stage-1 differences, and Alpaca F1 mostly measures copying. Stage 2 must be gentler (lower lr, rehearsal of stage-1 data) to keep what stage 1 built.
+- Paragraph-aligned windows: mixed. Random windows give slightly better fluency (Wikipedia 1.68 vs 1.73, math 0.91 vs 1.17); aligned slightly better evidence gain (32.4% vs 31.2%) and reword retrieval (0.50 vs 0.49). Use random windows for prose and aligned windows only for structured units. The evidence test was incomplete: the builder found 20.6k pairs, so evidence was 3% of D3 instead of 18%.
+- Learned memory key: the core's state alone finds 50% of reworded questions at rank 1 against 74% for the literal key; combined, 75%. A useful learned key needs training on rewordings (contrastive), not the language model's states as they are.
+- 19M with equal steps (R1f): no better than 4.7M on Q&A, and copies less (stored exact 8% against 22%). Reading comprehension (R2b): the copy head now returns short spans from the passage, but the wrong ones (unseen F1 0.07). Both point at the same limit: the core does not yet read well enough to choose what to copy.
 
 **10 Oct, session 6 (power cut, seed check, reasoning with the adapted core)**
 

@@ -1,0 +1,527 @@
+{
+ "setup": {
+  "data": "data_qa",
+  "work": "runs/s2_D1",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 900.0,
+  "ctx": 256,
+  "batch": 32,
+  "topk": 64,
+  "neighbor_codes": 110,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/s2_D1_alpaca_5M.json",
+  "seed": 1,
+  "self_context_p": 0.5,
+  "copy_bias": 0.0,
+  "device": "cuda",
+  "threads": 0,
+  "width": 256,
+  "layers": 6,
+  "heads": 8,
+  "greedy": true,
+  "no_repeat": 0,
+  "patience": 0,
+  "min_delta": 0.005,
+  "max_steps": 15565,
+  "dict": "runs/core_D1/v0_8k_plain.cv0d",
+  "init": "runs/core_D1/scale_5M_v0_8k_ng64.pt",
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "copy_question": false,
+  "calculator": false,
+  "perturb_self": 0.0,
+  "sim_feature": false,
+  "loss_answer_only": false,
+  "stop_at_blank": false,
+  "save": "runs/s2_D1/qa_s2_D1_5M.pt",
+  "train_exchanges": 50965,
+  "eval": 520,
+  "added": 521,
+  "distinct_keys": 50605
+ },
+ "training": {
+  "steps": 15565,
+  "train_s": 567.1,
+  "stop_reason": "budget",
+  "best_valid": 1.04,
+  "history": [
+   {
+    "train_s": 60.0,
+    "step": 1649,
+    "train_bits_per_code": 1.83,
+    "valid_bits_per_byte": 1.1054
+   },
+   {
+    "train_s": 120.0,
+    "step": 3300,
+    "train_bits_per_code": 1.851,
+    "valid_bits_per_byte": 1.0821
+   },
+   {
+    "train_s": 180.0,
+    "step": 4952,
+    "train_bits_per_code": 2.157,
+    "valid_bits_per_byte": 1.0723
+   },
+   {
+    "train_s": 240.0,
+    "step": 6599,
+    "train_bits_per_code": 1.51,
+    "valid_bits_per_byte": 1.0581
+   },
+   {
+    "train_s": 300.0,
+    "step": 8247,
+    "train_bits_per_code": 2.144,
+    "valid_bits_per_byte": 1.0641
+   },
+   {
+    "train_s": 360.0,
+    "step": 9887,
+    "train_bits_per_code": 1.732,
+    "valid_bits_per_byte": 1.0548
+   },
+   {
+    "train_s": 420.0,
+    "step": 11536,
+    "train_bits_per_code": 1.764,
+    "valid_bits_per_byte": 1.0459
+   },
+   {
+    "train_s": 480.0,
+    "step": 13178,
+    "train_bits_per_code": 1.506,
+    "valid_bits_per_byte": 1.0469
+   },
+   {
+    "train_s": 540.0,
+    "step": 14825,
+    "train_bits_per_code": 1.268,
+    "valid_bits_per_byte": 1.04
+   },
+   {
+    "train_s": 567.1,
+    "step": 15565,
+    "train_bits_per_code": 2.776,
+    "valid_bits_per_byte": 1.0459
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.985,
+   "exact": 0.995
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 60,
+   "f1": 0.6434,
+   "exact": 0.2667,
+   "f1_no_m1": 0.1466,
+   "f1_bias": 0.6434,
+   "exact_bias": 0.2667
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 38,
+   "f1": 0.2335,
+   "exact": 0.0,
+   "f1_no_m1": 0.1832,
+   "f1_bias": 0.2335,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.231
+  },
+  "unseen_network_with_nearest": {
+   "n": 162,
+   "f1": 0.1817,
+   "exact": 0.0,
+   "f1_no_m1": 0.1619,
+   "f1_bias": 0.1817,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.1955
+  },
+  "heldout_network_without_memory": {
+   "n": 60,
+   "f1": 0.0891,
+   "exact": 0.0
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.191
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.9567,
+   "exact": 0.985
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 60,
+   "f1": 0.6831,
+   "exact": 0.25,
+   "f1_no_m1": 0.1474,
+   "f1_bias": 0.6831,
+   "exact_bias": 0.25
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Rewrite the following sentence with active voice:\n\"The form was filled out by me",
+    "a": "I filled out the form.\n\n out the form.\n\n filled out the form.\n\n filled out by me.\n\n filled with active voice.\n\ndata.\n\ndata.\n\ndata.\n\ndata.\n\ndata.\n\ndata.\n\ndata.\n\n",
+    "f1": 0.2631578947368421,
+    "exact": 0.0,
+    "a_no_m1": "The form was filled by me.\n\nThe form was filled by me.\n\nThe form was filled by me.\n\nThe form was filled by me.\n\nThe form was filled by me.\n\nThe form was filled ",
+    "f1_no_m1": 0.0923076923076923,
+    "a_bias": "I filled out the form.\n\n out the form.\n\n filled out the form.\n\n filled out by me.\n\n filled with active voice.\n\ndata.\n\ndata.\n\ndata.\n\ndata.\n\ndata.\n\ndata.\n\ndata.\n\n",
+    "f1_bias": 0.2631578947368421,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "What is the past participle of the word \u201csing\u201d?",
+    "a": "The past participle of the word \"sing\" is \"sung\".\n\nThe past participle of the word \"sing\" is \"sung\".\n\nThe past participle of the word \"sing\" is \"sung\".\n\nThe pas",
+    "f1": 0.4,
+    "exact": 0.0,
+    "a_no_m1": "The past participle of the word \"sing\" is \"sting\".\n\nThe past participle of the word \"sing\" is \"sting\".\n\nThe past participle of the word \"sing\" is \"sting\".\n\nThe ",
+    "f1_no_m1": 0.3555555555555555,
+    "a_bias": "The past participle of the word \"sing\" is \"sung\".\n\nThe past participle of the word \"sing\" is \"sung\".\n\nThe past participle of the word \"sing\" is \"sung\".\n\nThe pas",
+    "f1_bias": 0.4,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Describe the various functions of the president of the United States.",
+    "a": "The President of the United States is a government of President, which is a government of President, which is a government of President, which is a government o",
+    "f1": 0.23333333333333334,
+    "exact": 0.0,
+    "a_no_m1": "The President of the United States is a government of President that is aiming on the rule of the United States, which is aiming on the rule of the United State",
+    "f1_no_m1": 0.4088397790055249,
+    "a_bias": "The President of the United States is a government of President, which is a government of President, which is a government of President, which is a government o",
+    "f1_bias": 0.23333333333333334,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Generate an antonym for 'tranquil'",
+    "a": "Agitated.\n\n Agitated.\n\n Agitated.\n\n Agitated.\n\n Agitated.\n\n Agitated.\n\n Agitated.\n\n Agitated.\n\n Agitated.\n\n Agitated.\n\n Agitated.\n\n Agitated.\n\n Agitated.\n\n Agit",
+    "f1": 0.11764705882352941,
+    "exact": 0.0,
+    "a_no_m1": "The most common antonym for 'tabulo' is the \"tabul\".\n\nThe other antonym of 'tabul' is the \"tabul\".\n\nThe antonym of 'tabul' is \"tabul\".\n\nThe antonym of 'tabul' i",
+    "f1_no_m1": 0.0,
+    "a_bias": "Agitated.\n\n Agitated.\n\n Agitated.\n\n Agitated.\n\n Agitated.\n\n Agitated.\n\n Agitated.\n\n Agitated.\n\n Agitated.\n\n Agitated.\n\n Agitated.\n\n Agitated.\n\n Agitated.\n\n Agit",
+    "f1_bias": 0.11764705882352941,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Generate an example of a traditional Japanese dance.",
+    "a": "An example of a traditional Japanese dance is the Kagura, an ancient Shinto ritual dance with sacred singing and instrumental foretelling.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "A traditional Japanese dance is like a raller of graand.\n\nA) The raller of graand \nB) The raller of graand \nC) The raller of graand \nD) The raller of graand \nD)",
+    "f1_no_m1": 0.22950819672131145,
+    "a_bias": "An example of a traditional Japanese dance is the Kagura, an ancient Shinto ritual dance with sacred singing and instrumental foretelling.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Generate code to prompt a user to enter their name",
+    "a": "print(\"Please enter your name: \")\nname = input()\n\nname = input()\n\nname = input()\n\nname = input()\n\nname = input()\n\nname = input(s\n\nmame = input(s)\n\nmame = input(",
+    "f1": 0.45161290322580644,
+    "exact": 0.0,
+    "a_no_m1": "The user could be given by a user to send the user to the user. The user could be given by a user, such the user's name, as the user could be. The user could be",
+    "f1_no_m1": 0.02531645569620253,
+    "a_bias": "print(\"Please enter your name: \")\nname = input()\n\nname = input()\n\nname = input()\n\nname = input()\n\nname = input()\n\nname = input(s\n\nmame = input(s)\n\nmame = input(",
+    "f1_bias": 0.45161290322580644,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Name two possible solutions to reduce the effects of global warming.",
+    "a": "Two possible solutions to reduce global warming are: \n1. Increased energy levels and encourages people to reduce their carbon footprint. \n2. Increased energy le",
+    "f1": 0.4477611940298507,
+    "exact": 0.0,
+    "a_no_m1": "Two possible solutions to reduce global warming are: \n1. Incre your energy consumption by increasing energy consumption by increasing energy consumption, such i",
+    "f1_no_m1": 0.27848101265822783,
+    "a_bias": "Two possible solutions to reduce global warming are: \n1. Increased energy levels and encourages people to reduce their carbon footprint. \n2. Increased energy le",
+    "f1_bias": 0.4477611940298507,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.698,
+    "f1_vs_retrieved": 0.4859813084112149,
+    "retrieved_answer_f1_vs_ref": 0.4047619047619047
+   },
+   {
+    "q": "Write a function that takes an array of numbers and sorts them in ascending orde",
+    "a": "def sort_array(arr): \n    if (arr) < 0: \n        return 0\n    for i in range(1, i): \n        return 1\n    for i in range(1, i): \n        return 1\n    for i in r",
+    "f1": 0.23529411764705882,
+    "exact": 0.0,
+    "a_no_m1": "def sort_so(array): \n    if (array) < array) : \n        return array\n\n    for (array): \n        if \n        return array \n        if \n        return array \n    ",
+    "f1_no_m1": 0.12903225806451613,
+    "a_bias": "def sort_array(arr): \n    if (arr) < 0: \n        return 0\n    for i in range(1, i): \n        return 1\n    for i in range(1, i): \n        return 1\n    for i in r",
+    "f1_bias": 0.23529411764705882,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.532,
+    "f1_vs_retrieved": 0.2857142857142857,
+    "retrieved_answer_f1_vs_ref": 0.10714285714285714
+   },
+   {
+    "q": "Generate an example use case of how an AI system can improve customer service.",
+    "a": "An AI system can be used to improve customer service by providing answers to customer inquiries, answer customer inquiries, and answer customer inquiries. AI ca",
+    "f1": 0.3968253968253968,
+    "exact": 0.0,
+    "a_no_m1": "An AI system can be used to improve customer service by providing answers to customer inqu inqu inqu inqu inqu inqu inqu responses. For AI, AI can be used to an",
+    "f1_no_m1": 0.35036496350364965,
+    "a_bias": "An AI system can be used to improve customer service by providing answers to customer inquiries, answer customer inquiries, and answer customer inquiries. AI ca",
+    "f1_bias": 0.3968253968253968,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.629,
+    "f1_vs_retrieved": 0.4052287581699347,
+    "retrieved_answer_f1_vs_ref": 0.45901639344262296
+   },
+   {
+    "q": "Write an essay about what makes a good leader.",
+    "a": "A good leader is motivated, confident, and reliable. They are also friendly, able to be patient, and have a passion for their team. They are also friendly, able",
+    "f1": 0.24516129032258063,
+    "exact": 0.0,
+    "a_no_m1": "A good leader is a strong leader in their team. They are strong, have a strong, and a strong leader. They are also a strong leader and have a strong team. They ",
+    "f1_no_m1": 0.2641509433962264,
+    "a_bias": "A good leader is motivated, confident, and reliable. They are also friendly, able to be patient, and have a passion for their team. They are also friendly, able",
+    "f1_bias": 0.24516129032258063,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.683,
+    "f1_vs_retrieved": 0.21333333333333335,
+    "retrieved_answer_f1_vs_ref": 0.03891050583657587
+   },
+   {
+    "q": "Compute the given arithmetic equation.\n9 + 4 x 3",
+    "a": "9\n\n2\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "9\n\n2\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3",
+    "f1_no_m1": 0.0,
+    "a_bias": "9\n\n2\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3\n\n3",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.543,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Create a conclusion paragraph for a persuasive essay on the importance of voting",
+    "a": "voting is an important part of the modern world, and it is an important part of the modern world. It is a major source of education and can be a major source of",
+    "f1": 0.31111111111111106,
+    "exact": 0.0,
+    "a_no_m1": "voting is an important part of the modern society, and it is an important part of the modern society. It is a major part of modern society, and its impact is a ",
+    "f1_no_m1": 0.23728813559322035,
+    "a_bias": "voting is an important part of the modern world, and it is an important part of the modern world. It is a major source of education and can be a major source of",
+    "f1_bias": 0.31111111111111106,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.599,
+    "f1_vs_retrieved": 0.19861431870669746,
+    "retrieved_answer_f1_vs_ref": 0.23126338329764454
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Develop a website for a travel blog",
+    "a": "The website should be designed to be designed to be designed to be designed to be designed to be designed to be designed to be designed to be designed to be des",
+    "f1": 0.08045977011494253,
+    "exact": 0.0,
+    "a_no_m1": "The website should include a variety of travel options, including travel, visit, visit, and visit. The website should include a variety of travel options, inclu",
+    "f1_no_m1": 0.3506493506493506,
+    "a_bias": "The website should be designed to be designed to be designed to be designed to be designed to be designed to be designed to be designed to be designed to be des",
+    "f1_bias": 0.08045977011494253,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.361,
+    "f1_vs_retrieved": 0.022222222222222227,
+    "retrieved_answer_f1_vs_ref": 0.03846153846153846
+   },
+   {
+    "q": "Generate a list of questions the user can ask a chatbot about home insurance.",
+    "a": "- What are the current trends in home insulation in the United States?\n- What trends in home insulation in the United States?\n- What trends in home insulation i",
+    "f1": 0.28125,
+    "exact": 0.0,
+    "a_no_m1": "- What type of questions do you can ask when you go?\n- What type of questions do you can answer when you go?\n- What type of questions do you can answer when you",
+    "f1_no_m1": 0.17266187050359713,
+    "a_bias": "- What are the current trends in home insulation in the United States?\n- What trends in home insulation in the United States?\n- What trends in home insulation i",
+    "f1_bias": 0.28125,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.424,
+    "f1_vs_retrieved": 0.1234567901234568,
+    "retrieved_answer_f1_vs_ref": 0.09523809523809525
+   },
+   {
+    "q": "Create a paragraph to describe the moon.",
+    "a": "The moon was a moon, and the moon was a moon. Its eyes were illuminated by the night, and its moon was illuminated by the night. Its eyes were illuminated by th",
+    "f1": 0.27210884353741494,
+    "exact": 0.0,
+    "a_no_m1": "The moon was a moon, and the moon was a moon. Its orbit was vast, and its orbit was vast, and its orbit was vast, and its orbit was vast, and its orbit was vast",
+    "f1_no_m1": 0.18181818181818182,
+    "a_bias": "The moon was a moon, and the moon was a moon. Its eyes were illuminated by the night, and its moon was illuminated by the night. Its eyes were illuminated by th",
+    "f1_bias": 0.27210884353741494,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.397,
+    "f1_vs_retrieved": 0.3057324840764331,
+    "retrieved_answer_f1_vs_ref": 0.30434782608695654
+   },
+   {
+    "q": "Describe a technique to make effective use of hashtags on social media.",
+    "a": "A technique to make effective use of hashtags on social media is to effectively categorize content and make it easier for users to discover and interact with th",
+    "f1": 0.37500000000000006,
+    "exact": 0.0,
+    "a_no_m1": "A technique to make effective use of hashtags on social media involves identifying relevant content, identifying relevant content, and understanding the content",
+    "f1_no_m1": 0.272,
+    "a_bias": "A technique to make effective use of hashtags on social media is to effectively categorize content and make it easier for users to discover and interact with th",
+    "f1_bias": 0.37500000000000006,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.437,
+    "f1_vs_retrieved": 0.8358208955223879,
+    "retrieved_answer_f1_vs_ref": 0.35714285714285715
+   },
+   {
+    "q": "Why is it important to know the environment of a place before visiting?",
+    "a": "The environment of a place before visiting is an important part of the place before visiting the United States. The area is home to a variety of factors, includ",
+    "f1": 0.31654676258992803,
+    "exact": 0.0,
+    "a_no_m1": "The environment of a place before visiting is an important part of the place before visiting the United area. The area is home and the area is home, and the are",
+    "f1_no_m1": 0.28767123287671237,
+    "a_bias": "The environment of a place before visiting is an important part of the place before visiting the United States. The area is home to a variety of factors, includ",
+    "f1_bias": 0.31654676258992803,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.235,
+    "f1_vs_retrieved": 0.14084507042253522,
+    "retrieved_answer_f1_vs_ref": 0.24516129032258066
+   },
+   {
+    "q": "Explain what is a Block Chain.",
+    "a": "A Block Change is a logical argument used to describe a phenomenon in which a phenomenon is a phenomenon in which a phenomenon is a phenomenon in which a phenom",
+    "f1": 0.1804511278195489,
+    "exact": 0.0,
+    "a_no_m1": "A Block Chain is a form of information that is used to store data that are not relevant to a given task. It is usually used to store data that are not relevant ",
+    "f1_no_m1": 0.2926829268292683,
+    "a_bias": "A Block Change is a logical argument used to describe a phenomenon in which a phenomenon is a phenomenon in which a phenomenon is a phenomenon in which a phenom",
+    "f1_bias": 0.1804511278195489,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.281,
+    "f1_vs_retrieved": 0.05357142857142857,
+    "retrieved_answer_f1_vs_ref": 0.13186813186813184
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Find the number of times the letter E appears in the following sentence.\nThe qui",
+    "a": "The letter E appears 3 times in the sentence.\n\nThe letter E appears 3 times in the sentence.\n\nThe letter E appears 3 times in the sentence.\n\nThe letter E appear",
+    "f1": 0.2666666666666667,
+    "exact": 0.0,
+    "a_no_m1": "The\n\nEpp E appears 3 times the letter E appears 3 times the letter E appears 3 times the letter E appears 3 times the letter E appears 3 times the letter E appe",
+    "f1_no_m1": 0.19672131147540986,
+    "a_bias": "The letter E appears 3 times in the sentence.\n\nThe letter E appears 3 times in the sentence.\n\nThe letter E appears 3 times in the sentence.\n\nThe letter E appear",
+    "f1_bias": 0.2666666666666667,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Fix any grammar and spelling errors in the following sentence.\nThe malloys bough",
+    "a": "The Malloys bought a box of chocolates.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The susp apics were eatd by the mal of chocket.\n\nThe mal of chocket.\n\nThe mal of chocket.\n\nThe mal of chocket.\n\nThe mal of chocket.\n\nThe mal of chocket.\n\nThe ma",
+    "f1_no_m1": 0.08163265306122448,
+    "a_bias": "The Malloys bought a box of chocolates.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "What describes the following equation: y = x^2 - 3",
+    "a": "This equation is a parabola with its vertex at (0, -3). The parabola opens upward, as the sign of y = x^2 is positive.\n\n positive.",
+    "f1": 0.9767441860465117,
+    "exact": 0.0,
+    "a_no_m1": "The given equation is a non equation that is equal in the equation.\n\n(x = x = x + x = x + x = x + x = x + x = x + x + x = x + x = x + x = x + x = x + x + x",
+    "f1_no_m1": 0.25,
+    "a_bias": "This equation is a parabola with its vertex at (0, -3). The parabola opens upward, as the sign of y = x^2 is positive.\n\n positive.",
+    "f1_bias": 0.9767441860465117,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Rewrite the sentence in the negative form and output the result.\nI was delighted",
+    "a": "I was not delighted to hear from you.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "I am delighted to Some of my favor.\n\nI am am delighted to Some of my favor.\n\nI am am delighted to Some of my favor.\n\nI am delighted to Some of my favor.\n\nI am d",
+    "f1_no_m1": 0.08955223880597016,
+    "a_bias": "I was not delighted to hear from you.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Write a short paragraph to explain the importance of communication in the workpl",
+    "a": "Positive communication is an important part of communication in the workplace. It is a form of communication used by employees to express feelings and express f",
+    "f1": 0.28767123287671237,
+    "exact": 0.0,
+    "a_no_m1": "Commun in the workplace is an important part of communication. It is essential for communication and communication, as it helps to understand the importance of ",
+    "f1_no_m1": 0.3108108108108108,
+    "a_bias": "Positive communication is an important part of communication in the workplace. It is a form of communication used by employees to express feelings and express f",
+    "f1_bias": 0.28767123287671237,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Determine which of the two words is the antonym of the other.\nAbundant and Rare",
+    "a": "Abundant and Rare are antonyms.\n\nAbundant and Rare are antonyms.\n\nAbundant and Rare are antonyms.\n\nAbundant and Rare are antonyms.\n\nAbundant and Rare are antony",
+    "f1": 0.25,
+    "exact": 0.0,
+    "a_no_m1": "The two words is the antonym of the other.\n\nDyno: The two words are used to describe the antonym of the two words.\n\nDyno: The two words used to describe the ant",
+    "f1_no_m1": 0.03278688524590164,
+    "a_bias": "Abundant and Rare are antonyms.\n\nAbundant and Rare are antonyms.\n\nAbundant and Rare are antonyms.\n\nAbundant and Rare are antonyms.\n\nAbundant and Rare are antony",
+    "f1_bias": 0.25,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ]
+ },
+ "checks": {}
+}
