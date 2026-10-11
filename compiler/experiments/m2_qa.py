@@ -331,6 +331,9 @@ def f1(pred: bytes, ref: bytes) -> float:
     return 2 * prec * rec / (prec + rec)
 
 
+EOS = 12   # end-of-answer code (the form-feed byte, also the document separator in the core mixes)
+
+
 def repeat_banned(gen: list[int], n: int) -> list[int]:
     """Codes that would complete an n-gram already present in ``gen`` (the reply so far): the
     standard block against greedy loops ("It was a major part of ... It was a major part of")."""
@@ -381,6 +384,8 @@ class QAEngine:
         all_codes = enc.encode_file(train_file, work)[0] if native else np.concatenate([enc.encode(render(q, x))[0] for q, x in train_x])
         self.ngrams = [train_lm.NgramTable(all_codes, o, a.topk) for o in (2, 3)]
         self.never_seen = torch.from_numpy(np.bincount(all_codes, minlength=enc.vocab) == 0)
+        if getattr(a, "eos", False):
+            self.never_seen[EOS] = False
         self.dev = torch.device(device if (device != "cuda" or torch.cuda.is_available()) else "cpu")
         self.model = V2LM(enc, a.width, a.layers, a.heads, a.ctx, self.ngrams, a.copy_head, getattr(a, "evidence", False),
                           getattr(a, "sim_feature", False)).to(self.dev)
@@ -438,6 +443,8 @@ class QAEngine:
                 logits[0, digits] = float("-inf")
                 after_value = False
             nxt = int(logits.argmax(-1).item())
+            if getattr(a, "eos", False) and nxt == EOS:
+                break
             seq.append(nxt)
             if calculator and nxt == self.equals:
                 value = evaluate_tail(enc.decode(seq[start:]))
@@ -483,6 +490,7 @@ def main() -> int:
     ap.add_argument("--loss-answer-only", action="store_true", help="train and validate on the answer codes only, not the question")
     ap.add_argument("--stop-at-blank", action="store_true", help="a reply ends at its first blank line (single-span answers, e.g. SQuAD)")
     ap.add_argument("--lr", type=float, default=1e-3, help="AdamW peak learning rate")
+    ap.add_argument("--eos", action="store_true", help="train an end-of-answer code after every exchange (inside the loss) and stop generation at it")
     ap.add_argument("--head-lr", type=float, default=0.0, help="learning rate for the new heads (copy head, trust head); 0: same as --lr")
     ap.add_argument("--schedule", choices=["constant", "cosine"], default="constant", help="cosine: 100-step warm-up, decay to 10%% of the peak")
     ap.add_argument("--net-n", type=int, default=60, help="questions per network-path scoring group (60 gives about +-0.07 F1 noise; 200 about +-0.04)")
@@ -558,6 +566,8 @@ def main() -> int:
     # Codes the training text never contains (case flags on a plain dictionary, unused pieces)
     # are never emitted: their logits are untrained and a flat top-k can otherwise pick one.
     never_seen = torch.from_numpy(np.bincount(all_codes, minlength=enc.vocab) == 0)
+    if a.eos:
+        never_seen[EOS] = False
     EQUALS = int(enc.encode(b"=")[0][-1])
     NEWLINE = int(enc.encode(bytes([10]))[0][-1])
     checks = collections.Counter()
@@ -595,7 +605,7 @@ def main() -> int:
 
     def sample(i: int):
         """[nearest other exchange, tail] + SEP + [this exchange, head], padded to ctx+1, with a loss mask."""
-        own = codes[i][:a.ctx - a.neighbor_codes - len(sep)]
+        own = (np.append(codes[i], EOS) if a.eos else codes[i])[:a.ctx - a.neighbor_codes - len(sep)]
         src_i = i if (a.self_context_p and rng.random() < a.self_context_p) else neighbors[i]
         nb = codes_of(src_i)[-a.neighbor_codes:] if a.neighbor_codes and src_i is not None else np.array([], dtype=np.int64)
         sim = 0.0 if src_i is None else (1.0 if src_i == i else mem.similarity_keys(mem.keys[i], mem.keys[src_i]))
@@ -647,6 +657,8 @@ def main() -> int:
         model.eval(); bits = nbytes = 0.0
         for q, ans in exchanges[:n]:
             own = enc.encode(render(q, ans))[0]
+            if a.eos:
+                own = np.append(own, EOS)
             nb_i = mem.retrieve(q, 1)
             nb = codes_of(nb_i[0][1])[-a.neighbor_codes:] if a.neighbor_codes and nb_i else np.array([], dtype=np.int64)
             seq = np.concatenate([nb, sep, own])[:a.ctx + 1]
@@ -727,6 +739,9 @@ def main() -> int:
                 kth = torch.topk(logits, top_k).values[..., -1, None]
                 logits = logits.masked_fill(logits < kth, float("-inf"))
                 seq.append(torch.multinomial(F.softmax(logits, -1).cpu(), 1, generator=gen).item())
+            if a.eos and seq[-1] == EOS:          # the model ended its answer
+                seq.pop()
+                break
             if a.stop_at_blank and b"\n\n" in enc.decode(seq[start:]):
                 break
             if a.calculator and seq[-1] == EQUALS:
