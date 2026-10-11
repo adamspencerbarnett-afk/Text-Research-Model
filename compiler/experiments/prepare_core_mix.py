@@ -279,7 +279,8 @@ def para_key(p: str) -> frozenset:
     return frozenset(w for w in (x.lower() for x in WORD.findall(p)) if w not in COMMON)
 
 
-def cmd_evidence(srcs: str, out: str, max_pairs: int = 400_000, seed: int = 1, min_sim: float = 0.10) -> None:
+def cmd_evidence(srcs: str, out: str, max_pairs: int = 400_000, seed: int = 1, min_sim: float = 0.10,
+                 min_len: int = 200, max_len: int = 450) -> None:
     """Pairs of related paragraphs from different documents: 'evidence paragraph' then 'target
     paragraph'. Relation = idf-weighted shared content words (the exchange memory's measure),
     at least 0.15 and at most 0.8 (near-copies are skipped). Each paragraph is used as evidence
@@ -292,7 +293,7 @@ def cmd_evidence(srcs: str, out: str, max_pairs: int = 400_000, seed: int = 1, m
         for d_i, doc in enumerate(read_docs(src)):
             for p in doc.split("\n\n"):
                 p = normalise(p)
-                if 200 <= len(p) <= 450:                 # a pair must fit one 256-code window (about 900 bytes)
+                if min_len <= len(p) <= max_len:         # a pair must fit one window: 200-450 chars at 256 codes, up to 900 at 512
                     paras.append((hash((src, d_i)), p))
     rng.shuffle(paras)
     paras = paras[: max_pairs * 15]       # about 7% of paragraphs find a partner at 0.10 (E1, 11 October)
@@ -337,6 +338,9 @@ def cmd_evidence(srcs: str, out: str, max_pairs: int = 400_000, seed: int = 1, m
 RECIPES = {   # shares of the mix by bytes; see docs/CORE_TRAINING_PLAN.md
     "D1": {"wiki": 0.50, "fineweb": 0.35, "books": 0.15},
     "D2": {"wiki": 0.40, "fineweb": 0.30, "books": 0.10, "oasst": 0.05, "ultrachat": 0.15},
+    # 50M core (docs/PLAN_50M.md): about 2.4 GB, seen about 1.5 times for 1B codes; conversation and evidence
+    # kept at the D3e shares that helped, web text raised because Wikipedia here is 0.63 GB
+    "P50": {"wiki": 0.25, "fineweb": 0.32, "books": 0.07, "oasst": 0.002, "ultrachat": 0.12, "evidence": 0.12, "math": 0.08, "qqp": 0.008},
     "D3": {"wiki": 0.30, "fineweb": 0.22, "books": 0.08, "oasst": 0.04, "ultrachat": 0.08, "evidence": 0.18, "math": 0.05, "qqp": 0.05},
 }
 
@@ -415,6 +419,7 @@ def main() -> int:
     ap.add_argument("cmd"); ap.add_argument("src"); ap.add_argument("out")
     ap.add_argument("--mb", type=float, default=400); ap.add_argument("--recipe", default="D3")
     ap.add_argument("--max-docs", type=int, default=0); ap.add_argument("--max-pairs", type=int, default=400_000)
+    ap.add_argument("--min-len", type=int, default=200); ap.add_argument("--max-len", type=int, default=450)
     a = ap.parse_args()
     if a.cmd == "wiki": cmd_wiki(a.src, a.out)
     elif a.cmd == "books": cmd_books(a.src, a.out)
@@ -423,7 +428,7 @@ def main() -> int:
     elif a.cmd == "fineweb": cmd_fineweb(a.src, a.out, a.max_docs)
     elif a.cmd == "metamath": cmd_metamath(a.src, a.out)
     elif a.cmd == "qqp": cmd_qqp(a.src, a.out)
-    elif a.cmd == "evidence": cmd_evidence(a.src, a.out, a.max_pairs)
+    elif a.cmd == "evidence": cmd_evidence(a.src, a.out, a.max_pairs, min_len=a.min_len, max_len=a.max_len)
     elif a.cmd == "mix": cmd_mix(a.src, a.out, a.mb, a.recipe)
     else:
         raise SystemExit(f"unknown command {a.cmd}")
