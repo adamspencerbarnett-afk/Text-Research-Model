@@ -63,3 +63,7 @@ What this changes in the research queue:
 | 3 | conversation data: add Dolly 15k and a dialogue set, so greetings and multi-turn exist in training | finding 5 |
 | 4 | a learned retrieval key (the core's own state for the question) beside the literal one | finding 3 |
 | 5 | cut generation at an invented "Assistant:" turn; repeat blocking on words, not codes | finding 7 |
+
+## 10 October 2026, 23:2x: `runs/s2b_256/qa_s2b_256.pt` (D3r core + full industry-style Q&A recipe)
+
+Read in full (transcript `docs/chat_probes/qa_s2b_256.md`). The biggest change from the first probe is in form, not in the keyword count (20/32, against 21-22 for the S2a runs): **answers end when they are done.** "The capital of Japan is Tokyo." "William Shakespeare." "I want to learn to code." No run-on continuations, no invented next turns. Stored and taught facts are word-perfect, including the reworded "On what date was Version 1 frozen?". Still wrong: the largest planet ("solar energy"), synonyms ("graphics card" does not reach the GPU fact), arithmetic ("8 times 8 is 18"), greetings (a book review), and retrievals that pick the wrong stored question (hairstyle -> sneakers). Grade by the first probe's scale: about 37/64 (stored 10, reworded 2, knowledge 8, held-out 5, taught 10, arithmetic 0, chat 2).
