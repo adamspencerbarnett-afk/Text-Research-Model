@@ -482,7 +482,9 @@ def main() -> int:
     ap.add_argument("--sim-feature", action="store_true", help="the retrieval similarity is a trust-head input")
     ap.add_argument("--loss-answer-only", action="store_true", help="train and validate on the answer codes only, not the question")
     ap.add_argument("--stop-at-blank", action="store_true", help="a reply ends at its first blank line (single-span answers, e.g. SQuAD)")
-    ap.add_argument("--lr", type=float, default=1e-3, help="AdamW learning rate (constant)")
+    ap.add_argument("--lr", type=float, default=1e-3, help="AdamW peak learning rate")
+    ap.add_argument("--schedule", choices=["constant", "cosine"], default="constant", help="cosine: 100-step warm-up, decay to 10%% of the peak")
+    ap.add_argument("--net-n", type=int, default=60, help="questions per network-path scoring group (60 gives about +-0.07 F1 noise; 200 about +-0.04)")
     ap.add_argument("--rehearse", default=None, help="a stage-1 data folder (train/*.txt) whose text is mixed into stage-2 batches")
     ap.add_argument("--rehearse-p", type=float, default=0.3, help="share of stage-2 windows taken from the rehearsal text")
     ap.add_argument("--save", default=None, help="save the core's weights here after training")
@@ -659,6 +661,10 @@ def main() -> int:
         x, y, m, s, sims = batch(rng.integers(0, len(train_x), size=a.batch))
         nll = model.nll(x, y, s, sims)
         loss = (nll * m).sum() / m.sum().clamp_min(1.0)
+        if a.schedule == "cosine":   # warm-up over 100 steps, cosine decay to 10% over the run (the usual fine-tuning schedule)
+            frac = step / a.max_steps if a.max_steps else train_time / a.budget
+            for g in opt.param_groups:
+                g["lr"] = a.lr * min(1.0, (step + 1) / 100) * (0.1 + 0.9 * 0.5 * (1 + math.cos(math.pi * min(1.0, frac))))
         opt.zero_grad(set_to_none=True); loss.backward(); torch.nn.utils.clip_grad_norm_(dense, 1.0); opt.step()
         step += 1; train_time += time.perf_counter() - t
         if train_time >= next_eval or train_time >= a.budget or (a.max_steps and step >= a.max_steps):
@@ -767,7 +773,7 @@ def main() -> int:
         q, ref = train_x[i]
         hit = mem.exact_hit(q)
         mem_rows.append({"f1": f1(mem.exchanges[hit][1], ref) if hit is not None else 0.0, "exact": float(hit is not None and mem.exchanges[hit][1] == ref)})
-        if len(net_rows) < 60:
+        if len(net_rows) < a.net_n:
             out = answer(q, hit); out2 = answer(q, hit, use_m1=False); out3 = answer(q, hit, copy_bias=a.copy_bias)
             net_rows.append({"q": q.decode("utf-8", "replace")[:80], "a": out.decode("utf-8", "replace")[:160], "f1": f1(out, ref), "exact": float(out == ref),
                              "a_no_m1": out2.decode("utf-8", "replace")[:160], "f1_no_m1": f1(out2, ref),
@@ -789,7 +795,7 @@ def main() -> int:
                "num_exact": num_exact(out, ref), "num_exact_bias": num_exact(out3, ref), "sim": round(sim, 3), "f1_vs_retrieved": f1(out, mem.exchanges[nb][1]) if nb is not None else 0.0,
                "retrieved_answer_f1_vs_ref": f1(mem.exchanges[nb][1], ref) if nb is not None else 0.0}
         (para_rows if sim >= 0.5 else unseen_rows).append(row)
-        if len(nomem_rows) < 60:
+        if len(nomem_rows) < a.net_n:
             out0 = answer(q, None)
             nomem_rows.append({"f1": f1(out0, ref), "exact": float(out0 == ref), "num_exact": num_exact(out0, ref), "num_exact_bias": num_exact(out0, ref)})
     results["groups"]["paraphrase_network_with_nearest"] = score(para_rows) | {"retrieved_answer_f1_vs_ref": round(float(np.mean([r["retrieved_answer_f1_vs_ref"] for r in para_rows])), 4) if para_rows else None}
@@ -805,7 +811,7 @@ def main() -> int:
     for q, ref in add_x[:a.eval_n]:
         hit = mem.exact_hit(q)
         add_mem.append({"f1": f1(mem.exchanges[hit][1], ref) if hit is not None else 0.0, "exact": float(hit is not None and mem.exchanges[hit][1] == ref)})
-        if len(add_net) < 60:
+        if len(add_net) < a.net_n:
             out = answer(q, hit); out2 = answer(q, hit, use_m1=False); out3 = answer(q, hit, copy_bias=a.copy_bias)
             add_net.append({"q": q.decode("utf-8", "replace")[:80], "a": out.decode("utf-8", "replace")[:160], "f1": f1(out, ref), "exact": float(out == ref),
                             "a_no_m1": out2.decode("utf-8", "replace")[:160], "f1_no_m1": f1(out2, ref),

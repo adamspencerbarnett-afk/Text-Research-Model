@@ -389,7 +389,8 @@ def cmd_mix(src_dir: str, out: str, mb: float, recipe: str) -> None:
             if size + len(d2) > budget:
                 break
             train.append(d2); size += len(d2)
-        (outp / "train" / f"{name}.txt").write_bytes(("\n\n".join(train) + "\n").encode("utf-8"))
+        # documents end with a separator code (form feed on its own line), as models mark end-of-document
+        (outp / "train" / f"{name}.txt").write_bytes((DOC.join(train) + DOC).encode("utf-8"))
         (outp / "heldout" / f"{name}.txt").write_bytes(("\n\n".join(held) + "\n").encode("utf-8"))
         manifest["sources"][name] = {"share": share, "train_bytes": size, "train_docs": len(train), "heldout_bytes": sum(len(x) for x in held),
                                      "paragraphs_dropped_as_duplicates": dup, "budget_bytes": budget, "budget_met": size >= 0.95 * budget}
