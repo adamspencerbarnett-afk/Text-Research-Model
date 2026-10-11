@@ -452,8 +452,12 @@ class QAEngine:
         """Put a new pair into memory: answerable at once, no training."""
         return self.mem.add(question.strip(), answer.strip())
 
-    def retrieve(self, q: bytes):
-        """(exchange index, similarity, how): exact key first, else the nearest key."""
+    def retrieve(self, q: bytes, exclude: int | None = None):
+        """(exchange index, similarity, how): exact key first, else the nearest key. With ``exclude``,
+        that stored exchange is hidden (verified self-training must solve, not copy)."""
+        if exclude is not None:
+            r = self.mem.retrieve(q, 1, exclude=exclude)
+            return (r[0][1], r[0][0], "nearest") if r else (None, 0.0, "none")
         hit = self.mem.exact_hit(q)
         if hit is not None:
             return hit, 1.0, "exact"
@@ -461,12 +465,13 @@ class QAEngine:
         return (r[0][1], r[0][0], "nearest") if r else (None, 0.0, "none")
 
     @torch.no_grad()
-    def ask(self, q: bytes, max_codes: int = 120, no_repeat: int = 3, calculator: bool | None = None, use_memory: bool = True):
+    def ask(self, q: bytes, max_codes: int = 120, no_repeat: int = 3, calculator: bool | None = None, use_memory: bool = True,
+            temperature: float = 0.0, top_k: int = 20, gen: torch.Generator | None = None, exclude: int | None = None):
         """Answer through the compiler: retrieve, place the exchange in the window, generate greedily
         with the copy head, decode. Returns (reply bytes, info dict)."""
         a, enc, model = self.a, self.enc, self.model
         calculator = getattr(a, "calculator", False) if calculator is None else calculator
-        idx, sim, how = self.retrieve(q) if use_memory else (None, 0.0, "off")
+        idx, sim, how = self.retrieve(q, exclude) if use_memory else (None, 0.0, "off")
         if idx is not None and a.neighbor_codes:
             q_codes = enc.encode(render(*self.mem.exchanges[idx]))[0]
             nb = q_codes[-a.neighbor_codes:]
@@ -493,7 +498,13 @@ class QAEngine:
                 self._digit_codes = digits
                 logits[0, digits] = float("-inf")
                 after_value = False
-            nxt = int(logits.argmax(-1).item())
+            if temperature > 0:              # sampled answers (verified self-training needs several different tries)
+                lg = logits[0] / temperature
+                kth = torch.topk(lg, top_k).values[-1]
+                lg = lg.masked_fill(lg < kth, float("-inf"))
+                nxt = int(torch.multinomial(F.softmax(lg, -1).cpu(), 1, generator=gen).item())
+            else:
+                nxt = int(logits.argmax(-1).item())
             if getattr(a, "eos", False) and nxt == EOS:
                 break
             seq.append(nxt)
