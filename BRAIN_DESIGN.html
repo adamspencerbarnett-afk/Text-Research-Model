@@ -158,6 +158,7 @@ dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
   <tr><td>Mark where answers end</td><td>Without an end code, answers ran on ("William Shakespeare : William Shockpeare : ..."); with it they stop</td><td>Every skill's output format needs an explicit end, trained in the loss.</td></tr>
   <tr><td>Equal time is not equal training</td><td>The 19M core got 6,694 steps against 15,565 in the same minutes</td><td>Compare by steps or by text seen, never by minutes.</td></tr>
   <tr><td>Practice with a verifier works at small scale</td><td>STaR 2.5% → 4.0%, checked answers +22% in two rounds</td><td>The gap detector can drive practice where an exact checker exists (arithmetic, code, facts in memory).</td></tr>
+  <tr><td>A competent network needs a gate on memory</td><td>50M Q&amp;A: network alone 11/32 on the probe (5M: 4-5); weak matches then hurt it ("12 plus 30 is 100" with memory, "12 + 30 = 42" alone); using memory only for exact or strong matches (similarity 0.5) raised the probe from 21 to 24/32</td><td>The router must also decide <i>whether</i> to use memory, from the match strength; at 5M any help helped, at 50M weak help misleads.</td></tr>
   <tr><td>Measurement hygiene</td><td>Two report cards overwritten by file-name collisions; a target leak in the copy head; a data bug that cut 6.6% of answers</td><td>Every run names its outputs by what it measured; the probe battery and the run ledger are read, not only scored.</td></tr>
 </table></div>
 
@@ -261,7 +262,7 @@ dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
 
 <h2>5. Goals and objectives</h2>
 <p>The project goal: <b>a model that runs on one consumer GPU, answers what it knows as reliably as a much larger model, learns a new fact in seconds and a new skill in minutes, improves from its own use without retraining from scratch, and never interrupts the person using it.</b> Each stage has a pass condition measurable with the tools already in the repository (probe battery, run ledger, Q&amp;A scorers, core report card).</p>
-<div class="stage"><div class="id">B0</div><div class="body"><b>Baseline frozen.</b> Done at 5M: <code>models/qa_best_5M_512.pt</code> (stored 0.89 F1 / 56-63% exact, added 0.86-0.88, reworded 0.26-0.30, new 0.27-0.29, network alone 0.23-0.24, probe 20-23/32, two seeds). The 50M baseline follows when its Q&amp;A stage is scored.<div class="done">Pass: one checkpoint and one result file every later stage compares against.</div></div></div>
+<div class="stage"><div class="id">B0</div><div class="body"><b>Baseline frozen.</b> Done at 5M: <code>models/qa_best_5M_512.pt</code> (stored 0.89 F1 / 56-63% exact, added 0.86-0.88, reworded 0.26-0.30, new 0.27-0.29, network alone 0.23-0.24, probe 20-23/32, two seeds). At 50M (first Q&amp;A stage, 60% of its steps): stored 0.89 / 60%, new 0.33, network alone 0.27, probe 21/32 with memory and 24/32 with the similarity gate; the full-length run with the similarity as a trust-head input decides the 50M baseline.<div class="done">Pass: one checkpoint and one result file every later stage compares against.</div></div></div>
 <div class="stage"><div class="id">B1</div><div class="body"><b>Partial-cue recall.</b> Learned key built; needs in-domain training pairs.<div class="done">Pass: probe reworded + synonym sections at least 4/5 each; verbatim unchanged.</div></div></div>
 <div class="stage"><div class="id">B2</div><div class="body"><b>First skill circuit.</b> An arithmetic set-up adapter on the frozen core, trained on GSM8K, SVAMP and MetaMath, with verified practice.<div class="done">Pass: new-problem accuracy at least double the full-fine-tune baseline of the same core; conversation probe within one point; adapter under 5% of core size.</div></div></div>
 <div class="stage"><div class="id">B3</div><div class="body"><b>Router.</b> Three adapters (arithmetic, conversation, reading) chosen by the trust head.<div class="done">Pass: router agrees with hand choice at least 90%; mixed-set accuracy within two points of hand routing; reply cost up less than 20%.</div></div></div>
@@ -301,7 +302,7 @@ dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
 <h2>8. What must finish first, in the current research</h2>
 <ul>
   <li>Done: the data recipe (clean modern text, conversation, evidence pairs, worked math), the Q&amp;A recipe, the window size, the end code, two-seed confirmation at 5M, the verified self-training loop.</li>
-  <li>Running: the 50M Q&amp;A stage and chat probe, which decide the shared core (B0 at 50M).</li>
+  <li>Running: the full-length 50M Q&amp;A stage with the similarity as a trust-head input (the first, shorter one gave new questions 0.33 against 0.27-0.29 at 5M and the network alone 11/32 on the probe); then 50M math with verified practice, and reading comprehension at 50M.</li>
   <li>Next: GSM8K and self-training on the 50M core; reading comprehension retest; in-domain learned key.</li>
 </ul>
 <p>When those are in, B0 at 50M is a matter of freezing the winner, and the project can start with B1 and B2.</p>
