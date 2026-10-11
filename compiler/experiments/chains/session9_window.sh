@@ -6,7 +6,7 @@ PY=.venv/Scripts/python.exe
 N="$(pwd -W)/data/cv0.exe"
 until [ -f results/probe_qa_s2a3_lr1e-4_reh.json ] || grep -lq Traceback runs/s2a*.log 2>/dev/null; do sleep 60; done
 S2=(--native "$N" --device cuda --batch 32 --max-steps 15565 --budget 3600 --self-context-p 0.5 --eval-n 200 --net-n 200
-    --copy-head --greedy --lr 1e-4 --schedule cosine --loss-answer-only --rehearse-p 0.3)
+    --copy-head --greedy --lr 1e-4 --head-lr 1e-3 --schedule cosine --loss-answer-only --rehearse-p 0.3)
 run2() {  # name, core dir, ctx, neighbor codes, rehearse mix
   mkdir -p runs/$1
   [ -f results/$1.json ] || $PY -B compiler/experiments/m2_qa.py data_qa runs/$1 "${S2[@]}" --dict runs/$2/v0_8k_plain.cv0d \

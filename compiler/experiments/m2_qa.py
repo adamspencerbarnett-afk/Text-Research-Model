@@ -483,6 +483,7 @@ def main() -> int:
     ap.add_argument("--loss-answer-only", action="store_true", help="train and validate on the answer codes only, not the question")
     ap.add_argument("--stop-at-blank", action="store_true", help="a reply ends at its first blank line (single-span answers, e.g. SQuAD)")
     ap.add_argument("--lr", type=float, default=1e-3, help="AdamW peak learning rate")
+    ap.add_argument("--head-lr", type=float, default=0.0, help="learning rate for the new heads (copy head, trust head); 0: same as --lr")
     ap.add_argument("--schedule", choices=["constant", "cosine"], default="constant", help="cosine: 100-step warm-up, decay to 10%% of the peak")
     ap.add_argument("--net-n", type=int, default=60, help="questions per network-path scoring group (60 gives about +-0.07 F1 noise; 200 about +-0.04)")
     ap.add_argument("--rehearse", default=None, help="a stage-1 data folder (train/*.txt) whose text is mixed into stage-2 batches")
@@ -571,8 +572,16 @@ def main() -> int:
     say(f"core: {model.param_counts()['total']:,} learned parameters, sources: network, 2 tables"
         + (", copy head" if a.copy_head else "") + (", evidence table" if a.evidence else ""))
     dense = [p for n, p in model.named_parameters()]
-    opt = torch.optim.AdamW([{"params": [p for p in dense if p.dim() >= 2], "weight_decay": 0.1},
-                             {"params": [p for p in dense if p.dim() < 2], "weight_decay": 0.0}], lr=a.lr, betas=(0.9, 0.95))
+    # --head-lr: the heads that start untrained (copy head, trust head) learn at their own rate while
+    # the pre-trained core moves gently (S2a-1: a low rate everywhere kept the core but slowed copying)
+    fresh = {n for n, _ in model.named_parameters() if n.split(".")[0] in ("copy_q", "copy_k", "mix_head")} if a.head_lr else set()
+    groups = []
+    for is_head in (False, True):
+        ps = [(n, p) for n, p in model.named_parameters() if (n in fresh) == is_head]
+        rate = a.head_lr if is_head else a.lr
+        groups += [{"params": [p for n, p in ps if p.dim() >= 2], "weight_decay": 0.1, "lr": rate, "peak": rate},
+                   {"params": [p for n, p in ps if p.dim() < 2], "weight_decay": 0.0, "lr": rate, "peak": rate}]
+    opt = torch.optim.AdamW([g for g in groups if g["params"]], lr=a.lr, betas=(0.9, 0.95))
     rehearse_tokens = None
     if a.rehearse:
         # stage-1 text mixed into stage 2 so the core keeps what stage 1 taught it
@@ -664,7 +673,7 @@ def main() -> int:
         if a.schedule == "cosine":   # warm-up over 100 steps, cosine decay to 10% over the run (the usual fine-tuning schedule)
             frac = step / a.max_steps if a.max_steps else train_time / a.budget
             for g in opt.param_groups:
-                g["lr"] = a.lr * min(1.0, (step + 1) / 100) * (0.1 + 0.9 * 0.5 * (1 + math.cos(math.pi * min(1.0, frac))))
+                g["lr"] = g["peak"] * min(1.0, (step + 1) / 100) * (0.1 + 0.9 * 0.5 * (1 + math.cos(math.pi * min(1.0, frac))))
         opt.zero_grad(set_to_none=True); loss.backward(); torch.nn.utils.clip_grad_norm_(dense, 1.0); opt.step()
         step += 1; train_time += time.perf_counter() - t
         if train_time >= next_eval or train_time >= a.budget or (a.max_steps and step >= a.max_steps):
