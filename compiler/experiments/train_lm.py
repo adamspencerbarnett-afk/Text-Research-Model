@@ -57,6 +57,23 @@ class Block(nn.Module):
         x = x + self.proj(y)
         return x + self.fc2(F.gelu(self.fc1(self.ln2(x))))
 
+    def forward_cached(self, x, past):
+        """The same block for new positions only, reusing the keys and values of earlier ones (a KV
+        cache). ``past`` is (k, v) of shape (B, H, P, D/H) or None; returns the output and the new cache."""
+        B, T, D = x.shape
+        q, k, v = self.qkv(self.ln1(x)).split(D, dim=2)
+        q, k, v = (t.view(B, T, self.heads, D // self.heads).transpose(1, 2) for t in (q, k, v))
+        if past is not None:
+            k, v = torch.cat([past[0], k], 2), torch.cat([past[1], v], 2)
+        P = k.shape[2] - T
+        if T == 1:
+            y = F.scaled_dot_product_attention(q, k, v)
+        else:   # new position i (absolute P + i) sees keys 0 .. P + i
+            mask = torch.ones(T, P + T, dtype=torch.bool, device=x.device).tril(P)
+            y = F.scaled_dot_product_attention(q, k, v, attn_mask=mask)
+        x = x + self.proj(y.transpose(1, 2).reshape(B, T, D))
+        return x + self.fc2(F.gelu(self.fc1(self.ln2(x)))), (k, v)
+
 
 def mix_bigram(prev: torch.Tensor, cur: torch.Tensor, rows: int) -> torch.Tensor:
     """Hash (previous token, current token) to a table row; rows must be a power of two."""
@@ -244,6 +261,21 @@ class LM(nn.Module):
         for b in self.blocks:
             h = b(h)
         return self.ln_f(h)
+
+    def hidden_cached(self, x_new, start: int, cache: list | None):
+        """Hidden states of new positions start .. start+T-1 with a KV cache of the earlier ones
+        (flat vocabularies without hashed input tables). Returns (states, cache). Equal to hidden()
+        on the whole sequence, up to float rounding, while the sequence fits the window."""
+        if self.coords or self.table is not None or len(self.tables):
+            raise NotImplementedError("KV cache: flat vocabulary without hashed input tables only")
+        T = x_new.shape[1]
+        h = self.emb(x_new) + self.pos(torch.arange(start, start + T, device=x_new.device))
+        cache = cache or [None] * len(self.blocks)
+        new = []
+        for b, past in zip(self.blocks, cache):
+            h, kv = b.forward_cached(h, past)
+            new.append(kv)
+        return self.ln_f(h), new
 
     def nll(self, x, y):
         """Per-token negative log-likelihood in nats, shape (B, T)."""

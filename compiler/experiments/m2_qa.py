@@ -467,7 +467,7 @@ class QAEngine:
     @torch.no_grad()
     def ask(self, q: bytes, max_codes: int = 120, no_repeat: int = 3, calculator: bool | None = None, use_memory: bool = True,
             temperature: float = 0.0, top_k: int = 20, gen: torch.Generator | None = None, exclude: int | None = None,
-            min_sim: float = 0.0):
+            min_sim: float = 0.0, fast: bool = True):
         """Answer through the compiler: retrieve, place the exchange in the window, generate greedily
         with the copy head, decode. Returns (reply bytes, info dict)."""
         a, enc, model = self.a, self.enc, self.model
@@ -484,6 +484,8 @@ class QAEngine:
         start = len(seq)
         n = min(len(seq), a.ctx)
         computed, after_value = [], False
+        cache, keys, done = None, None, 0       # KV cache: states of codes already processed (fast=True)
+        use_cache = fast
         while len(seq) - start < max_codes:
             x = torch.tensor([seq[-a.ctx:]], device=self.dev)
             off = max(0, len(seq) - a.ctx)
@@ -491,7 +493,17 @@ class QAEngine:
             span = pos < len(nb)
             if getattr(a, "copy_question", False):
                 span |= (pos >= len(nb) + len(self.sep)) & (pos < start)
-            logits = model.mixed_logits(model.hidden_all(x), x, span[None], torch.tensor([sim], device=self.dev))
+            if use_cache and len(seq) <= a.ctx:
+                # only the codes added since the last step go through the network
+                h_new, cache = model.hidden_cached(torch.tensor([seq[done:]], device=self.dev), done, cache)
+                keys = h_new if keys is None else torch.cat([keys, h_new], 1)
+                done = len(seq)
+                model._keys = keys
+                h_last = keys[:, -1]
+            else:                               # past the window the positions shift: recompute it whole
+                use_cache = False
+                h_last = model.hidden_all(x)
+            logits = model.mixed_logits(h_last, x, span[None], torch.tensor([sim], device=self.dev))
             logits = logits.masked_fill(self.never_seen.to(logits.device), float("-inf"))
             banned = repeat_banned(seq[start:], no_repeat)
             if banned:
