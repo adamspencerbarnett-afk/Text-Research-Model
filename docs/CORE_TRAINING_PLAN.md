@@ -109,3 +109,28 @@ for this design and the mix reverts to plain text plus conversation.
 3. Refit the dictionary on the clean mix; check the compiler tests.
 4. A 4.7M pilot on the new data (an hour) to catch feeding bugs cheaply before the 50M run.
 5. The 50M A/B, then 125M on the winner.
+
+## 7. Window cuts and training practice, checked against industry (10 October, evening)
+
+Measured cuts at the 256-code window (D3 data, the 8k dictionary):
+
+| Where | Cut | Measured |
+| --- | --- | --- |
+| stage 1, prose paragraphs | longer than 256 codes | under 3% (median 25-60 codes) |
+| stage 1, worked math | longer than 256 codes | 35% |
+| stage 2, the exchange being learned | first 145 codes kept | 17.5% of exchanges cut; 9% of answers longer than the limit |
+| stage 2, the retrieved exchange | last 110 codes kept | 33% lose their beginning |
+
+Common practice in open models (Llama, Qwen, OLMo, SmolLM) against ours, and the change made:
+
+| Setting | Practice | Ours before | Change |
+| --- | --- | --- | --- |
+| window | 2k-8k tokens, extended late to 32k+ | 256 codes | 512 at 5M (session 9); 1,024 planned for 50M (train at 512, extend for the last part) |
+| packing | documents joined with an end-of-document token, often attention masked at the boundary | joined with a blank line | document separator code in the mixes |
+| passes over data | about one, at most a few | about 6 at 5M | 50M mix sized for about one pass |
+| data selection | cleaning, near-duplicate removal, quality filters, small proxy models to pick the mix | started this session | continue (D-series is a proxy-model mix test) |
+| end of pre-training | anneal on the best data (math, Q&A, textbooks) | none | 50M plan: last 10% on evidence, math, Q&A |
+| fine-tuning rate | about 10x below pre-training, warm-up and decay | 1e-3 constant | 1e-4 with warm-up and cosine (S2a, S2b) |
+| fine-tuning loss | assistant answers only, whole conversations | whole exchange, cut at 145 codes | answer-only loss; whole exchanges at 512 (S2b) |
+| reasoning | math and code in pre-training, worked solutions in fine-tuning, reinforcement learning with automatic answer checking | first two in progress | verified self-training with the calculator, after the Q&A stage is fixed |
+| evaluation size | thousands of items | 60 per network group | 200 per group |
