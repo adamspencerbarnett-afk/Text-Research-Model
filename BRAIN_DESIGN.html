@@ -84,17 +84,18 @@ dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
 </head>
 <body>
 <div class="wrap">
-<p class="eyebrow">Research proposal · Text Research Model · 10 October 2026</p>
+<p class="eyebrow">Research proposal · Text Research Model · updated 11 October 2026</p>
 <h1>A brain-inspired version of the model: fast memory, a slow learner, skill circuits and sleep</h1>
-<p class="lede">Research concept and direction by Adam Barnett. This is a design for a follow-on project, to begin once the current research (the scale, Q&amp;A, reading and reasoning screens) has finished. It is theory built on measured results: every number below comes from runs already logged in <code>docs/RUN_LEDGER.md</code> and <code>docs/ENCODER_RESEARCH_PLAN.md</code>, and every proposed change has a test that can prove it wrong.</p>
+<p class="lede">Research concept and direction by Adam Barnett. This is a design for a follow-on project, to begin once the current research has finished. It is theory built on measured results: every number below comes from runs logged in <code>docs/RUN_LEDGER.md</code> and <code>docs/ENCODER_RESEARCH_PLAN.md</code>, and every proposed change has a test that can prove it wrong. Section 9 is a reconstruction specification of the current best model, written from the code, so the model can be rebuilt from this page.</p>
 <div class="status">
   <span class="pill"><b>Status</b> proposal, not started</span>
-  <span class="pill"><b>Depends on</b> current research finishing</span>
+  <span class="pill"><b>Best model</b> models/qa_best_5M_512.pt</span>
+  <span class="pill"><b>Next scale</b> 50M core trained, Q&amp;A stage running</span>
   <span class="pill"><b>Hardware</b> one RTX 3090, 64 GB</span>
 </div>
 
 <h2>1. The idea in one paragraph</h2>
-<p>Brains learn new facts after one exposure without forgetting old skills, use very little energy, and improve while asleep. They do this with two learning systems that work together: a fast memory that records experiences at once (the hippocampus) and a slow learner that absorbs general knowledge gradually (the neocortex), plus specialised circuits for particular skills and a sleep phase that moves important memories from the first system into the second. Conventional language models have only the slow learner, so every new fact needs retraining and every answer runs the whole network. Our model already has a working fast memory and a small slow learner. The proposal is to complete the picture: add small trainable skill circuits, a way to notice its own gaps, and a safe sleep cycle, so the system grows smarter from its own use while staying small, fast and cheap to run.</p>
+<p>Brains learn new facts after one exposure without forgetting old skills, use very little energy, and improve while asleep. They do this with two learning systems that work together: a fast memory that records experiences at once (the hippocampus) and a slow learner that absorbs general knowledge gradually (the neocortex), plus specialised circuits for particular skills and a sleep phase that moves important memories from the first system into the second. Conventional language models have only the slow learner, so every new fact needs retraining and every answer runs the whole network. Our model already has a working fast memory and a small slow learner. The proposal is to complete the picture: small trainable skill circuits, a way to notice its own gaps, and a safe sleep cycle, so the system grows smarter from its own use while staying small, fast and cheap to run.</p>
 
 <h2>2. How the current model works</h2>
 <svg class="diagram" viewBox="0 0 860 230" role="img" aria-label="Current model: text goes through the compiler into codes; the exchange memory retrieves a stored exchange; the count tables and the network core read the codes; the copy head reads the retrieved exchange; the trust head mixes the sources; the compiler decodes the reply.">
@@ -106,53 +107,71 @@ dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
   <path class="ln c" d="M270,128 C300,128 300,192 330,192"/>
   <rect class="box" x="330" y="16" width="190" height="50" rx="5"/><text x="425" y="37" text-anchor="middle" style="fill:var(--mem)">Exchange memory</text><text class="s" x="425" y="54" text-anchor="middle">question key → stored answer</text>
   <rect class="box" x="330" y="92" width="190" height="50" rx="5"/><text x="425" y="113" text-anchor="middle" style="fill:var(--core)">Count tables</text><text class="s" x="425" y="130" text-anchor="middle">what usually follows</text>
-  <rect class="box" x="330" y="168" width="190" height="50" rx="5"/><text x="425" y="189" text-anchor="middle" style="fill:var(--core)">Network core + copy head</text><text class="s" x="425" y="206" text-anchor="middle">4.7M learned parameters</text>
+  <rect class="box" x="330" y="168" width="190" height="50" rx="5"/><text x="425" y="189" text-anchor="middle" style="fill:var(--core)">Network core + copy head</text><text class="s" x="425" y="206" text-anchor="middle">7.0M learned (5M core); 55M at 50M</text>
   <path class="ln m dash" d="M425,66 L425,168"/>
   <path class="ln" d="M520,41 C560,41 560,104 600,104"/><path class="ln" d="M520,117 L600,117"/><path class="ln" d="M520,193 C560,193 560,130 600,130"/>
   <rect class="box" x="600" y="90" width="120" height="52" rx="5"/><text x="660" y="112" text-anchor="middle" style="fill:var(--gate)">Trust head</text><text class="s" x="660" y="129" text-anchor="middle">who to believe, per word</text>
   <path class="ln" d="M720,116 L750,116"/>
-  <rect class="box" x="750" y="90" width="100" height="52" rx="5"/><text x="800" y="112" text-anchor="middle">Reply</text><text class="s" x="800" y="129" text-anchor="middle">decoded</text>
+  <rect class="box" x="750" y="90" width="100" height="52" rx="5"/><text x="800" y="112" text-anchor="middle">Reply</text><text class="s" x="800" y="129" text-anchor="middle">ends at its end code</text>
 </svg>
 <p>Each part below links to its exact specification (<a class="spec" href="#spec-compiler" data-spec="spec-compiler">spec</a> opens it here); all of them are collected in <a href="#reconstruction">section 9</a>, which is enough to rebuild the current best model from scratch.</p>
 <ol>
-  <li><b>Compiler</b><a class="spec" href="#spec-compiler" data-spec="spec-compiler">spec</a> (deterministic, no learning). Turns text into codes of about 3.5 bytes each and back, exactly. The same compiler serves training and conversation, so stored items always have stable keys.</li>
-  <li><b>Exchange memory</b><a class="spec" href="#spec-memory" data-spec="spec-memory">spec</a> (no learned parameters). Every question and answer is stored under a key made from the question's content words. A new fact is one table entry: added in about a millisecond, answerable immediately, deletable, inspectable.</li>
-  <li><b>Count tables</b><a class="spec" href="#spec-tables" data-spec="spec-tables">spec</a> (no learned parameters). Exact counts of which code follows which, rebuilt from text in seconds. They let the model learn by reading: one Austen novel added to the counts improved prediction of another Austen novel with no training.</li>
-  <li><b>Network core</b><a class="spec" href="#spec-core" data-spec="spec-core">spec</a> (learned). A small Transformer, trained first on 286 MB of books and Wikipedia, then on question-and-answer text<a class="spec" href="#spec-training" data-spec="spec-training">training</a>. The <b>copy head</b><a class="spec" href="#spec-copy" data-spec="spec-copy">spec</a> is a learned pointer that reads the retrieved exchange and carries its answer into the reply.</li>
+  <li><b>Compiler</b><a class="spec" href="#spec-compiler" data-spec="spec-compiler">spec</a> (deterministic, no learning). Turns text into codes of about 3.5 bytes each and back, exactly. One dictionary per training mix, fitted on that mix; the same compiler serves training and conversation, so stored items always have stable keys.</li>
+  <li><b>Exchange memory</b><a class="spec" href="#spec-memory" data-spec="spec-memory">spec</a> (no learned parameters). Every question and answer is stored under a key made from the question's content words; a new fact is one table entry, added in about a millisecond, answerable at once, deletable, inspectable. An optional learned key (a small head on the core) can be combined with the literal one.</li>
+  <li><b>Count tables</b><a class="spec" href="#spec-tables" data-spec="spec-tables">spec</a> (no learned parameters). Exact counts of which code follows which, rebuilt from text in seconds. They help a small core and hurt a larger one, so they are used in the Q&amp;A stage and in the 5M core, and left out of the 50M core's training.</li>
+  <li><b>Network core</b><a class="spec" href="#spec-core" data-spec="spec-core">spec</a> (learned). A small Transformer trained in two stages<a class="spec" href="#spec-training" data-spec="spec-training">training</a>: first on 0.3-2.3 GB of clean modern text, conversation, evidence pairs and worked math<a class="spec" href="#spec-data" data-spec="spec-data">data</a>, then on question-and-answer text with a gentle recipe that keeps what stage 1 built. The <b>copy head</b><a class="spec" href="#spec-copy" data-spec="spec-copy">spec</a> is a learned pointer that reads the retrieved exchange and carries its answer into the reply.</li>
   <li><b>Trust head</b><a class="spec" href="#spec-trust" data-spec="spec-trust">spec</a> (learned, one small layer). For every word of the reply it weighs the network, the tables and the copy head by their confidence.</li>
-  <li><b>Answering</b><a class="spec" href="#spec-answer" data-spec="spec-answer">spec</a>: retrieval, the window, greedy decoding with repeat blocking, the calculator and its answer check.</li>
+  <li><b>Answering</b><a class="spec" href="#spec-answer" data-spec="spec-answer">spec</a>: retrieval, the window, greedy decoding with repeat blocking, an end-of-answer code, the calculator and its answer check.</li>
+  <li><b>Measuring</b><a class="spec" href="#spec-scoring" data-spec="spec-scoring">scoring</a><a class="spec" href="#spec-card" data-spec="spec-card">report card</a> and <b>practising</b><a class="spec" href="#spec-star" data-spec="spec-star">self-training</a>: how every number here is obtained, and the verified self-training loop for arithmetic.</li>
 </ol>
 
 <h3>What works today, and why</h3>
 <div class="tablewrap"><table>
   <tr><th>Result</th><th class="num">Measured</th><th>Why it works</th></tr>
   <tr><td>Stored questions answered from memory</td><td class="num">99% exact (lookup)</td><td>Deterministic keys from the compiler: the same question always produces the same key.</td></tr>
-  <tr><td>New facts learned without training</td><td class="num">answered at once</td><td>Adding to memory changes a table, not weights. Facts taught mid-chat were answered word-perfect.</td></tr>
-  <tr><td>The network composes answers from memory</td><td class="num">word overlap 0.13 → 0.79–0.88; exact 47–52%</td><td>The copy head (33k parameters) lets a small network use evidence placed in front of it instead of storing everything itself.</td></tr>
-  <tr><td>Learning language before Q&amp;A</td><td class="num">every score rose; validation 1.30 → 0.98 bits/byte</td><td>A core that already knows language spends its Q&amp;A training on answering, not on English. Training a core on Q&amp;A alone memorised the set in minutes.</td></tr>
-  <tr><td>Speed of a reply</td><td class="num">0.1–2 s on one CPU</td><td>A 4.7M network does about 10 million operations per word; the memory lookup is an index search.</td></tr>
+  <tr><td>The network composes answers from memory</td><td class="num">word F1 0.89, exact 56-63% (stored); 0.86-0.88, 57-58% (added after training)</td><td>The copy head lets a small network use evidence placed in front of it; whole exchanges in a 512-code window; answers that stop at an end code.</td></tr>
+  <tr><td>New facts learned without training</td><td class="num">answered at once, word-perfect</td><td>Adding to memory changes a table, not weights.</td></tr>
+  <tr><td>Clean modern data in the core</td><td class="num">conversation 2.02 → 1.30 bits/byte; evidence gain 23% → 35% (5M)</td><td>The first core learned from 1800s novels and wiki markup; cleaned Wikipedia, educational web text, conversation and evidence pairs teach the core its actual jobs.</td></tr>
+  <tr><td>A Q&amp;A stage that keeps stage 1</td><td class="num">network alone 0.10 → 0.24 F1; stored 0.66 → 0.89</td><td>Core at 1e-4 and new heads at 1e-3, warm-up and cosine, loss on answers only, end-of-answer code, 30% rehearsal of stage-1 text. The old 1e-3 everywhere overwrote the core.</td></tr>
+  <tr><td>Scaling the core to 50M</td><td class="num">-27% to -36% bits/byte on prose and conversation, -55% on worked math, reworded-question retrieval 51% → 58%</td><td>A 640-wide, 10-layer core with a 1,024-code window, trained 2.4 hours on the 3090; the 5M core had seen more text, so the gain is size and window.</td></tr>
   <tr><td>Exact arithmetic when the steps are right</td><td class="num">every step computed correctly</td><td>A deterministic calculator writes the result of each "a op b =" the network sets up.</td></tr>
+  <tr><td>Practice with a checker improves reasoning</td><td class="num">GSM8K new problems 2.5% → 3.5% → 4.0%; checked answers +22%</td><td>Verified self-training: the model solves problems with its own solution hidden, keeps only answers the checker confirms, and trains on them.</td></tr>
+  <tr><td>Speed of a reply</td><td class="num">0.1-2 s on one CPU (5M)</td><td>A 5M network does about 10 million operations per word; the memory lookup is an index search.</td></tr>
 </table></div>
 <h3>What does not work yet, and what it tells us</h3>
 <div class="tablewrap"><table>
   <tr><th>Gap</th><th>Measured</th><th>What it says about the design</th></tr>
-  <tr><td>Reworded questions</td><td>1 of 10 correct in the chat probe</td><td>Memory finds the right entry, but the copy head was only trained on exact matches. Being fixed now (R0b); in the brain design this is pattern completion.</td></tr>
-  <tr><td>Synonyms</td><td>"graphics card" did not find a "GPU" fact</td><td>A key of literal words cannot generalise. Needs a learned key alongside the literal one.</td></tr>
-  <tr><td>The network on its own</td><td>1 of 64 in the chat probe</td><td>Expected at 5M. All the intelligence today comes through memory, which is the design working as intended, and it means skills must be added deliberately.</td></tr>
-  <tr><td>Choosing arithmetic steps</td><td>0–2% on new word problems, at every core size</td><td>Neither size nor prior training fixes it. It is a skill to be learned in its own circuit, with its own data.</td></tr>
-  <tr><td>Count tables at larger sizes</td><td>+10% at 0.8M, 0 at 4.7M, −1% at 19M</td><td>Statistics a bigger core can learn itself become noise. The tables stay as a reading store, not a prediction aid.</td></tr>
+  <tr><td>Synonyms</td><td>"graphics card" does not find a stored "GPU" fact</td><td>Literal keys cannot generalise; a learned key trained on Quora rewordings gained 3.5 points in its own domain but nothing on our Q&amp;A, so it must be trained on in-domain pairs.</td></tr>
+  <tr><td>Reworded and new questions</td><td>F1 0.26-0.30 (the retrieved answer itself scores only 0.23 against the reference)</td><td>Partly a ceiling of the test set; partly the core's reading. The 50M core is the test.</td></tr>
+  <tr><td>Choosing arithmetic steps</td><td>4.0% of new GSM8K problems after two self-training rounds</td><td>The steps are now mostly well formed; choosing the right ones is a skill for its own circuit (B2) and more practice.</td></tr>
+  <tr><td>Picking the right span from a passage</td><td>SQuAD unseen F1 0.07; answers are short spans, but the wrong ones</td><td>Reading comprehension depends on the core's reading; to retest at 50M.</td></tr>
+  <tr><td>Small talk</td><td>greetings mostly answered off-topic</td><td>Conversation data helped fluency; a conversation adapter is the next step.</td></tr>
+  <tr><td>Count tables at larger sizes</td><td>+10% at 0.8M, 0 at 4.7M, -1% at 19M</td><td>A bigger core learns the statistics itself; the tables stay as a store that learns by reading.</td></tr>
+</table></div>
+
+<h3>Lessons since the first draft of this design (10-11 October)</h3>
+<div class="tablewrap"><table>
+  <tr><th>Lesson</th><th>Evidence</th><th>Consequence for this design</th></tr>
+  <tr><td>What the core reads matters more than its size, at first</td><td>D0 → D3: conversation 2.02 → 1.30, Wikipedia 2.06 → 1.68; a 19M core on old data and recipe did no better than 4.7M</td><td>Data first, then size. Every skill circuit will need its own clean, window-sized data.</td></tr>
+  <tr><td>Fine-tuning can erase what pre-training built</td><td>Stage-1 gains were invisible after a 1e-3 Q&amp;A stage, visible after a 1e-4 one with rehearsal</td><td>Supports the adapter idea: a frozen core with small trained additions cannot be overwritten. Rehearsal is a working form of replay.</td></tr>
+  <tr><td>Do not cut what the model must learn</td><td>17.5% of exchanges and 33% of retrieved answers were cut at 256 codes; 512 lifted memory answers by 7-9 F1 points</td><td>Size the window to the units the model learns from; 1,024 at 50M.</td></tr>
+  <tr><td>Mark where answers end</td><td>Without an end code, answers ran on ("William Shakespeare : William Shockpeare : ..."); with it they stop</td><td>Every skill's output format needs an explicit end, trained in the loss.</td></tr>
+  <tr><td>Equal time is not equal training</td><td>The 19M core got 6,694 steps against 15,565 in the same minutes</td><td>Compare by steps or by text seen, never by minutes.</td></tr>
+  <tr><td>Practice with a verifier works at small scale</td><td>STaR 2.5% → 4.0%, checked answers +22% in two rounds</td><td>The gap detector can drive practice where an exact checker exists (arithmetic, code, facts in memory).</td></tr>
+  <tr><td>Measurement hygiene</td><td>Two report cards overwritten by file-name collisions; a target leak in the copy head; a data bug that cut 6.6% of answers</td><td>Every run names its outputs by what it measured; the probe battery and the run ledger are read, not only scored.</td></tr>
 </table></div>
 
 <h2>3. The brain, mapped onto the model</h2>
 <div class="tablewrap"><table>
   <tr><th>Brain system</th><th>What it does</th><th>Our part</th><th>State</th></tr>
-  <tr><td>Hippocampus</td><td>Records an experience in one exposure; recalls it from a partial cue</td><td>Exchange memory</td><td>Records and recalls exactly; partial-cue recall (rewording, synonyms) is the gap</td></tr>
-  <tr><td>Neocortex</td><td>Slow, general learning spread over many connections</td><td>Network core</td><td>Works; small</td></tr>
-  <tr><td>Working memory and attention</td><td>Holds the relevant memory "in mind" while acting</td><td>Retrieved exchange in the window, read by the copy head</td><td>Works</td></tr>
+  <tr><td>Hippocampus</td><td>Records an experience in one exposure; recalls it from a partial cue</td><td>Exchange memory</td><td>Records and recalls exactly; partial-cue recall (rewording, synonyms) still weak</td></tr>
+  <tr><td>Neocortex</td><td>Slow, general learning spread over many connections</td><td>Network core</td><td>Works; 50M core much better than 5M at the network level</td></tr>
+  <tr><td>Working memory and attention</td><td>Holds the relevant memory "in mind" while acting</td><td>Retrieved exchange in a 512-1,024 window, read by the copy head</td><td>Works</td></tr>
   <tr><td>Specialised circuits</td><td>Dedicated machinery for number sense, language, faces</td><td>None (one core for everything)</td><td>Missing: <b>skill adapters</b></td></tr>
-  <tr><td>Neuromodulation (attention and arousal signals)</td><td>Decides which circuits to engage</td><td>Trust head</td><td>Works for three sources; to be extended to choose adapters</td></tr>
-  <tr><td>Prediction error and surprise</td><td>Marks what was not expected, so it gets learned</td><td>None (failures are only seen in reports)</td><td>Missing: <b>gap detector</b></td></tr>
-  <tr><td>Sleep and consolidation</td><td>Replays memories so the cortex absorbs them; prunes the rest</td><td>None</td><td>Missing: <b>sleep cycle</b></td></tr>
+  <tr><td>Neuromodulation</td><td>Decides which circuits to engage</td><td>Trust head</td><td>Works for three sources; to be extended to choose adapters</td></tr>
+  <tr><td>Prediction error and surprise</td><td>Marks what was not expected, so it gets learned</td><td>Calculator rejections (1,188 of 1,612 stated answers in the last GSM8K run), low trust, empty retrievals</td><td>Signals exist, logged in results; not yet driving training automatically</td></tr>
+  <tr><td>Practice with feedback</td><td>Skill improves by trying and being corrected</td><td>Verified self-training (STaR)</td><td>Works at 5M, slowly (two rounds)</td></tr>
+  <tr><td>Sleep and consolidation</td><td>Replays memories so the cortex absorbs them; protects old skills</td><td>Rehearsal of stage-1 text in fine-tuning</td><td>Replay half works (it protects the core); folding memories into weights not built</td></tr>
   <tr><td>Tools beyond the brain</td><td>Paper, calculators</td><td>The calculator, exact and deterministic</td><td>Works</td></tr>
 </table></div>
 <p>The point of the mapping is not to copy biology. Two properties of the brain explain most of its efficiency, and both are achievable here. First, <b>most knowledge is looked up or computed only when needed</b>, not pushed through every connection for every thought. Second, <b>learning happens at two speeds</b>, so new information is usable at once and becomes general skill later, without the cost of retraining everything.</p>
@@ -163,9 +182,10 @@ dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
 <h3>4.1 Memory that recalls from a partial cue</h3>
 <dl class="kv">
   <dt>Brain role</dt><dd>Hippocampal pattern completion: a fragment of a memory brings back the whole.</dd>
-  <dt>Change</dt><dd>A second, learned key beside the literal one. The core's own representation of the question is stored with each memory and searched by similarity. The literal key stays for exact and inspectable recall; the learned key catches rewordings and synonyms. Plus the copy head trained on reworded questions (R0b, running now).</dd>
-  <dt>Why</dt><dd>The chat probe: the right memory existed for "graphics card" and "GPU", and for reworded cooking and virus questions, but was either not found or not used.</dd>
-  <dt>Test</dt><dd>Reworded and synonym sections of the probe battery from 1/10 to at least 6/10, with no loss on verbatim questions.</dd>
+  <dt>Change</dt><dd>A learned key beside the literal one: the frozen core's mean state over the question, through a small trained head, as a unit vector; retrieval ranks by literal + learned similarity. Built (K1, <code>--key-head</code>).</dd>
+  <dt>Why</dt><dd>The chat probe: the right memory existed for "graphics card" and "GPU" but was not found.</dd>
+  <dt>Evidence so far</dt><dd>Trained on 134k Quora rewordings: 75.2% at rank 1 alone and 77.7% combined, against 74.3% for the literal key; on our Alpaca Q&amp;A, no gain (out-of-domain training pairs). The 50M core's own state already finds 58% of rewordings (5M: 51%).</dd>
+  <dt>Test</dt><dd>Retrain the head on in-domain pairs (rewordings of our own stored questions) on the 50M core; reworded and synonym sections of the probe from 2/5 to at least 4/5, no loss on verbatim questions.</dd>
 </dl>
 </div>
 
@@ -173,9 +193,9 @@ dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
 <h3>4.2 Skill circuits: small adapters on a shared core</h3>
 <dl class="kv">
   <dt>Brain role</dt><dd>Specialised circuits that share the same cortex: number sense, conversation, reading.</dd>
-  <dt>Change</dt><dd>Small extra weight sets (1–5% of the core each) attached beside each layer and trained for one skill while the core stays frozen. One for setting up arithmetic, one for conversation, one for reading comprehension, one per domain as needed. Each is a separate file: versioned, testable, removable.</dd>
-  <dt>Why</dt><dd>Retraining the whole core for one skill risks damaging others, and every core size scored 0–2% on arithmetic set-up. A skill needs its own circuit and data. A frozen core keeps general language for every adapter to build on, so each adapter can be small and quick to train.</dd>
-  <dt>Test</dt><dd>A math adapter raises new-problem accuracy above the frozen-core baseline while the conversation probe score stays within one point. Compared with fine-tuning the whole core on the same data and time.</dd>
+  <dt>Change</dt><dd>Small extra weight sets (1-5% of the core each) attached beside each layer and trained for one skill while the core stays frozen. One for arithmetic set-up, one for conversation, one for reading comprehension, one per domain as needed. Each is a separate file: versioned, testable, removable.</dd>
+  <dt>Why</dt><dd>Full fine-tuning at a normal rate erased what stage 1 built (S2a series); every core size scored low on choosing arithmetic steps; a skill needs its own circuit and data.</dd>
+  <dt>Test</dt><dd>A math adapter on the frozen 50M core beats the full-fine-tune baseline on GSM8K new problems while the conversation probe stays within one point; adapter under 5% of core size.</dd>
 </dl>
 </div>
 
@@ -183,19 +203,19 @@ dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
 <h3>4.3 Choosing the circuit: the trust head as router</h3>
 <dl class="kv">
   <dt>Brain role</dt><dd>Neuromodulation and attention: engaging the right circuits for the task.</dd>
-  <dt>Change</dt><dd>The trust head already weighs network, tables and memory per word. Extend it to weigh adapters too, from the question's representation and each adapter's confidence. Only the chosen adapters run, so cost grows with the question, not with the number of skills.</dd>
-  <dt>Why</dt><dd>Without routing, every adapter runs on every question and they interfere. With it, the system is a set of small experts behind one front door.</dd>
-  <dt>Test</dt><dd>On a mixed question set, the router picks the adapter a human would pick at least 90% of the time, and mixed-set accuracy is within two points of giving each question its correct adapter by hand.</dd>
+  <dt>Change</dt><dd>The trust head already weighs network, tables and memory per word. Extend it to weigh adapters too, from the question's representation and each adapter's confidence. Only the chosen adapters run.</dd>
+  <dt>Why</dt><dd>Without routing, every adapter runs on every question and they interfere.</dd>
+  <dt>Test</dt><dd>On a mixed question set, the router picks the adapter a human would pick at least 90% of the time, and mixed-set accuracy is within two points of hand routing.</dd>
 </dl>
 </div>
 
 <div class="part acc">
-<h3>4.4 Noticing its own gaps: the surprise signal</h3>
+<h3>4.4 Noticing its own gaps, and practising them</h3>
 <dl class="kv">
-  <dt>Brain role</dt><dd>Prediction error: the brain learns most from what it did not expect.</dd>
-  <dt>Change</dt><dd>Every answer logs the signals we already have: the trust head's confidence, whether memory found anything and how close it was, whether the calculator rejected the stated answer, whether a check failed. Failures are grouped by kind. When a kind accumulates (for example, a hundred low-confidence arithmetic questions), the system proposes an adapter for that kind and the data to train it.</dd>
-  <dt>Why</dt><dd>Training "as needed" requires knowing what is needed. On GSM8K the calculator already replaced 628 wrong stated answers in one run; that is a gap signal going unused.</dd>
-  <dt>Test</dt><dd>Gap detection agrees with hand grading on the probe battery at least 80% of the time; an adapter trained on detected failures beats an adapter trained on a random sample of the same size.</dd>
+  <dt>Brain role</dt><dd>Prediction error, and practice with feedback.</dd>
+  <dt>Change</dt><dd>Every answer logs the signals we have: trust-head confidence, retrieval similarity, calculator rejection, check failures. Failures are grouped by kind; where an exact checker exists, the kind is practised by verified self-training (built: <code>star.py</code>); elsewhere an adapter is proposed with the data to train it.</dd>
+  <dt>Why</dt><dd>The calculator replaced 1,188 wrong stated answers in one GSM8K run: a gap signal. Practising on checked self-solutions raised new-problem accuracy 2.5% → 4.0% in two rounds.</dd>
+  <dt>Test</dt><dd>Gap detection agrees with hand grading on the probe battery at least 80% of the time; practice on detected failures beats practice on a random sample of equal size.</dd>
 </dl>
 </div>
 
@@ -203,24 +223,23 @@ dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
 <h3>4.5 Sleep: folding memory into the network</h3>
 <dl class="kv">
   <dt>Brain role</dt><dd>Consolidation during sleep: replay strengthens what matters; the rest fades.</dd>
-  <dt>Change</dt><dd>In idle time, a copy of the live model trains on the memories used most often (and their rewordings), mixed with a sample of its earlier training data so old skills are rehearsed. Facts that are now answered without memory may be marked as consolidated; one-off facts stay in memory only. A pruning policy retires memories that are never used, within a size budget set per device.</dd>
-  <dt>Why</dt><dd>Memory answers exact wording well and rewording badly; the network generalises over wording. Consolidation gives frequently used knowledge both. It also keeps memory from growing without limit on small devices.</dd>
-  <dt>Test</dt><dd>After sleep on 500 added facts: at least 70% answered correctly with memory switched off, and reworded versions improved; probe battery on old knowledge no lower than before.</dd>
+  <dt>Change</dt><dd>In idle time, a copy of the live model trains on the memories used most often (and their rewordings), mixed with stage-1 text so old skills are rehearsed (30% rehearsal is measured to protect the core). Facts answered without memory afterwards may be marked consolidated; one-off facts stay in memory only. A pruning policy retires unused memories within a size budget.</dd>
+  <dt>Why</dt><dd>Memory answers exact wording well and rewording badly; the network generalises over wording.</dd>
+  <dt>Test</dt><dd>After sleep on 500 added facts: at least 70% answered correctly with memory switched off, rewordings improved, old-knowledge probe not lower.</dd>
 </dl>
 </div>
 
 <div class="part gate">
 <h3>4.6 Updating while people use it</h3>
 <dl class="kv">
-  <dt>Brain role</dt><dd>None needed; this is engineering. The brain never stops; a service must never stall.</dd>
-  <dt>Change</dt><dd>The live model is a fixed version. New facts go into memory instantly (a table entry; no weights change). Adapters and sleep train on copies. A candidate goes live only after gates: no probe section worse, consolidated facts answered without memory, speed and size within limits. The switch is a pointer change: new conversations use the new version, current ones finish on the old one, and rollback is the same switch.</dd>
-  <dt>Why</dt><dd>Users must never see a half-trained model or a pause.</dd>
-  <dt>Test</dt><dd>Run a chat session continuously while a sleep cycle and an adapter publish happen; no reply fails or slows by more than 10%, and rollback restores the previous answers exactly.</dd>
+  <dt>Brain role</dt><dd>None needed; this is engineering. A service must never stall.</dd>
+  <dt>Change</dt><dd>The live model is a fixed version. New facts go into memory instantly. Adapters and sleep train on copies. A candidate goes live only after gates (no probe section worse, consolidated facts answered without memory, speed and size within limits); the switch is a pointer change, current conversations finish on the old version, rollback is the same switch.</dd>
+  <dt>Test</dt><dd>A continuous chat session through a sleep cycle and an adapter publish: no reply fails or slows by more than 10%; rollback restores the previous answers exactly.</dd>
 </dl>
 </div>
 
 <h3>The proposed architecture</h3>
-<svg class="diagram" viewBox="0 0 860 320" role="img" aria-label="Proposed architecture: the compiler feeds the exchange memory with literal and learned keys, the shared core, and a router; the router selects skill adapters; the trust head mixes; a gap log feeds an adapter trainer and a sleep cycle that train candidate versions behind a gate before going live.">
+<svg class="diagram" viewBox="0 0 860 320" role="img" aria-label="Proposed architecture: the compiler feeds the exchange memory with literal and learned keys, the shared core, and a router; the router selects skill adapters; the trust head mixes; a gap log feeds an adapter trainer, practice and a sleep cycle that train candidate versions behind a gate before going live.">
   <rect class="box" x="10" y="120" width="105" height="50" rx="5"/><text x="62" y="141" text-anchor="middle">Question</text><text class="s" x="62" y="157" text-anchor="middle">via compiler</text>
   <path class="ln" d="M115,145 L140,145"/>
   <rect class="box" x="140" y="20" width="190" height="56" rx="5"/><text x="235" y="42" text-anchor="middle" style="fill:var(--mem)">Memory (hippocampus)</text><text class="s" x="235" y="60" text-anchor="middle">literal key + learned key</text>
@@ -234,63 +253,61 @@ dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
   <path class="ln a dash" d="M645,174 L645,214"/>
   <rect class="box" x="590" y="214" width="110" height="50" rx="5"/><text x="645" y="235" text-anchor="middle" style="fill:var(--accent)">Gap log</text><text class="s" x="645" y="251" text-anchor="middle">surprise signal</text>
   <path class="ln a" d="M700,239 L730,239"/>
-  <rect class="box" x="730" y="196" width="120" height="86" rx="5"/><text x="790" y="218" text-anchor="middle">Background</text><text class="s" x="790" y="236" text-anchor="middle">adapter trainer</text><text class="s" x="790" y="252" text-anchor="middle">sleep cycle</text><text class="s" x="790" y="268" text-anchor="middle">on copies only</text>
+  <rect class="box" x="730" y="196" width="120" height="86" rx="5"/><text x="790" y="218" text-anchor="middle">Background</text><text class="s" x="790" y="236" text-anchor="middle">adapters, practice</text><text class="s" x="790" y="252" text-anchor="middle">sleep cycle</text><text class="s" x="790" y="268" text-anchor="middle">on copies only</text>
   <path class="ln g" d="M790,196 L790,60 L700,60"/>
   <rect class="box" x="590" y="34" width="110" height="52" rx="5"/><text x="645" y="55" text-anchor="middle" style="fill:var(--gate)">Gate</text><text class="s" x="645" y="72" text-anchor="middle">tests, then swap</text>
   <path class="ln g dash" d="M590,60 C560,60 560,96 500,118"/>
 </svg>
 
 <h2>5. Goals and objectives</h2>
-<p>The project goal: <b>a model that runs on one consumer GPU, answers what it knows as reliably as a much larger model, learns a new fact in seconds and a new skill in minutes, improves from its own use without retraining from scratch, and never interrupts the person using it.</b> Each stage below has a pass condition that can be measured with the tools already in the repository (the probe battery, the run ledger, the Q&amp;A scorers).</p>
-
-<div class="stage"><div class="id">B0</div><div class="body"><b>Baseline frozen.</b> The winning design from the current research (core size, data mix, copy head) is saved as the starting point, with its probe battery score and Q&amp;A scores recorded.<div class="done">Pass: one checkpoint and one result file that every later stage compares against.</div></div></div>
-<div class="stage"><div class="id">B1</div><div class="body"><b>Partial-cue recall.</b> Learned key beside the literal key; copy head trained on rewordings.<div class="done">Pass: probe reworded + synonym sections ≥ 6/10 each; verbatim unchanged.</div></div></div>
-<div class="stage"><div class="id">B2</div><div class="body"><b>First skill circuit.</b> An arithmetic set-up adapter on the frozen core, trained on GSM8K and SVAMP.<div class="done">Pass: new-problem accuracy at least double the frozen-core baseline; conversation probe within one point; adapter under 5% of core size.</div></div></div>
-<div class="stage"><div class="id">B3</div><div class="body"><b>Router.</b> Three adapters (arithmetic, conversation, reading) chosen by the trust head.<div class="done">Pass: router agrees with hand choice ≥ 90%; mixed-set accuracy within two points of hand routing; per-reply cost grows by less than 20%.</div></div></div>
-<div class="stage"><div class="id">B4</div><div class="body"><b>Gap detector.</b> Failure log with grouping and an adapter proposal.<div class="done">Pass: ≥ 80% agreement with hand grading; an adapter trained on detected failures beats one trained on a random sample of equal size.</div></div></div>
-<div class="stage"><div class="id">B5</div><div class="body"><b>Sleep.</b> Consolidation of used memories with rehearsal, plus pruning to a size budget.<div class="done">Pass: ≥ 70% of 500 added facts answered with memory off after one sleep; rewordings improved; old-knowledge probe not lower.</div></div></div>
+<p>The project goal: <b>a model that runs on one consumer GPU, answers what it knows as reliably as a much larger model, learns a new fact in seconds and a new skill in minutes, improves from its own use without retraining from scratch, and never interrupts the person using it.</b> Each stage has a pass condition measurable with the tools already in the repository (probe battery, run ledger, Q&amp;A scorers, core report card).</p>
+<div class="stage"><div class="id">B0</div><div class="body"><b>Baseline frozen.</b> Done at 5M: <code>models/qa_best_5M_512.pt</code> (stored 0.89 F1 / 56-63% exact, added 0.86-0.88, reworded 0.26-0.30, new 0.27-0.29, network alone 0.23-0.24, probe 20-23/32, two seeds). The 50M baseline follows when its Q&amp;A stage is scored.<div class="done">Pass: one checkpoint and one result file every later stage compares against.</div></div></div>
+<div class="stage"><div class="id">B1</div><div class="body"><b>Partial-cue recall.</b> Learned key built; needs in-domain training pairs.<div class="done">Pass: probe reworded + synonym sections at least 4/5 each; verbatim unchanged.</div></div></div>
+<div class="stage"><div class="id">B2</div><div class="body"><b>First skill circuit.</b> An arithmetic set-up adapter on the frozen core, trained on GSM8K, SVAMP and MetaMath, with verified practice.<div class="done">Pass: new-problem accuracy at least double the full-fine-tune baseline of the same core; conversation probe within one point; adapter under 5% of core size.</div></div></div>
+<div class="stage"><div class="id">B3</div><div class="body"><b>Router.</b> Three adapters (arithmetic, conversation, reading) chosen by the trust head.<div class="done">Pass: router agrees with hand choice at least 90%; mixed-set accuracy within two points of hand routing; reply cost up less than 20%.</div></div></div>
+<div class="stage"><div class="id">B4</div><div class="body"><b>Gap detector and practice loop.</b> Failure log with grouping, and verified practice where a checker exists.<div class="done">Pass: at least 80% agreement with hand grading; practice on detected failures beats a random sample of equal size.</div></div></div>
+<div class="stage"><div class="id">B5</div><div class="body"><b>Sleep.</b> Consolidation of used memories with rehearsal, plus pruning to a size budget.<div class="done">Pass: at least 70% of 500 added facts answered with memory off after one sleep; rewordings improved; old-knowledge probe not lower.</div></div></div>
 <div class="stage"><div class="id">B6</div><div class="body"><b>Live updating.</b> Versioned serving with gates, swap and rollback, exercised during a continuous chat.<div class="done">Pass: no failed reply; latency within 10%; rollback restores previous answers exactly.</div></div></div>
-<div class="stage"><div class="id">B7</div><div class="body"><b>Comparison.</b> The full system against a conventional model of 10–100× its learned parameters, on the same questions.<div class="done">Pass: on knowledge it holds, accuracy within five points of the larger model at a tenth of the compute per reply or less; plus the abilities the larger model lacks (instant facts, deletion, inspection).</div></div></div>
+<div class="stage"><div class="id">B7</div><div class="body"><b>Comparison.</b> The full system against a conventional model of 10-100x its learned parameters, on the same questions.<div class="done">Pass: on knowledge it holds, accuracy within five points of the larger model at a tenth of the compute per reply or less; plus the abilities the larger model lacks (instant facts, deletion, inspection).</div></div></div>
 
 <h2>6. Why this could be better than current models</h2>
 <div class="tablewrap"><table>
   <tr><th>Property</th><th>Conventional large model</th><th>This design</th><th>Basis</th></tr>
-  <tr><td>Work per word of reply</td><td>every parameter, every word: a 7B model is about 14 billion operations per word</td><td>a 5M core is about 10 million, plus an index lookup and only the adapters engaged</td><td>Forward cost is about 2 operations per parameter per word; roughly 1,400× less at 7B, 14,000× at 70B</td></tr>
+  <tr><td>Work per word of reply</td><td>every parameter, every word: a 7B model is about 14 billion operations per word</td><td>a 5M core about 10 million, a 50M core about 100 million, plus an index lookup and only the adapters engaged</td><td>About 2 operations per parameter per word: 1,400x less than 7B at 5M, 140x at 50M</td></tr>
   <tr><td>Adding a fact</td><td>fine-tuning or a long prompt; GPU time; risk of forgetting</td><td>one memory entry, about a millisecond, no GPU</td><td>Measured: taught facts answered at once</td></tr>
-  <tr><td>Adding a skill</td><td>fine-tune the whole model</td><td>train one small adapter in minutes on one GPU</td><td>To be measured in B2</td></tr>
+  <tr><td>Adding a skill</td><td>fine-tune the whole model</td><td>train one adapter, or practise with a checker, in minutes to hours on one GPU</td><td>Practice measured (STaR); adapters in B2</td></tr>
   <tr><td>Correcting or deleting knowledge</td><td>not reliably possible in weights</td><td>edit or delete the memory entry; remove an adapter</td><td>Memory entries are plain records</td></tr>
-  <tr><td>Knowing where an answer came from</td><td>not visible</td><td>the reply reports which memory it used and how close it was</td><td>Already shown in chat</td></tr>
-  <tr><td>Hardware</td><td>data-centre GPUs to train; large GPUs to serve</td><td>trained and served on one consumer GPU; replies on a CPU</td><td>Measured: core trained on 286 MB in 30 minutes on one RTX 3090; replies in 0.1–2 s on CPU</td></tr>
-  <tr><td>Energy</td><td>large models use roughly 1,000× or more energy per word than a 5M core</td><td>energy tracks the work: small core, cheap lookups, idle-time learning</td><td>Follows from the operation counts above; to be measured in watt-hours per 1,000 replies in B7</td></tr>
-  <tr><td>Improving over time</td><td>periodic large retraining</td><td>continuous: memory now, sleep and adapters in the background</td><td>B4–B6</td></tr>
+  <tr><td>Knowing where an answer came from</td><td>not visible</td><td>the reply reports which memory it used and how close it was</td><td>Shown in chat</td></tr>
+  <tr><td>Hardware</td><td>data-centre GPUs to train; large GPUs to serve</td><td>trained and served on one consumer GPU; 5M replies on a CPU</td><td>Measured: 50M core trained on 3.5 GB in 2.4 hours on one RTX 3090</td></tr>
+  <tr><td>Energy</td><td>roughly 1,000x or more per word than a 5M core</td><td>energy tracks the work: small core, cheap lookups, idle-time learning</td><td>Follows from the operation counts; to be measured in watt-hours per 1,000 replies in B7</td></tr>
+  <tr><td>Improving over time</td><td>periodic large retraining</td><td>continuous: memory now, practice, sleep and adapters in the background</td><td>B4-B6</td></tr>
 </table></div>
 <div class="note risk">
-<p><b>Where it will not beat a large model, stated plainly.</b> Open-ended reasoning about things it has never seen, broad world knowledge it was never given, and fluent long writing all depend on a large slow learner, and a 5M core will not match one. The design wins where knowledge can be stored, looked up, checked or routed to a skill, which covers a large share of practical use (assistants for a domain, a company's documents, personal knowledge, devices without a data centre). The test in B7 is designed to show the size of that share honestly, including where the larger model is better.</p>
+<p><b>Where it will not beat a large model, stated plainly.</b> Open-ended reasoning about things it has never seen, broad world knowledge it was never given, and fluent long writing depend on a large slow learner. The design wins where knowledge can be stored, looked up, checked or routed to a skill: domain assistants, a company's documents, personal knowledge, devices without a data centre. B7 is designed to show the size of that share honestly.</p>
 </div>
 
 <h2>7. Risks and how we would know</h2>
 <div class="tablewrap"><table>
   <tr><th>Risk</th><th>Early warning</th><th>Response</th></tr>
   <tr><td>Adapters interfere with one another</td><td>Probe score of one skill drops when another adapter is added</td><td>Route more strictly; keep adapters exclusive per question</td></tr>
-  <tr><td>Router picks the wrong circuit</td><td>B3 agreement below 90%</td><td>Give the router the gap log's labels as training data</td></tr>
-  <tr><td>Sleep causes forgetting</td><td>Old-knowledge probe drops after a cycle</td><td>More rehearsal data in each cycle; smaller learning rate; gate rejects the candidate</td></tr>
+  <tr><td>Router picks the wrong circuit</td><td>B3 agreement below 90%</td><td>Train the router on the gap log's labels</td></tr>
+  <tr><td>Fine-tuning or sleep erases old skills</td><td>Old-knowledge probe or report card drops after a cycle (seen in the S2a series)</td><td>Gentle core rate, rehearsal (measured to work), frozen core with adapters; gate rejects the candidate</td></tr>
+  <tr><td>Outputs that do not end</td><td>Replies run on into invented text (seen before the end code)</td><td>Every output format ends with an end code trained in the loss</td></tr>
   <tr><td>Memory grows too large for a device</td><td>Lookup time or size over budget</td><td>Pruning policy; consolidate before evicting</td></tr>
-  <tr><td>Gap detector chases noise</td><td>Adapters trained on detected gaps do no better than random ones (B4)</td><td>Require a minimum count per gap kind; human review of proposals at first</td></tr>
-  <tr><td>A 5M core is too small to host many skills</td><td>Adapters stop helping after the first few</td><td>Move to the 19M core, which the current research is testing fairly now</td></tr>
+  <tr><td>Gap detector chases noise</td><td>Adapters trained on detected gaps do no better than random ones</td><td>Minimum count per gap kind; human review at first</td></tr>
+  <tr><td>Measurements that mislead</td><td>Results identical where they should differ; scores that jump without a cause</td><td>Name outputs by what they measured; read transcripts; two seeds before building on a result</td></tr>
 </table></div>
 
 <h2>8. What must finish first, in the current research</h2>
 <ul>
-  <li>The core size: the fair 19M comparison (R1f, queued) decides 4.7M or 19M as the shared core.</li>
-  <li>Partial-cue recall: R0b (training on rewordings, running) is the first half of B1.</li>
-  <li>Reading comprehension (R2b, queued) and the capability map across task types, which tell us which skills need their own circuits.</li>
-  <li>Conversation data, so the conversation adapter has something to learn from.</li>
-  <li>The run ledger and probe battery as the measuring tools for every stage above (in place).</li>
+  <li>Done: the data recipe (clean modern text, conversation, evidence pairs, worked math), the Q&amp;A recipe, the window size, the end code, two-seed confirmation at 5M, the verified self-training loop.</li>
+  <li>Running: the 50M Q&amp;A stage and chat probe, which decide the shared core (B0 at 50M).</li>
+  <li>Next: GSM8K and self-training on the 50M core; reading comprehension retest; in-domain learned key.</li>
 </ul>
-<p>When those are in, B0 is a matter of freezing the winner, and the project can start with B1 and B2, which together take about a day of runs on the current machine.</p>
+<p>When those are in, B0 at 50M is a matter of freezing the winner, and the project can start with B1 and B2.</p>
 
 <h2 id="reconstruction">9. Reconstruction specification of the current model</h2>
-<p>Everything needed to rebuild the current best Q&amp;A model from an empty machine: what each part computes, with its exact parameters, as pseudocode written from the code (branch <code>local-gpu-phase2</code>, 10 October 2026). File and function names point at the reference implementation. Each part ends with a check that proves a rebuilt part matches the original. The best model today is <code>models/qa_best_5M.pt</code> (run R1b, seed 2).</p>
+<p>Everything needed to rebuild the current best Q&amp;A model, <code>models/qa_best_5M_512.pt</code> (S2b-512, seed 2), and the 50M core: what each part computes, with its exact parameters, as pseudocode written from the code (branch <code>local-gpu-phase2</code>, 11 October 2026). File and function names point at the reference implementation; each part ends with a check that proves a rebuilt part matches the original.</p>
 <div class="specindex">
   <a class="spec" href="#spec-data" data-spec="spec-data">data</a>
   <a class="spec" href="#spec-compiler" data-spec="spec-compiler">compiler</a>
@@ -302,256 +319,247 @@ dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
   <a class="spec" href="#spec-training" data-spec="spec-training">training</a>
   <a class="spec" href="#spec-answer" data-spec="spec-answer">answering</a>
   <a class="spec" href="#spec-scoring" data-spec="spec-scoring">scoring</a>
+  <a class="spec" href="#spec-card" data-spec="spec-card">core report card</a>
+  <a class="spec" href="#spec-star" data-spec="spec-star">verified self-training</a>
   <a class="spec" href="#spec-files" data-spec="spec-files">files and checkpoints</a>
   <a class="spec" href="#spec-recipe" data-spec="spec-recipe">rebuild recipe</a>
 </div>
 
-<details class="specblock" id="spec-data"><summary>Data <span>corpora and Q&amp;A sets, built from public sources</span></summary><div class="specbody">
-<h4>Files</h4><p><code>compiler/experiments/prepare_books.py</code>, <code>prepare_corpus_v1.py</code>, <code>prepare_corpus_v2.py</code>, <code>prepare_qa.py</code>; manifests with SHA-256 in <code>results/corpus_v*_manifest.json</code>; sources listed in <code>docs/DATASETS.md</code>.</p>
-<pre>clean(book):                                   # prepare_books.clean
-  decode UTF-8 (Latin-1 for "-8.txt" sources); drop a BOM; CRLF -> LF
-  keep the text between "*** START OF ...\n" and "\n*** END OF"; strip blank lines at the ends; end with "\n"
-  write the bytes exactly (write_bytes; Windows text mode would turn LF into CRLF)
+<details class="specblock" id="spec-data"><summary>Data <span>sources, cleaning, rewrites, mixes</span></summary><div class="specbody">
+<h4>Files</h4><p><code>compiler/experiments/prepare_core_mix.py</code> (sources, evidence, mixes), <code>evidence_parallel.py</code> (fast evidence builder), <code>prepare_qa.py</code> (Q&amp;A sets), <code>prepare_books.py</code>, <code>prepare_corpus_v1.py</code>, <code>prepare_corpus_v2.py</code> (the books). Source list and licences in <code>docs/DATASETS.md</code>; why each part exists in <code>docs/CORE_TRAINING_PLAN.md</code>.</p>
+<pre>sources (data_core/src/*.txt; documents separated by a line holding only a form feed):
+  wiki       enwik9 (Wikipedia 2006 XML, 0.93 GB) -> articles; templates, tables, refs, markup, link syntax removed;
+             redirects and non-article namespaces dropped; headings and list items their own paragraphs;
+             cut at References / External links / See also; kept if &gt;= 500 characters      -> 139,323 articles, 633 MB
+  fineweb    FineWeb-Edu sample/10BT shard 000_00000 (first 400k documents of &gt;= 300 characters);
+             every newline is a paragraph break (FineWeb uses single newlines)            -> 1.9 GB
+  books      corpus v2 training books, hard-wrapped lines joined inside paragraphs,
+             Gutenberg front matter and production notes removed                          -> 233 MB
+  oasst      OpenAssistant oasst1 ready trees, English; at each assistant turn the top-ranked reply
+  ultrachat  UltraChat 200k train_sft
+             both cut into window-sized exchanges: each reply with the user turn before it (user turn
+             trimmed to its last 350 characters), reply cut at a sentence end to fit 950 characters,
+             two consecutive exchanges joined when both fit; replies under 80 characters dropped
+  math       MetaMathQA 395k; LaTeX rewritten as plain arithmetic ($X \div 2$ -&gt; X / 2, \times -&gt; x,
+             \frac{a}{b} -&gt; a/b); final line "Answer: N" (the calculator's format)
+  qqp        Quora duplicate question pairs (train): "Question: a\nIn other words: b"
+  evidence   pairs of related paragraphs from different documents of wiki + fineweb: content words of
+             3+ letters minus a common-word list; only words in at most 0.2% of paragraphs vote;
+             similarity = idf of shared voting words / idf of all words of the two paragraphs;
+             each paragraph used as evidence at most once; written "evidence\ntarget" (one paragraph)
+               first build (used by the best 5M model): similarity 0.15-0.8, paragraphs 200-450 chars,
+                 pool 4 x max_pairs  -&gt; 20,623 pairs, kept as data_core/src/evidence_v1.txt
+               current build: similarity 0.10-0.8 (0.10-0.12 pairs read as related; below 0.08 mostly not),
+                 200-900 chars for windows of 512+ -&gt; 445,500 pairs (P50 mix)
 
-corpus v0 = 51 named GITenberg books: 48 train, 3 held out (Conrad, Doyle, Machiavelli)
-corpus v1 = v0 + a seeded sample (seed 1, repository ids &lt;= 30000) of GITenberg books, 100 KB to 2 MB,
-            English prose, held-out authors excluded, until 200 MB of training text
-corpus v2 = v1 + Adam's 100-book file (split on FILE markers, duplicates of v1 and held-out books dropped)
-            + enwik 50 MiB prefix: first 2 MiB -> ood/enwik_head_2MiB.txt, rest -> train_wiki/enwik_rest.txt
-stage-1 training stream = all train_wiki files, then all train books, concatenated in sorted order
+mix(recipe, MB):            # prepare_core_mix.cmd_mix
+  normalise typographic punctuation to ASCII (curly quotes, dashes, ellipsis, nbsp)
+  1% of each source's documents held out by a hash of the document (never by position)
+  paragraphs whose normalised text was already seen (any source) are dropped (dedup)
+  documents taken in order until each source reaches share x MB; documents joined with the separator
+  recipes:  D3  wiki .30 fineweb .22 books .08 oasst .04 ultrachat .08 evidence .18 math .05 qqp .05
+            P50 wiki .25 fineweb .32 books .07 oasst .002 ultrachat .12 evidence .12 math .08 qqp .008
+  mix_D3s_5M (best 5M core): D3 at 400 MB with the first evidence build -&gt; 323 MB
+            (wiki 120, fineweb 88, books 31, ultrachat 32, math 20, qqp 18, evidence 11, oasst 4)
+  mix_P50 (50M core): P50 at 2,400 MB -&gt; 2,325 MB (fineweb 768, wiki 600, ultrachat 288, evidence 288,
+            math 192, books 168, qqp 18, oasst 4)
 
-Q&amp;A text, one exchange per block:
+Q&amp;A text (stage 2), one exchange per block:
   "User: " + question [+ "\n" + input] + "\nAssistant: " + answer + "\n\n"
-  exchanges are separated by "\n\n" followed by "User: " (answers may contain blank lines)
-  Alpaca: 98% train / 2% held out, shuffled with seed 1;  GSM8K: final line "Answer: N";
-  SQuAD: "Passage: ... \nQuestion: ...", answer = first reference span, passage + question &lt;= 150 words</pre>
-<div class="check"><b>Check:</b> rebuilt files match the manifest hashes (v0: 52 of 53 identical; v1/v2 drift because GITenberg changes, see the log for 10 October).</div>
+  exchanges are separated by "\n\n" followed by "User: " (answers keep their blank lines)
+  Alpaca 52,002: 98% train / 2% held out, shuffled with seed 1  (data_qa: 50,965 training exchanges)</pre>
+<div class="check"><b>Check:</b> source sizes and mix manifests (<code>data_core/mix_*/manifest.json</code>) match the figures above; markup left in the cleaned Wikipedia is under 0.01 items per KB.</div>
 </div></details>
 
 <details class="specblock" id="spec-compiler"><summary>Compiler v0 <span>text to codes and back, exactly</span></summary><div class="specbody">
-<h4>Files</h4><p><code>compiler/compiler_v0.py</code> (reference: <code>scan</code>, <code>fit</code>, <code>learn_pieces</code>, <code>Encoder</code>, <code>Dictionary</code>), <code>compiler/native/cv0.cpp</code> (fast encoder, must be byte-identical), tests in <code>compiler/test_compiler_v0.py</code>.</p>
-<pre>ID layout:   0..255 = single bytes (fallback)   256 = CAP   257 = UPPER   258.. = dictionary entries in file order
+<h4>Files</h4><p><code>compiler/compiler_v0.py</code> (reference: <code>scan</code>, <code>fit</code>, <code>learn_pieces</code>, <code>Encoder</code>, <code>Dictionary</code>), <code>compiler/native/cv0.cpp</code> (fast encoder, byte-identical), tests in <code>compiler/test_compiler_v0.py</code>.</p>
+<pre>ID layout:   0..255 = single bytes (fallback; 12 = form feed, used as the end-of-answer code)
+             256 = CAP   257 = UPPER   258.. = dictionary entries in file order
 
-scan(text):  split into units, left to right, first rule that matches wins (bytes regex):
+scan(text):  units left to right, first rule that matches wins (bytes regex):
                " [A-Za-z]+"  |  "[A-Za-z]+"  |  " +(?= [A-Za-z])"  |  " +"  |  "\n+"  |  "\t+"  |  any single byte
-             concatenating the units gives the text back exactly; digits are single-byte units
 
 fit(train_texts, vocab = 8192, phrases = 0, case_flags = off, min_count = 2):
-  counts = number of times each unit of length &gt;= 2 occurs in the training text
+  counts = occurrences of each unit of length &gt;= 2 in the training text
   words  = each distinct unit as a list of single bytes, weight = its count (sorted, for determinism)
   repeat until (vocab - 258) entries exist:
       take the adjacent pair (a, b), len(a) + len(b) &lt;= 32, with the highest total weight;
-          a pair is keyed by at_start = (it is at position 0 of its unit)
+          a pair is keyed by at_start (it is at position 0 of its unit)
       stop if that weight &lt; min_count
-      new entry: kind "S" (start piece) if at_start else "C" (continuation piece), bytes a + b
-      replace that pair with the merged symbol everywhere it occurs with the same at_start
-  dictionary file: "compiler-v0 dictionary", "version 1", "case_flags 0", "max_phrase_units 1",
-                   "entries N", then one "S\tbytes" or "C\tbytes" line per entry (escaped)
-  dictionary hash = FNV-1a 64-bit of that file
+      new entry: "S" (start piece) if at_start else "C" (continuation piece), bytes a + b
+      merge that pair everywhere it occurs with the same at_start
+  dictionary file: header lines, then one "S\tbytes" or "C\tbytes" line per entry; hash = FNV-1a 64
 
-encode(text):
-  for unit in scan(text):
-      pos = 0; table = START pieces
-      while pos &lt; len(unit):
-          L = longest length in 32..2 such that unit[pos : pos + L] is in table
-          if none: emit byte id unit[pos]; L = 1        else: emit that entry's id
-          pos += L; table = CONTINUATION pieces
-decode(ids) = concatenation of each id's bytes      (lossless by construction)
-
-ID file: 24-byte header (b"CV0I", version 1, id width 2 or 4, 2 pad bytes, dictionary hash, count),
-         then the ids as little-endian uint16 (uint32 above 65,536 ids)</pre>
-<p>The best model's dictionary is <code>models/v0_8k_plain_corpus_v2.cv0d</code>: 7,934 entries, 8,192 IDs, hash <code>3febecd65a1a77ff</code>, fitted on the corpus v2 training stream, no case flags, no phrases. About 3.5 bytes of text per code.</p>
-<div class="check"><b>Check:</b> 34 contract tests pass, including round trips on all 256 byte values and the native/Python parity test; a refit on the same training text gives the same hash.</div>
+encode(text): for each unit, greedy longest start piece, then longest continuation pieces, else single bytes
+decode(ids)  = concatenation of each id's bytes   (lossless by construction)
+ID file: 24-byte header (b"CV0I", version 1, id width, pad, dictionary hash, count) + little-endian ids</pre>
+<p>Dictionaries (all 8,192 IDs, 7,934 entries): best 5M model <code>models/qa_best_5M_512.cv0d</code>, hash <code>b37cb297879faba2</code>, fitted on mix_D3s_5M; 50M core hash <code>ed69527ab278fbb0</code>, fitted on mix_P50 (599 s); the first models' <code>models/v0_8k_plain_corpus_v2.cv0d</code>, hash <code>3febecd65a1a77ff</code>.</p>
+<div class="check"><b>Check:</b> 34 contract tests pass, none skipped (the C++ parity test builds the native encoder statically on Windows); a refit on the same mix gives the same hash.</div>
 </div></details>
 
 <details class="specblock" id="spec-tables"><summary>Count tables (M1) <span>what usually comes next, exact and rebuilt in seconds</span></summary><div class="specbody">
-<h4>Files</h4><p><code>compiler/experiments/train_lm.py</code>: <code>NgramTable</code>, <code>table_features</code>; used inside <code>LM.nll</code>, <code>LM.mixed_logits</code>.</p>
-<pre>build(codes, order, topk = 64):                    # every code &lt; 2^21
-  k = order - 1
-  context(i) = codes[i .. i+k-1] packed 21 bits each; follower(i) = codes[i+k]
-  count every distinct (context, follower) pair
-  per context: followers sorted by count, descending; keep the first topk (ragged arrays: offsets, ids, counts)
-               total = count of all followers, kept or not
-  contexts sorted, so lookup is a binary search; arrays moved once to the GPU and cached there
-
-lookup at position t: context = the k codes ending at t (incomplete at the start of the window = not found)
-  found     -> follower ids, counts, total      not found -> ids -1, counts 0, total 0
-
-probability of the target y at t:
-  c = count of y among the kept followers; kept = sum of kept counts
-  in training only (leave-one-out, mandatory): c = c - 1 if c &gt; 0;  kept = kept - 1 if total &gt; 0
-  p_table(y) = c / kept  if kept &gt; 0  else 0
-confidence features, 3 per table (to the trust head):
-  log(1 + total - LOO),  share of the top follower,  entropy in bits of the follower shares
-
-orders used: 2 and 3; counted on the training codes only (in stage 1 the last 2% is validation and not counted)</pre>
-<div class="check"><b>Check:</b> <code>test_ladder.test_ngram_table_counts_and_lookup</code> and the leave-one-out test; the GPU lookup was verified identical to the earlier padded CPU lookup on four table sizes.</div>
+<h4>Files</h4><p><code>compiler/experiments/train_lm.py</code>: <code>NgramTable</code>, <code>table_features</code>.</p>
+<pre>build(codes, order, topk = 64):     context = the order-1 codes before each position, packed 21 bits each;
+  count every (context, follower); per context keep the 64 most frequent followers (ragged arrays) and the total
+lookup at t: binary search of the context ending at t; on the GPU, cached
+p_table(y) = count of y among kept followers / kept total; in training both minus 1 (leave-one-out, mandatory)
+confidence features (3 per table): log(1 + total - LOO), top follower share, follower entropy in bits
+where used: orders 2 and 3; in the 5M core's stage 1 ("v0_8k_ng64") and in every Q&amp;A stage (counted on the
+            Q&amp;A training exchanges); not in the 50M core's stage 1 ("v0_8k"): +10% at 0.8M, 0 at 4.7M, -1% at 19M</pre>
 </div></details>
 
-<details class="specblock" id="spec-core"><summary>Network core (M3) <span>a small pre-norm Transformer with tied embeddings</span></summary><div class="specbody">
-<h4>Files</h4><p><code>compiler/experiments/train_lm.py</code>: <code>Block</code>, <code>LM</code> (<code>embed</code>, <code>hidden</code>, <code>nll</code>).</p>
-<pre>parameters: E (vocab x width, shared by input and output), P (ctx x width), L blocks, final LayerNorm
-init:       every Linear weight and both embeddings ~ Normal(0, 0.02); biases 0
+<details class="specblock" id="spec-core"><summary>Network core (M3) <span>a pre-norm Transformer with tied embeddings</span></summary><div class="specbody">
+<h4>Files</h4><p><code>compiler/experiments/train_lm.py</code>: <code>Block</code>, <code>LM</code>.</p>
+<pre>embed(x) = E[x] + P[0 .. T-1]       E: vocab x width, also the output layer (tied); P: window x width (learned)
+block(h): q,k,v = split(W_qkv . LN1(h)); h += W_o . causal_attention(q,k,v); h += W_2 . GELU(W_1 . LN2(h) + b_1) + b_2
+hidden(x) = LN_f(blocks(embed(x)));   network distribution = softmax(hidden . E^T);   init Normal(0, 0.02)
 
-embed(x)  = E[x] + P[0 .. T-1]
-block(h):                                         # repeated L times
-  q, k, v = split(W_qkv · LN1(h))                 # W_qkv: width -> 3·width, no bias; H heads of width/H
-  h = h + W_o · causal_scaled_dot_product_attention(q, k, v)        # W_o no bias
-  h = h + W_2 · GELU(W_1 · LN2(h) + b_1) + b_2    # W_1: width -> 4·width
-hidden(x) = LN_f(block_L(... block_1(embed(x))))
-network distribution at t = softmax(hidden_t · E^T)
-
-sizes used:  0.8M core: width 128, 4 layers, 4 heads      4.7M: 256, 6, 8 (the best model)
-             19M: 448, 8, 8                               49M: 640, 10, 10       context 256 codes
-core parameters ~ 12 · layers · width^2  (+ vocab · width for E, + ctx · width for P)</pre>
-<div class="check"><b>Check:</b> the stage-1 checkpoint <code>models/core_5M_stage1_books_wiki.pt</code> reproduces 1.4115 bits per byte on the held-out books; CPU and GPU results agree to four decimals.</div>
+best 5M core:  width 256, 6 layers, 8 heads, window 512  (4.73M in the blocks, 6.96M learned with E, P, trust head)
+50M core:      width 640, 10 layers, 10 heads, window 1,024 (49.2M in the blocks, 55.1M total)</pre>
+<div class="check"><b>Check:</b> the stage-1 checkpoints reproduce their report cards (see the card part); CPU and GPU agree to four decimals.</div>
 </div></details>
 
 <details class="specblock" id="spec-memory"><summary>Exchange memory (M2) <span>question key to stored answer, exact and nearest</span></summary><div class="specbody">
-<h4>Files</h4><p><code>compiler/experiments/m2_qa.py</code>: <code>STOP</code>, <code>words_of</code>, <code>ExchangeMemory</code> (<code>key_of</code>, <code>add</code>, <code>retrieve</code>, <code>exact_hit</code>, <code>similarity_keys</code>).</p>
-<pre>STOP = a fixed list of 117 English function words and instruction verbs (a, the, of, ..., write, describe, explain, list, name, ...)
-words_of(text)   = [unit stripped of its space, lower-cased  for unit in scan(text)  if it is letters only]
-key_of(question) = the set of words_of(question) that are not in STOP and longer than one letter
-
-add(question, answer):
-  i = number of stored exchanges; store (question, answer) and its key
-  exact[key] = i  if key not already present       (the first exchange with a key wins)
-  for w in key: index[w].append(i); df[w] += 1
-
-idf(w) = ln((1 + N) / (1 + df[w]))                 N = stored exchanges
-
-retrieve(question):
-  key = key_of(question)
-  for w in key with df[w] &lt;= 5% of N:              # very common words do not vote
-      for i in index[w]: score[i] += idf(w)
-  similarity(i) = score[i] / (sum of idf(w) over key + sum of idf(w) over key_i - key)
-  return the exchange with the highest similarity
-
-used for answering: exact[key_of(question)] if present (similarity 1), else retrieve(question)</pre>
-<div class="check"><b>Check:</b> stored questions return their own answer 99% exactly (the 1% are different questions with the same key); a pair added after training is found at once.</div>
+<h4>Files</h4><p><code>compiler/experiments/m2_qa.py</code>: <code>ExchangeMemory</code>, <code>LearnedKeys</code>; <code>k1_question_key.py</code>.</p>
+<pre>key_of(question) = set of words_of(question) not in STOP (117 function words and instruction verbs), longer than 1 letter
+add(q, a): store; exact[key] = first index with that key; index[w] += i; df[w] += 1
+idf(w) = ln((1 + N) / (1 + df[w]))
+retrieve(q): words with df &lt;= 5% of N vote idf into each stored exchange that has them;
+             similarity = votes / (idf over key + idf over the stored key's other words); best wins
+answering:   exact[key_of(q)] if present (similarity 1), else retrieve(q)
+optional learned key (--key-head): frozen stage-1 core, mean of final states over "Question: q",
+  head Linear(width, 512) - GELU - Linear(512, 128), unit vector; trained contrastively (temperature 0.05,
+  batch 1,024, 3,000 steps) on 134k Quora rewordings; retrieval ranks the union of the top 50 literal and
+  top 50 learned candidates by literal/std + 2 x cosine/std; off in the best model (no gain on Alpaca)</pre>
+<div class="check"><b>Check:</b> stored questions return their own answer 99% exactly; K1 on Quora validation: literal 74.3%, learned 75.2%, combined 77.7% at rank 1.</div>
 </div></details>
 
 <details class="specblock" id="spec-copy"><summary>Copy head <span>a learned pointer into the retrieved exchange</span></summary><div class="specbody">
-<h4>Files</h4><p><code>compiler/experiments/m2_qa.py</code>: <code>V2LM.extra_parts</code>, <code>V2LM._span</code>.</p>
-<pre>inputs: hidden states h of the window, codes x, span S (positions of the retrieved exchange;
-        with --copy-question also the current question's positions)
-
-allowed(t, j) = S[j] and S[j+1] and j &lt; t        # j's follower lies in the span, and j is strictly earlier:
-                                                  #   pointing at t itself would reveal the target
-score(t, j)   = (W_q · h_t) · (W_k · h_j) / sqrt(width)        # W_q, W_k: width x width, no bias, Normal(0, 0.02)
-a(t, .)       = softmax of score over the allowed j            # a row with nothing allowed is all zeros
-p_copy(y at t) = sum over j of a(t, j) · [x[j+1] = y]          # copying a passage is a walk along it
-confidence features (2): max over j of a(t, j);  entropy in bits of a(t, .)
-parameters: 2 · width^2 (131k at width 256)</pre>
-<div class="check"><b>Check:</b> with the copy head, network answers to stored questions rise from 0.13 to 0.79–0.88 word F1; a test with a self-matching window must give zero copy probability for the target (the leak test).</div>
+<h4>Files</h4><p><code>compiler/experiments/m2_qa.py</code>: <code>V2LM.extra_parts</code>.</p>
+<pre>allowed(t, j) = span[j] and span[j+1] and j &lt; t     # strictly earlier: pointing at t would reveal the target
+score(t, j)   = (W_q h_t) . (W_k h_j) / sqrt(width)  # W_q, W_k width x width, no bias
+a(t, .) = softmax over allowed j;   p_copy(y at t) = sum over j of a(t, j) . [x[j+1] = y]
+confidence (2): max weight, entropy of the weights;   parameters 2 . width^2</pre>
 </div></details>
 
 <details class="specblock" id="spec-trust"><summary>Trust head <span>mixes the sources, word by word</span></summary><div class="specbody">
-<h4>Files</h4><p><code>train_lm.LM.nll</code> / <code>mixed_logits</code> (network + tables), <code>m2_qa.V2LM.nll</code> / <code>mixed_logits</code> (+ copy head, optional evidence table and similarity input).</p>
-<pre>sources at position t:   network (softmax of the core),  bigram table,  trigram table,  copy head
-features(t) = [ h_t,                                   # the core's state
-                3 confidence features per table,       # see count tables
-                2 confidence features of the copy head,
-                retrieval similarity  (only with --sim-feature) ]
-w(t) = softmax(W_mix · features(t) + b_mix)            # one Linear layer; one weight per source; init Normal(0, 0.02), bias 0
-p(y at t) = sum over sources s of w_s(t) · p_s(y at t)
-loss = - log max(p(y at t), 1e-9)                      # training and scoring use the same formula</pre>
-<div class="check"><b>Check:</b> training and generation give the same target probability at the last position (unit check in the session log of 9 October).</div>
+<pre>sources at t: network, bigram table, trigram table, copy head
+features = [h_t, 3 per table, 2 for the copy head, (retrieval similarity with --sim-feature; off in the best model)]
+w = softmax(W_mix . features + b);   p(y) = sum_s w_s p_s(y);   loss = -log max(p(y), 1e-9)</pre>
 </div></details>
 
-<details class="specblock" id="spec-training"><summary>Training <span>stage 1 on books and Wikipedia, stage 2 on Q&amp;A</span></summary><div class="specbody">
-<h4>Files</h4><p>Stage 1: <code>compiler/experiments/scale_run.py</code> calling <code>train_lm.run</code>. Stage 2: <code>compiler/experiments/m2_qa.py</code> (<code>sample</code>, <code>batch</code>, training loop).</p>
-<pre>STAGE 1  (core 256w 6L 8h, compiler + count tables, corpus v2 + Wikipedia)
-  stream = encode(training stream); validation = its last 2%; tables counted on the first 98%
-  each step: 64 random windows of 257 codes; inputs = codes 0..255, targets = codes 1..256
-  loss = mean over all positions of the trust-head loss (tables with leave-one-out)
-  AdamW: peak lr 1e-3, betas (0.9, 0.95), weight decay 0.1 on matrices only
-  lr(step) = peak · min(1, step / 100) · (0.1 + 0.9 · (1 + cos(pi · elapsed / budget)) / 2)
-  gradient norm clipped to 1.0; bfloat16 autocast in the step; scores in full precision
-  budget 1,800 s on one RTX 3090 = 42,538 steps, 2.2 GB of text seen  ->  models/core_5M_stage1_books_wiki.pt
+<details class="specblock" id="spec-training"><summary>Training <span>stage 1 on the mix, stage 2 on Q&amp;A</span></summary><div class="specbody">
+<h4>Files</h4><p>Stage 1: <code>compiler/experiments/scale_run.py</code> calling <code>train_lm.run</code>. Stage 2: <code>compiler/experiments/m2_qa.py</code>.</p>
+<pre>STAGE 1
+  stream = all train/*.txt of the mix, sorted, concatenated, encoded; validation = its last 2%
+  each step: random windows (paragraph-aligned windows, --align, were tested and not adopted for prose)
+  AdamW peak 1e-3, betas (0.9, 0.95), decay 0.1 on matrices; warm-up 100 steps, cosine to 10% over --max-steps;
+  gradient clip 1.0; bfloat16 autocast in the step; scores in full precision
+  best 5M core: mix_D3s_5M, "v0_8k_ng64" (tables 2,3 x64), width 256 x 6 layers, window 512, batch 64,
+                42,538 steps (equal to the 256-window cores), 4.88 GB seen, 2,672 s -&gt; models/core_5M_512_stage1_D3s.pt
+  50M core:     mix_P50, "v0_8k" (no tables), width 640 x 10 layers, window 1,024, batch 32, 30,500 steps
+                (about 1B codes, 1.6 passes), 3.47 GB seen, 8,564 s on one RTX 3090
 
-STAGE 2  (Q&amp;A design, Alpaca; dictionary and core from stage 1)
-  load every stage-1 tensor whose shape matches; copy head and trust head start new
-  memory = all training exchanges; tables = counts over all training exchange codes
-  window for exchange i (257 codes):
-      retrieved = i itself with probability 0.5 (copying is right), else its nearest other exchange
-      [ last 110 codes of the retrieved exchange ] + [ the code of "\n\n" ] + [ exchange i, first 145 codes ] + padding
-      loss mask = exchange i's codes only (with --loss-answer-only: its answer only)
-      --perturb-self p: of the self windows, a share p have the retrieved question reworded (words dropped 20%,
-                        replaced 10%, neighbours swapped 15%) and the similarity recomputed
-  each step: 32 windows; AdamW lr 1e-3 constant, betas (0.9, 0.95), decay 0.1 on matrices; clip 1.0
-  validation every 60 s: bits per byte on 120 held-out exchanges with their nearest exchange retrieved
-  --patience n: stop after n evaluations without improvement; keep the best weights
-  best model: 600 s, 15,565 steps, seed 2 -> models/qa_best_5M.pt</pre>
-<div class="check"><b>Check:</b> stage 2 from the stage-1 checkpoint lands within seed noise of seen 0.79–0.88 F1 and 47–52% exact (greedy), validation about 1.0 bits per byte.</div>
+STAGE 2 (the S2b recipe, two seeds)
+  load every stage-1 tensor of matching shape; copy head and trust head new
+  memory = all training exchanges; tables = counts over all training exchange codes (leave-one-out)
+  window: [ last 250 codes of the retrieved exchange ] + [ "\n\n" ] + [ this exchange + end code, up to 261 ] (512)
+          (50M: 400 retrieved + up to 623 own in 1,024)
+     retrieved = the exchange itself with probability 0.5, else its nearest other exchange (cached)
+     30% of windows are rehearsal: a random window of the stage-1 mix, loss on every code
+  loss = the trust-head loss on the answer codes and the end code only (--loss-answer-only --eos)
+  AdamW betas (0.9, 0.95), decay 0.1 on matrices; core peak 1e-4, copy and trust heads peak 1e-3 (--head-lr);
+  warm-up 100 steps, cosine to 10% (--schedule cosine); clip 1.0; batch 32; 15,565 steps
+  best model: seed 2 -&gt; models/qa_best_5M_512.pt   (seed 1 within noise)</pre>
+<div class="check"><b>Check:</b> stage 2 from the stage-1 checkpoint lands within seed noise of stored 0.89 F1 / 56-63% exact, added 0.86-0.88, network alone 0.23-0.24, on 200-question groups.</div>
 </div></details>
 
 <details class="specblock" id="spec-answer"><summary>Answering <span>from a question to a reply</span></summary><div class="specbody">
-<h4>Files</h4><p><code>m2_qa.QAEngine.ask</code> (chat) and the <code>answer</code> function inside <code>m2_qa.main</code> (scoring); <code>repeat_banned</code>, <code>evaluate_tail</code>, <code>final_number</code>.</p>
-<pre>ask(question):
-  retrieved, similarity = exact hit (1.0), else nearest by retrieve(), else none
-  window = [ last 110 codes of the retrieved exchange ] + [ "\n\n" ] + encode("User: " + question + "\nAssistant:")
-  span   = the retrieved codes (+ the question's codes with --copy-question)
-  repeat up to 120 codes:
-      scores = log of the trust-head mixture at the last position of window[-256:]
-      forbid codes never seen in the training text
-      forbid any code that would complete a 3-code phrase already in the reply          (repeat blocking)
-      next = the code with the highest score                                            (greedy)
-      append next
-      if calculator and next is "=" and the reply ends in "a op b =" (op in + - * x /):
-          append the computed value (integer if whole, else 2 decimals) and forbid a digit right after it
-      stop if the reply contains "\nUser" or an invented "\nAssistant:"
-  reply = decode(the new codes), cut at "\nUser" / "\nAssistant:"
-  calculator rule 2: the reply's final "Answer: N" must equal a computed value, else it is replaced by the last one
-add(question, answer) = memory.add: the fact is answerable on the next question, no training</pre>
-<div class="check"><b>Check:</b> the 32-question probe battery (<code>chat_probe.py</code>) gives 35/64 with memory and 1/64 without on <code>models/qa_best_5M.pt</code>.</div>
+<h4>Files</h4><p><code>m2_qa.QAEngine.ask</code> (chat, probe, self-training), the <code>answer</code> function in <code>m2_qa.main</code> (scoring); <code>repeat_banned</code>, <code>evaluate_tail</code>, <code>final_number</code>.</p>
+<pre>retrieved = exact hit, else nearest (with exclude=i: the problem's own stored answer hidden)
+window = [ last 250 codes of the retrieved exchange ] + "\n\n" + encode("User: " + q + "\nAssistant:")
+repeat up to 120 codes (200 for arithmetic):
+    scores = log of the trust-head mixture at the last position
+    forbid codes never seen in training (the end code allowed); forbid completing a repeated 3-code phrase (chat)
+    next = highest score (greedy), or a sample from the top 20 at temperature 0.7 (self-training)
+    stop if next is the end code, or the reply reaches "\nUser" or an invented "\nAssistant:"
+    calculator: after "a op b =" (op in + - * x /), write the value (integer if whole, else 2 decimals);
+                no digit may follow it directly
+reply = decode; calculator rule 2: the final "Answer: N" must be a computed value, else the last one replaces it
+add(q, a) = memory.add: answerable on the next question, no training</pre>
 </div></details>
 
-<details class="specblock" id="spec-scoring"><summary>Scoring <span>how every number in the ledger is measured</span></summary><div class="specbody">
-<h4>Files</h4><p><code>m2_qa.f1</code>, <code>num_exact</code>, the groups in <code>m2_qa.main</code>; <code>train_lm.total_bits</code>, <code>eval_file</code>; <code>chat_probe.py</code>; <code>run_ledger.py</code>.</p>
-<pre>bits per byte (language modelling) = sum of -log2 p over every code of a file / bytes of the file
-                                     (windows of 256 codes, context reset at each window)
-word F1(reply, reference): P = shared words / reply words, R = shared words / reference words (words_of, with counts)
-                           F1 = 2PR / (P + R); 0 if nothing is shared
-exact = reply bytes equal reference bytes;   num_exact = final "Answer:" number equal (GSM8K)
-held-out Alpaca split in half (seed): half for evaluation, half added to memory after training
-groups:  seen       = 200 training questions (memory path) / 60 (network path, own exchange retrieved)
-         reworded   = held-out questions whose nearest key has similarity &gt;= 0.5
-         new        = the other held-out questions, nearest exchange retrieved
-         no memory  = 60 held-out questions with nothing retrieved
-         added      = held-out pairs put into memory after training, then asked
-seed noise on the 60-answer groups: about +-0.07 F1</pre>
+<details class="specblock" id="spec-scoring"><summary>Scoring <span>how every Q&amp;A number is measured</span></summary><div class="specbody">
+<pre>word F1 = 2PR / (P + R) over words_of(reply) and words_of(reference), with counts; exact = equal bytes;
+num_exact = final "Answer:" number equal (GSM8K)
+held-out Alpaca split in half: half evaluated, half added to memory after training
+groups (200 questions each, --net-n 200; noise about +-0.04 F1):
+  stored (own exchange retrieved), added (pairs put into memory after training), reworded (nearest key
+  similarity &gt;= 0.5), new (the rest, nearest retrieved), no memory (nothing retrieved)
+chat probe (chat_probe.py): 32 fixed questions in 7 sections, with and without memory; graded by hand in docs/CHAT_NOTES.md</pre>
+</div></details>
+
+<details class="specblock" id="spec-card"><summary>Core report card <span>a stage-1 core measured on its three jobs</span></summary><div class="specbody">
+<h4>Files</h4><p><code>compiler/experiments/core_eval.py</code>; results named <code>results/core_eval_&lt;run folder&gt;_&lt;checkpoint&gt;.json</code>.</p>
+<pre>network only (no tables), on fixed held-out sets:
+  fluency    bits/byte on the first 400 KB of each held-out file of mix_D3_5M (wiki, fineweb, ultrachat, oasst,
+             math, evidence, qqp) and on the corpus v2 held-out books
+  evidence   209 held-out pairs (data_core/eval/evidence_val.jsonl, the v1 set, kept fixed): bits/byte of the
+             target with its evidence in front against an unrelated one in front; gain = 1 - related/unrelated
+  questions  2,000 Quora validation duplicates: mean final state over "Question: q1" must find q2 among 2,000 by
+             cosine; recall at 1 and 10; beside the literal key
+best 5M core: Wikipedia 1.603, web 1.589, UltraChat 1.295, math 0.910; related 1.203 / gain 33.5%; reword 50.8% / 77.3%
+50M core:     Wikipedia 1.148, web 1.165, UltraChat 0.831, math 0.402; related 0.809 / gain 31.6%; reword 58.4% / 84.2%</pre>
+</div></details>
+
+<details class="specblock" id="spec-star"><summary>Verified self-training <span>practice with a checker (STaR)</span></summary><div class="specbody">
+<h4>Files</h4><p><code>compiler/experiments/star.py</code> (gen, merge); chain <code>compiler/experiments/chains/session12_star.sh</code>.</p>
+<pre>round(model):
+  for each original GSM8K training problem i, in 10 parallel shards:
+      4 tries: ask(q, exclude=i, temperature 0.7, top 20, calculator on, up to 200 codes)
+      keep a try if final_number(reply) == final_number(reference)
+  merge: GSM8K training exchanges + the distinct kept solutions; held-out unchanged
+  fine-tune from the model with the S2b recipe (8,000 steps, copy from the question, calculator), score
+measured: base 2.5% of new problems -&gt; round 1 3.5% -&gt; round 2 4.0%; calculator-confirmed answers 348 -&gt; 377 -&gt; 424;
+          problems solved at least once in training: 797 (round 1), 2,395 (round 2)</pre>
 </div></details>
 
 <details class="specblock" id="spec-files"><summary>Files and checkpoints <span>what is saved and how a model is reloaded</span></summary><div class="specbody">
-<pre>models/v0_8k_plain_corpus_v2.cv0d     the dictionary (hash 3febecd65a1a77ff)
-models/core_5M_stage1_books_wiki.pt   stage 1: {"encoding", "model" (shape, params), "state_dict", "ngram_orders", "ngram_topk"}
-models/qa_best_5M.pt                  stage 2: {"state_dict", "args"}   args = every m2_qa setting of the run
-results/*.json                        one per run: settings, training history, every score
-docs/RUN_LEDGER.md                    all runs in one table (run_ledger.py)
+<pre>models/qa_best_5M_512.pt              the best Q&amp;A model: {"state_dict", "args"} (every m2_qa setting of the run)
+models/qa_best_5M_512.cv0d            its dictionary, kept beside it (hash b37cb297879faba2)
+models/core_5M_512_stage1_D3s.pt      its stage-1 core: {"encoding", "model", "state_dict", "ngram_orders", "ngram_topk"}
+models/core_5M_512_stage1_D3s.cv0d    the same dictionary
+runs/core_P50/scale_50M_v0_8k.pt      the 50M core (to be copied to models/ when its Q&amp;A stage is confirmed)
+results/*.json, docs/RUN_LEDGER.md    every run's settings and results
 
-reload a Q&amp;A model (QAEngine):
-  args = checkpoint["args"]; dictionary = args.dict; training text = args.data + "/train/qa_train.txt"
-  memory  = add every training exchange
-  tables  = NgramTable(encode(training text), 2 and 3, args.topk)
-  model   = V2LM(shape and flags from args), load state_dict
-  count tables and memory are never stored: they are rebuilt from the text in seconds</pre>
+reload (QAEngine): args from the checkpoint; dictionary = args.dict, else the .cv0d beside the checkpoint;
+  memory = every exchange of args.data + "/train/qa_train.txt"; tables rebuilt from that text (seconds);
+  model = V2LM(shape and flags from args), load the weights; chat: python run_model.py, option 2</pre>
 </div></details>
 
 <details class="specblock" id="spec-recipe"><summary>Rebuild recipe <span>from an empty machine to the best model</span></summary><div class="specbody">
-<pre>1. git clone the repository; check out local-gpu-phase2
-2. python -m venv .venv; pip install numpy matplotlib; pip install torch --index-url https://download.pytorch.org/whl/cu128
-3. build the native encoder (MSVC: cl /O2 /std:c++17 /EHsc compiler\native\cv0.cpp, or g++ -O2 -std=c++17 -static)
-4. python -B -m unittest compiler/test_compiler_v0.py compiler/experiments/test_ladder.py      -> 34 tests OK
-5. corpora: prepare_books.py data; prepare_corpus_v1.py data data_v1 --repo-list GITenberg_repo_list.tsv;
-            prepare_corpus_v2.py data_v1 BOOKS100.txt ENWIK50MiB.txt data_v2
-6. Q&amp;A: prepare_qa.py alpaca_data.json data_qa   (also --format gsm8k / squad)
-7. stage 1: scale_run.py data_v2 runs/scale --native data/cv0.exe --device cuda --amp --sizes 5M --configs v0_8k_ng64 --budgets 1800
-   (or use models/core_5M_stage1_books_wiki.pt and models/v0_8k_plain_corpus_v2.cv0d)
-8. stage 2: m2_qa.py data_qa runs/best --native data/cv0.exe --device cuda --dict models/v0_8k_plain_corpus_v2.cv0d
-            --init models/core_5M_stage1_books_wiki.pt --width 256 --layers 6 --heads 8 --batch 32 --budget 600
-            --self-context-p 0.5 --copy-head --greedy --seed 2 --save runs/best/qa.pt
-9. check: chat_probe.py runs/best/qa.pt   and compare with docs/CHAT_NOTES.md; chat with run_model.py</pre>
+<pre>1. clone the repository, branch local-gpu-phase2; python -m venv .venv; pip install numpy matplotlib pyarrow;
+   pip install torch --index-url https://download.pytorch.org/whl/cu128
+2. native encoder: cl /O2 /std:c++17 /EHsc compiler\native\cv0.cpp (MSVC) or g++ -O2 -std=c++17 -static
+3. tests: python -B -m unittest compiler/test_compiler_v0.py compiler/experiments/test_ladder.py   -&gt; 34 OK
+4. books: prepare_books.py data; prepare_corpus_v1.py data data_v1 --repo-list GITenberg_repo_list.tsv;
+          prepare_corpus_v2.py data_v1 BOOKS100.txt ENWIK50MiB.txt data_v2
+5. downloads (docs/DATASETS.md): enwik9, FineWeb-Edu shard 000_00000, OpenAssistant oasst1, UltraChat 200k
+   (train_sft), MetaMathQA, Quora pairs (GLUE qqp), Alpaca
+6. sources: prepare_core_mix.py wiki | books | oasst | ultrachat | fineweb --max-docs 400000 | metamath | qqp
+   evidence for the best 5M model: the first build (similarity 0.15, 200-450 chars; prepare_core_mix.py at commit
+   d6c2b85) -&gt; data_core/src/evidence.txt   (for the 50M mix: evidence_parallel.py prep / work x10 / merge)
+7. mix: prepare_core_mix.py mix data_core/src data_core/mix_D3s_5M --mb 400 --recipe D3
+8. stage 1: scale_run.py data_core/mix_D3s_5M runs/core_D3s512 --native data/cv0.exe --device cuda --amp --sizes 5M
+            --configs v0_8k_ng64 --budgets 5400 --max-steps 42538 --patience 0 --no-wiki --ctx 512
+            (or use models/core_5M_512_stage1_D3s.pt with models/core_5M_512_stage1_D3s.cv0d)
+9. Q&amp;A: prepare_qa.py alpaca_data.json data_qa
+10. stage 2: m2_qa.py data_qa runs/best --native data/cv0.exe --device cuda --dict DICT --init STAGE1 --width 256
+            --layers 6 --heads 8 --ctx 512 --neighbor-codes 250 --batch 32 --max-steps 15565 --budget 3600
+            --self-context-p 0.5 --eval-n 200 --net-n 200 --copy-head --greedy --lr 1e-4 --head-lr 1e-3
+            --schedule cosine --loss-answer-only --eos --rehearse data_core/mix_D3s_5M --rehearse-p 0.3 --seed 2
+            --save runs/best/qa.pt
+11. check: chat_probe.py runs/best/qa.pt (20-23/32) and core_eval.py on the stage-1 core (the report card above)</pre>
 </div></details>
 </div>
 
