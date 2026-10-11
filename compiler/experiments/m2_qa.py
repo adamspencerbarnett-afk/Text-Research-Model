@@ -413,8 +413,10 @@ class QAEngine:
         work.mkdir(parents=True, exist_ok=True)
         dict_path = resolve(a.dict) if getattr(a, "dict", None) else str(work / "v0_8k_plain.cv0d")
         if not Path(dict_path).exists():
-            # runs/ is not in git; the dictionaries of saved models are kept in models/ (same file, same hash)
-            kept = root / "models" / "v0_8k_plain_corpus_v2.cv0d"
+            # runs/ is not in git: a saved model keeps its dictionary beside it (same name, .cv0d); the
+            # first saved models used models/v0_8k_plain_corpus_v2.cv0d
+            beside = Path(checkpoint).with_suffix(".cv0d")
+            kept = beside if beside.exists() else root / "models" / "v0_8k_plain_corpus_v2.cv0d"
             if kept.exists():
                 log(f"dictionary {dict_path} not found; using {kept}")
                 dict_path = str(kept)

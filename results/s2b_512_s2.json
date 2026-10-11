@@ -1,0 +1,600 @@
+{
+ "setup": {
+  "data": "data_qa",
+  "work": "runs/s2b_512_s2",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 3600.0,
+  "ctx": 512,
+  "batch": 32,
+  "topk": 64,
+  "neighbor_codes": 250,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/s2b_512_s2.json",
+  "seed": 2,
+  "self_context_p": 0.5,
+  "copy_bias": 0.0,
+  "device": "cuda",
+  "threads": 0,
+  "width": 256,
+  "layers": 6,
+  "heads": 8,
+  "greedy": true,
+  "no_repeat": 0,
+  "patience": 0,
+  "min_delta": 0.005,
+  "max_steps": 15565,
+  "dict": "runs/core_D3s512/v0_8k_plain.cv0d",
+  "init": "runs/core_D3s512/scale_5M_v0_8k_ng64.pt",
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "copy_question": false,
+  "calculator": false,
+  "perturb_self": 0.0,
+  "sim_feature": false,
+  "loss_answer_only": true,
+  "stop_at_blank": false,
+  "lr": 0.0001,
+  "eos": true,
+  "head_lr": 0.001,
+  "schedule": "cosine",
+  "net_n": 200,
+  "rehearse": "data_core/mix_D3s_5M",
+  "rehearse_p": 0.3,
+  "save": "runs/s2b_512_s2/qa_s2b_512_s2.pt",
+  "train_exchanges": 50965,
+  "eval": 520,
+  "added": 521,
+  "distinct_keys": 50605
+ },
+ "training": {
+  "steps": 15565,
+  "train_s": 1238.8,
+  "stop_reason": "budget",
+  "best_valid": 0.874,
+  "history": [
+   {
+    "train_s": 60.1,
+    "step": 778,
+    "train_bits_per_code": 4.134,
+    "valid_bits_per_byte": 0.9285
+   },
+   {
+    "train_s": 120.0,
+    "step": 1576,
+    "train_bits_per_code": 3.096,
+    "valid_bits_per_byte": 0.9142
+   },
+   {
+    "train_s": 180.0,
+    "step": 2372,
+    "train_bits_per_code": 3.283,
+    "valid_bits_per_byte": 0.9073
+   },
+   {
+    "train_s": 240.0,
+    "step": 3168,
+    "train_bits_per_code": 4.136,
+    "valid_bits_per_byte": 0.9
+   },
+   {
+    "train_s": 300.1,
+    "step": 3964,
+    "train_bits_per_code": 4.129,
+    "valid_bits_per_byte": 0.9005
+   },
+   {
+    "train_s": 360.0,
+    "step": 4758,
+    "train_bits_per_code": 3.742,
+    "valid_bits_per_byte": 0.8913
+   },
+   {
+    "train_s": 420.0,
+    "step": 5550,
+    "train_bits_per_code": 3.982,
+    "valid_bits_per_byte": 0.8937
+   },
+   {
+    "train_s": 480.1,
+    "step": 6221,
+    "train_bits_per_code": 3.397,
+    "valid_bits_per_byte": 0.8888
+   },
+   {
+    "train_s": 540.0,
+    "step": 6960,
+    "train_bits_per_code": 3.94,
+    "valid_bits_per_byte": 0.8859
+   },
+   {
+    "train_s": 600.0,
+    "step": 7698,
+    "train_bits_per_code": 3.891,
+    "valid_bits_per_byte": 0.8828
+   },
+   {
+    "train_s": 660.0,
+    "step": 8436,
+    "train_bits_per_code": 4.337,
+    "valid_bits_per_byte": 0.8852
+   },
+   {
+    "train_s": 720.0,
+    "step": 9176,
+    "train_bits_per_code": 3.449,
+    "valid_bits_per_byte": 0.8825
+   },
+   {
+    "train_s": 780.1,
+    "step": 9916,
+    "train_bits_per_code": 4.296,
+    "valid_bits_per_byte": 0.8792
+   },
+   {
+    "train_s": 840.0,
+    "step": 10654,
+    "train_bits_per_code": 3.693,
+    "valid_bits_per_byte": 0.8756
+   },
+   {
+    "train_s": 900.0,
+    "step": 11393,
+    "train_bits_per_code": 3.906,
+    "valid_bits_per_byte": 0.874
+   },
+   {
+    "train_s": 960.1,
+    "step": 12133,
+    "train_bits_per_code": 3.788,
+    "valid_bits_per_byte": 0.8736
+   },
+   {
+    "train_s": 1020.0,
+    "step": 12871,
+    "train_bits_per_code": 3.95,
+    "valid_bits_per_byte": 0.8723
+   },
+   {
+    "train_s": 1080.0,
+    "step": 13610,
+    "train_bits_per_code": 4.142,
+    "valid_bits_per_byte": 0.8718
+   },
+   {
+    "train_s": 1140.1,
+    "step": 14348,
+    "train_bits_per_code": 3.385,
+    "valid_bits_per_byte": 0.8705
+   },
+   {
+    "train_s": 1200.0,
+    "step": 15087,
+    "train_bits_per_code": 3.039,
+    "valid_bits_per_byte": 0.8716
+   },
+   {
+    "train_s": 1238.8,
+    "step": 15565,
+    "train_bits_per_code": 3.307,
+    "valid_bits_per_byte": 0.8711
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.9592,
+   "exact": 0.975
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 200,
+   "f1": 0.8874,
+   "exact": 0.63,
+   "f1_no_m1": 0.8877,
+   "f1_bias": 0.8874,
+   "exact_bias": 0.63
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 40,
+   "f1": 0.3018,
+   "exact": 0.0,
+   "f1_no_m1": 0.3053,
+   "f1_bias": 0.3018,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.3262
+  },
+  "unseen_network_with_nearest": {
+   "n": 160,
+   "f1": 0.2709,
+   "exact": 0.0063,
+   "f1_no_m1": 0.2746,
+   "f1_bias": 0.2709,
+   "exact_bias": 0.0063,
+   "retrieved_answer_f1_vs_ref": 0.1906
+  },
+  "heldout_network_without_memory": {
+   "n": 200,
+   "f1": 0.2429,
+   "exact": 0.005
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.282
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.9625,
+   "exact": 0.97
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 200,
+   "f1": 0.8812,
+   "exact": 0.585,
+   "f1_no_m1": 0.8795,
+   "f1_bias": 0.8812,
+   "exact_bias": 0.585
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Rewrite the following sentence using a different set of words:\n\nHe arrived late ",
+    "a": "He showed up after the gathering had started.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "He showed up after the gathering had started.",
+    "f1_no_m1": 1.0,
+    "a_bias": "He showed up after the gathering had started.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Create an original list of questions for an interview with a famous person. Outp",
+    "a": "Here is a list of questions for an interview with a famous person: \n1. What motivated you to pursue your goals in your career?\n2. What role does creativity play",
+    "f1": 0.6909090909090909,
+    "exact": 0.0,
+    "a_no_m1": "Here is a list of questions for an interview with a famous person: \n1. What motivated you to pursue your goals in your career?\n2. What role does creativity play",
+    "f1_no_m1": 0.6909090909090909,
+    "a_bias": "Here is a list of questions for an interview with a famous person: \n1. What motivated you to pursue your goals in your career?\n2. What role does creativity play",
+    "f1_bias": 0.6909090909090909,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Provide a list of sites to visit in Barcelona.",
+    "a": "The sites to visit in Barcelona include La Sagrada Familia, Parc G\u00fcell, Camp Nou Stadium, La Rambla, Montju\u00efc Castle, Santa Maria del Mar, Palau de la Musica Ca",
+    "f1": 0.8641975308641975,
+    "exact": 0.0,
+    "a_no_m1": "The sites to visit in Barcelona include La Sagrada Familia, Parc G\u00fcell, Camp Nou Stadium, La Rambla, Montju\u00efc Castle, Santa Maria del Mar, Palau de la Musica Ca",
+    "f1_no_m1": 0.8641975308641975,
+    "a_bias": "The sites to visit in Barcelona include La Sagrada Familia, Parc G\u00fcell, Camp Nou Stadium, La Rambla, Montju\u00efc Castle, Santa Maria del Mar, Palau de la Musica Ca",
+    "f1_bias": 0.8641975308641975,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Label the parts of speech in the following sentence: \"The teacher forgot her lec",
+    "a": "The (article) teacher (noun) forgot (verb) her (determiner) lecture (noun) notes (noun).",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The (article) teacher (noun) forgot (verb) her (determiner) lecture (noun) notes (noun).",
+    "f1_no_m1": 1.0,
+    "a_bias": "The (article) teacher (noun) forgot (verb) her (determiner) lecture (noun) notes (noun).",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Identify the lowest number in the list.\n[90, 23, 2, 1000, -50]",
+    "a": "-50",
+    "f1": 0.0,
+    "exact": 1.0,
+    "a_no_m1": "-50",
+    "f1_no_m1": 0.0,
+    "a_bias": "-50",
+    "f1_bias": 0.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Differentiate between artificial intelligence, machine learning, and deep learni",
+    "a": "Artificial Intelligence (AI) is the broadest term, referring to the ability of machines to simulate human intelligence. Machine learning is a subset of AI, invo",
+    "f1": 0.8201438848920863,
+    "exact": 0.0,
+    "a_no_m1": "Artificial Intelligence (AI) is the broadest term, referring to the ability of machines to simulate human intelligence. Machine learning is a subset of AI, invo",
+    "f1_no_m1": 0.8201438848920863,
+    "a_bias": "Artificial Intelligence (AI) is the broadest term, referring to the ability of machines to simulate human intelligence. Machine learning is a subset of AI, invo",
+    "f1_bias": 0.8201438848920863,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Calculate the value of this math equation.\nEquation: $(7+1)\\times5$",
+    "a": "$(7+1)\\times5",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "$(7+1)\\times5",
+    "f1_no_m1": 0.0,
+    "a_bias": "$(7+1)\\times5",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.568,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Give three examples of weather-related natural disasters.",
+    "a": "1. Watching a storm.\n2. Watching a storm.\n3. Watching a storm.\n4. Watching a storm.\n5. Watching a storm.",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "1. Watching a storm: Watching a storm can cause a storm to be caused by a storm.\n2. Watching a storm: Watching a storm can cause a storm to be caused by a storm",
+    "f1_no_m1": 0.0,
+    "a_bias": "1. Watching a storm.\n2. Watching a storm.\n3. Watching a storm.\n4. Watching a storm.\n5. Watching a storm.",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.576,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.36363636363636365
+   },
+   {
+    "q": "Why is self-care important?",
+    "a": "Set up a self-care is important because it helps to reduce stress and anxiety. It helps to reduce stress and anxiety by reducing stress and anxiety. It also hel",
+    "f1": 0.4271844660194175,
+    "exact": 0.0,
+    "a_no_m1": "Severing self-care is important because it helps to reduce stress and improves the overall health of the body. It helps to reduce stress and improves the overal",
+    "f1_no_m1": 0.3368421052631579,
+    "a_bias": "Set up a self-care is important because it helps to reduce stress and anxiety. It helps to reduce stress and anxiety by reducing stress and anxiety. It also hel",
+    "f1_bias": 0.4271844660194175,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.555,
+    "f1_vs_retrieved": 0.08247422680412371,
+    "retrieved_answer_f1_vs_ref": 0.18333333333333332
+   },
+   {
+    "q": "Outline the main points of a presentation about the benefits of renewable energy",
+    "a": "The main points of a presentation about the benefits of renewable energy are: \n1. Improved energy efficiency - Renewable energy sources such as solar and wind p",
+    "f1": 0.5648854961832062,
+    "exact": 0.0,
+    "a_no_m1": "The main points of a presentation about the benefits of renewable energy are: \n1. Importing renewable energy by reducing the amount of energy needed for the env",
+    "f1_no_m1": 0.546875,
+    "a_bias": "The main points of a presentation about the benefits of renewable energy are: \n1. Improved energy efficiency - Renewable energy sources such as solar and wind p",
+    "f1_bias": 0.5648854961832062,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.586,
+    "f1_vs_retrieved": 0.4329896907216495,
+    "retrieved_answer_f1_vs_ref": 0.40350877192982454
+   },
+   {
+    "q": "Name three countries in Europe.",
+    "a": "The three countries in Europe are the United States, the United States, and the United States.",
+    "f1": 0.2727272727272727,
+    "exact": 0.0,
+    "a_no_m1": "The three countries in Europe are the United Kingdom, the United Kingdom, and the United Kingdom.",
+    "f1_no_m1": 0.36363636363636365,
+    "a_bias": "The three countries in Europe are the United States, the United States, and the United States.",
+    "f1_bias": 0.2727272727272727,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.785,
+    "f1_vs_retrieved": 0.18421052631578946,
+    "retrieved_answer_f1_vs_ref": 0.18181818181818182
+   },
+   {
+    "q": "Generate a sentence that explains the importance of getting enough sleep.",
+    "a": "We are looking for a way to stay focused and motivate.",
+    "f1": 0.15384615384615383,
+    "exact": 0.0,
+    "a_no_m1": "Weaving enough sleep is essential for both physical and mental health. It helps to maintain energy levels and keep us alert throughout the day.",
+    "f1_no_m1": 0.5384615384615384,
+    "a_bias": "We are looking for a way to stay focused and motivate.",
+    "f1_bias": 0.15384615384615383,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.557,
+    "f1_vs_retrieved": 0.10344827586206895,
+    "retrieved_answer_f1_vs_ref": 0.4533333333333333
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Write a tweet describing the importance of protecting the environment.",
+    "a": "Protecting the environment is essential for protecting the environment. It is essential for protecting the environment by protecting the environment by protecti",
+    "f1": 0.021052631578947368,
+    "exact": 0.0,
+    "a_no_m1": "Protecting the environment is essential to preserving a healthy and sustainable future for all life on Earth. It is essential to protect the environment by prot",
+    "f1_no_m1": 0.25316455696202533,
+    "a_bias": "Protecting the environment is essential for protecting the environment. It is essential for protecting the environment by protecting the environment by protecti",
+    "f1_bias": 0.021052631578947368,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.453,
+    "f1_vs_retrieved": 0.15,
+    "retrieved_answer_f1_vs_ref": 0.2857142857142857
+   },
+   {
+    "q": "Name three common methods of identity verification.",
+    "a": "Three common methods of identity verification are: 1) regularly updating your security software; 2) keeping regular backups of your data; and 3) setting strong,",
+    "f1": 0.48780487804878053,
+    "exact": 0.0,
+    "a_no_m1": "Three common methods of identity verification are: 1) regularly updating your security software; 2) keeping regular backups of your data; and 3) setting strong,",
+    "f1_no_m1": 0.48780487804878053,
+    "a_bias": "Three common methods of identity verification are: 1) regularly updating your security software; 2) keeping regular backups of your data; and 3) setting strong,",
+    "f1_bias": 0.48780487804878053,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.269,
+    "f1_vs_retrieved": 0.8474576271186439,
+    "retrieved_answer_f1_vs_ref": 0.36363636363636365
+   },
+   {
+    "q": "Generate a film title that matches with the theme of forest conservation",
+    "a": "The Voices of the Grave.",
+    "f1": 0.16666666666666666,
+    "exact": 0.0,
+    "a_no_m1": "The Voices of the Grave.",
+    "f1_no_m1": 0.16666666666666666,
+    "a_bias": "The Voices of the Grave.",
+    "f1_bias": 0.16666666666666666,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.254,
+    "f1_vs_retrieved": 0.6666666666666665,
+    "retrieved_answer_f1_vs_ref": 0.18181818181818182
+   },
+   {
+    "q": "Explain why the situation changed.\nSituation: Recently the amount of rainfall ha",
+    "a": "The situation changed by the amount of rainfall has decreased in a certain region.",
+    "f1": 0.39999999999999997,
+    "exact": 0.0,
+    "a_no_m1": "The situation changed by the amount of rainfall has decreased in a certain region.",
+    "f1_no_m1": 0.39999999999999997,
+    "a_bias": "The situation changed by the amount of rainfall has decreased in a certain region.",
+    "f1_bias": 0.39999999999999997,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.15,
+    "f1_vs_retrieved": 0.2777777777777778,
+    "retrieved_answer_f1_vs_ref": 0.22222222222222224
+   },
+   {
+    "q": "Reverse the order of the following sentence to change the emphasis\n\nHe was very ",
+    "a": "He was very careful with his words.",
+    "f1": 0.6153846153846153,
+    "exact": 0.0,
+    "a_no_m1": "He was very careful with his words.",
+    "f1_no_m1": 0.6153846153846153,
+    "a_bias": "He was very careful with his words.",
+    "f1_bias": 0.6153846153846153,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.291,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Given a product description, generate 5 appropriate tags.\nThis cream is ideal fo",
+    "a": "1. Wash the cream with a warm, irritated skin.\n2. Wash the cream with a warm, irritated skin.\n3. Wash the cream with a warm, irritated skin.\n4. Wash the cream w",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "1. Wash the cream with a warm, irritated skin.\n2. Wash the cream with a warm, irritated skin.\n3. Wash the cream with a warm, irritated skin.\n4. Wash the cream w",
+    "f1_no_m1": 0.0,
+    "a_bias": "1. Wash the cream with a warm, irritated skin.\n2. Wash the cream with a warm, irritated skin.\n3. Wash the cream with a warm, irritated skin.\n4. Wash the cream w",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.192,
+    "f1_vs_retrieved": 0.1346153846153846,
+    "retrieved_answer_f1_vs_ref": 0.05714285714285714
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Given an article, edit out any spelling or grammar errors.\nThis article it expla",
+    "a": "This article explains how blockchain works.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "This article explains how blockchain works.",
+    "f1_no_m1": 1.0,
+    "a_bias": "This article explains how blockchain works.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Categorize this phrase: \"Cats chase mice\"",
+    "a": "The phrase \"Cats chase mice\" is an example of a proverb.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The phrase \"Cats chase mice\" is an example of a proverb.",
+    "f1_no_m1": 1.0,
+    "a_bias": "The phrase \"Cats chase mice\" is an example of a proverb.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Read this short passage and identify the main idea.\nThe train generally leaves t",
+    "a": "The train has been leaving later than usual due to technical difficulties.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The train has been leaving later than usual due to technical difficulties.",
+    "f1_no_m1": 1.0,
+    "a_bias": "The train has been leaving later than usual due to technical difficulties.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Create a haiku about a football game.",
+    "a": "The stadium roars,\nFootball drums sound in the night -\nThe game begins anew.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The stadium roars,\nFootball drums sound in the night -\nThe game begins anew.",
+    "f1_no_m1": 1.0,
+    "a_bias": "The stadium roars,\nFootball drums sound in the night -\nThe game begins anew.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Generate a blog post discussing the importance of healthy eating habits.",
+    "a": "Good nutrition is essential for maintaining a healthy lifestyle. Having a balanced and nutritious diet can help prevent a variety of health problems and can als",
+    "f1": 0.6810810810810811,
+    "exact": 0.0,
+    "a_no_m1": "Good nutrition is essential for maintaining a healthy lifestyle. Having a balanced and nutritious diet can help prevent a variety of health problems and can als",
+    "f1_no_m1": 0.6810810810810811,
+    "a_bias": "Good nutrition is essential for maintaining a healthy lifestyle. Having a balanced and nutritious diet can help prevent a variety of health problems and can als",
+    "f1_bias": 0.6810810810810811,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Name three common types of attack on computer networks.",
+    "a": "Three common types of attack on computer networks are: 1) Denial of Service (DoS) attacks, which flood the target with requests and prevent them from accessing ",
+    "f1": 0.8727272727272727,
+    "exact": 0.0,
+    "a_no_m1": "Three common types of attack on computer networks are: 1) Denial of Service (DoS) attacks, which flood the target with requests and prevent them from accessing ",
+    "f1_no_m1": 0.8727272727272727,
+    "a_bias": "Three common types of attack on computer networks are: 1) Denial of Service (DoS) attacks, which flood the target with requests and prevent them from accessing ",
+    "f1_bias": 0.8727272727272727,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ]
+ },
+ "checks": {}
+}
