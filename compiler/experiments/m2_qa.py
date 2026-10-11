@@ -466,12 +466,15 @@ class QAEngine:
 
     @torch.no_grad()
     def ask(self, q: bytes, max_codes: int = 120, no_repeat: int = 3, calculator: bool | None = None, use_memory: bool = True,
-            temperature: float = 0.0, top_k: int = 20, gen: torch.Generator | None = None, exclude: int | None = None):
+            temperature: float = 0.0, top_k: int = 20, gen: torch.Generator | None = None, exclude: int | None = None,
+            min_sim: float = 0.0):
         """Answer through the compiler: retrieve, place the exchange in the window, generate greedily
         with the copy head, decode. Returns (reply bytes, info dict)."""
         a, enc, model = self.a, self.enc, self.model
         calculator = getattr(a, "calculator", False) if calculator is None else calculator
         idx, sim, how = self.retrieve(q, exclude) if use_memory else (None, 0.0, "off")
+        if idx is not None and how == "nearest" and sim < min_sim:   # a weak match: answer from the network alone
+            idx, sim, how = None, 0.0, f"skipped (similarity {sim:.2f} < {min_sim})"
         if idx is not None and a.neighbor_codes:
             q_codes = enc.encode(render(*self.mem.exchanges[idx]))[0]
             nb = q_codes[-a.neighbor_codes:]
@@ -549,6 +552,7 @@ def main() -> int:
     ap.add_argument("--calculator", action="store_true", help="check loop, rule 1: when the reply has written 'a op b =', the executor writes the result; the final Answer: is checked against the last computed value")
     ap.add_argument("--perturb-self", type=float, default=0.0, help="share of self-context windows whose retrieved question is reworded (words dropped, swapped, replaced): teaches copying from near matches")
     ap.add_argument("--sim-feature", action="store_true", help="the retrieval similarity is a trust-head input")
+    ap.add_argument("--no-retrieval-p", type=float, default=0.0, help="share of non-self windows trained with nothing retrieved")
     ap.add_argument("--loss-answer-only", action="store_true", help="train and validate on the answer codes only, not the question")
     ap.add_argument("--stop-at-blank", action="store_true", help="a reply ends at its first blank line (single-span answers, e.g. SQuAD)")
     ap.add_argument("--lr", type=float, default=1e-3, help="AdamW peak learning rate")
@@ -673,6 +677,8 @@ def main() -> int:
         """[nearest other exchange, tail] + SEP + [this exchange, head], padded to ctx+1, with a loss mask."""
         own = (np.append(codes[i], EOS) if a.eos else codes[i])[:a.ctx - a.neighbor_codes - len(sep)]
         src_i = i if (a.self_context_p and rng.random() < a.self_context_p) else neighbors[i]
+        if a.no_retrieval_p and src_i != i and rng.random() < a.no_retrieval_p:
+            src_i = None                     # nothing retrieved: the core must answer alone, as at test time when memory has nothing
         nb = codes_of(src_i)[-a.neighbor_codes:] if a.neighbor_codes and src_i is not None else np.array([], dtype=np.int64)
         sim = 0.0 if src_i is None else (1.0 if src_i == i else mem.similarity_keys(mem.keys[i], mem.keys[src_i]))
         perturbed = False

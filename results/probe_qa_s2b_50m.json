@@ -1,0 +1,426 @@
+{
+ "model": "runs/s2b_50m/qa_s2b_50m.pt",
+ "summary": {
+  "stored": {
+   "n": 5,
+   "ok": 5,
+   "ok_without_memory": 0
+  },
+  "reworded": {
+   "n": 5,
+   "ok": 2,
+   "ok_without_memory": 1
+  },
+  "knowledge": {
+   "n": 5,
+   "ok": 5,
+   "ok_without_memory": 1
+  },
+  "heldout": {
+   "n": 5,
+   "ok": 4,
+   "ok_without_memory": 5
+  },
+  "taught": {
+   "n": 6,
+   "ok": 4,
+   "ok_without_memory": 0
+  },
+  "arithmetic": {
+   "n": 3,
+   "ok": 0,
+   "ok_without_memory": 2
+  },
+  "chat": {
+   "n": 3,
+   "ok": 1,
+   "ok_without_memory": 2
+  }
+ },
+ "rows": [
+  {
+   "section": "stored",
+   "question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "answer": "A traditional Thanksgiving meal in the United States typically includes turkey, stuffing, mashed potatoes, gravy, cranberry sauce, vegetables, and pumpkin pie.",
+   "answer_without_memory": "One of the most popular food in the US is the traditionally served meat.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "seconds": 1.15
+  },
+  {
+   "section": "stored",
+   "question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "answer": "A simple example of gravity can be demonstrated by dropping a ball; the ball falls to the ground due to the force of gravcy pulling it downwards.",
+   "answer_without_memory": "The concept of gravity is a concept that describes how a force acts on a surface. It is a measure of the force of gravitational attraction between two objects, such as a car, a boat, or a boat. The concept is a mathematical concept that states that gravity can be used to measure the force and momentum of a object.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "seconds": 1.58
+  },
+  {
+   "section": "stored",
+   "question": "Create a list of 10 verbs related to cooking",
+   "answer": "- Mix\n- Boil \n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+   "answer_without_memory": "1. Pasta \n2. Pizza \n3. Papa (pork, beef, cheese)\n4. Pineapple \n5. Pie \n6. Pin \n7. Pit \n8. Pipe \n9. Paper \n10. Pickle \n\nThese verbs are used in the following sentences: \n- Pastas \n  \n- Pumpkin \n    \n \nv. Pass",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Create a list of 10 verbs related to cooking",
+   "seconds": 2.26
+  },
+  {
+   "section": "stored",
+   "question": "Name some computer viruses",
+   "answer": "Some computer viruses are: \n- WannaCry\n- Stuxnet\n- Trojan Horse\n- Code Red\n- Sality\n- CryptoLocker\n- ILoveYou\n- Chimera\n- MyDoom\n- Melissa",
+   "answer_without_memory": "Some computer viruses are:\n- viruses that cause a variety of symptoms such as fever, headache, and headache.\n- Viruses that cause serious illnesses such as AIDS, AIDSS, and AIDN.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Name some computer viruses",
+   "seconds": 1.69
+  },
+  {
+   "section": "stored",
+   "question": "Come up with two statistics related to the US population.",
+   "answer": "According to the US Census Bureau, the current US population is approximately 331 million, and the current American population growth rate is 0.7%.",
+   "answer_without_memory": "1. According to the US Census Bureau, the US population of 2010 was 1,000,073.\n2. Accordingly, the population of the US is 14,700 people.\n3. According the US Bureau of Labor Statistics, \"The US population estimate for 2110\" is 2,800.\n4. According in the US, the number of people aged 18 and over is 3,011.\n5. According a study conducted",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Come up with two statistics related to the US population.",
+   "seconds": 2.25
+  },
+  {
+   "section": "reworded",
+   "question": "What food do Americans usually eat on Thanksgiving?",
+   "answer": "The American diet is generally healthy and delicious. Americans typically eat a variety of foods, including vegetables, fruits, vegetables, and fruits. They also tend to eat a wide variety of vegetables, such as carrots, potatoes, and cucumbers.",
+   "answer_without_memory": "The American Heart Association recommends that Americans eat a variety of foods, including:\n\n1. Fruits: Fruit is a great source of vitamins, minerals, and antioxidants.\n\n2. Fish: Fish is a good source of protein, vitamins A, C, and K, as well as vitamins B, C and K.\n\n3. Fried foods: Fried food is a popular choice for people who are looking for a healthy and balanced meal.\n\n4. Frozen foods: Fresh fruits,",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.384,
+   "retrieved_question": "What kind of food do they usually eat in Spain?",
+   "seconds": 2.47
+  },
+  {
+   "section": "reworded",
+   "question": "Can you give me an example that shows how gravity works?",
+   "answer": "One example of gravity is the Earth's gravitational pull. This force is used to pull the Earth around the Sun, and it is the force that pulls the Earth from the Sun. The force is the same as the force of gravitation, and the force is equal to the force in the Earth.",
+   "answer_without_memory": "Sure, here's an example of how gravity works:\n\nLet's say you have a 10-year-old girl who is 12 years old. You have a big 15-year old who is over 18 years old, and you have 16-years-old. You've 14-year years-old, and 17-year ones. You can't even get 13-year kids to get married.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.298,
+   "retrieved_question": "Create an analogy that shows how the legal system works",
+   "seconds": 2.49
+  },
+  {
+   "section": "reworded",
+   "question": "List ten verbs you would use when cooking.",
+   "answer": "- Pasta \n- Pizza \n \n  - Pickle \n   - Paint \n     - Paste \n        \n\u2022 Pastas \n\n    - Salsa",
+   "answer_without_memory": "1. Pasta \n2. Pizza \n3. Papa (pasta)\n4. Pilaf (Pasta or Pizzeria)\n5. Passion \n6. Payment \n7. Pickle \n8. Pie \n9. Pin \n10. Pipe \n  \n11. Put \n    \nPreparation \n \nVocabulary \nWriting \nCook \nD",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.473,
+   "retrieved_question": "Create a list of 10 verbs related to cooking",
+   "seconds": 2.5
+  },
+  {
+   "section": "reworded",
+   "question": "What are some well-known computer viruses?",
+   "answer": "Some well-known computer viruses are:\n1. Stuxnet\n2. Stix\n3. Styx\n4. Stir\n5. StayStar\n6. St. Louis\n7. StopTree\n8. Stupid\n9. Storm\n10. Stone\n11. Zeno\n12. Zinc\n13. Zinfoil\n14. Zinne\n15. Zygote\n16. Zest\n17. ZoS",
+   "answer_without_memory": "Some well-known computer viruses include:\n\n1. viruses: These viruses are small, malicious software that can be used to spread and spread diseases.\n\n2. virus: These are viruses that can spread through the air.\n\n3. virus-causing: These types of viruses can be spread by spreading viruses.\n\n4. virus pneumonia: These pneumatic viruses spread by the air, and spread by infected people.\n\n5. virus infection: These type of virus can spread by contact with infected people, and can",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.509,
+   "retrieved_question": "Name some computer viruses",
+   "seconds": 3.42
+  },
+  {
+   "section": "reworded",
+   "question": "Tell me two facts about the population of the United States.",
+   "answer": "The population of the United States is approximately 328 million people.",
+   "answer_without_memory": "The population of the United States is estimated to be 1.5 million people.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.65,
+   "retrieved_question": "Tell me the population of the United States.",
+   "seconds": 0.52
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the largest planet in our solar system?",
+   "answer": "The largest planet in our solar system is Jupiter.",
+   "answer_without_memory": "The largest planet in our solar system is the Solar System.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.744,
+   "retrieved_question": "Name a planet from our solar system.",
+   "seconds": 0.41
+  },
+  {
+   "section": "knowledge",
+   "question": "Who wrote Romeo and Juliet?",
+   "answer": "William Shakespeare",
+   "answer_without_memory": "Romeo and Juliet wrote Romeo's most famous song, \"The Ghost\", which was written by Johnny Cash and was written in 1959.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.789,
+   "retrieved_question": "Who wrote the play Romeo and Juliet?",
+   "seconds": 0.68
+  },
+  {
+   "section": "knowledge",
+   "question": "What is photosynthesis?",
+   "answer": "Photosynthesis is the process by which plants use light energy to convert carbon dioxide and water into oxygen and sugars. It involves the transfer of electrons and protons between molecules as chlorophyll in the presence of light. The light energy is released into the atmosphere, and the sugar produced is used by the plant for growth.",
+   "answer_without_memory": "Photosynthesis is the process by which plants convert light energy from the sun into chemical energy. This energy is then used to convert carbon dioxide, water, and water into chemical form.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.589,
+   "retrieved_question": "Describe the process of photosynthesis to me.",
+   "seconds": 1.63
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the boiling point of water in Celsius?",
+   "answer": "The approximate boiling point of water in Celsius is 100 degrees.",
+   "answer_without_memory": "The boiling point of water in Celsius is 125.5 degrees Celser.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.76,
+   "retrieved_question": "What is the approximate boiling point of water in Celsius?",
+   "seconds": 0.65
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the capital of Japan?",
+   "answer": "The capital of Japan is Tokyo.",
+   "answer_without_memory": "The capital of Japan is Sh\u014dmei, located in the heart of the city. It is the largest city in Japan and is the second largest in the world after Japan. It has a population of 1,000,010, which is a significant factor in the country's economy. The capital is located in Sh\u016bme, which has a total population of over 100 million. The city is also home to the Sh\u0141oshi-Ky\u016b, a small-scale restaurant chain. The Sh\ufffd",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Give me the capital of Japan.",
+   "seconds": 2.0
+  },
+  {
+   "section": "heldout",
+   "question": "Generate a creative poem describing the night sky.",
+   "answer": "The night sky is a vast expanse of stars,\nThe vastness of the sky, the vastness,\nA sight to behold.",
+   "answer_without_memory": "The night sky is a vast expanse of stars,\nThe vast expan of stars that fill the sky.\nThe stars twinkle in the night,\nAs the night progresses, they twinkled in the sky,\nAnd the night sky's beauty is so vast.\n\nThe sky is like a vast ocean,\nA vast ocean of stars and stars, so vast,\nIts beauty and beauty is a sight to behold.\nIt's a place of wonder and beauty,\nBut it's the perfect place to explore.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.48,
+   "retrieved_question": "Write a creative sentence starting with \"The night sky\".",
+   "seconds": 2.22
+  },
+  {
+   "section": "heldout",
+   "question": "Come up with a creative sentence to describe a summer day.",
+   "answer": "The sun was shining brightly in the sky.",
+   "answer_without_memory": "The sun was shining brightly in the sky, casting a warm glow across the sky. The sky was a deep shade of blue, and the air was filled with the scent of freshly cut grass and flowers.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.379,
+   "retrieved_question": "Generate a creative metaphor to describe a warm summer day.\n<no input>",
+   "seconds": 0.92
+  },
+  {
+   "section": "heldout",
+   "question": "List 5 famous Italian dishes.",
+   "answer": "1. Pizza \n2. Pasta \n3. Paprika \n4. Passion \n5. Padrezza",
+   "answer_without_memory": "1. Paprika\n2. Pasta\n3. Pizza\n4. Passion\n5. Pilaf\n6. Piccolo\n7. Paz",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.453,
+   "retrieved_question": "Build a database for all Italian dishes",
+   "seconds": 1.22
+  },
+  {
+   "section": "heldout",
+   "question": "Tell me the most common hairstyle for men.",
+   "answer": "The most common hairstyle for men is a bold, flowing hairstone. It is a versatile and versatility-free option that can be used for a variety of hairsticks.",
+   "answer_without_memory": "The most common hairstyle for men is to wear a haircut or a hairdresser's hair shirt.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.346,
+   "retrieved_question": "What is the most common type of sneaker for men?",
+   "seconds": 1.07
+  },
+  {
+   "section": "heldout",
+   "question": "Print the following statement: \"I want to learn to code\".",
+   "answer": "I want to learn to code.",
+   "answer_without_memory": "I want to learn to code.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.336,
+   "retrieved_question": "Convert the following statement into a code snippet.\nPrint the sum of 1 and 2.",
+   "seconds": 0.27
+  },
+  {
+   "section": "taught",
+   "question": "What is the name of Adam's research model?",
+   "answer": "Adam's research model is called the Text Research Model.",
+   "answer_without_memory": "Adam's research model is a model that uses data from multiple sources to create a model of a person's life. It is based on the idea that people are able to understand and understand the world around them, and that they can use this knowledge to create their own personalized experiences.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "What is the name of Adam's research model?",
+   "seconds": 1.13
+  },
+  {
+   "section": "taught",
+   "question": "What GPU does the research computer use?",
+   "answer": "The research computer uses an NVIDIA RTX 3090 GPU.",
+   "answer_without_memory": "The research computer uses a variety of GPUs to create a computer that can process data from a computer. These GPTs are designed to process data quickly and efficiently, making them ideal for data analysis and machine learning.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "What GPU does the research computer use?",
+   "seconds": 1.05
+  },
+  {
+   "section": "taught",
+   "question": "When was Version 1 of the compiler frozen?",
+   "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+   "answer_without_memory": "Version 1 of the compiler frozen is a compile-based programming language that is used to create a compiled program that is run by a web server. It is a popular choice for web servers and is used for creating a web application that is designed to be easy to use.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "When was Version 1 of the compiler frozen?",
+   "seconds": 1.31
+  },
+  {
+   "section": "taught",
+   "question": "What is Adam's research model called?",
+   "answer": "Adam's research model is called the Text Research Model.",
+   "answer_without_memory": "Adam's research model is a model that uses data from multiple sources to create a model of a person's life. It uses data collected from different sources to understand the context of a situation, such as a job, a job interview, or a job post.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.74,
+   "retrieved_question": "What is the name of Adam's research model?",
+   "seconds": 1.06
+  },
+  {
+   "section": "taught",
+   "question": "Which graphics card is in the research computer?",
+   "answer": "The research computer is in the research computer.",
+   "answer_without_memory": "The research computer is in the research computer. It is a computer that is used to create and display graphics cards. It has a 100-word structure and is used for creating and displaying graphics card games.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.398,
+   "retrieved_question": "Give three types of computer graphics.",
+   "seconds": 0.86
+  },
+  {
+   "section": "taught",
+   "question": "On what date was Version 1 frozen?",
+   "answer": "Version 1 frozen was frozen on 10 October 2026.",
+   "answer_without_memory": "Version 1 frozen is a classic American comic book series that was published in 1989. The series was published by Versions 1 and 2, and was published as a single series in 2001.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.476,
+   "retrieved_question": "When was Version 1 of the compiler frozen?",
+   "seconds": 1.11
+  },
+  {
+   "section": "arithmetic",
+   "question": "What is 12 plus 30?",
+   "answer": "12 plus 30 is 100.",
+   "answer_without_memory": "12 + 30 = 42\nAnswer: 41",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.65,
+   "retrieved_question": "Calculate 5 plus 2",
+   "seconds": 0.52
+  },
+  {
+   "section": "arithmetic",
+   "question": "If I have 5 apples and eat 2, how many are left?",
+   "answer": "There are 5 apples left.",
+   "answer_without_memory": "If I have 5 apples, and I eat 2 apples, then there are 5 - 2 = 3 apples left.\nIf I eat twice as many apples as I have apples, I eat a total of 2 x 3 = X apples.\nTherefore, there are a total number of apples left to eat.\nAnswer: 3",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.486,
+   "retrieved_question": "If there are two apples and you give away one, how many apples do you have left?",
+   "seconds": 1.33
+  },
+  {
+   "section": "arithmetic",
+   "question": "What is 7 times 8?",
+   "answer": "7 times 8 is 144.",
+   "answer_without_memory": "7 times 8 is equal to 54.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.599,
+   "retrieved_question": "Calculate 42 times 7.",
+   "seconds": 0.44
+  },
+  {
+   "section": "chat",
+   "question": "Hello, how are you today?",
+   "answer": "I am today. I am here to talk to you about my upcoming project. I will be discussing the project and the challenges I faced. I hope that you will be able to provide me with more information and support.",
+   "answer_without_memory": "I am not capable of making personal opinions or opinions. However, I can provide you with some general information about the current state of the art form.\n\nthe art form is a collection of artwork by artists, artists, and artists who have created artwork for the art market. The artwork is designed to be aesthetically pleasing and is often used to create aesthemical or visual art.\n\nmany artworks have been created in the past, such as the artwork of the late 19th century, which was created by artists such as William",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.491,
+   "retrieved_question": "Generate a to-do-list for today.",
+   "seconds": 2.46
+  },
+  {
+   "section": "chat",
+   "question": "Can you help me write a short email to my boss asking for a day off?",
+   "answer": "Dear [Boss],\n\nI am writing to express my interest in receiving a day off. I have been a dedicated and hardworking employee since I started at this company and believe that I am deserving of a higher wage for my efforts. I would like to discuss the details at our next meeting and I hope that we can reach an agreement that is mutually beneficial.\n\nThank you for your time and consideration. \n\nSincerely,\n[Your name]",
+   "answer_without_memory": "Sure, here's a short email to your boss:\n\nSubject: Request for a Day Off\n\nDear [Boss's Name],\n\nI am writing to request a day off for a day of work. I am writing this email to request the day off. I have been working on this project for a while and I am confident that I will be able to provide a time off for the day.\n\nI have been looking for a way to get to the next level and I have found a way for me to get a better idea of",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.373,
+   "retrieved_question": "Draft an email to your boss asking for a raise.",
+   "seconds": 3.27
+  },
+  {
+   "section": "chat",
+   "question": "What should I cook for dinner tonight?",
+   "answer": "You can cook for dinner tonight by following the recipes listed above.",
+   "answer_without_memory": "You should cook for dinner tonight if you want to make a delicious meal. Here are some tips to help you cook for your dinner ton:\n\n1. Start by cooking the vegetables in a large pot. 2. Add the vegetables to the pot and cook for a few minutes until they are tender. 3. Add some salt and pepper to taste. 4. Add a little bit of salt and cook until the vegetables are tender, about 5 minutes. 5. Add more salt and a little more salt to taste, if you like, you can cook the vegetables.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.365,
+   "retrieved_question": "Generate a list of five vegetables to cook for a healthy dinner",
+   "seconds": 1.87
+  }
+ ]
+}

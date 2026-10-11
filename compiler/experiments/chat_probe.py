@@ -81,6 +81,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("model"); ap.add_argument("--device", default="cpu"); ap.add_argument("--threads", type=int, default=8)
     ap.add_argument("--no-repeat", type=int, default=3); ap.add_argument("--max-codes", type=int, default=120)
+    ap.add_argument("--min-sim", type=float, default=0.0, help="use memory only for exact hits or nearest matches at least this similar")
+    ap.add_argument("--tag", default="", help="suffix for the output names")
     a = ap.parse_args()
     import torch
     torch.set_num_threads(a.threads)
@@ -91,14 +93,14 @@ def main() -> int:
     rows = []
     for section, q, groups in PROBES:
         t0 = time.perf_counter()
-        out, info = eng.ask(q.encode(), a.max_codes, a.no_repeat)
+        out, info = eng.ask(q.encode(), a.max_codes, a.no_repeat, min_sim=a.min_sim)
         alone, _ = eng.ask(q.encode(), a.max_codes, a.no_repeat, use_memory=False)
         text, text_alone = out.decode("utf-8", "replace"), alone.decode("utf-8", "replace")
         rows.append({"section": section, "question": q, "answer": text, "answer_without_memory": text_alone,
                      "keywords_ok": check(text, groups), "keywords_ok_without_memory": check(text_alone, groups),
                      "memory": info["memory"], "similarity": info["similarity"],
                      "retrieved_question": info.get("retrieved_question"), "seconds": round(time.perf_counter() - t0, 2)})
-    stem = Path(a.model).stem
+    stem = Path(a.model).stem + a.tag
     summary = {}
     for r in rows:
         s = summary.setdefault(r["section"], {"n": 0, "ok": 0, "ok_without_memory": 0})
