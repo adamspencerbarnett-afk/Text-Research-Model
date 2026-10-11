@@ -482,6 +482,9 @@ def main() -> int:
     ap.add_argument("--sim-feature", action="store_true", help="the retrieval similarity is a trust-head input")
     ap.add_argument("--loss-answer-only", action="store_true", help="train and validate on the answer codes only, not the question")
     ap.add_argument("--stop-at-blank", action="store_true", help="a reply ends at its first blank line (single-span answers, e.g. SQuAD)")
+    ap.add_argument("--lr", type=float, default=1e-3, help="AdamW learning rate (constant)")
+    ap.add_argument("--rehearse", default=None, help="a stage-1 data folder (train/*.txt) whose text is mixed into stage-2 batches")
+    ap.add_argument("--rehearse-p", type=float, default=0.3, help="share of stage-2 windows taken from the rehearsal text")
     ap.add_argument("--save", default=None, help="save the core's weights here after training")
     a = ap.parse_args()
     global FOLD_KEYS
@@ -567,7 +570,17 @@ def main() -> int:
         + (", copy head" if a.copy_head else "") + (", evidence table" if a.evidence else ""))
     dense = [p for n, p in model.named_parameters()]
     opt = torch.optim.AdamW([{"params": [p for p in dense if p.dim() >= 2], "weight_decay": 0.1},
-                             {"params": [p for p in dense if p.dim() < 2], "weight_decay": 0.0}], lr=1e-3, betas=(0.9, 0.95))
+                             {"params": [p for p in dense if p.dim() < 2], "weight_decay": 0.0}], lr=a.lr, betas=(0.9, 0.95))
+    rehearse_tokens = None
+    if a.rehearse:
+        # stage-1 text mixed into stage 2 so the core keeps what stage 1 taught it
+        import glob as _glob
+        files = sorted(_glob.glob(f"{a.rehearse}/train/*.txt"))
+        concat = work / "rehearse_concat.txt"
+        if not concat.exists():
+            concat.write_bytes(b"".join(Path(f).read_bytes() for f in files))
+        rehearse_tokens = enc.encode_file(str(concat), work)[0]
+        say(f"rehearsal: {len(rehearse_tokens):,} stage-1 codes from {len(files)} files, share {a.rehearse_p}")
 
     def sample(i: int):
         """[nearest other exchange, tail] + SEP + [this exchange, head], padded to ctx+1, with a loss mask."""
@@ -596,8 +609,13 @@ def main() -> int:
             src[q0:min(q0 + q_len(i), len(seq))] = True
         return np.pad(seq, (0, a.ctx + 1 - len(seq)), constant_values=PAD), mask, src, sim
 
+    def rehearsal_sample():
+        j = int(rng.integers(0, len(rehearse_tokens) - a.ctx - 1))
+        seq = rehearse_tokens[j:j + a.ctx + 1].astype(np.int64)
+        return seq, np.ones(a.ctx + 1, dtype=np.float32), np.zeros(a.ctx + 1, dtype=bool), 0.0
+
     def batch(idx):
-        xs, ms, ss, sims = zip(*(sample(i) for i in idx))
+        xs, ms, ss, sims = zip(*(rehearsal_sample() if rehearse_tokens is not None and rng.random() < a.rehearse_p else sample(i) for i in idx))
         x = torch.from_numpy(np.stack(xs)).to(dev); m = torch.from_numpy(np.stack(ms)).to(dev)
         s = torch.from_numpy(np.stack(ss)).to(dev)
         return x[:, :-1], x[:, 1:], m[:, 1:], s[:, :-1], torch.tensor(sims, dtype=torch.float32, device=dev)
