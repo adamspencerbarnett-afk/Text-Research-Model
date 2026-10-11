@@ -1,0 +1,533 @@
+{
+ "setup": {
+  "data": "data_qa",
+  "work": "runs/s2a3_lr1e-4_reh",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 1800.0,
+  "ctx": 256,
+  "batch": 32,
+  "topk": 64,
+  "neighbor_codes": 110,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/s2a3_lr1e-4_reh.json",
+  "seed": 1,
+  "self_context_p": 0.5,
+  "copy_bias": 0.0,
+  "device": "cuda",
+  "threads": 0,
+  "width": 256,
+  "layers": 6,
+  "heads": 8,
+  "greedy": true,
+  "no_repeat": 0,
+  "patience": 0,
+  "min_delta": 0.005,
+  "max_steps": 15565,
+  "dict": "runs/core_D3r/v0_8k_plain.cv0d",
+  "init": "runs/core_D3r/scale_5M_v0_8k_ng64.pt",
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "copy_question": false,
+  "calculator": false,
+  "perturb_self": 0.0,
+  "sim_feature": false,
+  "loss_answer_only": false,
+  "stop_at_blank": false,
+  "lr": 0.0001,
+  "head_lr": 0.0,
+  "schedule": "constant",
+  "net_n": 60,
+  "rehearse": "data_core/mix_D3_5M",
+  "rehearse_p": 0.3,
+  "save": "runs/s2a3_lr1e-4_reh/qa_s2a3_lr1e-4_reh.pt",
+  "train_exchanges": 50965,
+  "eval": 520,
+  "added": 521,
+  "distinct_keys": 50605
+ },
+ "training": {
+  "steps": 15565,
+  "train_s": 589.2,
+  "stop_reason": "budget",
+  "best_valid": 0.9012,
+  "history": [
+   {
+    "train_s": 60.0,
+    "step": 1566,
+    "train_bits_per_code": 3.428,
+    "valid_bits_per_byte": 0.9373
+   },
+   {
+    "train_s": 120.0,
+    "step": 3170,
+    "train_bits_per_code": 3.374,
+    "valid_bits_per_byte": 0.9283
+   },
+   {
+    "train_s": 180.0,
+    "step": 4738,
+    "train_bits_per_code": 3.174,
+    "valid_bits_per_byte": 0.9166
+   },
+   {
+    "train_s": 240.0,
+    "step": 6338,
+    "train_bits_per_code": 3.137,
+    "valid_bits_per_byte": 0.9185
+   },
+   {
+    "train_s": 300.0,
+    "step": 7907,
+    "train_bits_per_code": 3.456,
+    "valid_bits_per_byte": 0.911
+   },
+   {
+    "train_s": 360.0,
+    "step": 9491,
+    "train_bits_per_code": 3.338,
+    "valid_bits_per_byte": 0.9074
+   },
+   {
+    "train_s": 420.0,
+    "step": 11083,
+    "train_bits_per_code": 3.133,
+    "valid_bits_per_byte": 0.9012
+   },
+   {
+    "train_s": 480.0,
+    "step": 12665,
+    "train_bits_per_code": 3.116,
+    "valid_bits_per_byte": 0.9036
+   },
+   {
+    "train_s": 540.0,
+    "step": 14263,
+    "train_bits_per_code": 3.924,
+    "valid_bits_per_byte": 0.9044
+   },
+   {
+    "train_s": 589.2,
+    "step": 15565,
+    "train_bits_per_code": 3.035,
+    "valid_bits_per_byte": 0.8963
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.975,
+   "exact": 1.0
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 60,
+   "f1": 0.6521,
+   "exact": 0.2667,
+   "f1_no_m1": 0.6561,
+   "f1_bias": 0.6521,
+   "exact_bias": 0.2667
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 38,
+   "f1": 0.1884,
+   "exact": 0.0,
+   "f1_no_m1": 0.1928,
+   "f1_bias": 0.1884,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.231
+  },
+  "unseen_network_with_nearest": {
+   "n": 162,
+   "f1": 0.2082,
+   "exact": 0.0,
+   "f1_no_m1": 0.2057,
+   "f1_bias": 0.2082,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.1955
+  },
+  "heldout_network_without_memory": {
+   "n": 60,
+   "f1": 0.2315,
+   "exact": 0.0
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.2126
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.9567,
+   "exact": 0.985
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 60,
+   "f1": 0.627,
+   "exact": 0.2,
+   "f1_no_m1": 0.6138,
+   "f1_bias": 0.627,
+   "exact_bias": 0.2
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Please provide a factual statement regarding the oceans that covers 20% of Earth",
+    "a": "The oceans that covers 20% of Earth's surface are composed of 20% of the Earth's surface and contain 97% of the Earth's surface. Approximately half of all speci",
+    "f1": 0.4552845528455285,
+    "exact": 0.0,
+    "a_no_m1": "The oceans that covers 20% of Earth's surface are composed of 20% of the Earth's surface and contain 97% of the Earth's surface. Approximately half of all speci",
+    "f1_no_m1": 0.4552845528455285,
+    "a_bias": "The oceans that covers 20% of Earth's surface are composed of 20% of the Earth's surface and contain 97% of the Earth's surface. Approximately half of all speci",
+    "f1_bias": 0.4552845528455285,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Predict the probability that the data belongs to class A given the following fea",
+    "a": "The probability that the data belongs to class A is 0.8.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The probability that the data belongs to class A is 0.8.",
+    "f1_no_m1": 1.0,
+    "a_bias": "The probability that the data belongs to class A is 0.8.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Complete the following sentence: \"In an ideal world, scientists would be able to",
+    "a": "In an ideal world, scientists would be able to uncover and understand the mysteries of the universe.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "In an ideal world, scientists would be able to uncover and understand the mysteries of the universe.",
+    "f1_no_m1": 1.0,
+    "a_bias": "In an ideal world, scientists would be able to uncover and understand the mysteries of the universe.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Come up with a list of criteria for assessing a painting.\nnoinput",
+    "a": "1. Choose a painting: Choose a painting that is well-being.\n2. Choose a painting: Choose a painting that is well-being.\n3. Choose a painting: Choose a painting ",
+    "f1": 0.045112781954887216,
+    "exact": 0.0,
+    "a_no_m1": "1. Chore: the use of shadow, light and contrast to create depth and perspective.\n2. Chore: the use of shadow, light and contrast to create depth and perspective",
+    "f1_no_m1": 0.4411764705882353,
+    "a_bias": "1. Choose a painting: Choose a painting that is well-being.\n2. Choose a painting: Choose a painting that is well-being.\n3. Choose a painting: Choose a painting ",
+    "f1_bias": 0.045112781954887216,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Generate a list of emergency resources in a specific area.\nBoston, MA.",
+    "a": "1. Boston Medical Center\n2. Tufts Medical Center \n3. Beacon Hill Emergency Food Pantry \n4. American Red Cross- Boston Chapter \n5. Mobile Response Team \n6. Bosto",
+    "f1": 0.8656716417910448,
+    "exact": 0.0,
+    "a_no_m1": "1. Boston Medical Center\n2. Tufts Medical Center \n3. Beacon Hill Emergency Food Pantry \n4. American Red Cross- Boston Chapter \n5. Mobile Response Team \n6. Bosto",
+    "f1_no_m1": 0.8656716417910448,
+    "a_bias": "1. Boston Medical Center\n2. Tufts Medical Center \n3. Beacon Hill Emergency Food Pantry \n4. American Red Cross- Boston Chapter \n5. Mobile Response Team \n6. Bosto",
+    "f1_bias": 0.8656716417910448,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Describe a situation in which someone should use a credit card.",
+    "a": "A credit card should be used in situations where you need to make a purchase now but don't have the cash on hand or want to access rewards. For example, if you ",
+    "f1": 0.9200000000000002,
+    "exact": 0.0,
+    "a_no_m1": "A credit card should be used in situations where you need to make a purchase now but don't have the cash on hand or want to access rewards. For example, if you ",
+    "f1_no_m1": 0.9200000000000002,
+    "a_bias": "A credit card should be used in situations where you need to make a purchase now but don't have the cash on hand or want to access rewards. For example, if you ",
+    "f1_bias": 0.9200000000000002,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Name two possible solutions to reduce the effects of global warming.",
+    "a": "Two possible solutions to reduce the effects of global warming are reducing the amount of carbon dioxide released into the atmosphere.\n\n1. Improved energy effic",
+    "f1": 0.4155844155844156,
+    "exact": 0.0,
+    "a_no_m1": "Two possible solutions to reduce the effects of global warming are reducing the use of renewable energy, reducing the use of renewable energy, and reducing the ",
+    "f1_no_m1": 0.3516483516483516,
+    "a_bias": "Two possible solutions to reduce the effects of global warming are reducing the amount of carbon dioxide released into the atmosphere.\n\n1. Improved energy effic",
+    "f1_bias": 0.4155844155844156,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.698,
+    "f1_vs_retrieved": 0.2905982905982906,
+    "retrieved_answer_f1_vs_ref": 0.4047619047619047
+   },
+   {
+    "q": "Write a function that takes an array of numbers and sorts them in ascending orde",
+    "a": "def sort_area(area):\n    sorted_area(area) = []\n    # sorted_area(area) \n    sorted_area(area) \n    sorted_area(area) \n    sorted_ar",
+    "f1": 0.07142857142857142,
+    "exact": 0.0,
+    "a_no_m1": "def sort_net(net):\n    sort_net = sort_net(net)\n    sort_net = sort_net(net)\n    sort_net = sort_net(net)\n    sort_net = sort_net(net)\n    sort_net",
+    "f1_no_m1": 0.05555555555555555,
+    "a_bias": "def sort_area(area):\n    sorted_area(area) = []\n    # sorted_area(area) \n    sorted_area(area) \n    sorted_area(area) \n    sorted_ar",
+    "f1_bias": 0.07142857142857142,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.532,
+    "f1_vs_retrieved": 0.03125,
+    "retrieved_answer_f1_vs_ref": 0.10714285714285714
+   },
+   {
+    "q": "Generate an example use case of how an AI system can improve customer service.",
+    "a": "AI systems can be used to improve customer service by providing a more accurate and reliable way to improve customer service. AI systems can be used to automate",
+    "f1": 0.3287671232876712,
+    "exact": 0.0,
+    "a_no_m1": "AI systems can be used to improve customer service by providing a variety of tools and tools to help improve customer service. For instance, AI can be used to a",
+    "f1_no_m1": 0.3733333333333333,
+    "a_bias": "AI systems can be used to improve customer service by providing a more accurate and reliable way to improve customer service. AI systems can be used to automate",
+    "f1_bias": 0.3287671232876712,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.629,
+    "f1_vs_retrieved": 0.46242774566473993,
+    "retrieved_answer_f1_vs_ref": 0.45901639344262296
+   },
+   {
+    "q": "Write an essay about what makes a good leader.",
+    "a": "A good leader is motivated, confident, persuasive, persuasive, inspiring, persuasive, inspiring, and reliable.\n\nA good leader is motivated, confident, persuasiv",
+    "f1": 0.06569343065693431,
+    "exact": 0.0,
+    "a_no_m1": "A good leader is motivated, confident, persuasive, persuasive, inspiring, persuasive, inspiring, and reliable.\n\nA good leader is motivated, confident, persuasiv",
+    "f1_no_m1": 0.06569343065693431,
+    "a_bias": "A good leader is motivated, confident, persuasive, persuasive, inspiring, persuasive, inspiring, and reliable.\n\nA good leader is motivated, confident, persuasiv",
+    "f1_bias": 0.06569343065693431,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.683,
+    "f1_vs_retrieved": 0.5128205128205129,
+    "retrieved_answer_f1_vs_ref": 0.03891050583657587
+   },
+   {
+    "q": "Compute the given arithmetic equation.\n9 + 4 x 3",
+    "a": "425",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "425",
+    "f1_no_m1": 0.0,
+    "a_bias": "425",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.543,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Create a conclusion paragraph for a persuasive essay on the importance of voting",
+    "a": "The importance of voting is an important part of the society, and it is essential to ensure that citizens are able to participate in their own destinies and sha",
+    "f1": 0.29885057471264365,
+    "exact": 0.0,
+    "a_no_m1": "The importance of voting is an important part of the society, and it is essential to ensure that citizens are able to participate in their own destinies and sha",
+    "f1_no_m1": 0.29885057471264365,
+    "a_bias": "The importance of voting is an important part of the society, and it is essential to ensure that citizens are able to participate in their own destinies and sha",
+    "f1_bias": 0.29885057471264365,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.599,
+    "f1_vs_retrieved": 0.3044496487119438,
+    "retrieved_answer_f1_vs_ref": 0.23126338329764454
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Develop a website for a travel blog",
+    "a": "The website should be designed to help you travel through the world and create a unique and engaging experience. It should be user-friendly and engaging, with a",
+    "f1": 0.39506172839506176,
+    "exact": 0.0,
+    "a_no_m1": "The website should be user-in-severing with a user-in-severing website. The website should be user-in-severing with a user-in-severing website. The website shou",
+    "f1_no_m1": 0.26573426573426573,
+    "a_bias": "The website should be designed to help you travel through the world and create a unique and engaging experience. It should be user-friendly and engaging, with a",
+    "f1_bias": 0.39506172839506176,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.361,
+    "f1_vs_retrieved": 0.07692307692307693,
+    "retrieved_answer_f1_vs_ref": 0.03846153846153846
+   },
+   {
+    "q": "Generate a list of questions the user can ask a chatbot about home insurance.",
+    "a": "1. What is the most cost-effective customer service?\n2. How do I return an item?\n3. What are your store hours?\n4. Do you have any questions or concerns?\n5. What",
+    "f1": 0.14814814814814814,
+    "exact": 0.0,
+    "a_no_m1": "1. What products do you have in stock?\n2. How do I return an item?\n3. What are your store hours?\n4. Do you offer any discounts?\n5. What payment options do you a",
+    "f1_no_m1": 0.09523809523809525,
+    "a_bias": "1. What is the most cost-effective customer service?\n2. How do I return an item?\n3. What are your store hours?\n4. Do you have any questions or concerns?\n5. What",
+    "f1_bias": 0.14814814814814814,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.424,
+    "f1_vs_retrieved": 0.7213114754098361,
+    "retrieved_answer_f1_vs_ref": 0.09523809523809525
+   },
+   {
+    "q": "Create a paragraph to describe the moon.",
+    "a": "The moon is a bright and vibrant moon, with a brighter future. It is a bright and vibrant moon, with a brighter future. It is a bright and vibrant moon, with a ",
+    "f1": 0.22377622377622378,
+    "exact": 0.0,
+    "a_no_m1": "The moon is a bright and bright blue, with a bright blue sky and a bright blue sky. The stars are bright and bright, with a bright blue sky and a bright blue sk",
+    "f1_no_m1": 0.2151898734177215,
+    "a_bias": "The moon is a bright and vibrant moon, with a brighter future. It is a bright and vibrant moon, with a brighter future. It is a bright and vibrant moon, with a ",
+    "f1_bias": 0.22377622377622378,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.397,
+    "f1_vs_retrieved": 0.1830065359477124,
+    "retrieved_answer_f1_vs_ref": 0.30434782608695654
+   },
+   {
+    "q": "Describe a technique to make effective use of hashtags on social media.",
+    "a": "A technique to make effective use of hashtags on social media is to effectively categorize content and make it easier to find related content, follow trends, an",
+    "f1": 0.3283582089552239,
+    "exact": 0.0,
+    "a_no_m1": "A technique to make effective use of hashtags on social media is to effectively categorize content and make it easier to find related content, follow trends, an",
+    "f1_no_m1": 0.3283582089552239,
+    "a_bias": "A technique to make effective use of hashtags on social media is to effectively categorize content and make it easier to find related content, follow trends, an",
+    "f1_bias": 0.3283582089552239,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.437,
+    "f1_vs_retrieved": 0.6285714285714286,
+    "retrieved_answer_f1_vs_ref": 0.35714285714285715
+   },
+   {
+    "q": "Why is it important to know the environment of a place before visiting?",
+    "a": "The environment of a place before visiting is important because they help maintain healthy habitats by providing food, oxygen, and shelter for wildlife. Additio",
+    "f1": 0.2878787878787879,
+    "exact": 0.0,
+    "a_no_m1": "The environment of a place before visiting is important because they help maintain healthy habitats by providing food, oxygen, and shelter for wildlife. Additio",
+    "f1_no_m1": 0.2878787878787879,
+    "a_bias": "The environment of a place before visiting is important because they help maintain healthy habitats by providing food, oxygen, and shelter for wildlife. Additio",
+    "f1_bias": 0.2878787878787879,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.235,
+    "f1_vs_retrieved": 0.725925925925926,
+    "retrieved_answer_f1_vs_ref": 0.24516129032258066
+   },
+   {
+    "q": "Explain what is a Block Chain.",
+    "a": "A Block Chain is a type of chain that is made from a variety of materials, including metal, metal, and metal. It is a type of chain that is made from metal, met",
+    "f1": 0.2711864406779661,
+    "exact": 0.0,
+    "a_no_m1": "A Block Chain is a type of chain that is made from a variety of materials, including metal, metal, and metal. It is a type of chain that is made from metal, met",
+    "f1_no_m1": 0.2711864406779661,
+    "a_bias": "A Block Chain is a type of chain that is made from a variety of materials, including metal, metal, and metal. It is a type of chain that is made from metal, met",
+    "f1_bias": 0.2711864406779661,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.281,
+    "f1_vs_retrieved": 0.10309278350515463,
+    "retrieved_answer_f1_vs_ref": 0.13186813186813184
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Find the number of times the letter E appears in the following sentence.\nThe qui",
+    "a": "The letter E appears 3 times in the sentence.\n\nThe letter E appears 3 times in the sentence.\n\nThe letter E appears 3 times in the sentence.\n\nThe letter E appear",
+    "f1": 0.25806451612903225,
+    "exact": 0.0,
+    "a_no_m1": "The letter E appears 3 times in the sentence.\n\nThe letter E appears 3 times in the sentence.\n\nThe letter E appears 3 times in the sentence.\n\nThe letter E appear",
+    "f1_no_m1": 0.25806451612903225,
+    "a_bias": "The letter E appears 3 times in the sentence.\n\nThe letter E appears 3 times in the sentence.\n\nThe letter E appears 3 times in the sentence.\n\nThe letter E appear",
+    "f1_bias": 0.25806451612903225,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Fix any grammar and spelling errors in the following sentence.\nThe malloys bough",
+    "a": "The Malloys bought a box of chocket.\n\nThe Malloys bought a box of chocket.\n\nThe Malloys bought a box of chocket.\n\nThe Malloys bought a box of chocket.\n\nThe Mall",
+    "f1": 0.2352941176470588,
+    "exact": 0.0,
+    "a_no_m1": "The Malloys bought a box of chocket.\n\nThe Malloys bought a box of chocket.\n\nThe Malloys bought a box of chocket.\n\nThe Malloys bought a box of chocket.\n\nThe Mall",
+    "f1_no_m1": 0.2352941176470588,
+    "a_bias": "The Malloys bought a box of chocket.\n\nThe Malloys bought a box of chocket.\n\nThe Malloys bought a box of chocket.\n\nThe Malloys bought a box of chocket.\n\nThe Mall",
+    "f1_bias": 0.2352941176470588,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "What describes the following equation: y = x^2 - 3",
+    "a": "This equation is a parabola with its vertex at (0, -3). The parabola opens upward, as the sign of y = x^2 is positive.\n\nThe parabola opens upward, as the sign o",
+    "f1": 0.6885245901639345,
+    "exact": 0.0,
+    "a_no_m1": "This equation is a parabola with its vertex at (0, -3). The parabola opens upward, as the sign of y = x^2 is positive.\n\nThe parabola opens upward, as the sign o",
+    "f1_no_m1": 0.6885245901639345,
+    "a_bias": "This equation is a parabola with its vertex at (0, -3). The parabola opens upward, as the sign of y = x^2 is positive.\n\nThe parabola opens upward, as the sign o",
+    "f1_bias": 0.6885245901639345,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Rewrite the sentence in the negative form and output the result.\nI was delighted",
+    "a": "I was not delighted to hear from you.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "I was not delighted to hear from you.",
+    "f1_no_m1": 1.0,
+    "a_bias": "I was not delighted to hear from you.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Write a short paragraph to explain the importance of communication in the workpl",
+    "a": "The workplace is essential for the success of any business. It enables employees to share information and collaborate on projects, while developing stronger tea",
+    "f1": 0.8396946564885496,
+    "exact": 0.0,
+    "a_no_m1": "Living in the workplace is essential for the success of any business. It enables employees to share information and collaborate on projects, while developing st",
+    "f1_no_m1": 0.8181818181818182,
+    "a_bias": "The workplace is essential for the success of any business. It enables employees to share information and collaborate on projects, while developing stronger tea",
+    "f1_bias": 0.8396946564885496,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Determine which of the two words is the antonym of the other.\nAbundant and Rare",
+    "a": "Abundant and Rare are antonyms.\n\nAbundant and Rare are antonyms.\n\nAbundant and Rare are antonyms.\n\nAbundant and Rare are antonyms.\n\nAbundant and Rare are antony",
+    "f1": 0.25,
+    "exact": 0.0,
+    "a_no_m1": "Abundant and Rare are antonyms.\n\nAbundant and Rare are antonyms.\n\nAbundant and Rare are antonyms.\n\nAbundant and Rare are antonyms.\n\nAbundant and Rare are antony",
+    "f1_no_m1": 0.25,
+    "a_bias": "Abundant and Rare are antonyms.\n\nAbundant and Rare are antonyms.\n\nAbundant and Rare are antonyms.\n\nAbundant and Rare are antonyms.\n\nAbundant and Rare are antony",
+    "f1_bias": 0.25,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ]
+ },
+ "checks": {}
+}
