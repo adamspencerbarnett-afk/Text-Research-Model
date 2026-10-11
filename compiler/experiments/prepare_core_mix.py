@@ -279,7 +279,7 @@ def para_key(p: str) -> frozenset:
     return frozenset(w for w in (x.lower() for x in WORD.findall(p)) if w not in COMMON)
 
 
-def cmd_evidence(srcs: str, out: str, max_pairs: int = 400_000, seed: int = 1) -> None:
+def cmd_evidence(srcs: str, out: str, max_pairs: int = 400_000, seed: int = 1, min_sim: float = 0.10) -> None:
     """Pairs of related paragraphs from different documents: 'evidence paragraph' then 'target
     paragraph'. Relation = idf-weighted shared content words (the exchange memory's measure),
     at least 0.15 and at most 0.8 (near-copies are skipped). Each paragraph is used as evidence
@@ -295,7 +295,7 @@ def cmd_evidence(srcs: str, out: str, max_pairs: int = 400_000, seed: int = 1) -
                 if 200 <= len(p) <= 450:                 # a pair must fit one 256-code window (about 900 bytes)
                     paras.append((hash((src, d_i)), p))
     rng.shuffle(paras)
-    paras = paras[: max_pairs * 4]
+    paras = paras[: max_pairs * 15]       # about 7% of paragraphs find a partner at 0.10 (E1, 11 October)
     keys = [para_key(p) for _, p in paras]
     df = collections.Counter(w for k in keys for w in k)
     n = len(paras)
@@ -319,7 +319,7 @@ def cmd_evidence(srcs: str, out: str, max_pairs: int = 400_000, seed: int = 1) -
         j, s = scores.most_common(1)[0]
         union = sum(idf[w] for w in keys[i] | keys[j])
         sim = s / max(union, 1e-9)
-        if 0.15 <= sim <= 0.8:
+        if min_sim <= sim <= 0.8:            # 0.10-0.12 pairs read as related; below 0.08 mostly not (E1)
             used.add(j)
             pairs.append((paras[j][1], paras[i][1], round(sim, 3)))
     cut = int(len(pairs) * 0.99)
