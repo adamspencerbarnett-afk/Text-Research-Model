@@ -33,7 +33,9 @@ import m2_qa  # noqa: E402
 def cmd_gen(a) -> None:
     native = ROOT / "data" / "cv0.exe"
     eng = m2_qa.QAEngine(a.model, native=str(native) if native.exists() else None, device=a.device, log=lambda m: None)
-    train = eng.mem.exchanges[:]                      # the training problems, as stored in memory
+    # the original problems only: a later round's memory also holds earlier kept self-solutions
+    n_orig = len(m2_qa.parse_exchanges((ROOT / "data_qa_gsm" / "train" / "qa_train.txt").read_bytes()))
+    train = eng.mem.exchanges[:n_orig]
     mine = [i for i in range(len(train)) if i % a.of == a.shard]
     gen = torch.Generator().manual_seed(1000 + a.shard)
     out = open(a.out, "w", encoding="utf-8", newline="\n")
