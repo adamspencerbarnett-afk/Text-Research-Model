@@ -63,7 +63,8 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 | S2b-s2 | S2b-512 with seed 2 | confirm the winner | done: confirmed |
 | K1 | contrastive question key: a projection head trained on Quora reworded pairs | a learned memory key that beats the literal one | done: +3.5 points in domain; no Q&A gain (out-of-domain key) |
 | E1 | evidence builder: relaxed thresholds, multiple use, longer windows | enough evidence pairs for the 50M mix (got 20.6k, needed 110k) | done: 148,500 pairs; D3e core +1.3 points evidence gain; Q&A stage running |
-| STaR | verified self-training on GSM8K, two rounds | does the model learn to choose operations from its own checked solutions? | round 1 scoring |
+| STaR | verified self-training on GSM8K, two rounds | does the model learn to choose operations from its own checked solutions? | done: 2.5% -> 3.5% -> 4.0%; confirmations +22% |
+| 50M | the large-scale test (docs/PLAN_50M.md) | does the recipe scale? | starting: evidence pairs ready about 09:40 |
 | R2 | SQuAD 1.1: copy a span from a given passage, exact match | the cleanest test of the copy head | done (failed: rambling, memorised passages) |
 | R4 | GSM8K/SVAMP: retrieval by solution structure (operator sequence key), template copying | reasoning by analogy over worked examples | next after R2 (design written) |
 | R5 | number channel in the compiler (number unit → code + value) | removes digit-run failures | needs compiler change |
@@ -111,6 +112,8 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 - STaR round 1 generation: with its own stored solution hidden, the GSM model solved 797 of 7,473 training problems (10.7%) at least once in 4 tries; 972 checked solutions kept (about 3% of 29,880 tries).
 - STaR round 1 (fine-tuned 8,000 steps on GSM8K + its 972 checked self-solutions): new problems 3.5% (7/198) against 2.5% (5/198), inside noise; stored 40% (from 42%); calculator-confirmed answers 348 -> 377. First steps are visibly better set up ('27-5 = 22 years old; in 8 years 22+8 = 30'). Round 2 decides whether it compounds.
 - S2b-512e (Q&A stage on the 18%-evidence core): Q&A groups within seed noise of S2b-512 (stored 0.878 / 57%, added 0.840 / 51%, new 0.298), network alone a little lower (0.195 vs 0.23-0.24); chat probe 23/32, chat 3/3. Read in the transcript: asked for an email asking for a day off, it adapted the retrieved 'raise' email to 'a day off' where S2b-512 copied it unchanged; asked what to cook, it gave steps. Evidence share kept at 18% for 50M: no measurable cost, small gains in the core and in adapting retrieved answers.
+- STaR round 2 (the round-1 model solved 2,395 training problems; 3,408 checked solutions): new problems 2.5% -> 3.5% -> 4.0% over base, round 1, round 2 (5 -> 7 -> 8 of 198, each step inside noise); calculator-confirmed answers 348 -> 377 -> 424 (+22%), the steadier signal; stored problems 48%. Steps increasingly right ('11/8*$72 = 99. The profit is 99-$72 = 27', then one wrong extra step). Verified self-training works at 5M, slowly; next on the 50M core.
+- Parallel evidence builder: 4.0M paragraphs indexed in 463 s, 10 workers at about 80 paragraphs/s each (about 21 minutes for all), a partner for about a quarter of paragraphs at the 900-character limit; the serial builder needed about 4.5 hours for 150k pairs.
 - 19M with equal steps (R1f): no better than 4.7M on Q&A, and copies less (stored exact 8% against 22%). Reading comprehension (R2b): the copy head now returns short spans from the passage, but the wrong ones (unseen F1 0.07). Both point at the same limit: the core does not yet read well enough to choose what to copy.
 
 **10 Oct, session 6 (power cut, seed check, reasoning with the adapted core)**
