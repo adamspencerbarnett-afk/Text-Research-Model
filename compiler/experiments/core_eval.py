@@ -88,12 +88,17 @@ def main() -> int:
     ap.add_argument("--native", default=str(ROOT / "data" / "cv0.exe")); ap.add_argument("--n-evidence", type=int, default=600)
     ap.add_argument("--n-questions", type=int, default=2000); ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--threads", type=int, default=8)
+    ap.add_argument("--precision", choices=["fp32", "bf16", "int8", "int4"], default="fp32", help="round the weights to this format before scoring")
+    ap.add_argument("--tag", default="", help="suffix for the output name")
     a = ap.parse_args()
     torch.set_num_threads(a.threads)
     native = a.native if Path(a.native).exists() else None
     enc, model = load_core(a.checkpoint, native, a.device)
+    if a.precision != "fp32":
+        import precision
+        print("weights rounded:", precision.apply(model, a.precision))
     rng = random.Random(a.seed)
-    res = {"checkpoint": a.checkpoint, "data": a.data, "fluency": {}, "evidence": {}, "questions": {}}
+    res = {"checkpoint": a.checkpoint, "data": a.data, "precision": a.precision, "fluency": {}, "evidence": {}, "questions": {}}
     t0 = time.time()
 
     # 1. fluency: network-only bits per byte on each held-out file (first 400 KB of each)
@@ -145,7 +150,7 @@ def main() -> int:
     print("questions", res["questions"], f"({time.time() - t0:.0f}s)", flush=True)
 
     # named by the core measured (its run folder and file), never by the evaluation data, which is shared
-    out = ROOT / "results" / f"core_eval_{Path(a.checkpoint).parent.name}_{Path(a.checkpoint).stem}.json"
+    out = ROOT / "results" / f"core_eval_{Path(a.checkpoint).parent.name}_{Path(a.checkpoint).stem}{a.tag}.json"
     out.write_text(json.dumps(res, indent=1))
     print(f"wrote {out}")
     return 0

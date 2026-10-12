@@ -401,7 +401,8 @@ class QAEngine:
         eng.add(b"Who leads the research?", b"Adam Barnett leads the research.")
     """
 
-    def __init__(self, checkpoint: str, native: str | None = None, device: str = "cpu", data: str | None = None, log=print):
+    def __init__(self, checkpoint: str, native: str | None = None, device: str = "cpu", data: str | None = None, log=print,
+                 precision: str = "fp32"):
         ck = torch.load(checkpoint, map_location="cpu", weights_only=False)
         self.a = a = argparse.Namespace(**ck["args"])
         global FOLD_KEYS
@@ -441,6 +442,9 @@ class QAEngine:
         self.model = V2LM(enc, a.width, a.layers, a.heads, a.ctx, self.ngrams, a.copy_head, getattr(a, "evidence", False),
                           getattr(a, "sim_feature", False), getattr(a, "block", "legacy")).to(self.dev)
         self.model.load_state_dict(ck["state_dict"], strict=False)
+        if precision != "fp32":
+            import precision as _precision
+            log(f"weights rounded: {_precision.apply(self.model, precision)}")
         self.model.eval()
         self.sep = enc.encode(b"\n\n")[0]
         self.equals = int(enc.encode(b"=")[0][-1])
@@ -559,6 +563,7 @@ def main() -> int:
     ap.add_argument("--device", default="cpu", help="cpu, cuda or cuda:N"); ap.add_argument("--threads", type=int, default=0)
     ap.add_argument("--width", type=int, default=128); ap.add_argument("--layers", type=int, default=4); ap.add_argument("--heads", type=int, default=4)
     ap.add_argument("--block", choices=["legacy", "modern"], default="legacy", help="must match the stage-1 core given to --init")
+    ap.add_argument("--precision", choices=["fp32", "bf16", "int8", "int4"], default="fp32", help="round the weights to this format after --init (with --budget 0: the accuracy cost of a quantised deployment)")
     ap.add_argument("--greedy", action="store_true", help="scored answers take the most likely code at each step instead of sampling")
     ap.add_argument("--no-repeat", type=int, default=0, help="block any n-gram of this many codes from repeating within a reply (0: off; 3 is standard)")
     ap.add_argument("--patience", type=int, default=0, help="stop when validation bits/byte has not improved by --min-delta for this many evaluations (0: never); the best weights are kept")
@@ -671,6 +676,9 @@ def main() -> int:
         sd = {k: v for k, v in ck["state_dict"].items() if k in own and own[k].shape == v.shape and not k.startswith("table")}
         missing, unexpected = model.load_state_dict(sd, strict=False)
         say(f"initialised {len(sd)} tensors from {a.init}; fresh: {sorted({k.split('.')[0] for k in missing})}")
+    if getattr(a, "precision", "fp32") != "fp32":
+        import precision
+        say(f"weights rounded: {precision.apply(model, a.precision)}")
     say(f"core: {model.param_counts()['total']:,} learned parameters, sources: network, 2 tables"
         + (", copy head" if a.copy_head else "") + (", evidence table" if a.evidence else ""))
     dense = [p for n, p in model.named_parameters()]
