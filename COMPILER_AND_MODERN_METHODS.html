@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Compiler and Modern Methods</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one reading column; each design element is a section with brain role, our part, change, and test. */
+:root {
+  --bg: #f6f5f1; --fg: #22251f; --muted: #626a5f; --line: #d9d7cd; --panel: #ffffff; --code: #efeee8;
+  --accent: #2f5f8a; --mem: #2f6f9a; --core: #3d7a46; --gate: #a3561d; --risk: #9b2f2f;
+  --display: "Fraunces", Georgia, serif; --body: "Atkinson Hyperlegible", system-ui, sans-serif; --mono: "JetBrains Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #16181a; --fg: #e7e5de; --muted: #a2a89d; --line: #33383a; --panel: #1e2123; --code: #25292b;
+  --accent: #8fb8e0; --mem: #7fb6dc; --core: #8fcb95; --gate: #e6a26c; --risk: #ec8b8b; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #16181a; --fg: #e7e5de; --muted: #a2a89d; --line: #33383a; --panel: #1e2123; --code: #25292b;
+  --accent: #8fb8e0; --mem: #7fb6dc; --core: #8fcb95; --gate: #e6a26c; --risk: #ec8b8b; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16.5px; line-height: 1.6; }
+.wrap { max-width: 880px; margin: 0 auto; padding-block: 36px 72px; padding-inline: 20px; }
+h1 { font-family: var(--display); font-weight: 600; font-size: 2.35rem; line-height: 1.12; margin: 6px 0 10px; text-wrap: balance; }
+h2 { font-family: var(--display); font-weight: 600; font-size: 1.55rem; margin: 52px 0 10px; text-wrap: balance; border-top: 1px solid var(--line); padding-top: 22px; }
+h3 { font-size: 1.07rem; margin: 24px 0 6px; }
+p, li { max-width: 70ch; }
+p { margin: 0 0 12px; }
+ul, ol { padding-left: 1.3em; margin: 0 0 12px; }
+li { margin-bottom: 4px; }
+.eyebrow { font-size: .78rem; letter-spacing: .09em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin: 0; }
+.lede { font-size: 1.08rem; color: var(--muted); }
+.status { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px; }
+.pill { font-size: .8rem; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); }
+.pill b { color: var(--accent); }
+code { font-family: var(--mono); font-size: .86em; background: var(--code); padding: 1px 4px; border-radius: 3px; }
+.tablewrap { overflow-x: auto; margin: 12px 0 18px; }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th, td { text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: .76rem; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.part { border-left: 3px solid var(--line); padding: 4px 0 4px 16px; margin: 20px 0; }
+.part.mem { border-color: var(--mem); } .part.core { border-color: var(--core); } .part.gate { border-color: var(--gate); } .part.acc { border-color: var(--accent); }
+.part h3 { margin-top: 0; }
+.kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 14px; font-size: .95rem; margin: 6px 0 4px; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; min-width: 0; }
+.note { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px 16px; margin: 16px 0; }
+.note.risk { border-left: 4px solid var(--risk); }
+.diagram { width: 100%; height: auto; display: block; margin: 10px 0; }
+.diagram text { font-family: var(--body); font-size: 12.5px; fill: var(--fg); }
+.diagram .s { font-size: 10.5px; fill: var(--muted); }
+.diagram .box { fill: var(--panel); stroke: var(--line); stroke-width: 1.2; }
+.diagram .ln { fill: none; stroke: var(--muted); stroke-width: 1.4; }
+.diagram .m { stroke: var(--mem); } .diagram .c { stroke: var(--core); } .diagram .g { stroke: var(--gate); } .diagram .a { stroke: var(--accent); }
+.diagram .dash { stroke-dasharray: 5 4; }
+.stage { display: grid; grid-template-columns: 54px minmax(0, 1fr); gap: 4px 14px; margin: 14px 0; }
+.stage .id { font-family: var(--mono); font-weight: 500; color: var(--accent); padding-top: 2px; }
+.stage .body { min-width: 0; }
+.stage .done { font-size: .9rem; color: var(--muted); }
+a.spec { display: inline-block; font-family: var(--mono); font-size: .72rem; letter-spacing: .03em; padding: 1px 7px; margin-left: 6px;
+  border: 1px solid var(--accent); color: var(--accent); border-radius: 3px; text-decoration: none; vertical-align: 1px; }
+a.spec:hover, a.spec:focus-visible { background: var(--accent); color: var(--bg); outline: none; }
+.specindex { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 18px; }
+.specindex a.spec { margin-left: 0; font-size: .8rem; padding: 3px 9px; }
+details.specblock { border: 1px solid var(--line); border-radius: 6px; background: var(--panel); margin: 10px 0; }
+details.specblock > summary { cursor: pointer; padding: 10px 14px; font-weight: 700; list-style-position: inside; }
+details.specblock > summary span { font-weight: 400; color: var(--muted); font-size: .9rem; }
+.specbody { padding: 0 16px 14px; min-width: 0; }
+.specbody pre { font-family: var(--mono); font-size: .8rem; line-height: 1.5; background: var(--code); padding: 10px 12px; border-radius: 4px; overflow-x: auto; white-space: pre; margin: 8px 0 12px; }
+.specbody h4 { font-size: .78rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 14px 0 4px; }
+.specbody .check { border-left: 3px solid var(--core); padding: 2px 0 2px 10px; margin: 8px 0; }
+dialog.specdialog { width: min(900px, calc(100vw - 32px)); max-height: calc(100vh - 48px); padding: 0; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--panel); color: var(--fg); box-shadow: 0 12px 40px rgba(0,0,0,.25); }
+dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
+.dlghead { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 16px; background: var(--panel); border-bottom: 1px solid var(--line); }
+.dlghead h3 { margin: 0; font-family: var(--display); font-size: 1.2rem; }
+.dlghead button { font: inherit; font-size: .9rem; padding: 4px 12px; border: 1px solid var(--line); border-radius: 4px; background: var(--bg); color: var(--fg); cursor: pointer; }
+.dlghead button:focus-visible { outline: 2px solid var(--accent); }
+.dlgbody { padding: 4px 0 8px; overflow-y: auto; }
+@media (max-width: 480px) { h1 { font-size: 1.85rem; } .kv { grid-template-columns: 1fr; } .kv dt { margin-top: 6px; } .stage { grid-template-columns: 1fr; } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+</head>
+<body>
+<div class="wrap">
+<p class="eyebrow">Research review · Text Research Model · 11 October 2026</p>
+<h1>A better compiler, and what modern methods could do for this model</h1>
+<p class="lede">Research concept and direction by Adam Barnett. Two questions, answered plainly: could a redesigned compiler (for example one that writes every word as a short base64 code) make the model more compact with more parameters, and which of the methods that have appeared in the last two years would make our model faster or smarter. Every claim about our own model is tied to a measurement in <code>docs/RUN_LEDGER.md</code>; claims about outside methods say where they come from and how sure they are.</p>
+<div class="status">
+  <span class="pill"><b>Short answer 1</b> a base64 compiler cannot help, for a reason worth understanding</span>
+  <span class="pill"><b>Short answer 2</b> yes, six methods are worth testing; three are cheap</span>
+</div>
+
+<h2>1. What a code is, and why its spelling does not matter</h2>
+<p>The compiler turns each word (or word piece) into a number between 0 and 8,191. That number is all the model ever sees. It is not written out as text inside the model: the number selects one row of a table (the embedding), and from then on the model works with that row's 256 or 640 values. So:</p>
+<ul>
+  <li>Writing code 5,263 as the base64 string <code>BSP</code> changes nothing inside the model. The row selected is the same row. The model's cost depends on <b>how many codes a text becomes</b> and <b>how many rows and layers it has</b>, not on how a code is spelled.</li>
+  <li>If the model read the base64 <i>characters</i> instead, each word would become two or three codes (64 characters can only name 64 things; 64 × 64 = 4,096 names takes two characters), so sequences would get <b>two to three times longer</b> and the model slower and worse. We measured this direction once already: bytes as codes gave 1,000 codes per KB against 283 for words, and was 8% worse.</li>
+  <li>On disk, our code files already use 2 bytes per code (about 43% smaller than the text). Base64 text would use about 2.2 characters per code: no saving there either.</li>
+</ul>
+<div class="note"><p><b>The lesson from the first phase still holds.</b> A lossless encoder cannot add information: the total surprise in a text is a property of the text. An encoder can only change three things: how many steps it takes to read the text (speed), whether the same thing always looks the same (stability), and what structure it exposes for free. Packing more text into one code (phrases) was tested and lost by 2.5-4%, because rarer codes are learned from fewer examples and hide the words inside them.</p></div>
+
+<h3>So where would "more compact, more parameters" come from?</h3>
+<p>From two real levers, neither of which is the spelling of codes:</p>
+<div class="tablewrap"><table>
+  <tr><th>Lever</th><th>What it changes</th><th>Our experience</th><th>Modern form</th></tr>
+  <tr><td><b>Fewer codes per text, chosen well</b></td><td>Speed and sequence length</td><td>Static phrase codes lost (2.5-4% worse). Words beat bytes by 8%.</td><td><b>Learned, dynamic chunking</b>: the model decides where chunks end by how predictable the text is (Byte Latent Transformer, Meta, December 2024; H-Net, 2025). Long chunks where text is easy, short ones where it is hard. Reported to match or beat a standard tokenizer at the same compute, with better handling of noise and rare words. This is the engineered version of the original compiler idea, and it is testable.</td></tr>
+  <tr><td><b>More parameters without more compute per code</b></td><td>Capacity at fixed speed</td><td>Our hashed tables (34M-537M parameters) helped 3-5% at 0.8M; exact count tables helped 10% at 0.8M and nothing at 5M+.</td><td><b>Mixture of experts</b> (only a few of many expert blocks run per code) and <b>memory layers</b> (a trainable key-value table consulted by the network; Meta, December 2024). Both add parameters that cost memory, not compute. Our tables were the untrained version of a memory layer.</td></tr>
+</table></div>
+<p><b>A better compiler, if we engineered one, would therefore be:</b> a dynamic chunker that keeps stable word keys for memory (our compiler's one real asset) but groups predictable runs into single steps, trained end to end with the model. That is a research item (section 4, test 5), not a change to how codes are spelled.</p>
+
+<h2>2. How our model is trained today, against current practice</h2>
+<p>You are right that our training is the classic recipe. It is the recipe of 2019-2022 (GPT-2 style), and the field has moved. Here is every part of our core, what it is, and what is used now.</p>
+<div class="tablewrap"><table>
+  <tr><th>Part</th><th>Ours (train_lm.py)</th><th>Current practice (Llama 3, Qwen 2.5, SmolLM 2, DeepSeek-V3, 2024-2025)</th><th>Reported effect of switching</th><th>Worth it for us?</th></tr>
+  <tr><td>Position information</td><td>learned table, one vector per position (fixed window)</td><td>rotary positions (RoPE): positions encoded by rotating the attention vectors</td><td>small quality gain; generalises to longer windows; standard everywhere</td><td>yes, cheap</td></tr>
+  <tr><td>Normalisation</td><td>LayerNorm</td><td>RMSNorm (simpler, slightly faster)</td><td>equal quality, a little faster</td><td>yes, trivial</td></tr>
+  <tr><td>Feed-forward block</td><td>Linear - GELU - Linear (4x width)</td><td>SwiGLU gated block (about 2.7x width, two input projections)</td><td>about 1-3% better at equal parameters</td><td>yes, cheap</td></tr>
+  <tr><td>Attention</td><td>full multi-head, 8-10 heads</td><td>grouped-query attention (fewer key/value heads), flash attention kernels</td><td>same quality, smaller KV cache, faster long windows</td><td>yes at 50M+, for inference memory</td></tr>
+  <tr><td>Output layer</td><td>tied to the input embedding</td><td>tied for small models, untied above about 1B</td><td>none at our size</td><td>keep</td></tr>
+  <tr><td>Optimiser</td><td>AdamW, cosine decay</td><td>AdamW still common; <b>Muon</b> (2024-2025, orthogonalised momentum for the matrices) trains the same model to the same loss in about 1.35x fewer steps in public small-GPT speed-runs and is used in recent large models (Kimi K2)</td><td>about 1.3-1.5x training efficiency</td><td>yes, cheap to test</td></tr>
+  <tr><td>Learning-rate schedule</td><td>warm-up, cosine to 10%</td><td>warm-up, long flat phase, short decay ("warmup-stable-decay"), which lets a run be extended without restarting</td><td>equal or slightly better; much more flexible</td><td>yes for the 50M+ runs</td></tr>
+  <tr><td>Training amount</td><td>about 20 codes per parameter</td><td>20 is the compute-optimal point (Chinchilla); small models meant for deployment are trained far past it: SmolLM 2 trained a 360M model on 4,000 tokens per parameter</td><td>large: a small model keeps improving for a long time</td><td><b>yes, the biggest cheap gain</b>: our 50M used 1B codes; 10B would take a day</td></tr>
+  <tr><td>Loss</td><td>next code only</td><td>next code, plus <b>multi-token prediction</b> (predict codes 2-4 ahead with small extra heads; DeepSeek-V3, Meta 2024)</td><td>better sample efficiency on reasoning-type tasks, and the extra heads give free speculative decoding</td><td>yes, moderate</td></tr>
+  <tr><td>Data order</td><td>random windows, uniform mix</td><td>curriculum: short windows then long; an annealing phase at the end on the best data (math, Q&amp;A, textbooks)</td><td>a few percent, mostly on reasoning</td><td>yes, cheap</td></tr>
+  <tr><td>Teacher</td><td>none</td><td><b>distillation</b>: a small model trained on a large model's output distribution or its written answers (how most capable small models are made now)</td><td>the largest known gain for small models, often several times the effect of more data</td><td>yes, but it changes what we are testing: see section 3</td></tr>
+  <tr><td>Precision</td><td>bf16 training, fp32 inference</td><td>bf16 training; int8/int4 weights at inference</td><td>2-4x less inference memory, small quality cost</td><td>yes at inference</td></tr>
+  <tr><td>Architecture family</td><td>Transformer</td><td>Transformers still dominate; <b>linear-time hybrids</b> (Mamba-2, Gated DeltaNet, RWKV-7, 2024-2025) mix a few attention layers with recurrent layers for constant-cost generation</td><td>equal quality at small scale, much faster long generation on CPUs</td><td>a research item, not a quick win</td></tr>
+</table></div>
+
+<h2>3. The "new equations", in plain terms</h2>
+<p>These are the formula-level changes behind the table. Each is short; the point is what it buys.</p>
+<div class="tablewrap"><table>
+  <tr><th>Name</th><th>What it replaces</th><th>What it does, plainly</th><th>Evidence</th></tr>
+  <tr><td>Rotary positions (RoPE)</td><td>our learned position table</td><td>Rotates each query and key vector by an angle that grows with position, so attention sees <i>relative</i> distance between words instead of absolute slots. No table to learn; works past the training window.</td><td>used by every current open model</td></tr>
+  <tr><td>RMSNorm</td><td>LayerNorm</td><td>Scales a vector by its root-mean-square only (no mean subtraction). Same stabilising job, fewer operations.</td><td>standard</td></tr>
+  <tr><td>SwiGLU</td><td>GELU feed-forward</td><td>Two projections instead of one; one is passed through a smooth gate and multiplied into the other, so the block can switch parts of itself on and off per word.</td><td>about 1-3% at equal parameters (Shazeer 2020; every Llama)</td></tr>
+  <tr><td>Muon</td><td>AdamW for the weight matrices</td><td>Takes the momentum of the gradient and orthogonalises it (makes all its directions equally strong) before the update, so no single direction dominates. Vectors and embeddings stay on AdamW.</td><td>about 1.35x fewer steps in the public nanoGPT speed-run; used at 1T-parameter scale in 2025</td></tr>
+  <tr><td>Multi-token prediction</td><td>one next-code loss</td><td>Extra small heads predict the second, third and fourth next codes; their losses are added. The main model learns to plan a few steps ahead; the heads double as a draft for speculative decoding.</td><td>Meta 2024, DeepSeek-V3: gains on code and reasoning, free 1.5-2x decoding</td></tr>
+  <tr><td>Mixture of experts</td><td>one feed-forward block per layer</td><td>Several feed-forward blocks per layer; a tiny router sends each code to one or two of them, with a balancing term so all experts get used. Parameters grow by the number of experts; compute per code does not.</td><td>DeepSeek-V3, Mixtral; the standard way to get "more parameters, same speed"</td></tr>
+  <tr><td>Memory layers</td><td>(our count tables)</td><td>A layer that looks its input up in a large learned table of keys and values (product keys make millions of entries cheap to search) and adds what it finds. Trainable, sparse, grows capacity without compute.</td><td>Meta, December 2024: a 1.3B model with memory layers matched models with 2-4x the compute on fact tasks</td></tr>
+  <tr><td>Entropy-based patching</td><td>a fixed tokenizer</td><td>A small byte-level model estimates how surprising the next byte is; a new chunk starts wherever surprise jumps. Easy stretches become long chunks, hard ones short.</td><td>Byte Latent Transformer, Meta, December 2024: matches a tokenizer model at equal compute with fewer steps on easy text</td></tr>
+  <tr><td>Warmup-stable-decay</td><td>cosine schedule</td><td>Hold the learning rate flat for most of training and decay only at the end, so a run can be continued or branched at any time.</td><td>MiniCPM 2024, DeepSeek; standard for long runs</td></tr>
+  <tr><td>Verified practice (what we already do)</td><td>supervised answers</td><td>Sample answers, keep the ones a checker confirms, train on them; the reinforcement-learning form rewards partial credit. This is how 2025's reasoning models were made.</td><td>STaR 2022, DeepSeek-R1 2025; ours: GSM8K 2.5% to 4.0% in two rounds at 5M</td></tr>
+</table></div>
+
+<h2>4. What is worth researching and testing, in order</h2>
+<p>Ranked by expected gain per hour of this machine's time, with the measurement that decides each. Items 1-3 are cheap and can run on the 5M core in an afternoon; the rest are larger.</p>
+<div class="tablewrap"><table>
+  <tr><th>#</th><th>Test</th><th>Change</th><th>Expected</th><th>Cost</th><th>Decides</th></tr>
+  <tr><td>1</td><td><b>Modern core block</b></td><td>RoPE + RMSNorm + SwiGLU in <code>train_lm.py</code>, same parameter count, same data and steps as the best 5M core</td><td>2-5% lower bits/byte; longer windows for free</td><td>1 hour code, 45 min run</td><td>report card against D3s512</td></tr>
+  <tr><td>2</td><td><b>Muon optimiser</b></td><td>Muon for the matrices, AdamW for the rest, at the same steps</td><td>the same loss in about 30% fewer steps, or a lower loss at equal steps</td><td>1 hour code, 45 min run</td><td>loss curve at equal steps; report card</td></tr>
+  <tr><td>3</td><td><b>Train longer</b></td><td>the 5M core at 100 and 300 codes per parameter (5 and 15 passes over the mix; needs the 2.3 GB P50 mix at 5M)</td><td>steady gains well past 20 per parameter; tells us how much the 50M run was undertrained</td><td>2-6 hours GPU</td><td>report card and Q&amp;A at each point</td></tr>
+  <tr><td>4</td><td><b>Fast generation</b> (engineering)</td><td>profile showed 85% of a 50M answer is per-step overhead, not the network; the window and masks now stay on the GPU; next, batch the trust-head sources and avoid the per-step host sync</td><td>5-10x faster answers at 50M; turns the compute advantage into real speed</td><td>half a day</td><td>codes per second on an idle GPU; identical replies</td></tr>
+  <tr><td>5</td><td><b>Dynamic chunking compiler</b></td><td>a byte-level mini model estimates surprise; chunk boundaries at surprise peaks; the dictionary becomes a cache of chunk ids keyed by bytes (keys stay stable); compare with the fixed compiler at equal compute</td><td>fewer steps per text on easy prose; unknown effect on memory keys</td><td>2-3 days</td><td>bits/byte at equal compute; reply speed; memory recall unchanged</td></tr>
+  <tr><td>6</td><td><b>Memory layer</b> in the core</td><td>a product-key memory layer in the middle of the 5M and 50M cores, 1-10M entries (cheap in memory, no extra compute per code)</td><td>a trainable form of our tables that should not reverse with size; gains on fact-heavy text</td><td>2 days</td><td>report card; stored and new questions</td></tr>
+  <tr><td>7</td><td><b>Multi-token prediction</b></td><td>two extra heads predicting codes +2 and +3 during stage 1</td><td>small reasoning gain; free draft tokens for faster decoding</td><td>1 day</td><td>GSM8K; decoding speed</td></tr>
+  <tr><td>8</td><td><b>Mixture of experts</b> at 50M compute</td><td>4-8 experts per layer, 1-2 active: about 150-300M parameters at the cost of the 50M core</td><td>the honest version of "far more parameters, same speed"</td><td>2 days</td><td>report card and Q&amp;A at equal compute and steps</td></tr>
+  <tr><td>9</td><td><b>Distillation</b> (decide first whether it fits the research)</td><td>train the core on a strong open model's answers to our Q&amp;A prompts</td><td>probably the single largest intelligence gain available to a small model</td><td>1-2 days</td><td>but it imports another model's knowledge, so results would no longer show what <i>our</i> design learns on its own; useful as a comparison, not as the main line</td></tr>
+  <tr><td>10</td><td><b>Linear-time hybrid core</b></td><td>replace half the attention layers with a gated recurrent layer (Mamba-2 or Gated DeltaNet)</td><td>constant-cost generation on CPUs, equal quality at small scale</td><td>1 week</td><td>report card; CPU reply speed</td></tr>
+</table></div>
+
+<h2>5. My view</h2>
+<ul>
+  <li><b>The compiler is not where the gains are.</b> Changing how codes are spelled does nothing; the measured value of the compiler is stable word keys for memory. The one compiler idea with modern evidence behind it is learned dynamic chunking (test 5), and it is a medium-sized research project with an uncertain payoff for memory keys.</li>
+  <li><b>Our training is a 2020 recipe, and that is the cheapest thing to fix.</b> Tests 1-3 are an afternoon each on the 5M core and could together be worth 5-10% on every number we track. They should run before the next 50M run so that run uses the better recipe.</li>
+  <li><b>"Far more parameters at the same speed" is a real goal with two proven routes</b>, mixture of experts and memory layers (tests 6 and 8). Both fit this machine at 50M compute. Memory layers are closest to what this research is about: a trainable store beside the network.</li>
+  <li><b>Speed is an engineering debt, not a design flaw.</b> The profile shows the 50M network needs about 9 ms per code; our loop spent 70 ms around it. Test 4 is the fix.</li>
+  <li><b>Reasoning will come from practice and size, not equations.</b> Verified self-training is the method behind 2025's reasoning models and already moves our numbers; a better-trained, larger core multiplies it.</li>
+</ul>
+<p>Proposed order: 4 (so every later test runs faster), then 1-3 on the 5M core, then the 50M run again with the winners, then 6 and 8.</p>
+</div>
+</body>
+</html>
