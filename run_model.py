@@ -31,9 +31,9 @@ SETTINGS = dict(
     # --- model shape (research sizes: 128w/4L = 0.8M core; 256w/6L = 4.7M; 384w/8L = 14M; 512w/8L = 25M)
     #     CTX 512 is the research window (512 beat 256 on every Q&A group, October 2026)
     WIDTH=256, LAYERS=6, HEADS=8, CTX=512,
-    # --- block: "modern" (RoPE + RMSNorm + SwiGLU: 1-7% lower error on every held-out set at equal
-    #     steps, 2% fewer parameters, slower per step) or "legacy" (LayerNorm + GELU + position table)
-    BLOCK="modern",
+    # --- block: "legacy" (LayerNorm + GELU + position table) or "modern" (RoPE + RMSNorm + SwiGLU: 1-7% lower
+    #     text error at equal steps, but at 5M no better on answers, probe 17/32 vs 20-21, half the reply speed)
+    BLOCK="legacy",
     # --- bfloat16 training on the GPU (same quality, about twice the speed; ignored on the CPU)
     AMP=True,
     # --- encoding: "compiler" (the deterministic v0 dictionary) or "bpe" (standard tokenizer)
