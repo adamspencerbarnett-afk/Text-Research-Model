@@ -73,6 +73,7 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 | R8 | full check loop: verify, refine, restart, 'unknown' | precision of 'unknown' | after R4 |
 | R9 | 19M core on the winning design | decides the 'smaller at equal quality' claim for reasoning | after R4 |
 | T1 | scale: domain feature for the trust head; per-domain tables (REASONING_PLAN 2.4) | can the tables be made harmless at 19M? | queued, low priority |
+| COST | record cost beside accuracy for every run: actual training seconds, steps/s, peak GPU memory, answer seconds per question, GPU power (joules per answer); ledger columns for train seconds and answer seconds | is the model lighter and faster, in measured numbers? | queued, after the depth sweep (requested 12 October) |
 
 ## Key findings by session
 
