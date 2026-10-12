@@ -486,16 +486,24 @@ class QAEngine:
         computed, after_value = [], False
         cache, keys, done = None, None, 0       # KV cache: states of codes already processed (fast=True)
         use_cache = fast
+        dev = self.dev
+        # Everything the loop needs lives on the device once: the window grows by one code per step.
+        # (Rebuilding the window from the Python list each step cost 10x the network at 50M.)
+        seq_dev = torch.tensor(seq, device=dev)
+        sim_t = torch.tensor([sim], device=dev)
+        if getattr(self, "_never_dev", None) is None or self._never_dev.device != seq_dev.device:
+            self._never_dev = self.never_seen.to(dev)
+            self._digit_dev = torch.tensor([c for c in range(enc.vocab) if enc.d.id_bytes[c][:1].isdigit()], device=dev)
         while len(seq) - start < max_codes:
-            x = torch.tensor([seq[-a.ctx:]], device=self.dev)
+            x = seq_dev[-a.ctx:][None]
             off = max(0, len(seq) - a.ctx)
-            pos = torch.arange(min(len(seq), a.ctx), device=self.dev) + off
+            pos = torch.arange(min(len(seq), a.ctx), device=dev) + off
             span = pos < len(nb)
             if getattr(a, "copy_question", False):
                 span |= (pos >= len(nb) + len(self.sep)) & (pos < start)
             if use_cache and len(seq) <= a.ctx:
                 # only the codes added since the last step go through the network
-                h_new, cache = model.hidden_cached(torch.tensor([seq[done:]], device=self.dev), done, cache)
+                h_new, cache = model.hidden_cached(seq_dev[done:][None], done, cache)
                 keys = h_new if keys is None else torch.cat([keys, h_new], 1)
                 done = len(seq)
                 model._keys = keys
@@ -503,15 +511,13 @@ class QAEngine:
             else:                               # past the window the positions shift: recompute it whole
                 use_cache = False
                 h_last = model.hidden_all(x)
-            logits = model.mixed_logits(h_last, x, span[None], torch.tensor([sim], device=self.dev))
-            logits = logits.masked_fill(self.never_seen.to(logits.device), float("-inf"))
+            logits = model.mixed_logits(h_last, x, span[None], sim_t)
+            logits = logits.masked_fill(self._never_dev, float("-inf"))
             banned = repeat_banned(seq[start:], no_repeat)
             if banned:
                 logits[0, banned] = float("-inf")
             if after_value:                  # no digit may extend a value the calculator just wrote
-                digits = [c for c in range(enc.vocab) if enc.d.id_bytes[c][:1].isdigit()] if not hasattr(self, "_digit_codes") else self._digit_codes
-                self._digit_codes = digits
-                logits[0, digits] = float("-inf")
+                logits[0, self._digit_dev] = float("-inf")
                 after_value = False
             if temperature > 0:              # sampled answers (verified self-training needs several different tries)
                 lg = logits[0] / temperature
@@ -523,12 +529,15 @@ class QAEngine:
             if getattr(a, "eos", False) and nxt == EOS:
                 break
             seq.append(nxt)
+            added = [nxt]
             if calculator and nxt == self.equals:
                 value = evaluate_tail(enc.decode(seq[start:]))
                 if value is not None:
                     computed.append(value)
-                    seq.extend(int(t) for t in enc.encode(b" " + value.encode())[0])
+                    vc = [int(t) for t in enc.encode(b" " + value.encode())[0]]
+                    seq.extend(vc); added.extend(vc)
                     after_value = True
+            seq_dev = torch.cat([seq_dev, torch.tensor(added, device=dev)])
             text = enc.decode(seq[start:])
             if b"\nUser" in text or b"\nAssistant:" in text:   # the next turn, or an invented one
                 break
