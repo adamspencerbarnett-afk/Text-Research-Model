@@ -1,0 +1,1050 @@
+{
+ "setup": {
+  "data": "data_qa_gsm_star50_r1",
+  "work": "runs/star50_r1/train",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 16000.0,
+  "ctx": 1024,
+  "batch": 32,
+  "topk": 64,
+  "neighbor_codes": 400,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/star50_r1.json",
+  "seed": 1,
+  "self_context_p": 0.5,
+  "copy_bias": 0.0,
+  "device": "cuda",
+  "threads": 0,
+  "width": 640,
+  "layers": 10,
+  "heads": 10,
+  "block": "legacy",
+  "greedy": true,
+  "no_repeat": 0,
+  "patience": 0,
+  "min_delta": 0.005,
+  "max_steps": 8000,
+  "dict": "runs/core_P50/v0_8k_plain.cv0d",
+  "init": "runs/s2b_gsm_50m/qa_s2b_gsm_50m.pt",
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "copy_question": true,
+  "calculator": true,
+  "perturb_self": 0.0,
+  "sim_feature": false,
+  "no_retrieval_p": 0.0,
+  "loss_answer_only": true,
+  "stop_at_blank": false,
+  "lr": 0.0001,
+  "key_head": null,
+  "eos": true,
+  "head_lr": 0.001,
+  "schedule": "cosine",
+  "net_n": 200,
+  "rehearse": "data_core/mix_P50",
+  "rehearse_p": 0.3,
+  "save": "runs/star50_r1/qa_star50_r1.pt",
+  "train_exchanges": 11942,
+  "eval": 659,
+  "added": 660,
+  "distinct_keys": 7460
+ },
+ "training": {
+  "steps": 8000,
+  "train_s": 6214.7,
+  "stop_reason": "budget",
+  "best_valid": 0.6241,
+  "history": [
+   {
+    "train_s": 60.7,
+    "step": 77,
+    "train_bits_per_code": 3.0,
+    "valid_bits_per_byte": 0.6365
+   },
+   {
+    "train_s": 120.2,
+    "step": 154,
+    "train_bits_per_code": 2.812,
+    "valid_bits_per_byte": 0.6428
+   },
+   {
+    "train_s": 180.6,
+    "step": 232,
+    "train_bits_per_code": 2.831,
+    "valid_bits_per_byte": 0.6358
+   },
+   {
+    "train_s": 240.2,
+    "step": 309,
+    "train_bits_per_code": 3.413,
+    "valid_bits_per_byte": 0.6397
+   },
+   {
+    "train_s": 300.7,
+    "step": 387,
+    "train_bits_per_code": 2.117,
+    "valid_bits_per_byte": 0.6315
+   },
+   {
+    "train_s": 360.4,
+    "step": 464,
+    "train_bits_per_code": 3.142,
+    "valid_bits_per_byte": 0.6333
+   },
+   {
+    "train_s": 420.2,
+    "step": 541,
+    "train_bits_per_code": 2.572,
+    "valid_bits_per_byte": 0.6305
+   },
+   {
+    "train_s": 480.8,
+    "step": 619,
+    "train_bits_per_code": 2.531,
+    "valid_bits_per_byte": 0.6324
+   },
+   {
+    "train_s": 540.6,
+    "step": 696,
+    "train_bits_per_code": 2.729,
+    "valid_bits_per_byte": 0.633
+   },
+   {
+    "train_s": 600.3,
+    "step": 773,
+    "train_bits_per_code": 2.132,
+    "valid_bits_per_byte": 0.637
+   },
+   {
+    "train_s": 660.1,
+    "step": 850,
+    "train_bits_per_code": 2.832,
+    "valid_bits_per_byte": 0.628
+   },
+   {
+    "train_s": 720.7,
+    "step": 928,
+    "train_bits_per_code": 2.44,
+    "valid_bits_per_byte": 0.6241
+   },
+   {
+    "train_s": 780.5,
+    "step": 1005,
+    "train_bits_per_code": 2.398,
+    "valid_bits_per_byte": 0.6299
+   },
+   {
+    "train_s": 840.3,
+    "step": 1082,
+    "train_bits_per_code": 2.954,
+    "valid_bits_per_byte": 0.6306
+   },
+   {
+    "train_s": 900.1,
+    "step": 1159,
+    "train_bits_per_code": 3.21,
+    "valid_bits_per_byte": 0.6363
+   },
+   {
+    "train_s": 960.6,
+    "step": 1237,
+    "train_bits_per_code": 2.807,
+    "valid_bits_per_byte": 0.6352
+   },
+   {
+    "train_s": 1020.5,
+    "step": 1314,
+    "train_bits_per_code": 3.099,
+    "valid_bits_per_byte": 0.6411
+   },
+   {
+    "train_s": 1080.4,
+    "step": 1391,
+    "train_bits_per_code": 2.804,
+    "valid_bits_per_byte": 0.6284
+   },
+   {
+    "train_s": 1140.2,
+    "step": 1468,
+    "train_bits_per_code": 2.433,
+    "valid_bits_per_byte": 0.6403
+   },
+   {
+    "train_s": 1200.1,
+    "step": 1545,
+    "train_bits_per_code": 2.509,
+    "valid_bits_per_byte": 0.632
+   },
+   {
+    "train_s": 1260.7,
+    "step": 1623,
+    "train_bits_per_code": 2.902,
+    "valid_bits_per_byte": 0.6465
+   },
+   {
+    "train_s": 1320.4,
+    "step": 1700,
+    "train_bits_per_code": 2.159,
+    "valid_bits_per_byte": 0.6391
+   },
+   {
+    "train_s": 1380.2,
+    "step": 1777,
+    "train_bits_per_code": 2.856,
+    "valid_bits_per_byte": 0.6396
+   },
+   {
+    "train_s": 1440.1,
+    "step": 1854,
+    "train_bits_per_code": 3.156,
+    "valid_bits_per_byte": 0.653
+   },
+   {
+    "train_s": 1500.7,
+    "step": 1932,
+    "train_bits_per_code": 1.9,
+    "valid_bits_per_byte": 0.6448
+   },
+   {
+    "train_s": 1560.5,
+    "step": 2009,
+    "train_bits_per_code": 2.302,
+    "valid_bits_per_byte": 0.6452
+   },
+   {
+    "train_s": 1620.3,
+    "step": 2086,
+    "train_bits_per_code": 2.504,
+    "valid_bits_per_byte": 0.6474
+   },
+   {
+    "train_s": 1680.2,
+    "step": 2163,
+    "train_bits_per_code": 2.93,
+    "valid_bits_per_byte": 0.6492
+   },
+   {
+    "train_s": 1740.1,
+    "step": 2240,
+    "train_bits_per_code": 2.825,
+    "valid_bits_per_byte": 0.6638
+   },
+   {
+    "train_s": 1800.7,
+    "step": 2318,
+    "train_bits_per_code": 2.632,
+    "valid_bits_per_byte": 0.6517
+   },
+   {
+    "train_s": 1860.6,
+    "step": 2395,
+    "train_bits_per_code": 2.465,
+    "valid_bits_per_byte": 0.6473
+   },
+   {
+    "train_s": 1920.5,
+    "step": 2472,
+    "train_bits_per_code": 2.361,
+    "valid_bits_per_byte": 0.6493
+   },
+   {
+    "train_s": 1980.4,
+    "step": 2549,
+    "train_bits_per_code": 2.522,
+    "valid_bits_per_byte": 0.6505
+   },
+   {
+    "train_s": 2040.3,
+    "step": 2626,
+    "train_bits_per_code": 3.005,
+    "valid_bits_per_byte": 0.6467
+   },
+   {
+    "train_s": 2100.2,
+    "step": 2703,
+    "train_bits_per_code": 3.397,
+    "valid_bits_per_byte": 0.6508
+   },
+   {
+    "train_s": 2160.1,
+    "step": 2780,
+    "train_bits_per_code": 2.943,
+    "valid_bits_per_byte": 0.6612
+   },
+   {
+    "train_s": 2220.1,
+    "step": 2857,
+    "train_bits_per_code": 2.854,
+    "valid_bits_per_byte": 0.6476
+   },
+   {
+    "train_s": 2280.8,
+    "step": 2935,
+    "train_bits_per_code": 2.944,
+    "valid_bits_per_byte": 0.647
+   },
+   {
+    "train_s": 2340.7,
+    "step": 3012,
+    "train_bits_per_code": 2.265,
+    "valid_bits_per_byte": 0.6624
+   },
+   {
+    "train_s": 2400.1,
+    "step": 3088,
+    "train_bits_per_code": 2.757,
+    "valid_bits_per_byte": 0.66
+   },
+   {
+    "train_s": 2460.7,
+    "step": 3166,
+    "train_bits_per_code": 2.669,
+    "valid_bits_per_byte": 0.651
+   },
+   {
+    "train_s": 2520.5,
+    "step": 3243,
+    "train_bits_per_code": 3.26,
+    "valid_bits_per_byte": 0.6606
+   },
+   {
+    "train_s": 2580.3,
+    "step": 3320,
+    "train_bits_per_code": 2.572,
+    "valid_bits_per_byte": 0.6584
+   },
+   {
+    "train_s": 2640.2,
+    "step": 3397,
+    "train_bits_per_code": 2.06,
+    "valid_bits_per_byte": 0.6559
+   },
+   {
+    "train_s": 2700.7,
+    "step": 3475,
+    "train_bits_per_code": 2.069,
+    "valid_bits_per_byte": 0.6616
+   },
+   {
+    "train_s": 2760.6,
+    "step": 3552,
+    "train_bits_per_code": 3.051,
+    "valid_bits_per_byte": 0.6545
+   },
+   {
+    "train_s": 2820.4,
+    "step": 3629,
+    "train_bits_per_code": 2.556,
+    "valid_bits_per_byte": 0.6666
+   },
+   {
+    "train_s": 2880.2,
+    "step": 3706,
+    "train_bits_per_code": 2.536,
+    "valid_bits_per_byte": 0.6561
+   },
+   {
+    "train_s": 2940.8,
+    "step": 3784,
+    "train_bits_per_code": 3.135,
+    "valid_bits_per_byte": 0.6638
+   },
+   {
+    "train_s": 3000.6,
+    "step": 3861,
+    "train_bits_per_code": 2.709,
+    "valid_bits_per_byte": 0.66
+   },
+   {
+    "train_s": 3060.3,
+    "step": 3938,
+    "train_bits_per_code": 2.979,
+    "valid_bits_per_byte": 0.6697
+   },
+   {
+    "train_s": 3120.1,
+    "step": 4015,
+    "train_bits_per_code": 2.343,
+    "valid_bits_per_byte": 0.67
+   },
+   {
+    "train_s": 3180.6,
+    "step": 4093,
+    "train_bits_per_code": 2.996,
+    "valid_bits_per_byte": 0.6696
+   },
+   {
+    "train_s": 3240.3,
+    "step": 4170,
+    "train_bits_per_code": 3.313,
+    "valid_bits_per_byte": 0.6755
+   },
+   {
+    "train_s": 3300.1,
+    "step": 4247,
+    "train_bits_per_code": 2.751,
+    "valid_bits_per_byte": 0.6711
+   },
+   {
+    "train_s": 3360.7,
+    "step": 4325,
+    "train_bits_per_code": 2.989,
+    "valid_bits_per_byte": 0.6704
+   },
+   {
+    "train_s": 3420.4,
+    "step": 4402,
+    "train_bits_per_code": 2.153,
+    "valid_bits_per_byte": 0.6757
+   },
+   {
+    "train_s": 3480.2,
+    "step": 4479,
+    "train_bits_per_code": 2.851,
+    "valid_bits_per_byte": 0.6826
+   },
+   {
+    "train_s": 3540.0,
+    "step": 4556,
+    "train_bits_per_code": 2.654,
+    "valid_bits_per_byte": 0.6747
+   },
+   {
+    "train_s": 3600.6,
+    "step": 4634,
+    "train_bits_per_code": 2.252,
+    "valid_bits_per_byte": 0.6827
+   },
+   {
+    "train_s": 3660.4,
+    "step": 4711,
+    "train_bits_per_code": 2.48,
+    "valid_bits_per_byte": 0.6759
+   },
+   {
+    "train_s": 3720.2,
+    "step": 4788,
+    "train_bits_per_code": 3.002,
+    "valid_bits_per_byte": 0.6826
+   },
+   {
+    "train_s": 3780.0,
+    "step": 4865,
+    "train_bits_per_code": 3.069,
+    "valid_bits_per_byte": 0.6802
+   },
+   {
+    "train_s": 3840.7,
+    "step": 4943,
+    "train_bits_per_code": 2.966,
+    "valid_bits_per_byte": 0.6856
+   },
+   {
+    "train_s": 3900.5,
+    "step": 5020,
+    "train_bits_per_code": 2.374,
+    "valid_bits_per_byte": 0.6806
+   },
+   {
+    "train_s": 3960.3,
+    "step": 5097,
+    "train_bits_per_code": 2.867,
+    "valid_bits_per_byte": 0.6811
+   },
+   {
+    "train_s": 4020.2,
+    "step": 5174,
+    "train_bits_per_code": 1.809,
+    "valid_bits_per_byte": 0.6773
+   },
+   {
+    "train_s": 4080.0,
+    "step": 5251,
+    "train_bits_per_code": 3.175,
+    "valid_bits_per_byte": 0.6845
+   },
+   {
+    "train_s": 4140.6,
+    "step": 5329,
+    "train_bits_per_code": 3.129,
+    "valid_bits_per_byte": 0.6852
+   },
+   {
+    "train_s": 4200.5,
+    "step": 5406,
+    "train_bits_per_code": 3.238,
+    "valid_bits_per_byte": 0.6913
+   },
+   {
+    "train_s": 4260.3,
+    "step": 5483,
+    "train_bits_per_code": 2.799,
+    "valid_bits_per_byte": 0.6953
+   },
+   {
+    "train_s": 4320.2,
+    "step": 5560,
+    "train_bits_per_code": 3.307,
+    "valid_bits_per_byte": 0.6838
+   },
+   {
+    "train_s": 4380.0,
+    "step": 5637,
+    "train_bits_per_code": 2.192,
+    "valid_bits_per_byte": 0.6918
+   },
+   {
+    "train_s": 4440.6,
+    "step": 5715,
+    "train_bits_per_code": 3.133,
+    "valid_bits_per_byte": 0.6938
+   },
+   {
+    "train_s": 4500.5,
+    "step": 5792,
+    "train_bits_per_code": 2.663,
+    "valid_bits_per_byte": 0.6934
+   },
+   {
+    "train_s": 4560.3,
+    "step": 5869,
+    "train_bits_per_code": 3.32,
+    "valid_bits_per_byte": 0.6936
+   },
+   {
+    "train_s": 4620.2,
+    "step": 5946,
+    "train_bits_per_code": 3.223,
+    "valid_bits_per_byte": 0.6933
+   },
+   {
+    "train_s": 4680.0,
+    "step": 6023,
+    "train_bits_per_code": 1.963,
+    "valid_bits_per_byte": 0.6903
+   },
+   {
+    "train_s": 4740.6,
+    "step": 6101,
+    "train_bits_per_code": 3.036,
+    "valid_bits_per_byte": 0.7002
+   },
+   {
+    "train_s": 4800.3,
+    "step": 6178,
+    "train_bits_per_code": 2.613,
+    "valid_bits_per_byte": 0.6944
+   },
+   {
+    "train_s": 4860.8,
+    "step": 6256,
+    "train_bits_per_code": 2.801,
+    "valid_bits_per_byte": 0.6966
+   },
+   {
+    "train_s": 4920.5,
+    "step": 6333,
+    "train_bits_per_code": 1.683,
+    "valid_bits_per_byte": 0.6935
+   },
+   {
+    "train_s": 4980.2,
+    "step": 6410,
+    "train_bits_per_code": 2.327,
+    "valid_bits_per_byte": 0.7006
+   },
+   {
+    "train_s": 5040.7,
+    "step": 6488,
+    "train_bits_per_code": 2.363,
+    "valid_bits_per_byte": 0.7025
+   },
+   {
+    "train_s": 5100.4,
+    "step": 6565,
+    "train_bits_per_code": 2.374,
+    "valid_bits_per_byte": 0.699
+   },
+   {
+    "train_s": 5160.2,
+    "step": 6642,
+    "train_bits_per_code": 2.147,
+    "valid_bits_per_byte": 0.7008
+   },
+   {
+    "train_s": 5220.7,
+    "step": 6720,
+    "train_bits_per_code": 3.048,
+    "valid_bits_per_byte": 0.7036
+   },
+   {
+    "train_s": 5280.5,
+    "step": 6797,
+    "train_bits_per_code": 2.649,
+    "valid_bits_per_byte": 0.7061
+   },
+   {
+    "train_s": 5340.3,
+    "step": 6874,
+    "train_bits_per_code": 2.921,
+    "valid_bits_per_byte": 0.7011
+   },
+   {
+    "train_s": 5400.1,
+    "step": 6951,
+    "train_bits_per_code": 2.923,
+    "valid_bits_per_byte": 0.7009
+   },
+   {
+    "train_s": 5460.7,
+    "step": 7029,
+    "train_bits_per_code": 3.602,
+    "valid_bits_per_byte": 0.7024
+   },
+   {
+    "train_s": 5520.5,
+    "step": 7106,
+    "train_bits_per_code": 2.631,
+    "valid_bits_per_byte": 0.7042
+   },
+   {
+    "train_s": 5580.3,
+    "step": 7183,
+    "train_bits_per_code": 2.07,
+    "valid_bits_per_byte": 0.7017
+   },
+   {
+    "train_s": 5640.1,
+    "step": 7260,
+    "train_bits_per_code": 3.054,
+    "valid_bits_per_byte": 0.7059
+   },
+   {
+    "train_s": 5700.7,
+    "step": 7338,
+    "train_bits_per_code": 3.545,
+    "valid_bits_per_byte": 0.7073
+   },
+   {
+    "train_s": 5760.4,
+    "step": 7415,
+    "train_bits_per_code": 2.71,
+    "valid_bits_per_byte": 0.7075
+   },
+   {
+    "train_s": 5820.3,
+    "step": 7492,
+    "train_bits_per_code": 3.192,
+    "valid_bits_per_byte": 0.7054
+   },
+   {
+    "train_s": 5880.1,
+    "step": 7569,
+    "train_bits_per_code": 2.664,
+    "valid_bits_per_byte": 0.711
+   },
+   {
+    "train_s": 5940.7,
+    "step": 7647,
+    "train_bits_per_code": 2.798,
+    "valid_bits_per_byte": 0.7083
+   },
+   {
+    "train_s": 6000.5,
+    "step": 7724,
+    "train_bits_per_code": 2.552,
+    "valid_bits_per_byte": 0.711
+   },
+   {
+    "train_s": 6060.4,
+    "step": 7801,
+    "train_bits_per_code": 2.399,
+    "valid_bits_per_byte": 0.7101
+   },
+   {
+    "train_s": 6120.2,
+    "step": 7878,
+    "train_bits_per_code": 2.931,
+    "valid_bits_per_byte": 0.7076
+   },
+   {
+    "train_s": 6180.1,
+    "step": 7955,
+    "train_bits_per_code": 2.952,
+    "valid_bits_per_byte": 0.712
+   },
+   {
+    "train_s": 6214.7,
+    "step": 8000,
+    "train_bits_per_code": 2.433,
+    "valid_bits_per_byte": 0.7139
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.9226,
+   "exact": 0.69
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 200,
+   "f1": 0.8517,
+   "exact": 0.19,
+   "num_exact": 0.57,
+   "num_exact_bias": 0.57,
+   "f1_no_m1": 0.8517,
+   "f1_bias": 0.8517,
+   "exact_bias": 0.19
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 2,
+   "f1": 0.5989,
+   "exact": 0.0,
+   "num_exact": 0.0,
+   "num_exact_bias": 0.0,
+   "f1_no_m1": 0.5989,
+   "f1_bias": 0.5989,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.5799
+  },
+  "unseen_network_with_nearest": {
+   "n": 198,
+   "f1": 0.4435,
+   "exact": 0.0,
+   "num_exact": 0.0253,
+   "num_exact_bias": 0.0253,
+   "f1_no_m1": 0.4427,
+   "f1_bias": 0.4435,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.2442
+  },
+  "heldout_network_without_memory": {
+   "n": 200,
+   "f1": 0.4369,
+   "exact": 0.0,
+   "num_exact": 0.025,
+   "num_exact_bias": 0.025
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.4449
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 1.0,
+   "exact": 1.0
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 200,
+   "f1": 0.7381,
+   "exact": 0.035,
+   "num_exact": 0.28,
+   "num_exact_bias": 0.28,
+   "f1_no_m1": 0.7381,
+   "f1_bias": 0.7381,
+   "exact_bias": 0.035
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Carmen burns a candle for 1 hour every night.  A candle will last her 8 nights. ",
+    "a": "Burning a candle for 1 hour lasts her 8 nights so if she burns for 2 hours it will last her 8/2 = 4 nights\n1 candle now lasts 4 nights and she needs enough for ",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "Burning a candle for 1 hour lasts her 8 nights so if she burns for 2 hours it will last her 8/2 = 4 nights\n1 candle now lasts 4 nights and she needs enough for ",
+    "f1_no_m1": 1.0,
+    "a_bias": "Burning a candle for 1 hour lasts her 8 nights so if she burns for 2 hours it will last her 8/2 = 4 nights\n1 candle now lasts 4 nights and she needs enough for ",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": 1.0,
+    "num_exact_bias": 1.0
+   },
+   {
+    "q": "The building has 42 storage units that are a total of 5040 square feet. Twenty o",
+    "a": "8 * 4 = 32 square feet\n20 * 32 = 640 square feet\n5040 - 640 = 4400 square feet\nThere are 42 - 20 = 22 remaining units\n4400/22 = 200\nAnswer: 200",
+    "f1": 0.6875000000000001,
+    "exact": 0.0,
+    "a_no_m1": "8 * 4 = 32 square feet\n20 * 32 = 640 square feet\n5040 - 640 = 4400 square feet\nThere are 42 - 20 = 22 remaining units\n4400/22 = 200\nAnswer: 200",
+    "f1_no_m1": 0.6875000000000001,
+    "a_bias": "8 * 4 = 32 square feet\n20 * 32 = 640 square feet\n5040 - 640 = 4400 square feet\nThere are 42 - 20 = 22 remaining units\n4400/22 = 200\nAnswer: 200",
+    "f1_bias": 0.6875000000000001,
+    "exact_bias": 0.0,
+    "num_exact": 1.0,
+    "num_exact_bias": 1.0
+   },
+   {
+    "q": "Kenny played basketball last week. He ran for twice as long as he played basketb",
+    "a": "Kenny ran for 40/2= 20 hours.\nKenny played basketball for 20/2= 10 hours.\nAnswer: 10",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "Kenny ran for 40/2= 20 hours.\nKenny played basketball for 20/2= 10 hours.\nAnswer: 10",
+    "f1_no_m1": 1.0,
+    "a_bias": "Kenny ran for 40/2= 20 hours.\nKenny played basketball for 20/2= 10 hours.\nAnswer: 10",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": 1.0,
+    "num_exact_bias": 1.0
+   },
+   {
+    "q": "Caleb bought 10 cartons of ice cream and 4 cartons of frozen yoghurt. Each carto",
+    "a": "The cost of the ice cream is 10 \u00d7 $4 = $40.\nThe cost of the frozen yoghurt is 4 \u00d7 $1 = $4.\nCaleb spent $40 \u2212 $4 = $36 more on ice cream than on frozen yogurt",
+    "f1": 0.9795918367346939,
+    "exact": 0.0,
+    "a_no_m1": "The cost of the ice cream is 10 \u00d7 $4 = $40.\nThe cost of the frozen yoghurt is 4 \u00d7 $1 = $4.\nCaleb spent $40 \u2212 $4 = $36 more on ice cream than on frozen yogurt",
+    "f1_no_m1": 0.9795918367346939,
+    "a_bias": "The cost of the ice cream is 10 \u00d7 $4 = $40.\nThe cost of the frozen yoghurt is 4 \u00d7 $1 = $4.\nCaleb spent $40 \u2212 $4 = $36 more on ice cream than on frozen yogurt",
+    "f1_bias": 0.9795918367346939,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Amon & Rhonda combined have 215 marbles. If Amon owns 55 marbles more than Rhond",
+    "a": "Let's say Rhonda has m marbles.\nThe total number of marbles that Ammon has is m+55\nAmon & Rhonda combined have m+(m+55) = 215\nThis means the total number of mar",
+    "f1": 0.8275862068965517,
+    "exact": 0.0,
+    "a_no_m1": "Let's say Rhonda has m marbles.\nThe total number of marbles that Ammon has is m+55\nAmon & Rhonda combined have m+(m+55) = 215\nThis means the total number of mar",
+    "f1_no_m1": 0.8275862068965517,
+    "a_bias": "Let's say Rhonda has m marbles.\nThe total number of marbles that Ammon has is m+55\nAmon & Rhonda combined have m+(m+55) = 215\nThis means the total number of mar",
+    "f1_bias": 0.8275862068965517,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Sarah is playing tic-tac-toe. She wins $1 for every game she wins, $0 for every ",
+    "a": "She either won or lost 60 games because 100 - 40 = 60\nWe know that 1(60-Losses) -2(Losses) = -30 because she lost $30\nTherefore 60 - Losses - 2 Losses= -30\nAnsw",
+    "f1": 0.9047619047619047,
+    "exact": 0.0,
+    "a_no_m1": "She either won or lost 60 games because 100 - 40 = 60\nWe know that 1(60-Losses) -2(Losses) = -30 because she lost $30\nTherefore 60 - Losses - 2 Losses= -30\nAnsw",
+    "f1_no_m1": 0.9047619047619047,
+    "a_bias": "She either won or lost 60 games because 100 - 40 = 60\nWe know that 1(60-Losses) -2(Losses) = -30 because she lost $30\nTherefore 60 - Losses - 2 Losses= -30\nAnsw",
+    "f1_bias": 0.9047619047619047,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Max bought stamps at the post office. Some of the stamps had a snowflake design,",
+    "a": "The number of truck stamps is 16 + 3 = 19.\nThe number of rose stamps is 19 + 9 = 28.\nMax bought 28 - 16 = 12 stamps.\nAnswer: 12",
+    "f1": 0.47058823529411764,
+    "exact": 0.0,
+    "a_no_m1": "The number of truck stamps is 16 + 3 = 19.\nThe number of rose stamps is 19 + 9 = 28.\nMax bought 28 - 16 = 12 stamps.\nAnswer: 12",
+    "f1_no_m1": 0.47058823529411764,
+    "a_bias": "The number of truck stamps is 16 + 3 = 19.\nThe number of rose stamps is 19 + 9 = 28.\nMax bought 28 - 16 = 12 stamps.\nAnswer: 12",
+    "f1_bias": 0.47058823529411764,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.724,
+    "f1_vs_retrieved": 0.8571428571428572,
+    "retrieved_answer_f1_vs_ref": 0.43243243243243246
+   },
+   {
+    "q": "A plane travels 1200 miles in 3 hours. At the same rate, how many additional hou",
+    "a": "The rate is 270/3= 90 mph.\nThen it takes an additional 180/90= 2 hours.\nAnswer: 2",
+    "f1": 0.7272727272727273,
+    "exact": 0.0,
+    "a_no_m1": "The rate is 270/3= 90 mph.\nThen it takes an additional 180/90= 2 hours.\nAnswer: 2",
+    "f1_no_m1": 0.7272727272727273,
+    "a_bias": "The rate is 270/3= 90 mph.\nThen it takes an additional 180/90= 2 hours.\nAnswer: 2",
+    "f1_bias": 0.7272727272727273,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.564,
+    "f1_vs_retrieved": 1.0,
+    "retrieved_answer_f1_vs_ref": 0.7272727272727273
+   }
+  ],
+  "unseen": [
+   {
+    "q": "It's April, and Mrs. Rylan has been busy on her farm planting different types of",
+    "a": "She bought 20 packets of tomato seeds and 80 packets of celery seeds for a total of 20+80 = 100 packets of vegetables.\nIf a packet of celery seeds costs $40 and",
+    "f1": 0.39999999999999997,
+    "exact": 0.0,
+    "a_no_m1": "She bought 20 packets of tomato seeds and 80 packets of celery seeds for a total of 20+80 = 100 packets of vegetables.\nIf a packet of celery seeds costs $40 and",
+    "f1_no_m1": 0.39999999999999997,
+    "a_bias": "She bought 20 packets of tomato seeds and 80 packets of celery seeds for a total of 20+80 = 100 packets of vegetables.\nIf a packet of celery seeds costs $40 and",
+    "f1_bias": 0.39999999999999997,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.242,
+    "f1_vs_retrieved": 0.4109589041095891,
+    "retrieved_answer_f1_vs_ref": 0.393939393939394
+   },
+   {
+    "q": "The Smith family is getting ready for summer and needs to have their swimming po",
+    "a": "The pool is 14 feet wide and needs 5.9 gallons of water so that's 14*5.9 = 82.6 gallons\nThe pool is 25 feet long and needs 82.6 gallons of water so it needs 25*",
+    "f1": 0.4615384615384615,
+    "exact": 0.0,
+    "a_no_m1": "The pool is 14 feet wide and needs 5.9 gallons of water so that's 14*5.9 = 82.6 gallons\nThe pool is 25 feet long and needs 82.6 gallons of water so it needs 25*",
+    "f1_no_m1": 0.4615384615384615,
+    "a_bias": "The pool is 14 feet wide and needs 5.9 gallons of water so that's 14*5.9 = 82.6 gallons\nThe pool is 25 feet long and needs 82.6 gallons of water so it needs 25*",
+    "f1_bias": 0.4615384615384615,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.139,
+    "f1_vs_retrieved": 0.34782608695652173,
+    "retrieved_answer_f1_vs_ref": 0.24137931034482757
+   },
+   {
+    "q": "Trinity sells magazines at 11/8 of the price she bought the magazines. If she bo",
+    "a": "If Trinity bought the magazines at $72, that means she spent $72 - $72 = 0.icent of the magazines\nIf she bought the magazines at $72, it means she paid $72 / $7",
+    "f1": 0.5853658536585366,
+    "exact": 0.0,
+    "a_no_m1": "If Trinity bought the magazines at $72, that means she spent $72 - $72 = 0.icent of the magazines\nIf she bought the magazines at $72, it means she paid $72 / $7",
+    "f1_no_m1": 0.5853658536585366,
+    "a_bias": "If Trinity bought the magazines at $72, that means she spent $72 - $72 = 0.icent of the magazines\nIf she bought the magazines at $72, it means she paid $72 / $7",
+    "f1_bias": 0.5853658536585366,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.215,
+    "f1_vs_retrieved": 0.20689655172413793,
+    "retrieved_answer_f1_vs_ref": 0.24489795918367344
+   },
+   {
+    "q": "Jame will turn 27 in 5 years.  In 8 years his cousin will be 5 years younger tha",
+    "a": "Jame will turn 27 in 5+8= 13 years\nIn 8 years his cousin will be 52-8= 44 years old\nSo in 8 years his cousin will be 44+8= 52 years\nSo in 8 years his cousin wil",
+    "f1": 0.6229508196721311,
+    "exact": 0.0,
+    "a_no_m1": "Jame will turn 27 in 5+8= 13 years\nIn 8 years his cousin will be 52-8= 44 years old\nSo in 8 years his cousin will be 44+8= 52 years\nSo in 8 years his cousin wil",
+    "f1_no_m1": 0.6229508196721311,
+    "a_bias": "Jame will turn 27 in 5+8= 13 years\nIn 8 years his cousin will be 52-8= 44 years old\nSo in 8 years his cousin will be 44+8= 52 years\nSo in 8 years his cousin wil",
+    "f1_bias": 0.6229508196721311,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.19,
+    "f1_vs_retrieved": 0.3137254901960784,
+    "retrieved_answer_f1_vs_ref": 0.5185185185185185
+   },
+   {
+    "q": "Antoine's french onion soup recipe calls for 2 pounds of onions. He likes to dou",
+    "a": "The soup recipe calls for 2 pounds onions so that's 2*2 = 4 pounds of onions\nThe onions are on sale for $2.00 a pound so for 2 pounds onions, that's 2*2 = 4 pou",
+    "f1": 0.5391304347826087,
+    "exact": 0.0,
+    "a_no_m1": "The soup recipe calls for 2 pounds onions so that's 2*2 = 4 pounds of onions\nThe onions are on sale for $2.00 a pound so for 2 pounds onions, that's 2*2 = 4 pou",
+    "f1_no_m1": 0.5391304347826087,
+    "a_bias": "The soup recipe calls for 2 pounds onions so that's 2*2 = 4 pounds of onions\nThe onions are on sale for $2.00 a pound so for 2 pounds onions, that's 2*2 = 4 pou",
+    "f1_bias": 0.5391304347826087,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.121,
+    "f1_vs_retrieved": 0.22641509433962262,
+    "retrieved_answer_f1_vs_ref": 0.18604651162790697
+   },
+   {
+    "q": "Joey plays football every week. Last week he played 2 matches on Monday, 1 match",
+    "a": "Joey played 2 matches on Monday, 1 match on Friday, and 2 matches from Saturday, so a total of 2+1+2 = 5 matches\nOn Monday, he played double the number of match",
+    "f1": 0.3508771929824562,
+    "exact": 0.0,
+    "a_no_m1": "Joey played 2 matches on Monday, 1 match on Friday, and 2 matches from Saturday, so a total of 2+1+2 = 5 matches\nOn Monday, he played double the number of match",
+    "f1_no_m1": 0.3508771929824562,
+    "a_bias": "Joey played 2 matches on Monday, 1 match on Friday, and 2 matches from Saturday, so a total of 2+1+2 = 5 matches\nOn Monday, he played double the number of match",
+    "f1_bias": 0.3508771929824562,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.156,
+    "f1_vs_retrieved": 0.2716049382716049,
+    "retrieved_answer_f1_vs_ref": 0.2222222222222222
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Of the 20 available cars for rent, 12 are automatic cars, 4 are manual cars, and",
+    "a": "12 + 4 = 16 cars are either automatically cars or manual cars.\nSo, 20 - 16 = 4 cars are semi-automatic.\nTherefore, the percentage of the cars is 4/20 x 100% = 2",
+    "f1": 0.8372093023255814,
+    "exact": 0.0,
+    "a_no_m1": "12 + 4 = 16 cars are either automatically cars or manual cars.\nSo, 20 - 16 = 4 cars are semi-automatic.\nTherefore, the percentage of the cars is 4/20 x 100% = 2",
+    "f1_no_m1": 0.8372093023255814,
+    "a_bias": "12 + 4 = 16 cars are either automatically cars or manual cars.\nSo, 20 - 16 = 4 cars are semi-automatic.\nTherefore, the percentage of the cars is 4/20 x 100% = 2",
+    "f1_bias": 0.8372093023255814,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "The red rope was four times the length of the blue rope. The blue rope was 7 cen",
+    "a": "Let Y = the length of the yellow rope in centimeters\nBlue rope = Y - 7\nRed rope = 4 * (Y - 7)\nY + Y - 7 + 4 (Y - 7) = 37 cm\n6Y - 3",
+    "f1": 0.8076923076923077,
+    "exact": 0.0,
+    "a_no_m1": "Let Y = the length of the yellow rope in centimeters\nBlue rope = Y - 7\nRed rope = 4 * (Y - 7)\nY + Y - 7 + 4 (Y - 7) = 37 cm\n6Y - 3",
+    "f1_no_m1": 0.8076923076923077,
+    "a_bias": "Let Y = the length of the yellow rope in centimeters\nBlue rope = Y - 7\nRed rope = 4 * (Y - 7)\nY + Y - 7 + 4 (Y - 7) = 37 cm\n6Y - 3",
+    "f1_bias": 0.8076923076923077,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Tom bought a CD for $4, and a headphone set. In total, he paid $48. How many mor",
+    "a": "The headphone set cost was 48 - 4 = 44.\nTom paid 44 - 4 = 40 more dollars, so he had to buy 40 more CDs.\nAnswer: 40",
+    "f1": 0.6111111111111113,
+    "exact": 0.0,
+    "a_no_m1": "The headphone set cost was 48 - 4 = 44.\nTom paid 44 - 4 = 40 more dollars, so he had to buy 40 more CDs.\nAnswer: 40",
+    "f1_no_m1": 0.6111111111111113,
+    "a_bias": "The headphone set cost was 48 - 4 = 44.\nTom paid 44 - 4 = 40 more dollars, so he had to buy 40 more CDs.\nAnswer: 40",
+    "f1_bias": 0.6111111111111113,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "It takes 20 minutes for the oil to heat up to 300 degrees.  It then takes 40% lo",
+    "a": "It takes 20*.4=8 more minutes to go from 300 to 400 degrees\nSo it takes 20+8= 28 minutes to warm up\nSo the total warming time was 28+20= 48 minutes\nSo it took 4",
+    "f1": 0.8311688311688311,
+    "exact": 0.0,
+    "a_no_m1": "It takes 20*.4=8 more minutes to go from 300 to 400 degrees\nSo it takes 20+8= 28 minutes to warm up\nSo the total warming time was 28+20= 48 minutes\nSo it took 4",
+    "f1_no_m1": 0.8311688311688311,
+    "a_bias": "It takes 20*.4=8 more minutes to go from 300 to 400 degrees\nSo it takes 20+8= 28 minutes to warm up\nSo the total warming time was 28+20= 48 minutes\nSo it took 4",
+    "f1_bias": 0.8311688311688311,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Sally has realized she did not receive a full wage this week. Her bank account, ",
+    "a": "The wage she received was $420 - $200 = 220 dollars.\nSince she has already received $200, she still has $200 \u2013 $420 = 40 dollars.\nAnswer: 220",
+    "f1": 0.42857142857142855,
+    "exact": 0.0,
+    "a_no_m1": "The wage she received was $420 - $200 = 220 dollars.\nSince she has already received $200, she still has $200 \u2013 $420 = 40 dollars.\nAnswer: 220",
+    "f1_no_m1": 0.42857142857142855,
+    "a_bias": "The wage she received was $420 - $200 = 220 dollars.\nSince she has already received $200, she still has $200 \u2013 $420 = 40 dollars.\nAnswer: 220",
+    "f1_bias": 0.42857142857142855,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Shawnda decides that her neighborhood kids could really use a bike inflation ser",
+    "a": "There were 10 bike tires to fill up because 2 times 5 equals 10.\nThere were 9 tricycle tires to fill up because 3 times 3 equals 9.\nThere was one unicycle to fi",
+    "f1": 0.8571428571428571,
+    "exact": 0.0,
+    "a_no_m1": "There were 10 bike tires to fill up because 2 times 5 equals 10.\nThere were 9 tricycle tires to fill up because 3 times 3 equals 9.\nThere was one unicycle to fi",
+    "f1_no_m1": 0.8571428571428571,
+    "a_bias": "There were 10 bike tires to fill up because 2 times 5 equals 10.\nThere were 9 tricycle tires to fill up because 3 times 3 equals 9.\nThere was one unicycle to fi",
+    "f1_bias": 0.8571428571428571,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   }
+  ]
+ },
+ "checks": {
+  "answer_confirmed": 572,
+  "answer_replaced": 1107
+ }
+}
