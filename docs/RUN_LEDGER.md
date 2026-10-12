@@ -45,6 +45,79 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 | scale_check | bpe_8k | 128w 4L 4h | 1.9M | none | 256 | 16 | 600 | 1763 | 0.025 | False | 1.960 | 1.906 |  | 3.720 | 864.400 | budget |
 | scale_check | v0_8k_table20_tri_ng | 128w 4L 4h | 270.3M | exact 2,3-gram x16 | 256 | 16 | 600 | 1545 | 0.022 | False | 1.782 | 1.768 |  | 3.798 | 554.900 | budget |
 
+## Cost beside accuracy
+*Training seconds for every run that recorded them; GPU watts, kilojoules and peak memory from 12 October (cost.py; valid only when the GPU was otherwise idle); seconds and joules per answer from the chat probe of the saved model, with its probe score out of 32.*
+
+| run | kind | steps | train s | steps/s | GPU W | kJ | peak MB | s/answer | J/answer | probe /32 |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| control_v0_8k_w256 | stage | 809 | 601 | 1.350 |  |  |  |  |  |  |
+| core_D1_5M 5M/v0_8k_ng64 | core | 42538 | 1478 | 28.780 |  |  |  |  |  |  |
+| core_D2_5M 5M/v0_8k_ng64 | core | 42538 | 1483 | 28.690 |  |  |  |  |  |  |
+| core_D3e512_5M 5M/v0_8k_ng64 | core | 42538 | 5074 | 8.380 |  |  |  |  |  |  |
+| core_D3_5M 5M/v0_8k_ng64 | core | 42538 | 1456 | 29.220 |  |  |  |  |  |  |
+| core_D3r_5M 5M/v0_8k_ng64 | core | 42538 | 1477 | 28.800 |  |  |  |  |  |  |
+| core_D3s512_5M 5M/v0_8k_ng64 | core | 42538 | 2672 | 15.920 |  |  |  |  |  |  |
+| core_P50_50M 50M/v0_8k | core | 30500 | 8564 | 3.560 |  |  |  |  |  |  |
+| core_d384x3_5M custom/v0_8k_ng64 | core | 42538 | 2606 | 16.320 |  |  |  |  |  |  |
+| core_modern512_5M 5M/v0_8k_ng64 | core | 42538 | 3927 | 10.830 |  |  |  |  |  |  |
+| learn_by_reading | stage | 574 | 240 | 2.390 |  |  |  |  |  |  |
+| m2_gsm_run1_copy | Q&A | 1622 | 600 | 2.700 |  |  |  |  |  |  |
+| m2_gsm_run2_copyq | Q&A | 2185 | 600 | 3.640 |  |  |  |  |  |  |
+| m2_gsm_run2b_copyq | Q&A | 2345 | 600 | 3.910 |  |  |  |  |  |  |
+| m2_gsm_run3_calc | Q&A | 2197 | 600 | 3.660 |  |  |  |  |  |  |
+| m2_gsm_run3b_calc | Q&A | 2325 | 600 | 3.870 |  |  |  |  |  |  |
+| m2_qa | Q&A | 1544 | 600 | 2.570 |  |  |  |  |  |  |
+| m2_qa_run2 | Q&A | 1508 | 600 | 2.510 |  |  |  |  |  |  |
+| m2_qa_run3 | Q&A | 1481 | 600 | 2.470 |  |  |  |  |  |  |
+| m2_qa_run3b_local | Q&A | 1452 | 600 | 2.420 |  |  |  |  |  |  |
+| m2_qa_run4_copy | Q&A | 1328 | 600 | 2.210 |  |  |  |  |  |  |
+| m2_qa_run5_copy_evidence | Q&A | 1382 | 600 | 2.300 |  |  |  |  |  |  |
+| m2_qa_run6_all | Q&A | 1393 | 600 | 2.320 |  |  |  |  |  |  |
+| m2_qa_run7_copy_seed2 | Q&A | 1629 | 600 | 2.710 |  |  |  |  |  |  |
+| m2_qa_run8_copy_answer_only | Q&A | 1602 | 600 | 2.670 |  |  |  |  |  |  |
+| m2_qa_run9_window512 | Q&A | 1305 | 600 | 2.170 |  |  |  |  |  |  |
+| r0b_alpaca_5M_reworded | Q&A | 15690 | 600 | 26.150 |  |  |  |  |  | 22 |
+| r1_alpaca_5M_window512 | Q&A | 15669 | 1200 | 13.060 |  |  |  |  |  |  |
+| r1_gsm_5M_calc | Q&A | 15511 | 1200 | 12.930 |  |  |  |  |  |  |
+| r1b_alpaca_5M_init | Q&A | 15752 | 600 | 26.250 |  |  |  |  |  |  |
+| r1b_alpaca_5M_init_seed2 | Q&A | 15565 | 600 | 25.940 |  |  |  |  |  |  |
+| r1c_alpaca_5M_init_greedy | Q&A | 0 | 0 |  |  |  |  |  |  |  |
+| r1d_alpaca_19M_init | Q&A | 6694 | 600 | 11.150 |  |  |  |  |  |  |
+| r1e2_alpaca_5M_parsefix_norepeatoff | Q&A | 0 | 0 |  |  |  |  |  |  |  |
+| r1e_alpaca_5M_parsefix | Q&A | 16073 | 600 | 26.790 |  |  |  |  |  | 22 |
+| r1f_alpaca_19M_equalsteps | Q&A | 15565 | 1370 | 11.360 |  |  |  |  |  | 20 |
+| r2_squad_5M_init | Q&A | 6043 | 240 | 25.180 |  |  |  |  |  |  |
+| r2b_squad_5M_answeronly | Q&A | 11115 | 420 | 26.460 |  |  |  |  |  |  |
+| r3c_gsm_5M_init_calc | Q&A | 6126 | 240 | 25.520 |  |  |  |  |  |  |
+| s2_D1_alpaca_5M | Q&A | 15565 | 567 | 27.450 |  |  |  |  |  | 22 |
+| s2_D2_alpaca_5M | Q&A | 15565 | 565 | 27.560 |  |  |  |  |  | 18 |
+| s2_D3_alpaca_5M | Q&A | 15565 | 567 | 27.450 |  |  |  |  |  | 22 |
+| s2_D3r_alpaca_5M | Q&A | 15565 | 560 | 27.800 |  |  |  |  |  | 21 |
+| s2_squad_50m | Q&A | 10000 | 7757 | 1.290 |  |  |  |  |  |  |
+| s2a1_lr3e-4 | Q&A | 15565 | 582 | 26.760 |  |  |  |  |  | 21 |
+| s2a2_lr3e-4_reh | Q&A | 15565 | 588 | 26.470 |  |  |  |  |  | 21 |
+| s2a3_lr1e-4_reh | Q&A | 15565 | 589 | 26.420 |  |  |  |  |  | 22 |
+| s2b_256 | Q&A | 15565 | 583 | 26.690 |  |  |  |  |  | 20 |
+| s2b_50m | Q&A | 9247 | 7200 | 1.280 |  |  |  |  |  | 24 |
+| s2b_512 | Q&A | 15565 | 1177 | 13.230 |  |  |  |  |  | 20 |
+| s2b_512_k1 | Q&A | 0 | 0 |  |  |  |  |  |  | 19 |
+| s2b_512_s2 | Q&A | 15565 | 1239 | 12.560 |  |  |  |  |  | 21 |
+| s2b_512e | Q&A | 9728 | 3600 | 2.700 |  |  |  |  |  | 23 |
+| s2b_gsm_50m | Q&A | 8000 | 6406 | 1.250 |  |  |  |  |  |  |
+| s2b_gsm_512 | Q&A | 15565 | 1178 | 13.210 |  |  |  |  |  |  |
+| s2c_50m | Q&A | 15565 | 12175 | 1.280 |  |  |  |  |  | 21 |
+| scale_run 5M/bpe_8k | core | 51500 | 1800 | 28.610 |  |  |  |  |  |  |
+| scale_run 5M/v0_8k_ng64 | core | 42538 | 1800 | 23.630 |  |  |  |  |  |  |
+| scale_run 20M/bpe_8k | core | 36235 | 2700 | 13.420 |  |  |  |  |  |  |
+| scale_run 20M/v0_8k_ng64 | core | 35196 | 2700 | 13.040 |  |  |  |  |  |  |
+| star50_r1 | Q&A | 8000 | 6215 | 1.290 |  |  |  |  |  |  |
+| star_r1 | Q&A | 8000 | 1107 | 7.230 |  |  |  |  |  |  |
+| star_r2 | Q&A | 8000 | 609 | 13.140 |  |  |  |  |  |  |
+| gsm_d384x3 | Q&A | 8000 | 597 | 13.400 |  |  |  |  |  |  |
+| core_d192x11_5M custom/v0_8k_ng64 | core | 42538 | 3487 | 12.200 |  |  |  |  |  |  |
+| gsm_d192x11 | Q&A | 8000 | 748 | 10.700 |  |  |  |  |  |  |
+| core_d160x16_5M custom/v0_8k_ng64 | core | 42538 | 3936 | 10.810 |  |  |  |  |  |  |
+
 ## Queue of planned runs
 | id | run | question it answers | status |
 | --- | --- | --- | --- |
@@ -102,6 +175,8 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 - 50M reading comprehension (SQuAD, passage in the question, answer-only loss, end code, 10,000 steps): held-out passages F1 0.418 / 28.1% exact match (5M: 0.068 / 1.0%); stored 0.593 / 51%. The first large gain from size on a reasoning-type task: the 50M core reads a passage and selects the answering span ('lightning', 'more ATP than NADPH'); the 5M core returned short but wrong spans. Fine-tuned 100M-class models reach 80-90 F1; the gap is size and training amount, not mechanism.
 - Depth sweep 2 of 4, deep-narrow 192x11 (6.56M total; same mix, window and 42,538 steps; 3,487 s against 2,606-2,672 s for the shallower shapes): held-out bits/byte 0.5-0.9% worse than 256x6 on every source except question pairs (overall 1.1990 vs 1.1915; wiki 1.305 vs 1.296; math 0.647 vs 0.644; books 1.754 vs 1.734), generation 245 B/s. At equal steps, eleven narrow layers learn language slightly slower than six and cost 30% more time per step; nothing so far says depth buys fluency at this scale. Report card and GSM8K stage follow.
 - Depth sweep 2 of 4, 192x11 report card and GSM8K stage: evidence gain 35.6% (384x3 34.7%, 256x6 33.5%; deeper cores use shown evidence a little better), reword recall@1 0.495 (0.504, 0.509). GSM8K (8,000 steps, calculator): new problems 2.0% (4/198; 256x6 2.5%, 384x3 0%), stored 44.5% final-number exact (44.5%, 41.5%), F1 0.889, added 45.5%, calculator-confirmed 533 (516, 348), validation 0.651. Across 3, 6 and 11 layers every math measure is within noise: depth changes nothing on GSM8K at 5M, in either direction. One more point (160x16) closes the sweep.
+- Depth sweep 3 of 3, 160x16 core (6.33M; same mix, window and 42,538 steps; 3,936 s, the slowest shape, 1.5x the 256x6 time): held-out overall 1.2032 (256x6 1.1915, 384x3 1.1905, 192x11 1.1990), worse on every source except question pairs and math, which are flat; generation 113 B/s (256x6 254, 384x3 330); evidence gain 35.7% (the one measure that rises with depth: 33.5 -> 34.7 -> 35.6 -> 35.7), reword recall@1 0.484 (falls with depth: 0.509 -> 0.504 -> 0.495 -> 0.484). Language at equal steps: 3 = 6 > 11 > 16 layers. 128x24 dropped; the GSM8K stage closes the sweep.
+- Cost instrumentation (cost.py): every training run now records GPU board power (nvidia-smi, 2 s samples), kilojoules, peak allocator memory and steps per second in training.cost; the chat probe records seconds and joules per answer. Readings are only valid when nothing else is on the GPU: the first probe reading (qa_best_5M_512: 0.48 s and 67 J per answer at 142 W) was taken while the 160x16 GSM8K stage was training and is an upper bound. Older runs keep their train_s only.
 - Memory gate at 5M (qa_best_5M_512, same model, probe with and without --min-sim 0.5): 21/32 without the gate, 19/32 with it (reworded 3 -> 2, taught 5 -> 4): the 5M network alone is too weak to be handed the questions the gate takes away from memory, so the gate is a 50M-only setting (21 -> 24/32 there). run_model.py defaults: gate off, window 512, modern block, bf16; menu option 3 opens the best model in git.
 - Depth sweep 1 of 4, GSM8K stage on the 384x3 core (8,000 steps, S2b recipe, calculator): new problems 0% (0/198) against 2.5% (5/198) for the 256x6 core; stored problems 44.5% final-number exact (256x6: 41.5%), F1 0.90 (0.88), added-after-training 45% (42%), calculator-confirmed answers 516 (348), validation 0.644 (0.660). Three layers copy and set up steps at least as well as six, and the only loss is on new problems, where both are at the noise floor (0-5 of 198). Depth below six does not remove step choice; the deep shapes decide whether depth above six adds it.
 - Depth sweep 1 of 4, shallow-wide 384x3 (8.66M total, 5.32M core; same mix, dictionary, 512 window, 42,538 steps, 2,606 s): held-out bits/byte within 0.3% of the 256x6 legacy core on every source (overall 1.1905 vs 1.1915; worked math 0.638 vs 0.644; question pairs 0.829 vs 0.804, the one loss), evidence gain 34.7% vs 33.5%, state recall@1 0.504 vs 0.509; generation 330 vs 254 B/s because there are half the layers. Three layers at width 384 match six at width 256 on language at equal steps; the modern 256x6 block is still the best core (1.1724). The GSM8K stage decides whether depth matters for step choice.

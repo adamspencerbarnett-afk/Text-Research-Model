@@ -614,6 +614,8 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
     train_time, step, tokens_seen, bytes_seen, ema = 0.0, 0, 0, 0, None
     history, next_eval = [], eval_every_s
     best_quick, bad_evals, stop_reason = float("inf"), 0, "budget"
+    import cost as _cost
+    meter = _cost.Meter(device).__enter__()
     model.train()
     while train_time < budget_s and not (max_steps and step >= max_steps):
         t0 = time.perf_counter()
@@ -666,7 +668,8 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
                            "bytes_per_s": round(bytes_seen / train_time, 1), "final_train_bits_per_token": round(ema, 4),
                            "train_tokens": int(n), "valid_tokens": int(len(valid_tokens)), "valid_bytes": int(valid_lens.sum()),
                            "patience": patience, "min_delta": min_delta, "stop_reason": stop_reason,
-                           "stopped_early": stop_reason != "budget", "history": history},
+                           "stopped_early": stop_reason != "budget", "history": history,
+                           "cost": (meter.__exit__(None, None, None), meter.summary(train_time, step))[1]},
               "eval": {}, "seed": seed}
     if len(valid_tokens) > ctx + 1:
         vbits, _ = total_bits(model, valid_tokens)

@@ -90,10 +90,13 @@ def main() -> int:
     eng = m2_qa.QAEngine(a.model, native=str(native) if native.exists() else None, device=a.device)
     for q, ans in TEACH:
         eng.add(q.encode(), ans.encode())
-    rows = []
-    for section, q, groups in PROBES:
+    import cost
+    rows, answer_s = [], 0.0
+    with cost.Meter(a.device) as meter:
+      for section, q, groups in PROBES:
         t0 = time.perf_counter()
         out, info = eng.ask(q.encode(), a.max_codes, a.no_repeat, min_sim=a.min_sim)
+        answer_s += time.perf_counter() - t0
         alone, _ = eng.ask(q.encode(), a.max_codes, a.no_repeat, use_memory=False)
         text, text_alone = out.decode("utf-8", "replace"), alone.decode("utf-8", "replace")
         rows.append({"section": section, "question": q, "answer": text, "answer_without_memory": text_alone,
@@ -105,7 +108,10 @@ def main() -> int:
     for r in rows:
         s = summary.setdefault(r["section"], {"n": 0, "ok": 0, "ok_without_memory": 0})
         s["n"] += 1; s["ok"] += r["keywords_ok"]; s["ok_without_memory"] += r["keywords_ok_without_memory"]
-    (ROOT / "results" / f"probe_{stem}.json").write_text(json.dumps({"model": a.model, "summary": summary, "rows": rows}, indent=1))
+    # cost of the with-memory answers only (half the metered span is the without-memory control)
+    c = meter.summary(answer_s, len(rows))
+    (ROOT / "results" / f"probe_{stem}.json").write_text(json.dumps({"model": a.model, "summary": summary, "cost": c, "rows": rows}, indent=1))
+    print(f"cost: {c['s_per_unit']:.2f} s per answer" + (f", {c['gpu_avg_w']} W, {c['j_per_unit']} J per answer" if c["gpu_avg_w"] else ""))
     md = [f"# Chat probe: `{a.model}`\n\n*{time.strftime('%Y-%m-%d %H:%M')}. Greedy decoding, repeated 3-code phrases blocked, "
           f"replies up to {a.max_codes} codes. Facts in the 'taught' section were added with /add just before, with no training. "
           "Each question is asked with memory (the model as designed) and without (the network alone). "

@@ -770,6 +770,8 @@ def main() -> int:
 
     history, train_time, step, next_eval = [], 0.0, 0, 60.0
     best_v, bad_evals, best_state, stop_reason = float("inf"), 0, None, "budget"
+    import cost as _cost
+    meter = _cost.Meter(dev).__enter__()
     model.train()
     while train_time < a.budget and not (a.max_steps and step >= a.max_steps):
         t = time.perf_counter()
@@ -883,7 +885,8 @@ def main() -> int:
         return out
 
     results = {"setup": vars(a) | {"train_exchanges": len(train_x), "eval": len(eval_x), "added": len(add_x), "distinct_keys": len(mem.exact)},
-               "training": {"steps": step, "train_s": round(train_time, 1), "stop_reason": stop_reason, "best_valid": None if best_v == float("inf") else round(best_v, 4), "history": history}, "groups": {}, "samples": {}}
+               "training": {"steps": step, "train_s": round(train_time, 1), "stop_reason": stop_reason, "best_valid": None if best_v == float("inf") else round(best_v, 4), "history": history,
+                            "cost": (meter.__exit__(None, None, None), meter.summary(train_time, step))[1]}, "groups": {}, "samples": {}}
     # 1. seen: training questions. Memory path (exact key) and network path (own exchange retrieved).
     seen_idx = rng.choice(len(train_x), size=min(a.eval_n, len(train_x)), replace=False)
     mem_rows, net_rows = [], []

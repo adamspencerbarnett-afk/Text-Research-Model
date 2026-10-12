@@ -70,6 +70,8 @@ FINDINGS = [
         "50M reading comprehension (SQuAD, passage in the question, answer-only loss, end code, 10,000 steps): held-out passages F1 0.418 / 28.1% exact match (5M: 0.068 / 1.0%); stored 0.593 / 51%. The first large gain from size on a reasoning-type task: the 50M core reads a passage and selects the answering span ('lightning', 'more ATP than NADPH'); the 5M core returned short but wrong spans. Fine-tuned 100M-class models reach 80-90 F1; the gap is size and training amount, not mechanism.",
         "Depth sweep 2 of 4, deep-narrow 192x11 (6.56M total; same mix, window and 42,538 steps; 3,487 s against 2,606-2,672 s for the shallower shapes): held-out bits/byte 0.5-0.9% worse than 256x6 on every source except question pairs (overall 1.1990 vs 1.1915; wiki 1.305 vs 1.296; math 0.647 vs 0.644; books 1.754 vs 1.734), generation 245 B/s. At equal steps, eleven narrow layers learn language slightly slower than six and cost 30% more time per step; nothing so far says depth buys fluency at this scale. Report card and GSM8K stage follow.",
         "Depth sweep 2 of 4, 192x11 report card and GSM8K stage: evidence gain 35.6% (384x3 34.7%, 256x6 33.5%; deeper cores use shown evidence a little better), reword recall@1 0.495 (0.504, 0.509). GSM8K (8,000 steps, calculator): new problems 2.0% (4/198; 256x6 2.5%, 384x3 0%), stored 44.5% final-number exact (44.5%, 41.5%), F1 0.889, added 45.5%, calculator-confirmed 533 (516, 348), validation 0.651. Across 3, 6 and 11 layers every math measure is within noise: depth changes nothing on GSM8K at 5M, in either direction. One more point (160x16) closes the sweep.",
+        "Depth sweep 3 of 3, 160x16 core (6.33M; same mix, window and 42,538 steps; 3,936 s, the slowest shape, 1.5x the 256x6 time): held-out overall 1.2032 (256x6 1.1915, 384x3 1.1905, 192x11 1.1990), worse on every source except question pairs and math, which are flat; generation 113 B/s (256x6 254, 384x3 330); evidence gain 35.7% (the one measure that rises with depth: 33.5 -> 34.7 -> 35.6 -> 35.7), reword recall@1 0.484 (falls with depth: 0.509 -> 0.504 -> 0.495 -> 0.484). Language at equal steps: 3 = 6 > 11 > 16 layers. 128x24 dropped; the GSM8K stage closes the sweep.",
+        "Cost instrumentation (cost.py): every training run now records GPU board power (nvidia-smi, 2 s samples), kilojoules, peak allocator memory and steps per second in training.cost; the chat probe records seconds and joules per answer. Readings are only valid when nothing else is on the GPU: the first probe reading (qa_best_5M_512: 0.48 s and 67 J per answer at 142 W) was taken while the 160x16 GSM8K stage was training and is an upper bound. Older runs keep their train_s only.",
         "Memory gate at 5M (qa_best_5M_512, same model, probe with and without --min-sim 0.5): 21/32 without the gate, 19/32 with it (reworded 3 -> 2, taught 5 -> 4): the 5M network alone is too weak to be handed the questions the gate takes away from memory, so the gate is a 50M-only setting (21 -> 24/32 there). run_model.py defaults: gate off, window 512, modern block, bf16; menu option 3 opens the best model in git.",
         "Depth sweep 1 of 4, GSM8K stage on the 384x3 core (8,000 steps, S2b recipe, calculator): new problems 0% (0/198) against 2.5% (5/198) for the 256x6 core; stored problems 44.5% final-number exact (256x6: 41.5%), F1 0.90 (0.88), added-after-training 45% (42%), calculator-confirmed answers 516 (348), validation 0.644 (0.660). Three layers copy and set up steps at least as well as six, and the only loss is on new problems, where both are at the noise floor (0-5 of 198). Depth below six does not remove step choice; the deep shapes decide whether depth above six adds it.",
         "Depth sweep 1 of 4, shallow-wide 384x3 (8.66M total, 5.32M core; same mix, dictionary, 512 window, 42,538 steps, 2,606 s): held-out bits/byte within 0.3% of the 256x6 legacy core on every source (overall 1.1905 vs 1.1915; worked math 0.638 vs 0.644; question pairs 0.829 vs 0.804, the one loss), evidence gain 34.7% vs 33.5%, state recall@1 0.504 vs 0.509; generation 330 vs 254 B/s because there are half the layers. Three layers at width 384 match six at width 256 on language at equal steps; the modern 256x6 block is still the best core (1.1724). The GSM8K stage decides whether depth matters for step choice.",
@@ -190,8 +192,40 @@ def scale_rows() -> list[dict]:
     return out
 
 
+def cost_rows() -> list[dict]:
+    """Cost beside accuracy: every result that recorded training time (and, from 12 October, power and memory),
+    plus the chat probes' seconds and joules per answer."""
+    out, probes = [], {}
+    for path in glob.glob(str(ROOT / "results" / "probe_*.json")):
+        j = json.load(open(path, encoding="utf-8"))
+        c = j.get("cost") or {}
+        probes[Path(j.get("model", "")).stem] = {"ans_s": c.get("s_per_unit"), "ans_j": c.get("j_per_unit"),
+                                                 "probe": sum(v["ok"] for v in j["summary"].values())}
+    for path in sorted(glob.glob(str(ROOT / "results" / "*.json")), key=os.path.getmtime):
+        try:
+            j = json.load(open(path, encoding="utf-8"))
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            continue
+        if not isinstance(j, dict):
+            continue
+        items = []
+        if isinstance(j.get("training"), dict) and "train_s" in j["training"]:
+            items.append((Path(path).stem, "Q&A" if "groups" in j else "stage", j["training"], j.get("setup", {})))
+        for key, r in (j.get("runs") or {}).items():
+            if isinstance(r, dict) and isinstance(r.get("training"), dict) and "train_s" in r["training"]:
+                items.append((f"{Path(path).stem} {key}", "core", r["training"], {}))
+        for name, kind, t, setup in items:
+            c = t.get("cost") or {}
+            pr = probes.get(Path(setup.get("save") or "").stem, {})
+            out.append({"run": name, "kind": kind, "steps": t.get("steps"), "train_s": None if t.get("train_s") is None else int(round(t["train_s"])),
+                        "steps_s": round(t["steps"] / t["train_s"], 2) if t.get("train_s") and t.get("steps") else None,
+                        "w": c.get("gpu_avg_w"), "kj": c.get("gpu_kj"), "mem": c.get("peak_mem_mb"),
+                        "ans_s": pr.get("ans_s"), "ans_j": pr.get("ans_j"), "probe": pr.get("probe")})
+    return out
+
+
 def table(headers: list[tuple[str, str]], rows: list[dict]) -> str:
-    head = "| " + " | ".join(h for _, h in headers) + " |\n|" + "|".join(" ---: " if k not in ("run", "data", "core", "flags", "device", "stop", "tables", "file") else " --- " for k, _ in headers) + "|\n"
+    head = "| " + " | ".join(h for _, h in headers) + " |\n|" + "|".join(" ---: " if k not in ("run", "data", "core", "flags", "device", "stop", "tables", "file", "kind") else " --- " for k, _ in headers) + "|\n"
     body = "".join("| " + " | ".join(num(r.get(k)) for k, _ in headers) + " |\n" for r in rows)
     return head + body
 
@@ -213,6 +247,11 @@ def main() -> int:
           "\n## Scale runs (language modelling, books + Wikipedia; traditional BPE against compiler + exact tables)\n",
           table([("file", "file"), ("run", "run"), ("core", "core"), ("params", "params"), ("tables", "tables"), ("ctx", "ctx"), ("batch", "batch"), ("budget", "budget s"),
                  ("steps", "steps"), ("seen_gb", "text seen GB"), ("amp", "bf16"), ("books", "books b/B"), ("valid", "valid b/B"), ("wiki", "wiki b/B"), ("ood", "ood b/B"), ("gen", "reply B/s"), ("stop", "stop")], sc),
+          "\n## Cost beside accuracy\n",
+          "*Training seconds for every run that recorded them; GPU watts, kilojoules and peak memory from 12 October (cost.py; valid only when the GPU was otherwise idle); "
+          "seconds and joules per answer from the chat probe of the saved model, with its probe score out of 32.*\n\n",
+          table([("run", "run"), ("kind", "kind"), ("steps", "steps"), ("train_s", "train s"), ("steps_s", "steps/s"), ("w", "GPU W"), ("kj", "kJ"), ("mem", "peak MB"),
+                 ("ans_s", "s/answer"), ("ans_j", "J/answer"), ("probe", "probe /32")], cost_rows()),
           "\n## Queue of planned runs\n", "| id | run | question it answers | status |\n| --- | --- | --- | --- |\n",
           "".join(f"| {i} | {r} | {q} | {st} |\n" for i, r, q, st in QUEUE),
           "\n## Key findings by session\n"]
