@@ -75,6 +75,71 @@ class Block(nn.Module):
         return x + self.fc2(F.gelu(self.fc1(self.ln2(x)))), (k, v)
 
 
+class RMSNorm(nn.Module):
+    """Scale by the root-mean-square only (no mean subtraction): the normalisation of current models."""
+
+    def __init__(self, d: int, eps: float = 1e-6):
+        super().__init__()
+        self.weight, self.eps = nn.Parameter(torch.ones(d)), eps
+
+    def forward(self, x):
+        return x * torch.rsqrt(x.float().square().mean(-1, keepdim=True) + self.eps).to(x.dtype) * self.weight
+
+
+def rope(x, start: int = 0):
+    """Rotary positions: rotate pairs of query/key dimensions by an angle that grows with the absolute
+    position, so attention scores depend on the distance between positions. x: (B, H, T, D)."""
+    T, D = x.shape[-2], x.shape[-1]
+    inv = 1.0 / (10000 ** (torch.arange(0, D, 2, device=x.device, dtype=torch.float32) / D))
+    ang = torch.arange(start, start + T, device=x.device, dtype=torch.float32)[:, None] * inv[None, :]
+    c, s = ang.cos()[None, None].to(x.dtype), ang.sin()[None, None].to(x.dtype)
+    a, b = x[..., 0::2], x[..., 1::2]
+    return torch.stack((a * c - b * s, a * s + b * c), dim=-1).flatten(-2)
+
+
+class ModernBlock(nn.Module):
+    """RoPE + RMSNorm + SwiGLU (the Llama-family block), at the legacy block's parameter count:
+    4 d^2 for attention and 3 d x (8d/3) = 8 d^2 for the gated feed-forward. No position table."""
+
+    def __init__(self, d: int, heads: int):
+        super().__init__()
+        self.heads = heads
+        self.ln1, self.ln2 = RMSNorm(d), RMSNorm(d)
+        self.qkv = nn.Linear(d, 3 * d, bias=False)
+        self.proj = nn.Linear(d, d, bias=False)
+        inner = (8 * d) // 3
+        self.gate, self.up, self.down = nn.Linear(d, inner, bias=False), nn.Linear(d, inner, bias=False), nn.Linear(inner, d, bias=False)
+
+    def _qkv(self, x, start):
+        B, T, D = x.shape
+        q, k, v = self.qkv(self.ln1(x)).split(D, dim=2)
+        q, k, v = (t.view(B, T, self.heads, D // self.heads).transpose(1, 2) for t in (q, k, v))
+        return rope(q, start), rope(k, start), v
+
+    def _ff(self, x):
+        h = self.ln2(x)
+        return x + self.down(F.silu(self.gate(h)) * self.up(h))
+
+    def forward(self, x):
+        B, T, D = x.shape
+        q, k, v = self._qkv(x, 0)
+        y = F.scaled_dot_product_attention(q, k, v, is_causal=True).transpose(1, 2).reshape(B, T, D)
+        return self._ff(x + self.proj(y))
+
+    def forward_cached(self, x, past, start: int = 0):
+        B, T, D = x.shape
+        q, k, v = self._qkv(x, start)
+        if past is not None:
+            k, v = torch.cat([past[0], k], 2), torch.cat([past[1], v], 2)
+        P = k.shape[2] - T
+        if T == 1:
+            y = F.scaled_dot_product_attention(q, k, v)
+        else:
+            mask = torch.ones(T, P + T, dtype=torch.bool, device=x.device).tril(P)
+            y = F.scaled_dot_product_attention(q, k, v, attn_mask=mask)
+        return self._ff(x + self.proj(y.transpose(1, 2).reshape(B, T, D))), (k, v)
+
+
 def mix_bigram(prev: torch.Tensor, cur: torch.Tensor, rows: int) -> torch.Tensor:
     """Hash (previous token, current token) to a table row; rows must be a power of two."""
     a = (prev * 1000003 + cur) * 2654435761
@@ -186,8 +251,9 @@ class LM(nn.Module):
     INVALID = -30.0  # logit given to a (group, member) code that no unit in training maps to
 
     def __init__(self, enc: LE.Encoding, width: int, layers: int, heads: int, ctx: int, table_rows: int = 0,
-                 valid_codes=None, table_orders=(2,), ngrams: list | None = None):
+                 valid_codes=None, table_orders=(2,), ngrams: list | None = None, block: str = "legacy"):
         super().__init__()
+        self.block = block
         self.ctx, self.coords = ctx, enc.groups > 0
         self.vocab = enc.vocab
         self.no_case_flags = hasattr(enc, "d") and not getattr(enc.d, "case_flags", True)
@@ -214,8 +280,13 @@ class LM(nn.Module):
         else:
             self.emb = nn.Embedding(enc.vocab, width)
         self.pos = nn.Embedding(ctx, width)
-        self.blocks = nn.ModuleList(Block(width, heads) for _ in range(layers))
-        self.ln_f = nn.LayerNorm(width)
+        if block == "modern":        # RoPE + RMSNorm + SwiGLU; positions come from the rotation, no table
+            self.blocks = nn.ModuleList(ModernBlock(width, heads) for _ in range(layers))
+            self.ln_f = RMSNorm(width)
+            self.pos = None
+        else:
+            self.blocks = nn.ModuleList(Block(width, heads) for _ in range(layers))
+            self.ln_f = nn.LayerNorm(width)
         self.table_rows, self.table_orders = table_rows, tuple(table_orders) if table_rows else ()
         # One hashed n-gram table per order, summed into the input embedding: many parameters,
         # one lookup each per token. ``table`` keeps the bigram table's name for old checkpoints.
@@ -230,13 +301,13 @@ class LM(nn.Module):
                 nn.init.normal_(m.weight, std=0.02)
                 if m.bias is not None:
                     nn.init.zeros_(m.bias)
-        for e in [getattr(self, n) for n in ("emb", "emb_g", "emb_m", "pos") if hasattr(self, n)]:
+        for e in [getattr(self, n) for n in ("emb", "emb_g", "emb_m", "pos") if getattr(self, n, None) is not None]:
             nn.init.normal_(e.weight, std=0.02)
 
     def param_counts(self) -> dict:
         n = lambda mods: sum(p.numel() for m in mods for p in m.parameters())
         core = n(self.blocks) + n([self.ln_f])
-        emb = n([self.pos]) + (n([self.emb_g, self.emb_m]) if self.coords else n([self.emb]))
+        emb = (n([self.pos]) if self.pos is not None else 0) + (n([self.emb_g, self.emb_m]) if self.coords else n([self.emb]))
         out = n([self.head_g, self.head_m]) if self.coords else 0   # tied output costs nothing extra
         out += n([self.mix_head]) if self.mix_head is not None else 0
         table = (n([self.table]) if self.table is not None else 0) + n(self.tables.values())
@@ -254,7 +325,7 @@ class LM(nn.Module):
             e = e + self.table(mix_bigram(prev, x, self.table_rows))
         for o, t in self.tables.items():
             e = e + t(mix_ngram(x, int(o), self.table_rows, self.vocab))
-        return e + self.pos(torch.arange(T, device=x.device))
+        return e + self.pos(torch.arange(T, device=x.device)) if self.pos is not None else e
 
     def hidden(self, x):
         h = self.embed(x)
@@ -269,11 +340,13 @@ class LM(nn.Module):
         if self.coords or self.table is not None or len(self.tables):
             raise NotImplementedError("KV cache: flat vocabulary without hashed input tables only")
         T = x_new.shape[1]
-        h = self.emb(x_new) + self.pos(torch.arange(start, start + T, device=x_new.device))
+        h = self.emb(x_new)
+        if self.pos is not None:
+            h = h + self.pos(torch.arange(start, start + T, device=x_new.device))
         cache = cache or [None] * len(self.blocks)
         new = []
         for b, past in zip(self.blocks, cache):
-            h, kv = b.forward_cached(h, past)
+            h, kv = b.forward_cached(h, past, start) if self.block == "modern" else b.forward_cached(h, past)
             new.append(kv)
         return self.ln_f(h), new
 
@@ -475,7 +548,7 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
         work: Path, budget_s: float, width=128, layers=4, heads=4, ctx=256, batch=16, lr=1e-3,
         table_rows=0, seed=1, eval_every_s=120.0, quick_bytes=150_000, prompt=b"We went to the park",
         gen_tokens=200, log=print, save_path=None, table_orders=(2,), ngram_orders=(), ngram_topk=16,
-        valid_share=0.02, patience=0, min_delta=0.002, keep_model=False, device="cpu", max_steps=0, amp=False, align=False) -> dict:
+        valid_share=0.02, patience=0, min_delta=0.002, keep_model=False, device="cpu", max_steps=0, amp=False, align=False, block="legacy") -> dict:
     """Train for up to ``budget_s`` seconds of training time.
 
     The last ``valid_share`` of the training stream is held back as the validation split: it
@@ -498,7 +571,7 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
         ngram_info.append({"order": order, "contexts": table.contexts, "topk": ngram_topk,
                            "entries": table.entries, "build_s": round(time.perf_counter() - t0, 1)})
         log(f"[{enc.name}] {order}-gram table: {table.contexts:,} contexts, {ngram_info[-1]['entries']:,} entries ({ngram_info[-1]['build_s']}s)")
-    model = LM(enc, width, layers, heads, ctx, table_rows, valid, table_orders, ngrams).to(device)
+    model = LM(enc, width, layers, heads, ctx, table_rows, valid, table_orders, ngrams, block=block).to(device)
     dense = [p for n, p in model.named_parameters() if not n.startswith("table")]
     sparse = [p for n, p in model.named_parameters() if n.startswith("table")]
     decay = [p for p in dense if p.dim() >= 2]
@@ -584,7 +657,7 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
                     log(f"[{enc.name}] stopping early at {train_time:.0f}s: {stop_reason}")
                     break
 
-    result = {"encoding": enc.describe(), "model": {"width": width, "layers": layers, "heads": heads, "ctx": ctx,
+    result = {"encoding": enc.describe(), "model": {"width": width, "layers": layers, "heads": heads, "ctx": ctx, "block": block,
                                                       "batch": batch, "peak_lr": lr, "table_rows": table_rows,
                                                       "table_orders": list(model.table_orders), "params": counts,
                                                       "ngram_tables": ngram_info},
@@ -678,6 +751,7 @@ def main(argv=None) -> int:
     ap.add_argument("--device", default="cpu", help="cpu, cuda or cuda:N")
     ap.add_argument("--max-steps", type=int, default=0, help="stop after this many steps and run the LR schedule over them (0: time budget only)")
     ap.add_argument("--amp", action="store_true", help="train in bfloat16 autocast (scores stay in full precision)")
+    ap.add_argument("--block", choices=["legacy", "modern"], default="legacy", help="modern: RoPE + RMSNorm + SwiGLU at equal parameters")
     a = ap.parse_args(argv)
     if a.threads:
         torch.set_num_threads(a.threads)
@@ -693,7 +767,7 @@ def main(argv=None) -> int:
                  a.batch, a.lr, a.table_rows, a.seed, a.eval_every,
                  table_orders=tuple(int(o) for o in a.table_orders.split(",")),
                  ngram_orders=tuple(int(o) for o in a.ngram_orders.split(",") if o), ngram_topk=a.ngram_topk,
-                 valid_share=a.valid_share, patience=a.patience, min_delta=a.min_delta, device=a.device, max_steps=a.max_steps, amp=a.amp)
+                 valid_share=a.valid_share, patience=a.patience, min_delta=a.min_delta, device=a.device, max_steps=a.max_steps, amp=a.amp, block=a.block)
     result["args"] = vars(a)
     Path(a.out).write_text(json.dumps(result, indent=1))
     return 0

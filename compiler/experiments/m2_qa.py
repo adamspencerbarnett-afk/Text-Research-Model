@@ -74,8 +74,8 @@ class V2LM(train_lm.LM):
     tables; the mixture is per code, as before. ``src`` marks the retrieved span in the window.
     """
 
-    def __init__(self, enc, width, layers, heads, ctx, ngrams, copy_head=False, evidence=False, sim_feature=False):
-        super().__init__(enc, width, layers, heads, ctx, 0, None, (2,), ngrams)
+    def __init__(self, enc, width, layers, heads, ctx, ngrams, copy_head=False, evidence=False, sim_feature=False, block="legacy"):
+        super().__init__(enc, width, layers, heads, ctx, 0, None, (2,), ngrams, block=block)
         self.copy_head, self.evidence, self.sim_feature = copy_head, evidence, sim_feature
         n_src = 1 + len(self.ngrams) + copy_head + evidence
         # sim_feature: the retrieval similarity between the asked question and the retrieved one
@@ -439,7 +439,7 @@ class QAEngine:
             self.never_seen[EOS] = False
         self.dev = torch.device(device if (device != "cuda" or torch.cuda.is_available()) else "cpu")
         self.model = V2LM(enc, a.width, a.layers, a.heads, a.ctx, self.ngrams, a.copy_head, getattr(a, "evidence", False),
-                          getattr(a, "sim_feature", False)).to(self.dev)
+                          getattr(a, "sim_feature", False), getattr(a, "block", "legacy")).to(self.dev)
         self.model.load_state_dict(ck["state_dict"], strict=False)
         self.model.eval()
         self.sep = enc.encode(b"\n\n")[0]
@@ -558,6 +558,7 @@ def main() -> int:
     ap.add_argument("--copy-bias", type=float, default=0.0, help="generation-time bonus (in nats) on codes that appear in the retrieved answer: the soft form of answering from evidence")
     ap.add_argument("--device", default="cpu", help="cpu, cuda or cuda:N"); ap.add_argument("--threads", type=int, default=0)
     ap.add_argument("--width", type=int, default=128); ap.add_argument("--layers", type=int, default=4); ap.add_argument("--heads", type=int, default=4)
+    ap.add_argument("--block", choices=["legacy", "modern"], default="legacy", help="must match the stage-1 core given to --init")
     ap.add_argument("--greedy", action="store_true", help="scored answers take the most likely code at each step instead of sampling")
     ap.add_argument("--no-repeat", type=int, default=0, help="block any n-gram of this many codes from repeating within a reply (0: off; 3 is standard)")
     ap.add_argument("--patience", type=int, default=0, help="stop when validation bits/byte has not improved by --min-delta for this many evaluations (0: never); the best weights are kept")
@@ -663,7 +664,7 @@ def main() -> int:
     NEWLINE = int(enc.encode(bytes([10]))[0][-1])
     checks = collections.Counter()
     dev = torch.device(a.device)
-    model = V2LM(enc, a.width, a.layers, a.heads, a.ctx, ngrams, a.copy_head, a.evidence, a.sim_feature).to(dev)
+    model = V2LM(enc, a.width, a.layers, a.heads, a.ctx, ngrams, a.copy_head, a.evidence, a.sim_feature, a.block).to(dev)
     if a.init:
         ck = torch.load(a.init, map_location="cpu", weights_only=False)
         own = model.state_dict()

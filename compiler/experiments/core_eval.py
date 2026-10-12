@@ -46,7 +46,7 @@ def load_core(path: str, native: str | None, device: str):
     if not dict_path.exists():
         dict_path = Path(path).parent / dict_path.name
     enc = LE.V0Dict(str(dict_path), native)
-    model = train_lm.LM(enc, shape["width"], shape["layers"], shape["heads"], shape["ctx"], 0, None, (2,), [])
+    model = train_lm.LM(enc, shape["width"], shape["layers"], shape["heads"], shape["ctx"], 0, None, (2,), [], block=shape.get("block", "legacy"))
     sd = {k: v for k, v in ck["state_dict"].items() if not k.startswith("mix_head") and not k.startswith("table")}
     model.load_state_dict(sd, strict=False)
     return enc, model.to(device).eval()
