@@ -29,10 +29,17 @@ from pathlib import Path
 # ----------------------------------------------------------------------------- SETTINGS
 SETTINGS = dict(
     # --- model shape (research sizes: 128w/4L = 0.8M core; 256w/6L = 4.7M; 384w/8L = 14M; 512w/8L = 25M)
-    WIDTH=256, LAYERS=6, HEADS=8, CTX=256,
+    #     CTX 512 is the research window (512 beat 256 on every Q&A group, October 2026)
+    WIDTH=256, LAYERS=6, HEADS=8, CTX=512,
+    # --- block: "modern" (RoPE + RMSNorm + SwiGLU: 1-7% lower error on every held-out set at equal
+    #     steps, 2% fewer parameters, slower per step) or "legacy" (LayerNorm + GELU + position table)
+    BLOCK="modern",
+    # --- bfloat16 training on the GPU (same quality, about twice the speed; ignored on the CPU)
+    AMP=True,
     # --- encoding: "compiler" (the deterministic v0 dictionary) or "bpe" (standard tokenizer)
     ENCODING="compiler", VOCAB=8192,
     # --- exact n-gram count tables mixed into the output by the trust head; () for a plain model
+    #     (they help up to about 5M parameters and hurt from 20M: use () for the larger shapes)
     NGRAM_ORDERS=(2, 3), NGRAM_TOPK=64,
     # --- training: stop at BUDGET_S seconds of training, or earlier when the validation score
     #     has not improved by MIN_DELTA in PATIENCE evaluations (PATIENCE=0 never)
@@ -48,7 +55,11 @@ SETTINGS = dict(
     QA_MAX_CODES=120,       # longest reply, in codes (about 3.5 bytes each)
     QA_NO_REPEAT=3,         # block any 3-code phrase from repeating inside a reply (0: off)
     QA_SHOW_MEMORY=True,    # print which stored question the answer was built from
+    QA_MIN_SIM=0.0,         # memory gate: a nearest match below this similarity is ignored and the network
+                            # answers alone. 0.0 for the 5M model (gate 0.5 drops the probe 21 -> 19/32);
+                            # 0.5 for the 50M models (21 -> 24/32), whose network alone is good enough
     # --- places
+    BEST_MODEL="models/qa_best_5M_512.pt",     # the best Q&A model in git (menu option 3); the 50M models are local in runs/
     MODELS_SUBDIR="models",                    # created inside the dataset folder
     START_DIR=str(Path.home() / "OneDrive" / "Desktop" / "Text Files"),   # where the popups open
 )
@@ -197,7 +208,7 @@ def train(folder: str) -> Path:
                           S["WIDTH"], S["LAYERS"], S["HEADS"], S["CTX"], S["BATCH"], S["LR"], 0, S["SEED"],
                           S["EVAL_EVERY_S"], log=say, save_path=str(save_path), ngram_orders=tuple(S["NGRAM_ORDERS"]),
                           ngram_topk=S["NGRAM_TOPK"], valid_share=S["VALID_SHARE"], patience=S["PATIENCE"],
-                          min_delta=S["MIN_DELTA"], device=dev)
+                          min_delta=S["MIN_DELTA"], device=dev, amp=S["AMP"] and dev.startswith("cuda"), block=S["BLOCK"])
     # What chat needs to rebuild the tables exactly: the files, their order and the validation split.
     ck = torch.load(save_path, map_location="cpu", weights_only=False)
     ck["run_model"] = {"dataset": str(folder), "train_files": sets["train"], "valid_share": S["VALID_SHARE"],
@@ -233,7 +244,7 @@ def load_model(path: str):
         n_train = int(len(tokens) * (1 - rm["valid_share"]))
         ngrams = [train_lm.NgramTable(tokens[:n_train], o, ck.get("ngram_topk", 16)) for o in ck["ngram_orders"]]
     model = train_lm.LM(enc, shape["width"], shape["layers"], shape["heads"], shape["ctx"], shape["table_rows"], valid,
-                        tuple(shape.get("table_orders", [2])), ngrams)
+                        tuple(shape.get("table_orders", [2])), ngrams, block=shape.get("block", "legacy"))
     missing, unexpected = model.load_state_dict(ck["state_dict"], strict=False)
     if unexpected or any(not k.startswith("table") for k in missing):
         raise SystemExit(f"checkpoint does not match the model: missing {missing}, unexpected {unexpected}")
@@ -292,7 +303,7 @@ def chat_qa(path: str) -> None:
         if line.startswith("/nomem "):
             line, use_mem = line[7:], False
         t0 = time.perf_counter()
-        out, info = eng.ask(line.encode("utf-8"), S["QA_MAX_CODES"], S["QA_NO_REPEAT"], use_memory=use_mem)
+        out, info = eng.ask(line.encode("utf-8"), S["QA_MAX_CODES"], S["QA_NO_REPEAT"], use_memory=use_mem, min_sim=S["QA_MIN_SIM"])
         dt = time.perf_counter() - t0
         print(f"model> {out.decode('utf-8', 'replace')}")
         if S["QA_SHOW_MEMORY"]:
@@ -349,7 +360,9 @@ def main() -> int:
     if a.chat:
         chat(a.chat); return 0
     while True:
-        print("\n  1  Train a model on a folder of text files\n  2  Chat with a saved model\n  3  Quit")
+        best = ROOT / SETTINGS["BEST_MODEL"]
+        print("\n  1  Train a model on a folder of text files\n  2  Chat with a saved model (popup)\n"
+              f"  3  Chat with the best research model ({SETTINGS['BEST_MODEL']})\n  4  Quit")
         choice = input("choose> ").strip()
         if choice == "1":
             folder = pick_folder("Choose the folder with the .txt files to train on")
@@ -359,7 +372,12 @@ def main() -> int:
             path = pick_file("Choose a model (.pt)", [("Model", "*.pt"), ("All files", "*.*")])
             if path:
                 chat(path)
-        elif choice in ("3", "q", ""):
+        elif choice == "3":
+            if best.exists():
+                chat(str(best))
+            else:
+                print(f"not found: {best}")
+        elif choice in ("4", "q", ""):
             return 0
 
 
