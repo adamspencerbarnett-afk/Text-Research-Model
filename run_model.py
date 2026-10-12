@@ -282,8 +282,8 @@ def chat_qa(path: str) -> None:
     eng = m2_qa.QAEngine(path, native=native_encoder(), device=device(), log=say)
     print("Ask a question. Commands:\n"
           "  /add question || answer   store a new fact (answerable at once, no training)\n"
-          "  /load [file.txt]          store every pair in a text file (popup when no file is given);\n"
-          "                            format: 'User: question' line, 'Assistant: answer' lines, blank line between pairs\n"
+          "  /load [file.txt]          store every pair in a text file (popup when no file is given); either\n"
+          "                            '/add question || answer' lines, or 'User: ...' / 'Assistant: ...' blocks\n"
           "  /nomem question           answer without memory (the network alone)\n"
           "  /quit")
     while True:
@@ -305,7 +305,14 @@ def chat_qa(path: str) -> None:
             f = line[6:].strip() or pick_file("Choose a text file of User:/Assistant: pairs", [("Text", "*.txt"), ("All files", "*.*")])
             if not f:
                 continue
-            pairs = m2_qa.parse_exchanges(Path(f).read_bytes().replace(b"\r\n", b"\n"))
+            raw = Path(f).read_bytes().replace(b"\r\n", b"\n")
+            pairs = m2_qa.parse_exchanges(raw)
+            for ln in raw.split(b"\n"):            # also accept '/add question || answer' lines
+                ln = ln.strip()
+                if ln.startswith(b"/add ") and b"||" in ln:
+                    q, _, ans = ln[5:].partition(b"||")
+                    if q.strip() and ans.strip():
+                        pairs.append((q.strip(), ans.strip()))
             for q, ans in pairs:
                 eng.add(q, ans)
             print(f"stored {len(pairs):,} pairs from {Path(f).name}" if pairs else
