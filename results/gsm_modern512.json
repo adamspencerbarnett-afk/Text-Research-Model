@@ -1,0 +1,515 @@
+{
+ "setup": {
+  "data": "data_qa_gsm",
+  "work": "runs/gsm_modern512",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 3600.0,
+  "ctx": 512,
+  "batch": 32,
+  "topk": 64,
+  "neighbor_codes": 250,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/gsm_modern512.json",
+  "seed": 1,
+  "self_context_p": 0.5,
+  "copy_bias": 0.0,
+  "device": "cuda",
+  "threads": 0,
+  "width": 256,
+  "layers": 6,
+  "heads": 8,
+  "block": "modern",
+  "precision": "fp32",
+  "greedy": true,
+  "no_repeat": 0,
+  "patience": 0,
+  "min_delta": 0.005,
+  "max_steps": 8000,
+  "dict": "runs/core_modern512/v0_8k_plain.cv0d",
+  "init": "runs/core_modern512/scale_5M_v0_8k_ng64.pt",
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "copy_question": true,
+  "calculator": true,
+  "perturb_self": 0.0,
+  "sim_feature": false,
+  "no_retrieval_p": 0.0,
+  "loss_answer_only": true,
+  "stop_at_blank": false,
+  "lr": 0.0001,
+  "key_head": null,
+  "eos": true,
+  "head_lr": 0.001,
+  "schedule": "cosine",
+  "net_n": 200,
+  "rehearse": "data_core/mix_D3s_5M",
+  "rehearse_p": 0.3,
+  "save": "runs/gsm_modern512/qa.pt",
+  "train_exchanges": 7473,
+  "eval": 659,
+  "added": 660,
+  "distinct_keys": 7460
+ },
+ "training": {
+  "steps": 8000,
+  "train_s": 749.8,
+  "stop_reason": "budget",
+  "best_valid": 0.6324,
+  "history": [
+   {
+    "train_s": 60.1,
+    "step": 632,
+    "train_bits_per_code": 3.951,
+    "valid_bits_per_byte": 0.6676
+   },
+   {
+    "train_s": 120.1,
+    "step": 1269,
+    "train_bits_per_code": 3.446,
+    "valid_bits_per_byte": 0.6553
+   },
+   {
+    "train_s": 180.0,
+    "step": 1895,
+    "train_bits_per_code": 3.343,
+    "valid_bits_per_byte": 0.6425
+   },
+   {
+    "train_s": 240.0,
+    "step": 2537,
+    "train_bits_per_code": 3.887,
+    "valid_bits_per_byte": 0.6324
+   },
+   {
+    "train_s": 300.1,
+    "step": 3180,
+    "train_bits_per_code": 3.193,
+    "valid_bits_per_byte": 0.6345
+   },
+   {
+    "train_s": 360.0,
+    "step": 3824,
+    "train_bits_per_code": 3.106,
+    "valid_bits_per_byte": 0.6333
+   },
+   {
+    "train_s": 420.1,
+    "step": 4468,
+    "train_bits_per_code": 3.644,
+    "valid_bits_per_byte": 0.6404
+   },
+   {
+    "train_s": 480.1,
+    "step": 5111,
+    "train_bits_per_code": 3.226,
+    "valid_bits_per_byte": 0.6388
+   },
+   {
+    "train_s": 540.1,
+    "step": 5754,
+    "train_bits_per_code": 3.006,
+    "valid_bits_per_byte": 0.6375
+   },
+   {
+    "train_s": 600.0,
+    "step": 6396,
+    "train_bits_per_code": 2.498,
+    "valid_bits_per_byte": 0.6397
+   },
+   {
+    "train_s": 660.1,
+    "step": 7040,
+    "train_bits_per_code": 3.103,
+    "valid_bits_per_byte": 0.6402
+   },
+   {
+    "train_s": 720.0,
+    "step": 7682,
+    "train_bits_per_code": 3.556,
+    "valid_bits_per_byte": 0.643
+   },
+   {
+    "train_s": 749.8,
+    "step": 8000,
+    "train_bits_per_code": 2.485,
+    "valid_bits_per_byte": 0.6434
+   }
+  ],
+  "cost": {
+   "seconds": 749.8,
+   "gpu_avg_w": 386.7,
+   "gpu_kj": 289.94,
+   "peak_mem_mb": 3911,
+   "power_samples": 384,
+   "units": 8000,
+   "s_per_unit": 0.0937,
+   "j_per_unit": 36.24
+  }
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 1.0,
+   "exact": 1.0
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 200,
+   "f1": 0.8967,
+   "exact": 0.23,
+   "num_exact": 0.445,
+   "num_exact_bias": 0.445,
+   "f1_no_m1": 0.776,
+   "f1_bias": 0.8967,
+   "exact_bias": 0.23
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 2,
+   "f1": 0.3671,
+   "exact": 0.0,
+   "num_exact": 0.0,
+   "num_exact_bias": 0.0,
+   "f1_no_m1": 0.4505,
+   "f1_bias": 0.3671,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.5859
+  },
+  "unseen_network_with_nearest": {
+   "n": 198,
+   "f1": 0.3902,
+   "exact": 0.0,
+   "num_exact": 0.0202,
+   "num_exact_bias": 0.0202,
+   "f1_no_m1": 0.3859,
+   "f1_bias": 0.3902,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.2433
+  },
+  "heldout_network_without_memory": {
+   "n": 200,
+   "f1": 0.3543,
+   "exact": 0.0,
+   "num_exact": 0.01,
+   "num_exact_bias": 0.01
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.3921
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 1.0,
+   "exact": 1.0
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 200,
+   "f1": 0.8837,
+   "exact": 0.19,
+   "num_exact": 0.425,
+   "num_exact_bias": 0.425,
+   "f1_no_m1": 0.761,
+   "f1_bias": 0.8837,
+   "exact_bias": 0.19
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Stan can type 50 words per minute. He needs to write a 5-page paper. Each page w",
+    "a": "Stan needs to write 2,000 words because 5 x 400 = 2000\nThis will take him 40 minutes because 2,000 / 50 = 40\nHe drinks 1/4 an ounce per minute because 15 / 60 =",
+    "f1": 0.7777777777777778,
+    "exact": 0.0,
+    "a_no_m1": "Stan needs to write 2,000 words because 5 x 400 = 2000\nThis will take him 40 minutes because 2,000 / 50 = 40\nHis drinks 1/4 an ounce per minute because 15 / 60 ",
+    "f1_no_m1": 0.7407407407407407,
+    "a_bias": "Stan needs to write 2,000 words because 5 x 400 = 2000\nThis will take him 40 minutes because 2,000 / 50 = 40\nHe drinks 1/4 an ounce per minute because 15 / 60 =",
+    "f1_bias": 0.7777777777777778,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Reyna had 20 lamps with seven light bulbs in each lamp. If 1/4 of them have 2 bu",
+    "a": "The total number of light bulbs in the 20 lamps is 20*7 = 140\nIf 1/4 of the 20 lamps have burnt-out light bulbs, there are 1/4*20 = 5 lamps with burn out light ",
+    "f1": 0.7441860465116279,
+    "exact": 0.0,
+    "a_no_m1": "The total number of light bulbs in the 20 lamps is 20*7 = 140\nIf 1/4 of the 20 lamps have burnt-out light bulbs, there are 1/4*20 = 5 lamps with burn out light ",
+    "f1_no_m1": 0.6904761904761905,
+    "a_bias": "The total number of light bulbs in the 20 lamps is 20*7 = 140\nIf 1/4 of the 20 lamps have burnt-out light bulbs, there are 1/4*20 = 5 lamps with burn out light ",
+    "f1_bias": 0.7441860465116279,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "A box of rainbow nerds contains 10 purple candies, 4 more yellow candies, and 2 ",
+    "a": "There are 10 + 4 = 14 yellow candies.\nThere are 14 - 2 = 12 green candies.\nThere are 10 + 14 + 12 = 36 rainbow nerds candies in the box.\nAnswer: 36",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "There are 10 + 4 = 14 yellow candies.\nThere are 14 - 2 = 12 green candies.\n example: There are 14 - 2 = 12 green candies.\n example: There are 12 + 14 + 12 = 38\n",
+    "f1_no_m1": 0.7058823529411765,
+    "a_bias": "There are 10 + 4 = 14 yellow candies.\nThere are 14 - 2 = 12 green candies.\nThere are 10 + 14 + 12 = 36 rainbow nerds candies in the box.\nAnswer: 36",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": 1.0,
+    "num_exact_bias": 1.0
+   },
+   {
+    "q": "Tony decided he wanted to be an astronaut.  He went to college for 4 years to ge",
+    "a": "Tony got 3 degrees which each took 4 years, for 3*4= 12 years spent.\nHe then got his graduate degree, which was another 2 years added to the previous total, for",
+    "f1": 1.0,
+    "exact": 0.0,
+    "a_no_m1": "Tony got 3 degrees which each took 4 years, for 3*4= 12 years spent.\nHe then got his graduate degree, which was another 2 years added to the previous total, for",
+    "f1_no_m1": 0.8108108108108109,
+    "a_bias": "Tony got 3 degrees which each took 4 years, for 3*4= 12 years spent.\nHe then got his graduate degree, which was another 2 years added to the previous total, for",
+    "f1_bias": 1.0,
+    "exact_bias": 0.0,
+    "num_exact": 1.0,
+    "num_exact_bias": 1.0
+   },
+   {
+    "q": "There is 80 mg of caffeine in a cup of coffee. Lisa does not want to drink more ",
+    "a": "Lisa drinks 80*3= 240 mg of caffeine in 3 cups of coffee.\nShe wanted to have 200, so she is 40 mg over her goal because 240-200 = 40mg.\nAnswer: 40",
+    "f1": 1.0,
+    "exact": 0.0,
+    "a_no_m1": "Lisa drinks 80*3= 240 mg of caffeine in 3 cups of coffee.\nShe wanted to have 200, so she is 40 mg over her goal because 240-200 = 40mg.\nShe wanted to have 200, ",
+    "f1_no_m1": 0.8679245283018869,
+    "a_bias": "Lisa drinks 80*3= 240 mg of caffeine in 3 cups of coffee.\nShe wanted to have 200, so she is 40 mg over her goal because 240-200 = 40mg.\nAnswer: 40",
+    "f1_bias": 1.0,
+    "exact_bias": 0.0,
+    "num_exact": 1.0,
+    "num_exact_bias": 1.0
+   },
+   {
+    "q": "Wilson decides to go sledding on some nearby hills. On the 2 tall hills, he sled",
+    "a": "On the tall hills, he sleds down 2 tall hills * 4 times per tall hill = 8 times.\nHe sleds down the small hills half as often so he sleds down each hill 4 times ",
+    "f1": 0.75,
+    "exact": 0.0,
+    "a_no_m1": "On the tall hills, he sleds down 2 tall hills * 4 times per tall hill = 8 times.\nHe sleds down the small hills half as often so he sleds down each hill 4 times ",
+    "f1_no_m1": 0.7567567567567568,
+    "a_bias": "On the tall hills, he sleds down 2 tall hills * 4 times per tall hill = 8 times.\nHe sleds down the small hills half as often so he sleds down each hill 4 times ",
+    "f1_bias": 0.75,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Max bought stamps at the post office. Some of the stamps had a snowflake design,",
+    "a": "The number of truck stamps was 16 + 3 = 19.\nThe number of rose stamps was 19 + 3 = 22.\nThe number of rose stamps was 22 + 9 = 31.\nMax bought 22 + 19 + 31\nAnswer",
+    "f1": 0.4615384615384615,
+    "exact": 0.0,
+    "a_no_m1": "The number of stamps was 16 + 3 = 19.\nThe number of rose stamps was 19 + 3 = 22.\nThe number of rose stamps was 22 + 9 = 31.\nMax bought 22 + 19 + 31 = 72\nAnswer:",
+    "f1_no_m1": 0.4210526315789474,
+    "a_bias": "The number of truck stamps was 16 + 3 = 19.\nThe number of rose stamps was 19 + 3 = 22.\nThe number of rose stamps was 22 + 9 = 31.\nMax bought 22 + 19 + 31\nAnswer",
+    "f1_bias": 0.4615384615384615,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.722,
+    "f1_vs_retrieved": 0.6666666666666666,
+    "retrieved_answer_f1_vs_ref": 0.4444444444444444
+   },
+   {
+    "q": "A plane travels 1200 miles in 3 hours. At the same rate, how many additional hou",
+    "a": "The plane travels 1200/3= 400 miles in 3 hours.\nSo, the plane travels 1200/400= 3\nAnswer: 3",
+    "f1": 0.2727272727272727,
+    "exact": 0.0,
+    "a_no_m1": "The plane travels 1200/3= 400 miles in 3 hours.\nSo, the plane would take 1200/400= 3 more hours.\nAnswer: 3",
+    "f1_no_m1": 0.4799999999999999,
+    "a_bias": "The plane travels 1200/3= 400 miles in 3 hours.\nSo, the plane travels 1200/400= 3\nAnswer: 3",
+    "f1_bias": 0.2727272727272727,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.561,
+    "f1_vs_retrieved": 0.2727272727272727,
+    "retrieved_answer_f1_vs_ref": 0.7272727272727273
+   }
+  ],
+  "unseen": [
+   {
+    "q": "It's April, and Mrs. Rylan has been busy on her farm planting different types of",
+    "a": "The total packet of tomato seeds is 20 + 80 = 100.\nThe packet of celery seeds is 30 - 80 = -50.\nThe packet of celery seeds is 80 - 30 = 50.\nThe packet of celer\n",
+    "f1": 0.5660377358490567,
+    "exact": 0.0,
+    "a_no_m1": "The total packet of tomato seeds is 20 + 80 = 100.\nThe packet of celery seeds is 30 - 80 = -50.\nThe packet of celery seeds is 80 - 30 = 50.\nThe packet of celer\n",
+    "f1_no_m1": 0.5660377358490567,
+    "a_bias": "The total packet of tomato seeds is 20 + 80 = 100.\nThe packet of celery seeds is 30 - 80 = -50.\nThe packet of celery seeds is 80 - 30 = 50.\nThe packet of celer\n",
+    "f1_bias": 0.5660377358490567,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.243,
+    "f1_vs_retrieved": 0.4918032786885246,
+    "retrieved_answer_f1_vs_ref": 0.393939393939394
+   },
+   {
+    "q": "The Smith family is getting ready for summer and needs to have their swimming po",
+    "a": "The pool is 14 + 25 + 4 = 43 feet long.\nThe pool is 14 * 4 = 56 feet long.\nThe pool is 56 * 4 = 224 feet long.\nAnswer: 224",
+    "f1": 0.3934426229508197,
+    "exact": 0.0,
+    "a_no_m1": "The pool is 14 + 25 + 4 = 43 feet long.\nThe pool is 14 * 4 = 56 feet long.\nThe pool is 56 * 4 = 224 feet long.\nAnswer: 224",
+    "f1_no_m1": 0.3934426229508197,
+    "a_bias": "The pool is 14 + 25 + 4 = 43 feet long.\nThe pool is 14 * 4 = 56 feet long.\nThe pool is 56 * 4 = 224 feet long.\nAnswer: 224",
+    "f1_bias": 0.3934426229508197,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.14,
+    "f1_vs_retrieved": 0.39999999999999997,
+    "retrieved_answer_f1_vs_ref": 0.23728813559322035
+   },
+   {
+    "q": "Trinity sells magazines at 11/8 of the price she bought the magazines. If she bo",
+    "a": "The magazines cost 72*11= 792.\nThe magazines cost 72*72= 5184.\nAnswer: 5184",
+    "f1": 0.34782608695652173,
+    "exact": 0.0,
+    "a_no_m1": "The magazines cost 72*11= 792.\nThe magazines cost 72*72= 5184.\nAnswer: 5184",
+    "f1_no_m1": 0.34782608695652173,
+    "a_bias": "The magazines cost 72*11= 792.\nThe magazines cost 72*72= 5184.\nAnswer: 5184",
+    "f1_bias": 0.34782608695652173,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.209,
+    "f1_vs_retrieved": 0.1,
+    "retrieved_answer_f1_vs_ref": 0.24489795918367344
+   },
+   {
+    "q": "Jame will turn 27 in 5 years.  In 8 years his cousin will be 5 years younger tha",
+    "a": "Let x represent the age of the two now\n27+x=5+2\n2x=5+2\nx=10 years\nAnswer: 10",
+    "f1": 0.13043478260869562,
+    "exact": 0.0,
+    "a_no_m1": "Let J be the age of the first and the age of the second\nIn 8 years J will be 27\nIn 8 years J will be 27+8 = 35\nIn 8 years J will be 35+8 = 43 years\nIn 8 years J",
+    "f1_no_m1": 0.35294117647058826,
+    "a_bias": "Let x represent the age of the two now\n27+x=5+2\n2x=5+2\nx=10 years\nAnswer: 10",
+    "f1_bias": 0.13043478260869562,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.191,
+    "f1_vs_retrieved": 0.1142857142857143,
+    "retrieved_answer_f1_vs_ref": 0.2727272727272727
+   },
+   {
+    "q": "Antoine's french onion soup recipe calls for 2 pounds of onions. He likes to dou",
+    "a": "He needs 2 pounds of onions and he needs 6 pounds of onions so he needs 2*6 = 12 pounds of onions\nHe needs 2 boxes of beef and he needs 2 boxes of beef so he ne",
+    "f1": 0.358974358974359,
+    "exact": 0.0,
+    "a_no_m1": "He needs 2 pounds of onions and he needs 6 pounds of onions so he needs 2*6 = 12 pounds of onions\nHe needs 2 boxes of beef and he needs 2 boxes of beef so he ne",
+    "f1_no_m1": 0.358974358974359,
+    "a_bias": "He needs 2 pounds of onions and he needs 6 pounds of onions so he needs 2*6 = 12 pounds of onions\nHe needs 2 boxes of beef and he needs 2 boxes of beef so he ne",
+    "f1_bias": 0.358974358974359,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.122,
+    "f1_vs_retrieved": 0.32727272727272727,
+    "retrieved_answer_f1_vs_ref": 0.18604651162790697
+   },
+   {
+    "q": "Joey plays football every week. Last week he played 2 matches on Monday, 1 match",
+    "a": "Joey played 2 matches on Monday, 1 week, so he played 2 * 1 = 2 matches.\nOn Saturday he played double the number of matches he played on Monday, 2 * 2 = 4 match",
+    "f1": 0.3773584905660377,
+    "exact": 0.0,
+    "a_no_m1": "Joey played 2 * 1 = 2 matches on Monday.\nOn Saturday he played 2 * 1 = 2 matches on Saturday.\nOn Saturday he played 2 * 2 = 4 matches on Saturday.\nOn Saturday h",
+    "f1_no_m1": 0.4,
+    "a_bias": "Joey played 2 matches on Monday, 1 week, so he played 2 * 1 = 2 matches.\nOn Saturday he played double the number of matches he played on Monday, 2 * 2 = 4 match",
+    "f1_bias": 0.3773584905660377,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0,
+    "sim": 0.155,
+    "f1_vs_retrieved": 0.23376623376623376,
+    "retrieved_answer_f1_vs_ref": 0.2222222222222222
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Of the 20 available cars for rent, 12 are automatic cars, 4 are manual cars, and",
+    "a": "12 + 4 = 16 cars are either automatically.\nSo, 20 - 16 = 4 cars are semi-autonic.\nTherefore, the percentage of semi-autonic cars is 4/20 x 100% = 20%.\nAnswer: 4",
+    "f1": 0.8,
+    "exact": 0.0,
+    "a_no_m1": "12 + 4 = 16 cars are either automatically.\nSo, 20 - 16 = 4 cars are semi-autonic.\nells are semi-autonic.\nethable car is 4/20 x 100% = 20%.\nSo, the percentage of",
+    "f1_no_m1": 0.6363636363636365,
+    "a_bias": "12 + 4 = 16 cars are either automatically.\nSo, 20 - 16 = 4 cars are semi-autonic.\nTherefore, the percentage of semi-autonic cars is 4/20 x 100% = 20%.\nAnswer: 4",
+    "f1_bias": 0.8,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "The red rope was four times the length of the blue rope. The blue rope was 7 cen",
+    "a": "Let Y = the length of the yellow rope in centimeters\nBlue rope = Y - 7\nRed rope = 4 * (Y - 7)\nY + Y - 7 + 4 (Y - 7) = 37 cm\n6Y - 3",
+    "f1": 0.8076923076923077,
+    "exact": 0.0,
+    "a_no_m1": "Let Y = the length of the yellow rope in centimeters\nBlue rope = Y - 7\nRed rope = 4 * (Y - 7)\nRed rope = Y -  7\nRed rope = Y -  7\nRed rope = Y",
+    "f1_no_m1": 0.75,
+    "a_bias": "Let Y = the length of the yellow rope in centimeters\nBlue rope = Y - 7\nRed rope = 4 * (Y - 7)\nY + Y - 7 + 4 (Y - 7) = 37 cm\n6Y - 3",
+    "f1_bias": 0.8076923076923077,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Tom bought a CD for $4, and a headphone set. In total, he paid $48. How many mor",
+    "a": "The headphone set cost was 48 - 4 = 44.\nThat means, for that money Tom would be able to buy 44 / 4 = 11 more CDs.\nAnswer: 11",
+    "f1": 1.0,
+    "exact": 0.0,
+    "a_no_m1": "The headphone set cost was 48 - 4 = 44.\nThat means, for that money Tom would be able to buy 44 / 4 = 11 more CDs.\nads from the CDs cost 44 - 11 = 33 more CDs.\nA",
+    "f1_no_m1": 0.8444444444444443,
+    "a_bias": "The headphone set cost was 48 - 4 = 44.\nThat means, for that money Tom would be able to buy 44 / 4 = 11 more CDs.\nAnswer: 11",
+    "f1_bias": 1.0,
+    "exact_bias": 0.0,
+    "num_exact": 1.0,
+    "num_exact_bias": 1.0
+   },
+   {
+    "q": "It takes 20 minutes for the oil to heat up to 300 degrees.  It then takes 40% lo",
+    "a": "It takes 20*.4=8 more minutes to go from 300 to 400 degrees than from room temperature to 300\nSo it takes 20+8= 28 minutes to warm up\nSo the total warming time ",
+    "f1": 0.8311688311688311,
+    "exact": 0.0,
+    "a_no_m1": "It takes 20*.4=8 more minutes to go from 300 to 400 degrees than from room temperature to 300\nUser 300 degrees is the same as 2000 degrees. What is the value of",
+    "f1_no_m1": 0.4383561643835616,
+    "a_bias": "It takes 20*.4=8 more minutes to go from 300 to 400 degrees than from room temperature to 300\nSo it takes 20+8= 28 minutes to warm up\nSo the total warming time ",
+    "f1_bias": 0.8311688311688311,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   },
+   {
+    "q": "Sally has realized she did not receive a full wage this week. Her bank account, ",
+    "a": "The wage she received was $420 \u2013 $200 = $220\nThis means her wage was $300 \u2013 $220 = $80 short\nAnswer: 80",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The wage she received was $420 \u2013 $200 = $220\nThis means her wage was $300 \u2013 $220 = $80 short\n question 300 - $220 = 80 short\nThe money she received was\nAnswer: ",
+    "f1_no_m1": 0.7741935483870968,
+    "a_bias": "The wage she received was $420 \u2013 $200 = $220\nThis means her wage was $300 \u2013 $220 = $80 short\nAnswer: 80",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": 1.0,
+    "num_exact_bias": 1.0
+   },
+   {
+    "q": "Shawnda decides that her neighborhood kids could really use a bike inflation ser",
+    "a": "There were 10 bike tires to fill up because 2 times 5 equals 10.\nThere were 9 tricycle tires to fill up because 3 times 3 equals 9.\nThere was one unicycle tire ",
+    "f1": 0.8433734939759037,
+    "exact": 0.0,
+    "a_no_m1": "There were 10 bike tires to fill up because 2 times 5 equals 10.\nThere were 9 tricycle tires to fill up because 3 times 3 equals 9.\n seats one tire to fill up b",
+    "f1_no_m1": 0.8095238095238096,
+    "a_bias": "There were 10 bike tires to fill up because 2 times 5 equals 10.\nThere were 9 tricycle tires to fill up because 3 times 3 equals 9.\nThere was one unicycle tire ",
+    "f1_bias": 0.8433734939759037,
+    "exact_bias": 0.0,
+    "num_exact": 0.0,
+    "num_exact_bias": 0.0
+   }
+  ]
+ },
+ "checks": {
+  "answer_replaced": 1118,
+  "answer_confirmed": 444
+ }
+}
