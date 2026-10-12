@@ -1,0 +1,438 @@
+{
+ "model": "runs/s2b_modern512/qa_s2b_modern512.pt",
+ "precision": "fp32",
+ "min_sim": 0.0,
+ "summary": {
+  "stored": {
+   "n": 5,
+   "ok": 5,
+   "ok_without_memory": 1
+  },
+  "reworded": {
+   "n": 5,
+   "ok": 2,
+   "ok_without_memory": 0
+  },
+  "knowledge": {
+   "n": 5,
+   "ok": 3,
+   "ok_without_memory": 1
+  },
+  "heldout": {
+   "n": 5,
+   "ok": 3,
+   "ok_without_memory": 3
+  },
+  "taught": {
+   "n": 6,
+   "ok": 4,
+   "ok_without_memory": 0
+  },
+  "arithmetic": {
+   "n": 3,
+   "ok": 0,
+   "ok_without_memory": 0
+  },
+  "chat": {
+   "n": 3,
+   "ok": 0,
+   "ok_without_memory": 2
+  }
+ },
+ "cost": {
+  "seconds": 32.2,
+  "gpu_avg_w": 55.5,
+  "gpu_kj": 1.79,
+  "peak_mem_mb": 66,
+  "power_samples": 37,
+  "units": 32,
+  "s_per_unit": 1.0062,
+  "j_per_unit": 55.82
+ },
+ "rows": [
+  {
+   "section": "stored",
+   "question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "answer": "A traditional Thanksgiving meal in the United States typically includes turkey, stuffing, mashed potatoes, gravy, cranberry sauce, vegetables, and pumpkin pie.",
+   "answer_without_memory": "The food was traditionally served during Thanksgiving in the US.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "seconds": 1.71
+  },
+  {
+   "section": "stored",
+   "question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "answer": "A simple example of gravity can be demonstrated by dropping a ball; the ball falls to the ground due to the force of gravity pulling it downwards.",
+   "answer_without_memory": "The concept of gravity is a theory of gravity that states that the force of gravity can be determined by the force that it has to produce.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "seconds": 1.47
+  },
+  {
+   "section": "stored",
+   "question": "Create a list of 10 verbs related to cooking",
+   "answer": "- Mix\n- Boil \n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+   "answer_without_memory": "1. \"The Cook for the Cook\" by John W. Bush\n2. 1979 - 1000 - The Cook of the Cooking Cook\n\n2. The Cooking Circle by John K. K. Bush \n3. 2001 - A 15-year-old boy named John Kim, who was a young girl who was born in 1899.\n\n3. The Circles by John H. Kim \n4. 30",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Create a list of 10 verbs related to cooking",
+   "seconds": 3.57
+  },
+  {
+   "section": "stored",
+   "question": "Name some computer viruses",
+   "answer": "Some computer viruses are: \n- WannaCry\n- Stuxnet\n- Trojan Horse\n- Code Red\n- Sality\n- CryptoLocker\n- ILoveYou\n- Chimera\n- MyDoom\n- Melissa",
+   "answer_without_memory": "Some examples of computer viruses are:\n\n1. Augmented reality (AR) - AR is a computer virus that is used to detect and detect a virus in a computer. It is used in many computer applications, including computer-based viruses, to detect a VR virus.\n\n2. AR - An AI-powered virus that can detect a computer's virus in an environment where it is not able to detect any viruses.\n\n3. Audience - The AR virus is used for detecting a virus that",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Name some computer viruses",
+   "seconds": 4.2
+  },
+  {
+   "section": "stored",
+   "question": "Come up with two statistics related to the US population.",
+   "answer": "According to the US Census Bureau, the current US population is approximately 331 million, and the current United States population growth rate is 0.7%.",
+   "answer_without_memory": "1. 19% of the population is in the United States, 2.5% in the US, 12.3% in India, and 11.5 percent in the U.S..\n2. 20% of all people are in the USA, 4.5 million people are from the US.\n3. 40% are in India and 22.4% in other parts of the world.\n4. 30% in all other parts, 5.50% (19",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Come up with two statistics related to the US population.",
+   "seconds": 3.49
+  },
+  {
+   "section": "reworded",
+   "question": "What food do Americans usually eat on Thanksgiving?",
+   "answer": "The food was a great food for Americans.",
+   "answer_without_memory": "The food was a food that was eaten by the American people during the Great War.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.384,
+   "retrieved_question": "What kind of food do they usually eat in Spain?",
+   "seconds": 0.69
+  },
+  {
+   "section": "reworded",
+   "question": "Can you give me an example that shows how gravity works?",
+   "answer": "Sure, gravity works by using a variety of methods to create a system. Here are some examples:\n\n1. Focus on the law: The law of conservation of energy is used to create an efficient system that is able to generate electricity.\n\n2. Faster energy: The Law of conservation is used in the analysis of the law of motion.\n\n3. Future energy: This is the law that is used for the analysis and analysis of a system, and is used by the law to create the system.\n\n4. Fast energy: A system is used as a means of",
+   "answer_without_memory": "Sure! The gravity works by using gravity to pull the object into a straight line. The gravity is a force that is responsible for the movement of the object. The force is the force of the force, which is the amount of force that the object has to pull. The object is the object with a force of 1000 feet. The gravitational force is a measure of the mass of the objects. The mass of a object is calculated by multiplying the force by the force.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.298,
+   "retrieved_question": "Create an analogy that shows how the legal system works",
+   "seconds": 4.95
+  },
+  {
+   "section": "reworded",
+   "question": "List ten verbs you would use when cooking.",
+   "answer": "- Fry\n- Bake\n- Grate\n- Roast\n- Fries\n- Grill\n- Chop\n- Cut\n- Draw\n- Pepper\n- Pack\n- Bug\n- Cook\n- Check\n- Stove\n- Take\n- Breakfast\n- Sleep\n1. Drawing\n2. Draws\n3. Druman\n4. Drum\n5. Drums\n6. Drives\n7. Drive\n8. Drush\n9. Druter",
+   "answer_without_memory": "1. Fill the dough with a butterfly.\n2. Place the douastic dough on a baking soda.\n3. Plus, place the douware in the oven to 350 degrees.\n4. Plmel the dougy dough over the dougal dough.\n5. Plastic dougy.\n6. Plug the doumy dough into a bowl.\n7. Placing the douution in the dou Micro.\n8. Plugg the doumer in the flour mixture over the flour",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.473,
+   "retrieved_question": "Create a list of 10 verbs related to cooking",
+   "seconds": 5.38
+  },
+  {
+   "section": "reworded",
+   "question": "What are some well-known computer viruses?",
+   "answer": "Some well-known computer viruses are: \n- WannaCry\n- Stuxnet\n- Trojan Horse\n- MyDoom\n- Code Red\n- Sality\n- CryptoLocker\n- ILoveYou\n- Chimera\n- myDoom",
+   "answer_without_memory": "Some well-known viruses are:\n\n1. The World's Factory: This virus is a virus that is used to infect and infect the human body. It is a type of virus that infects the body's body' of humans. It can be used to detect and treat diseases such as cancer, cancer, and cancer.\n\n2. The Factor: This is a common virus that can infect the body through infected animals, such as humans. This virus can be spread through contact with humans, or through infectious diseases such that it can be infected",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.509,
+   "retrieved_question": "Name some computer viruses",
+   "seconds": 4.3
+  },
+  {
+   "section": "reworded",
+   "question": "Tell me two facts about the population of the United States.",
+   "answer": "The two facts about the United States are that the United Kingdom is the most populous country in the world, with a population of 10,000 people.",
+   "answer_without_memory": "The two facts about the United States are:\n\n1. The United States is the second largest country in the world, with a population of 1,400,000.\n\n2. The US is the third largest country on the world's second largest.\n\n3. The U.S. is the fourth largest country at the world.\n\n4. The American Ocean is the largest Ocean.\n\n5. The Pacific Ocean is a major Ocean. It is the worlds secondest Ocean. \n\n6. The Indian Ocean is located in the Pacific Ocean.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.65,
+   "retrieved_question": "Tell me the population of the United States.",
+   "seconds": 3.54
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the largest planet in our solar system?",
+   "answer": "The largest planet in our solar system is the Solar energy is the largest planet on Earth.",
+   "answer_without_memory": "The largest planet in our solar system is the Solar energy is the largest solar system in the Solution of the Solimal System.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.744,
+   "retrieved_question": "Name a planet from our solar system.",
+   "seconds": 1.14
+  },
+  {
+   "section": "knowledge",
+   "question": "Who wrote Romeo and Juliet?",
+   "answer": "William Shakespeare",
+   "answer_without_memory": "Juliet was a poet and poet.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.789,
+   "retrieved_question": "Who wrote the play Romeo and Juliet?",
+   "seconds": 0.39
+  },
+  {
+   "section": "knowledge",
+   "question": "What is photosynthesis?",
+   "answer": "Photosynthesis is the process by which plants use light energy to convert carbon dioxide and water into oxygen and glaciers. It is the first process by automating the process of converting light energy into chemical energy.",
+   "answer_without_memory": "Photosynthesis is a process of photosynthesis that is used to create a series of chemical reactions that are used to produce a chemical reaction.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.589,
+   "retrieved_question": "Describe the process of photosynthesis to me.",
+   "seconds": 1.89
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the boiling point of water in Celsius?",
+   "answer": "The approximate boiling point of water in Celsius is 100 degrees.",
+   "answer_without_memory": "The boiling point of water in Celsius is 1000 m\u00b2.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.76,
+   "retrieved_question": "What is the approximate boiling point of water in Celsius?",
+   "seconds": 0.96
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the capital of Japan?",
+   "answer": "The capital of Japan is Japan.",
+   "answer_without_memory": "The capital of Japan is 1999.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Give me the capital of Japan.",
+   "seconds": 0.5
+  },
+  {
+   "section": "heldout",
+   "question": "Generate a creative poem describing the night sky.",
+   "answer": "The night sky is a vivid and vivid image of the night sky. The sky is blue and the sky is bright and vibrant, with a gentle breeze. The night was a vibrations and a vibe of the sun, with the stars and the moon. The stars are twinkling in the sky, with stars and stars. The moon is a gentle, vibrating sight, with its gentle breeship.",
+   "answer_without_memory": "The night sky is a beautiful and peaceful place, filled with a peaceful atmosphere. The sky is filled with the gentle breeze, the gentle winds, and the gentle gentle wind blew the air. The air is filled, the peaceful air is full of peace and peace. The night was a beautiful place, the beauty of the night, and a peacefulness of the day.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.48,
+   "retrieved_question": "Write a creative sentence starting with \"The night sky\".",
+   "seconds": 3.97
+  },
+  {
+   "section": "heldout",
+   "question": "Come up with a creative sentence to describe a summer day.",
+   "answer": "A summer day is like a sunny day.",
+   "answer_without_memory": "I'm sorry to hear that you're not a summer day. I've been in the past and I'll be in the summer. I can't wait to see you.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.379,
+   "retrieved_question": "Generate a creative metaphor to describe a warm summer day.\n<no input>",
+   "seconds": 1.31
+  },
+  {
+   "section": "heldout",
+   "question": "List 5 famous Italian dishes.",
+   "answer": "1. Friedrich Nietzsche\n2. R\u00e9d\u00e9r\u00e9s - A classic Italian dish that is made with fresh fruit, vegetables, and vegetables.\n3. Ra\u00f1os \u00e9t\u00e9 - a classic Italian dishes that are made with a variety of ingredients.\n4. Raglan\u00e9a - An Italian dish made with vegetables, vegetables and vegetables, or a variety from traditional Italian cuisine.\n5. Rab\u00e9n\u00edn - an Italian",
+   "answer_without_memory": "1. Friedrich Nietzsche\n2. R\u00e9d\u00e9rie de R\u00e8re\n3. Ra\u00e9l\u00e9s de Ra'\u00e9t\u00e9",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.453,
+   "retrieved_question": "Build a database for all Italian dishes",
+   "seconds": 3.82
+  },
+  {
+   "section": "heldout",
+   "question": "Tell me the most common hairstyle for men.",
+   "answer": "The most common hairstyle for men is 10% of the hairstructure, 15% of hairstdules, 20% the size and shape of the body, and 12% of all hairstructed hairsturations.",
+   "answer_without_memory": "The most common hairstyle for men is the \"green\" hair. This hairstype is usually made of a thin, white, and white hair, and is usually found in the middle of the hair.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.346,
+   "retrieved_question": "What is the most common type of sneaker for men?",
+   "seconds": 2.41
+  },
+  {
+   "section": "heldout",
+   "question": "Print the following statement: \"I want to learn to code\".",
+   "answer": "I want to learn to code.",
+   "answer_without_memory": "I want to learn to code.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.336,
+   "retrieved_question": "Convert the following statement into a code snippet.\nPrint the sum of 1 and 2.",
+   "seconds": 0.43
+  },
+  {
+   "section": "taught",
+   "question": "What is the name of Adam's research model?",
+   "answer": "Adam's research model is called the Text Research Model.",
+   "answer_without_memory": "Adam's research model is based on the idea that the universe is composed of two different types of matter: matter and matter.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "What is the name of Adam's research model?",
+   "seconds": 1.0
+  },
+  {
+   "section": "taught",
+   "question": "What GPU does the research computer use?",
+   "answer": "The research computer uses an NVIDIA RTX 3090 GPU.",
+   "answer_without_memory": "GPUs are used to create a variety of applications, including:\n\n1. Compare and contrast the data in a given context: GPT can be used to generate a variety or compare the data to a specific type of data.\n\n2. User-processed data: Given the data, the data can be processed using a variety and compare it to a particular type of machine.\n\n3. Users: GitHubs are a type of computer that uses a variety in the context of a given data. They can be trained to generate more",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "What GPU does the research computer use?",
+   "seconds": 3.28
+  },
+  {
+   "section": "taught",
+   "question": "When was Version 1 of the compiler frozen?",
+   "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+   "answer_without_memory": "Version 1 of the compiler frozen is a compile-in-line compile. It is a type of compile compile that is used to create a compound, which is used for compilers, and is used in a variety of applications.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "When was Version 1 of the compiler frozen?",
+   "seconds": 1.89
+  },
+  {
+   "section": "taught",
+   "question": "What is Adam's research model called?",
+   "answer": "Adam's research model is called the Text Research Model.",
+   "answer_without_memory": "Adam's research model is based on the idea that the universe is composed of two different types of matter: matter and matter.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.74,
+   "retrieved_question": "What is the name of Adam's research model?",
+   "seconds": 1.01
+  },
+  {
+   "section": "taught",
+   "question": "Which graphics card is in the research computer?",
+   "answer": "The graphics card is in the research computer. It is used to create a graphic design that is used for graphics, graphics and graphics. It can be used to make graphics more visually appealing, and to make more visuals.",
+   "answer_without_memory": "The graphics card is a graphic card that is used to create a graphical representation of a computer. It is used in a variety of ways to create graphics, including:\n\n1. User-instructions: The graphic cards are used to make graphics and make them easy to use.\n\n2. Users: The chart is used for creating graphics or graphics.\n\n3. Uses: Users are used for making graphics for graphics purposes.\n\n4. Use a graphics cards: The card is used as a graphically",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.398,
+   "retrieved_question": "Give three types of computer graphics.",
+   "seconds": 3.94
+  },
+  {
+   "section": "taught",
+   "question": "On what date was Version 1 frozen?",
+   "answer": "Version 1 frozen",
+   "answer_without_memory": "Version 1 was the 1st of 12th of July 2019. It was the first time in the history of the United States, and it was the last time in 1867.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.476,
+   "retrieved_question": "When was Version 1 of the compiler frozen?",
+   "seconds": 1.31
+  },
+  {
+   "section": "arithmetic",
+   "question": "What is 12 plus 30?",
+   "answer": "12 + 30 = 40",
+   "answer_without_memory": "12 is equal to 100.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.65,
+   "retrieved_question": "Calculate 5 plus 2",
+   "seconds": 0.63
+  },
+  {
+   "section": "arithmetic",
+   "question": "If I have 5 apples and eat 2, how many are left?",
+   "answer": "If I have 5 apples and eat 2, how many are left?",
+   "answer_without_memory": "If I have 5 apples and eat 2, then I have a total of 5 + 2 = 10 apples.\nIf I have x apples and ate 11 apples, then the number of apples left is 12 - x.\nWe are given that the number is 20, so we can write: 16 = x.\n\nTo solve for x, we divide both sides of the equation by 1: x = X / 1.\n\nTherefore, the value of x is 5.\nAnswer",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.486,
+   "retrieved_question": "If there are two apples and you give away one, how many apples do you have left?",
+   "seconds": 3.02
+  },
+  {
+   "section": "arithmetic",
+   "question": "What is 7 times 8?",
+   "answer": "7 times 8 is 10.",
+   "answer_without_memory": "7 times 8 is 10 times 12 times 24.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.599,
+   "retrieved_question": "Calculate 42 times 7.",
+   "seconds": 0.69
+  },
+  {
+   "section": "chat",
+   "question": "Hello, how are you today?",
+   "answer": "I am currently at 7am and 7bm. I am a student in the United States and I am an American student in your country. I have been studying for a few years and I have worked hard to find a way to improve my skills and knowledge. I'm also interested in learning more about the history of the country and how it has impacted my life.",
+   "answer_without_memory": "I am currently in a job interview for a job. I am a professional and professional person and I am passionate about my job. My job is a professional person, and I have a passion for my job and I'm passionate and passionate. I have an interest in my job, and my passion for the job is always a good one.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.491,
+   "retrieved_question": "Generate a to-do-list for today.",
+   "seconds": 3.53
+  },
+  {
+   "section": "chat",
+   "question": "Can you help me write a short email to my boss asking for a day off?",
+   "answer": "Dear [Name], \n\nI am writing to express my interest in receiving a raise. I have been a dedicated and hardworking employee since I started at this company and believe that I am deserving of a higher wage for my efforts. I would like to discuss the details at our next meeting and I hope that we can reach an agreement that is mutually beneficial.\n\nThank you for your time and consideration. \n\nSincerely, \n[Your name]",
+   "answer_without_memory": "Dear [Name],\n\nI am writing to express my appreciation for the new day. I am writing a letter to my boss and I am confident that I am going to be happy and happy. I have a great time and I have been happy and I'm happy to help you.\n\nI hope this is helpful and I hope you will be happy to share your love with you. I hope this will help you better.\n\nSincerely,\n[Your Name]",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.373,
+   "retrieved_question": "Draft an email to your boss asking for a raise.",
+   "seconds": 4.74
+  },
+  {
+   "section": "chat",
+   "question": "What should I cook for dinner tonight?",
+   "answer": "Tonight, you should cook the hottest, cook the colder, and cook the more hottests. You should also cook the warmer, cook more often, and prepare the coldest meals.",
+   "answer_without_memory": "To cook dinner, you should start by cooking the ingredients you need to prepare. You should also use a variety of ingredients such as herbs, herbs and herbs for a variety and flavor. You can also use the ingredients to make a delicious meal or a delicious dinner.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.365,
+   "retrieved_question": "Generate a list of five vegetables to cook for a healthy dinner",
+   "seconds": 2.29
+  }
+ ]
+}
