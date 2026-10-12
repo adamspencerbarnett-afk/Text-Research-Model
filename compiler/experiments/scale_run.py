@@ -41,8 +41,11 @@ def main() -> int:
     ap.add_argument("--max-steps", type=int, default=0, help="equal training across runs: stop at this many steps (budget is then a cap)")
     ap.add_argument("--align", action="store_true", help="training windows start at paragraph starts")
     ap.add_argument("--block", choices=["legacy", "modern"], default="legacy")
+    ap.add_argument("--shape", default=None, help="width,layers,heads for a custom size named 'custom' in --sizes (depth sweeps)")
     a = ap.parse_args()
     work = Path(a.work); work.mkdir(parents=True, exist_ok=True)
+    if a.shape:
+        SIZES["custom"] = tuple(int(v) for v in a.shape.split(","))
     books = sorted(glob.glob(f"{a.data}/train/*.txt"))
     wiki = [] if a.no_wiki else sorted(glob.glob(f"{a.data}/train_wiki/*.txt"))
     train_paths = wiki + books
