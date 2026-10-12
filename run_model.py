@@ -282,6 +282,8 @@ def chat_qa(path: str) -> None:
     eng = m2_qa.QAEngine(path, native=native_encoder(), device=device(), log=say)
     print("Ask a question. Commands:\n"
           "  /add question || answer   store a new fact (answerable at once, no training)\n"
+          "  /load [file.txt]          store every pair in a text file (popup when no file is given);\n"
+          "                            format: 'User: question' line, 'Assistant: answer' lines, blank line between pairs\n"
           "  /nomem question           answer without memory (the network alone)\n"
           "  /quit")
     while True:
@@ -299,6 +301,15 @@ def chat_qa(path: str) -> None:
                 print("format: /add question || answer"); continue
             i = eng.add(q.encode("utf-8"), ans.encode("utf-8"))
             print(f"stored as memory entry {i:,}; ask it now"); continue
+        if line == "/load" or line.startswith("/load "):
+            f = line[6:].strip() or pick_file("Choose a text file of User:/Assistant: pairs", [("Text", "*.txt"), ("All files", "*.*")])
+            if not f:
+                continue
+            pairs = m2_qa.parse_exchanges(Path(f).read_bytes().replace(b"\r\n", b"\n"))
+            for q, ans in pairs:
+                eng.add(q, ans)
+            print(f"stored {len(pairs):,} pairs from {Path(f).name}" if pairs else
+                  f"no pairs found in {Path(f).name}: expected 'User: ...' then 'Assistant: ...', blank line between pairs"); continue
         use_mem = True
         if line.startswith("/nomem "):
             line, use_mem = line[7:], False
