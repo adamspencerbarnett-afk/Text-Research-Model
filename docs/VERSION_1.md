@@ -1,7 +1,7 @@
 # Version 1: the deterministic text compiler and the table-backed model
 
 *Frozen 9 October 2026. Research concept and direction by Adam Barnett. This file and the
-accompanying `releases/version1.zip` record what was built, why, and what was learned.*
+accompanying `archive/track2_version1/version1.zip` record what was built, why, and what was learned.*
 
 ## Why the research was done
 
