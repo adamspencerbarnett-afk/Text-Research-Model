@@ -1,0 +1,1177 @@
+{
+ "setup": {
+  "data": "data_qa_squad",
+  "work": "runs/s2_squad_50m",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 16000.0,
+  "ctx": 1024,
+  "batch": 32,
+  "topk": 64,
+  "neighbor_codes": 0,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/s2_squad_50m.json",
+  "seed": 1,
+  "self_context_p": 0.0,
+  "copy_bias": 0.0,
+  "device": "cuda",
+  "threads": 0,
+  "width": 640,
+  "layers": 10,
+  "heads": 10,
+  "block": "legacy",
+  "greedy": true,
+  "no_repeat": 0,
+  "patience": 0,
+  "min_delta": 0.005,
+  "max_steps": 10000,
+  "dict": "runs/core_P50/v0_8k_plain.cv0d",
+  "init": "runs/core_P50/scale_50M_v0_8k.pt",
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "copy_question": true,
+  "calculator": false,
+  "perturb_self": 0.0,
+  "sim_feature": false,
+  "no_retrieval_p": 0.0,
+  "loss_answer_only": true,
+  "stop_at_blank": true,
+  "lr": 0.0001,
+  "key_head": null,
+  "eos": true,
+  "head_lr": 0.001,
+  "schedule": "cosine",
+  "net_n": 200,
+  "rehearse": "data_core/mix_P50",
+  "rehearse_p": 0.3,
+  "save": "runs/s2_squad_50m/qa_squad_50m.pt",
+  "train_exchanges": 64782,
+  "eval": 3781,
+  "added": 3782,
+  "distinct_keys": 58371
+ },
+ "training": {
+  "steps": 10000,
+  "train_s": 7757.2,
+  "stop_reason": "budget",
+  "best_valid": 0.2786,
+  "history": [
+   {
+    "train_s": 60.6,
+    "step": 60,
+    "train_bits_per_code": 3.748,
+    "valid_bits_per_byte": 0.445
+   },
+   {
+    "train_s": 120.3,
+    "step": 138,
+    "train_bits_per_code": 3.664,
+    "valid_bits_per_byte": 0.3726
+   },
+   {
+    "train_s": 180.1,
+    "step": 216,
+    "train_bits_per_code": 3.479,
+    "valid_bits_per_byte": 0.3505
+   },
+   {
+    "train_s": 240.6,
+    "step": 295,
+    "train_bits_per_code": 3.539,
+    "valid_bits_per_byte": 0.3519
+   },
+   {
+    "train_s": 300.3,
+    "step": 373,
+    "train_bits_per_code": 4.089,
+    "valid_bits_per_byte": 0.3386
+   },
+   {
+    "train_s": 360.1,
+    "step": 451,
+    "train_bits_per_code": 3.054,
+    "valid_bits_per_byte": 0.3288
+   },
+   {
+    "train_s": 420.7,
+    "step": 530,
+    "train_bits_per_code": 3.019,
+    "valid_bits_per_byte": 0.314
+   },
+   {
+    "train_s": 480.4,
+    "step": 608,
+    "train_bits_per_code": 3.348,
+    "valid_bits_per_byte": 0.319
+   },
+   {
+    "train_s": 540.8,
+    "step": 687,
+    "train_bits_per_code": 3.763,
+    "valid_bits_per_byte": 0.3148
+   },
+   {
+    "train_s": 600.6,
+    "step": 765,
+    "train_bits_per_code": 2.835,
+    "valid_bits_per_byte": 0.3236
+   },
+   {
+    "train_s": 660.3,
+    "step": 843,
+    "train_bits_per_code": 3.915,
+    "valid_bits_per_byte": 0.3044
+   },
+   {
+    "train_s": 720.1,
+    "step": 921,
+    "train_bits_per_code": 3.157,
+    "valid_bits_per_byte": 0.3186
+   },
+   {
+    "train_s": 780.6,
+    "step": 999,
+    "train_bits_per_code": 3.461,
+    "valid_bits_per_byte": 0.3047
+   },
+   {
+    "train_s": 840.2,
+    "step": 1076,
+    "train_bits_per_code": 3.091,
+    "valid_bits_per_byte": 0.3048
+   },
+   {
+    "train_s": 900.7,
+    "step": 1154,
+    "train_bits_per_code": 3.866,
+    "valid_bits_per_byte": 0.2951
+   },
+   {
+    "train_s": 960.4,
+    "step": 1231,
+    "train_bits_per_code": 3.217,
+    "valid_bits_per_byte": 0.2973
+   },
+   {
+    "train_s": 1020.2,
+    "step": 1308,
+    "train_bits_per_code": 3.147,
+    "valid_bits_per_byte": 0.2901
+   },
+   {
+    "train_s": 1080.6,
+    "step": 1386,
+    "train_bits_per_code": 3.075,
+    "valid_bits_per_byte": 0.3019
+   },
+   {
+    "train_s": 1140.3,
+    "step": 1463,
+    "train_bits_per_code": 3.566,
+    "valid_bits_per_byte": 0.2934
+   },
+   {
+    "train_s": 1200.1,
+    "step": 1540,
+    "train_bits_per_code": 3.424,
+    "valid_bits_per_byte": 0.3056
+   },
+   {
+    "train_s": 1260.4,
+    "step": 1618,
+    "train_bits_per_code": 3.421,
+    "valid_bits_per_byte": 0.2926
+   },
+   {
+    "train_s": 1320.1,
+    "step": 1695,
+    "train_bits_per_code": 2.947,
+    "valid_bits_per_byte": 0.299
+   },
+   {
+    "train_s": 1380.5,
+    "step": 1773,
+    "train_bits_per_code": 3.804,
+    "valid_bits_per_byte": 0.2927
+   },
+   {
+    "train_s": 1440.1,
+    "step": 1850,
+    "train_bits_per_code": 3.538,
+    "valid_bits_per_byte": 0.2976
+   },
+   {
+    "train_s": 1500.5,
+    "step": 1928,
+    "train_bits_per_code": 3.774,
+    "valid_bits_per_byte": 0.2946
+   },
+   {
+    "train_s": 1560.2,
+    "step": 2005,
+    "train_bits_per_code": 3.408,
+    "valid_bits_per_byte": 0.2941
+   },
+   {
+    "train_s": 1620.7,
+    "step": 2083,
+    "train_bits_per_code": 3.169,
+    "valid_bits_per_byte": 0.2933
+   },
+   {
+    "train_s": 1680.4,
+    "step": 2160,
+    "train_bits_per_code": 2.934,
+    "valid_bits_per_byte": 0.2913
+   },
+   {
+    "train_s": 1740.0,
+    "step": 2237,
+    "train_bits_per_code": 2.98,
+    "valid_bits_per_byte": 0.2876
+   },
+   {
+    "train_s": 1800.4,
+    "step": 2315,
+    "train_bits_per_code": 3.407,
+    "valid_bits_per_byte": 0.2872
+   },
+   {
+    "train_s": 1860.1,
+    "step": 2392,
+    "train_bits_per_code": 3.226,
+    "valid_bits_per_byte": 0.2833
+   },
+   {
+    "train_s": 1920.6,
+    "step": 2470,
+    "train_bits_per_code": 3.61,
+    "valid_bits_per_byte": 0.2877
+   },
+   {
+    "train_s": 1980.4,
+    "step": 2547,
+    "train_bits_per_code": 2.714,
+    "valid_bits_per_byte": 0.2916
+   },
+   {
+    "train_s": 2040.1,
+    "step": 2624,
+    "train_bits_per_code": 2.944,
+    "valid_bits_per_byte": 0.2907
+   },
+   {
+    "train_s": 2100.6,
+    "step": 2702,
+    "train_bits_per_code": 3.642,
+    "valid_bits_per_byte": 0.2786
+   },
+   {
+    "train_s": 2160.2,
+    "step": 2779,
+    "train_bits_per_code": 3.421,
+    "valid_bits_per_byte": 0.2763
+   },
+   {
+    "train_s": 2220.7,
+    "step": 2857,
+    "train_bits_per_code": 3.596,
+    "valid_bits_per_byte": 0.2769
+   },
+   {
+    "train_s": 2280.3,
+    "step": 2934,
+    "train_bits_per_code": 3.443,
+    "valid_bits_per_byte": 0.2737
+   },
+   {
+    "train_s": 2340.1,
+    "step": 3011,
+    "train_bits_per_code": 3.337,
+    "valid_bits_per_byte": 0.2786
+   },
+   {
+    "train_s": 2400.5,
+    "step": 3089,
+    "train_bits_per_code": 3.515,
+    "valid_bits_per_byte": 0.2895
+   },
+   {
+    "train_s": 2460.1,
+    "step": 3166,
+    "train_bits_per_code": 3.209,
+    "valid_bits_per_byte": 0.294
+   },
+   {
+    "train_s": 2520.6,
+    "step": 3244,
+    "train_bits_per_code": 3.285,
+    "valid_bits_per_byte": 0.2853
+   },
+   {
+    "train_s": 2580.4,
+    "step": 3321,
+    "train_bits_per_code": 3.972,
+    "valid_bits_per_byte": 0.3005
+   },
+   {
+    "train_s": 2640.1,
+    "step": 3398,
+    "train_bits_per_code": 2.844,
+    "valid_bits_per_byte": 0.2795
+   },
+   {
+    "train_s": 2700.5,
+    "step": 3476,
+    "train_bits_per_code": 3.563,
+    "valid_bits_per_byte": 0.2889
+   },
+   {
+    "train_s": 2760.2,
+    "step": 3553,
+    "train_bits_per_code": 2.981,
+    "valid_bits_per_byte": 0.2956
+   },
+   {
+    "train_s": 2820.6,
+    "step": 3631,
+    "train_bits_per_code": 3.614,
+    "valid_bits_per_byte": 0.2908
+   },
+   {
+    "train_s": 2880.3,
+    "step": 3708,
+    "train_bits_per_code": 2.254,
+    "valid_bits_per_byte": 0.2867
+   },
+   {
+    "train_s": 2940.7,
+    "step": 3786,
+    "train_bits_per_code": 3.007,
+    "valid_bits_per_byte": 0.292
+   },
+   {
+    "train_s": 3000.5,
+    "step": 3863,
+    "train_bits_per_code": 3.265,
+    "valid_bits_per_byte": 0.2991
+   },
+   {
+    "train_s": 3060.2,
+    "step": 3940,
+    "train_bits_per_code": 2.918,
+    "valid_bits_per_byte": 0.2933
+   },
+   {
+    "train_s": 3120.7,
+    "step": 4018,
+    "train_bits_per_code": 3.0,
+    "valid_bits_per_byte": 0.2924
+   },
+   {
+    "train_s": 3180.3,
+    "step": 4095,
+    "train_bits_per_code": 3.648,
+    "valid_bits_per_byte": 0.2957
+   },
+   {
+    "train_s": 3240.1,
+    "step": 4172,
+    "train_bits_per_code": 3.763,
+    "valid_bits_per_byte": 0.2939
+   },
+   {
+    "train_s": 3300.5,
+    "step": 4250,
+    "train_bits_per_code": 3.344,
+    "valid_bits_per_byte": 0.2938
+   },
+   {
+    "train_s": 3360.4,
+    "step": 4327,
+    "train_bits_per_code": 2.984,
+    "valid_bits_per_byte": 0.2917
+   },
+   {
+    "train_s": 3420.0,
+    "step": 4404,
+    "train_bits_per_code": 2.767,
+    "valid_bits_per_byte": 0.2883
+   },
+   {
+    "train_s": 3480.5,
+    "step": 4482,
+    "train_bits_per_code": 3.192,
+    "valid_bits_per_byte": 0.2824
+   },
+   {
+    "train_s": 3540.3,
+    "step": 4559,
+    "train_bits_per_code": 2.372,
+    "valid_bits_per_byte": 0.2878
+   },
+   {
+    "train_s": 3600.7,
+    "step": 4637,
+    "train_bits_per_code": 3.137,
+    "valid_bits_per_byte": 0.2843
+   },
+   {
+    "train_s": 3660.4,
+    "step": 4714,
+    "train_bits_per_code": 3.955,
+    "valid_bits_per_byte": 0.2804
+   },
+   {
+    "train_s": 3720.1,
+    "step": 4791,
+    "train_bits_per_code": 3.859,
+    "valid_bits_per_byte": 0.2801
+   },
+   {
+    "train_s": 3780.4,
+    "step": 4869,
+    "train_bits_per_code": 3.045,
+    "valid_bits_per_byte": 0.2904
+   },
+   {
+    "train_s": 3840.2,
+    "step": 4946,
+    "train_bits_per_code": 3.433,
+    "valid_bits_per_byte": 0.2884
+   },
+   {
+    "train_s": 3900.6,
+    "step": 5024,
+    "train_bits_per_code": 3.027,
+    "valid_bits_per_byte": 0.289
+   },
+   {
+    "train_s": 3960.3,
+    "step": 5101,
+    "train_bits_per_code": 4.016,
+    "valid_bits_per_byte": 0.3032
+   },
+   {
+    "train_s": 4020.7,
+    "step": 5179,
+    "train_bits_per_code": 3.125,
+    "valid_bits_per_byte": 0.2914
+   },
+   {
+    "train_s": 4080.4,
+    "step": 5256,
+    "train_bits_per_code": 3.143,
+    "valid_bits_per_byte": 0.2877
+   },
+   {
+    "train_s": 4140.1,
+    "step": 5333,
+    "train_bits_per_code": 4.03,
+    "valid_bits_per_byte": 0.2817
+   },
+   {
+    "train_s": 4200.6,
+    "step": 5411,
+    "train_bits_per_code": 3.23,
+    "valid_bits_per_byte": 0.2806
+   },
+   {
+    "train_s": 4260.3,
+    "step": 5488,
+    "train_bits_per_code": 3.254,
+    "valid_bits_per_byte": 0.2899
+   },
+   {
+    "train_s": 4320.7,
+    "step": 5566,
+    "train_bits_per_code": 3.098,
+    "valid_bits_per_byte": 0.2828
+   },
+   {
+    "train_s": 4380.4,
+    "step": 5643,
+    "train_bits_per_code": 3.0,
+    "valid_bits_per_byte": 0.2771
+   },
+   {
+    "train_s": 4440.1,
+    "step": 5720,
+    "train_bits_per_code": 3.38,
+    "valid_bits_per_byte": 0.2794
+   },
+   {
+    "train_s": 4500.6,
+    "step": 5798,
+    "train_bits_per_code": 3.072,
+    "valid_bits_per_byte": 0.2741
+   },
+   {
+    "train_s": 4560.4,
+    "step": 5875,
+    "train_bits_per_code": 3.257,
+    "valid_bits_per_byte": 0.2865
+   },
+   {
+    "train_s": 4620.1,
+    "step": 5952,
+    "train_bits_per_code": 3.238,
+    "valid_bits_per_byte": 0.2853
+   },
+   {
+    "train_s": 4680.6,
+    "step": 6030,
+    "train_bits_per_code": 1.779,
+    "valid_bits_per_byte": 0.2804
+   },
+   {
+    "train_s": 4740.2,
+    "step": 6107,
+    "train_bits_per_code": 2.572,
+    "valid_bits_per_byte": 0.2862
+   },
+   {
+    "train_s": 4800.6,
+    "step": 6185,
+    "train_bits_per_code": 3.485,
+    "valid_bits_per_byte": 0.2809
+   },
+   {
+    "train_s": 4860.4,
+    "step": 6262,
+    "train_bits_per_code": 3.132,
+    "valid_bits_per_byte": 0.2806
+   },
+   {
+    "train_s": 4920.1,
+    "step": 6339,
+    "train_bits_per_code": 2.823,
+    "valid_bits_per_byte": 0.2813
+   },
+   {
+    "train_s": 4980.6,
+    "step": 6417,
+    "train_bits_per_code": 2.96,
+    "valid_bits_per_byte": 0.2768
+   },
+   {
+    "train_s": 5040.2,
+    "step": 6494,
+    "train_bits_per_code": 3.404,
+    "valid_bits_per_byte": 0.278
+   },
+   {
+    "train_s": 5100.6,
+    "step": 6572,
+    "train_bits_per_code": 3.52,
+    "valid_bits_per_byte": 0.2781
+   },
+   {
+    "train_s": 5160.2,
+    "step": 6649,
+    "train_bits_per_code": 3.549,
+    "valid_bits_per_byte": 0.2803
+   },
+   {
+    "train_s": 5220.6,
+    "step": 6727,
+    "train_bits_per_code": 2.876,
+    "valid_bits_per_byte": 0.2821
+   },
+   {
+    "train_s": 5280.3,
+    "step": 6804,
+    "train_bits_per_code": 3.864,
+    "valid_bits_per_byte": 0.2818
+   },
+   {
+    "train_s": 5340.8,
+    "step": 6882,
+    "train_bits_per_code": 4.241,
+    "valid_bits_per_byte": 0.279
+   },
+   {
+    "train_s": 5400.4,
+    "step": 6959,
+    "train_bits_per_code": 3.383,
+    "valid_bits_per_byte": 0.2815
+   },
+   {
+    "train_s": 5460.0,
+    "step": 7036,
+    "train_bits_per_code": 2.889,
+    "valid_bits_per_byte": 0.2776
+   },
+   {
+    "train_s": 5520.4,
+    "step": 7114,
+    "train_bits_per_code": 3.478,
+    "valid_bits_per_byte": 0.2809
+   },
+   {
+    "train_s": 5580.0,
+    "step": 7191,
+    "train_bits_per_code": 2.962,
+    "valid_bits_per_byte": 0.2817
+   },
+   {
+    "train_s": 5640.5,
+    "step": 7269,
+    "train_bits_per_code": 3.21,
+    "valid_bits_per_byte": 0.2803
+   },
+   {
+    "train_s": 5700.3,
+    "step": 7346,
+    "train_bits_per_code": 2.938,
+    "valid_bits_per_byte": 0.28
+   },
+   {
+    "train_s": 5760.7,
+    "step": 7424,
+    "train_bits_per_code": 2.332,
+    "valid_bits_per_byte": 0.2851
+   },
+   {
+    "train_s": 5820.4,
+    "step": 7501,
+    "train_bits_per_code": 3.19,
+    "valid_bits_per_byte": 0.2921
+   },
+   {
+    "train_s": 5880.1,
+    "step": 7578,
+    "train_bits_per_code": 2.673,
+    "valid_bits_per_byte": 0.2849
+   },
+   {
+    "train_s": 5940.6,
+    "step": 7656,
+    "train_bits_per_code": 2.883,
+    "valid_bits_per_byte": 0.2874
+   },
+   {
+    "train_s": 6000.2,
+    "step": 7733,
+    "train_bits_per_code": 3.156,
+    "valid_bits_per_byte": 0.2825
+   },
+   {
+    "train_s": 6060.6,
+    "step": 7811,
+    "train_bits_per_code": 3.939,
+    "valid_bits_per_byte": 0.2809
+   },
+   {
+    "train_s": 6120.3,
+    "step": 7888,
+    "train_bits_per_code": 3.219,
+    "valid_bits_per_byte": 0.2846
+   },
+   {
+    "train_s": 6180.6,
+    "step": 7966,
+    "train_bits_per_code": 3.318,
+    "valid_bits_per_byte": 0.2811
+   },
+   {
+    "train_s": 6240.3,
+    "step": 8043,
+    "train_bits_per_code": 3.008,
+    "valid_bits_per_byte": 0.2839
+   },
+   {
+    "train_s": 6300.8,
+    "step": 8121,
+    "train_bits_per_code": 2.784,
+    "valid_bits_per_byte": 0.2808
+   },
+   {
+    "train_s": 6360.4,
+    "step": 8198,
+    "train_bits_per_code": 3.025,
+    "valid_bits_per_byte": 0.2811
+   },
+   {
+    "train_s": 6420.1,
+    "step": 8275,
+    "train_bits_per_code": 3.263,
+    "valid_bits_per_byte": 0.2812
+   },
+   {
+    "train_s": 6480.5,
+    "step": 8353,
+    "train_bits_per_code": 3.124,
+    "valid_bits_per_byte": 0.2793
+   },
+   {
+    "train_s": 6540.3,
+    "step": 8430,
+    "train_bits_per_code": 3.624,
+    "valid_bits_per_byte": 0.2771
+   },
+   {
+    "train_s": 6600.6,
+    "step": 8508,
+    "train_bits_per_code": 3.712,
+    "valid_bits_per_byte": 0.2804
+   },
+   {
+    "train_s": 6660.4,
+    "step": 8585,
+    "train_bits_per_code": 3.305,
+    "valid_bits_per_byte": 0.2804
+   },
+   {
+    "train_s": 6720.1,
+    "step": 8662,
+    "train_bits_per_code": 2.908,
+    "valid_bits_per_byte": 0.2817
+   },
+   {
+    "train_s": 6780.7,
+    "step": 8740,
+    "train_bits_per_code": 3.871,
+    "valid_bits_per_byte": 0.2798
+   },
+   {
+    "train_s": 6840.4,
+    "step": 8817,
+    "train_bits_per_code": 3.225,
+    "valid_bits_per_byte": 0.2818
+   },
+   {
+    "train_s": 6900.7,
+    "step": 8895,
+    "train_bits_per_code": 3.054,
+    "valid_bits_per_byte": 0.2826
+   },
+   {
+    "train_s": 6960.4,
+    "step": 8972,
+    "train_bits_per_code": 1.856,
+    "valid_bits_per_byte": 0.2827
+   },
+   {
+    "train_s": 7020.2,
+    "step": 9049,
+    "train_bits_per_code": 3.082,
+    "valid_bits_per_byte": 0.2825
+   },
+   {
+    "train_s": 7080.6,
+    "step": 9127,
+    "train_bits_per_code": 2.532,
+    "valid_bits_per_byte": 0.2781
+   },
+   {
+    "train_s": 7140.3,
+    "step": 9204,
+    "train_bits_per_code": 3.041,
+    "valid_bits_per_byte": 0.28
+   },
+   {
+    "train_s": 7200.0,
+    "step": 9281,
+    "train_bits_per_code": 2.789,
+    "valid_bits_per_byte": 0.2807
+   },
+   {
+    "train_s": 7260.5,
+    "step": 9359,
+    "train_bits_per_code": 3.481,
+    "valid_bits_per_byte": 0.2826
+   },
+   {
+    "train_s": 7320.3,
+    "step": 9436,
+    "train_bits_per_code": 2.844,
+    "valid_bits_per_byte": 0.2816
+   },
+   {
+    "train_s": 7380.0,
+    "step": 9513,
+    "train_bits_per_code": 3.871,
+    "valid_bits_per_byte": 0.2817
+   },
+   {
+    "train_s": 7440.5,
+    "step": 9591,
+    "train_bits_per_code": 2.618,
+    "valid_bits_per_byte": 0.2834
+   },
+   {
+    "train_s": 7500.2,
+    "step": 9668,
+    "train_bits_per_code": 2.847,
+    "valid_bits_per_byte": 0.2791
+   },
+   {
+    "train_s": 7560.0,
+    "step": 9745,
+    "train_bits_per_code": 3.171,
+    "valid_bits_per_byte": 0.2763
+   },
+   {
+    "train_s": 7620.6,
+    "step": 9823,
+    "train_bits_per_code": 3.362,
+    "valid_bits_per_byte": 0.2758
+   },
+   {
+    "train_s": 7680.2,
+    "step": 9900,
+    "train_bits_per_code": 3.987,
+    "valid_bits_per_byte": 0.2748
+   },
+   {
+    "train_s": 7740.7,
+    "step": 9978,
+    "train_bits_per_code": 1.88,
+    "valid_bits_per_byte": 0.2801
+   },
+   {
+    "train_s": 7757.2,
+    "step": 10000,
+    "train_bits_per_code": 3.37,
+    "valid_bits_per_byte": 0.2804
+   }
+  ]
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.8257,
+   "exact": 0.91
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 200,
+   "f1": 0.5934,
+   "exact": 0.51,
+   "f1_no_m1": 0.5934,
+   "f1_bias": 0.5934,
+   "exact_bias": 0.51
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 1,
+   "f1": 0.0,
+   "exact": 0.0,
+   "f1_no_m1": 0.0,
+   "f1_bias": 0.0,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.0
+  },
+  "unseen_network_with_nearest": {
+   "n": 199,
+   "f1": 0.4184,
+   "exact": 0.2814,
+   "f1_no_m1": 0.4184,
+   "f1_bias": 0.4184,
+   "exact_bias": 0.2814,
+   "retrieved_answer_f1_vs_ref": 0.0128
+  },
+  "heldout_network_without_memory": {
+   "n": 200,
+   "f1": 0.4163,
+   "exact": 0.28
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.4163
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.895,
+   "exact": 0.995
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 200,
+   "f1": 0.4797,
+   "exact": 0.34,
+   "f1_no_m1": 0.4797,
+   "f1_bias": 0.4797,
+   "exact_bias": 0.34
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Passage: Panelization is a procedure whereby a number of PCBs are grouped for ma",
+    "a": "assembly panels",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "assembly panels",
+    "f1_no_m1": 0.0,
+    "a_bias": "assembly panels",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: In the shrinking PC industry, Dell continued to lose market share, as i",
+    "a": "Macintosh",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "Macintosh",
+    "f1_no_m1": 0.0,
+    "a_bias": "Macintosh",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: In February 1907, the Royal Dutch Shell Group was created through the a",
+    "a": "1890",
+    "f1": 0.0,
+    "exact": 1.0,
+    "a_no_m1": "1890",
+    "f1_no_m1": 0.0,
+    "a_bias": "1890",
+    "f1_bias": 0.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: Following Thein Sein's first ever visit to the UK and a meeting with Pr",
+    "a": "Thein Sein's first ever visit to the UK and a meeting with Prime Minister David Cameron",
+    "f1": 0.11428571428571428,
+    "exact": 0.0,
+    "a_no_m1": "Thein Sein's first ever visit to the UK and a meeting with Prime Minister David Cameron",
+    "f1_no_m1": 0.11428571428571428,
+    "a_bias": "Thein Sein's first ever visit to the UK and a meeting with Prime Minister David Cameron",
+    "f1_bias": 0.11428571428571428,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: The preserved records of the Reichssicherheitshauptamt (the Reich Secur",
+    "a": "the Reichssicherheitshauptamt (the Reich Security Main Office)",
+    "f1": 0.25,
+    "exact": 0.0,
+    "a_no_m1": "the Reichssicherheitshauptamt (the Reich Security Main Office)",
+    "f1_no_m1": 0.25,
+    "a_bias": "the Reichssicherheitshauptamt (the Reich Security Main Office)",
+    "f1_bias": 0.25,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: Beyonc\u00e9 Giselle Knowles-Carter (/bi\u02d0\u02c8j\u0252nse\u026a/ bee-YON-say) (born Septemb",
+    "a": "five",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "five",
+    "f1_no_m1": 1.0,
+    "a_bias": "five",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Passage: The Ottoman Empire was an imperial state that lasted from 1299 to 1923.",
+    "a": "1299",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "1299",
+    "f1_no_m1": 0.0,
+    "a_bias": "1299",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.744,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Passage: On 13 June 1525, the couple was engaged with Johannes Bugenhagen, Justu",
+    "a": "on the evening of the same day",
+    "f1": 0.25,
+    "exact": 0.0,
+    "a_no_m1": "on the evening of the same day",
+    "f1_no_m1": 0.25,
+    "a_bias": "on the evening of the same day",
+    "f1_bias": 0.25,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.056,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Passage: The Central Region, consisting of present-day Hebei, Shandong, Shanxi, ",
+    "a": "Beijing",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "Beijing",
+    "f1_no_m1": 0.0,
+    "a_bias": "Beijing",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.178,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Passage: Funding for private schools is generally provided through student tuiti",
+    "a": "Establishment Clause of the First Amendment or individual state Blaine Amendments",
+    "f1": 0.16666666666666669,
+    "exact": 0.0,
+    "a_no_m1": "Establishment Clause of the First Amendment or individual state Blaine Amendments",
+    "f1_no_m1": 0.16666666666666669,
+    "a_bias": "Establishment Clause of the First Amendment or individual state Blaine Amendments",
+    "f1_bias": 0.16666666666666669,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.084,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Passage: Luther's 1538 hymnic version of the Lord's Prayer, \"Vater unser im Himm",
+    "a": "candidates on specific catechism questions",
+    "f1": 0.7499999999999999,
+    "exact": 0.0,
+    "a_no_m1": "candidates on specific catechism questions",
+    "f1_no_m1": 0.7499999999999999,
+    "a_bias": "candidates on specific catechism questions",
+    "f1_bias": 0.7499999999999999,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.038,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Passage: He produced artificial lightning, with discharges consisting of million",
+    "a": "lightning",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "lightning",
+    "f1_no_m1": 1.0,
+    "a_bias": "lightning",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.039,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Passage: While photosystem II photolyzes water to obtain and energize new electr",
+    "a": "more ATP than NADPH",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "more ATP than NADPH",
+    "f1_no_m1": 1.0,
+    "a_bias": "more ATP than NADPH",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.056,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Passage: In a report, published in early February 2007 by the Ear Institute at t",
+    "a": "ear Institute at the University College London",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "ear Institute at the University College London",
+    "f1_no_m1": 0.0,
+    "a_bias": "ear Institute at the University College London",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: The Rhine emerges from Lake Constance, flows generally westward, as the",
+    "a": "Rhine knee",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "Rhine knee",
+    "f1_no_m1": 0.0,
+    "a_bias": "Rhine knee",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: Additionally, multiple Doctors have returned in new adventures together",
+    "a": "2003",
+    "f1": 0.0,
+    "exact": 1.0,
+    "a_no_m1": "2003",
+    "f1_no_m1": 0.0,
+    "a_bias": "2003",
+    "f1_bias": 0.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: Long-term active memory is acquired following infection by activation o",
+    "a": "antigen",
+    "f1": 0.33333333333333337,
+    "exact": 0.0,
+    "a_no_m1": "antigen",
+    "f1_no_m1": 0.33333333333333337,
+    "a_bias": "antigen",
+    "f1_bias": 0.33333333333333337,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: The Republic of Kenya is named after Mount Kenya. The origin of the nam",
+    "a": "Mount Kenya",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "Mount Kenya",
+    "f1_no_m1": 1.0,
+    "a_bias": "Mount Kenya",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Passage: Some of the oldest schools in South Africa are private church schools t",
+    "a": "the laws governing private education in South Africa",
+    "f1": 0.16666666666666666,
+    "exact": 0.0,
+    "a_no_m1": "the laws governing private education in South Africa",
+    "f1_no_m1": 0.16666666666666666,
+    "a_bias": "the laws governing private education in South Africa",
+    "f1_bias": 0.16666666666666666,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ]
+ },
+ "checks": {}
+}
