@@ -73,6 +73,8 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 | R8 | full check loop: verify, refine, restart, 'unknown' | precision of 'unknown' | after R4 |
 | R9 | 19M core on the winning design | decides the 'smaller at equal quality' claim for reasoning | after R4 |
 | T1 | scale: domain feature for the trust head; per-domain tables (REASONING_PLAN 2.4) | can the tables be made harmless at 19M? | queued, low priority |
+| DEPTH | depth at equal parameters and steps: 384x3, 192x11, 160x16 (128x24 dropped 12 October: 11 layers already lost to 6 at equal steps) | does depth buy language or step choice? | running: 3 layers = 6 on language; 11 layers 0.5-0.9% worse and 30% slower; GSM8K new problems at the noise floor for all |
+| MQA | the modern 256x6 core through the Alpaca Q&A stage, chat probe and GSM8K stage (session 18) | does the modern block's lower error reach answers? | queued after 160x16 |
 | COST | record cost beside accuracy for every run: actual training seconds, steps/s, peak GPU memory, answer seconds per question, GPU power (joules per answer); ledger columns for train seconds and answer seconds | is the model lighter and faster, in measured numbers? | queued, after the depth sweep (requested 12 October) |
 
 ## Key findings by session
