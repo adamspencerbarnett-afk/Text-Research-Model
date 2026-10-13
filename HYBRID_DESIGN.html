@@ -478,6 +478,200 @@ AddReport= (stored: int, duplicates: int, conflicts_replaced: int)</pre>
 <li>The 0.5B RAG baseline on the same questions, accuracy and joules side by side; write-up.</li>
 </ol>
 <p class="lede">Each step lands as a ledger entry with its cost, a commit, and a one-line verdict: adopted, dropped, or needs a second seed.</p>
+
+<h2 id="pseudocode">10. Reconstruction: pseudocode for every key part</h2>
+<p>Enough to rebuild the system from scratch without the repository. Python-like, with shapes in comments. Constants: <code>V</code> vocabulary (8,192), <code>D</code> width, <code>L</code> layers, <code>H</code> heads, <code>C</code> window in codes. Special codes: <code>EOS</code> end of answer, <code>SEP</code> blank line, <code>THINK</code>/<code>END</code>, <code>SEARCH</code>, and one confidence-tag code per bucket. All training in bf16 autocast with fp32 weights; all scoring in fp32.</p>
+
+<h3>10.1 Compiler</h3>
+<pre>fit_dictionary(texts, size=8192):
+    count every whitespace word and every word piece (2..8 bytes) in the training text only
+    keep the top `size - 256 - specials` units by (count x bytes saved); add 256 byte-fallback codes and the specials
+    assign ids deterministically (sorted by count then bytes); hash the table -> dictionary id
+
+encode(text):                       # greedy longest match, left to right; byte fallback never fails
+    i = 0; out = []
+    while i < len(text):
+        unit = longest dictionary entry that prefixes text[i:]   (trie lookup)
+        out.append(id[unit] if unit else BYTE_BASE + text[i]); i += len(unit) or 1
+    return out                      # decode(out) == text, always
+
+key(question):                      # the memory key: content words only
+    return frozenset(w for w in words(lowercase(question)) if w not in STOP and len(w) > 1)</pre>
+
+<h3>10.2 Memory tiers and the duplicate check</h3>
+<pre>class MemoryStore:
+    exact: dict[frozenset, id]      # question key -> entry
+    entries: list[(kind, question_bytes, payload_bytes, source, time)]   # kind in {pair, passage, session}
+    inverted: dict[word, list[id]]; df: Counter[word]
+    dense: Matrix[N, 384] fp16      # unit vectors from the dense key (3.3); appended on every add
+
+    add(kind, question, payload, source):
+        k = key(question)
+        if k in exact and same_text(entries[exact[k]].payload, payload): return DUPLICATE(exact[k])
+        if k in exact: replace entries[exact[k]].payload; log conflict; return REPLACED(exact[k])
+        cands = candidates(question, 20)                  # ms, see below
+        best = max(cands, key=score) if cands else None
+        if best and best.lexical >= 0.9 and overlap_f1(best.payload, payload) >= 0.8: return DUPLICATE(best.id)
+        if best and 0.5 <= best.lexical < 0.9 and engine.answers_correctly(question, payload): return DUPLICATE(best.id)
+        i = len(entries); entries.append(...); exact.setdefault(k, i)
+        for w in k: inverted[w].append(i); df[w] += 1
+        dense = vstack(dense, dense_key.embed(question))
+        return STORED(i)
+
+    candidates(question, k):                               # lexical half of the cascade
+        words = sorted(key(question), key=lambda w: df[w])[:3]   # rarest words select the candidates
+        pool = union(inverted[w] for w in words if df[w] <= 0.05 * len(entries))
+        lex = {i: sum(idf(w) for w in key_i & key_q) / sum(idf(w) for w in key_i | key_q) for i in pool}
+        return top k of lex</pre>
+
+<h3>10.3 Retrieval cascade</h3>
+<pre>retrieve(question, history, k=3):
+    if key(question) in exact: return [Hit(exact[key], lexical=1.0)]        # stage 1, exact: answer verbatim
+    q_lex  = top50 of candidates(question, 50)                                # stage 2, hybrid
+    q_den  = top50 by cosine(dense_key.embed(question), dense)
+    pool   = q_lex | q_den
+    hybrid = {i: lex.get(i, 0) + W_DENSE * cos[i] for i in pool}           # W_DENSE fitted on held-out rewordings (2.0)
+    top10  = top 10 of hybrid
+    rerank = {i: cross_encoder(question, entries[i].question + entries[i].payload) for i in top10}   # stage 3
+    hits   = [Hit(i, tier, lex[i], cos[i], rerank[i]) for i in top10 sorted by rerank]
+    return gate(hits, k)                                                     # stage 4
+
+gate(hits, k):                      # learned; a 2-layer net on (lexical, dense, rerank, model_size) -> use/none
+    keep = [h for h in hits if gate_net(h.scores) > 0.5]
+    return keep[:k]                 # may be empty: the generator then answers alone, and the support check decides</pre>
+
+<h3>10.4 Context builder</h3>
+<pre>build(turns, hits, question, budget=C, think_budget=96):
+    ev = []
+    for h in reversed(hits):                                # best evidence nearest the question
+        ev += [TAG[bucket(h.rerank)]] + encode(render(h)) + [SEP]
+    hist = []
+    for t in turns[-2:]: hist += encode("User: " + t.user + "\nAssistant: " + t.reply) + [SEP]
+    if len(hist) + len(ev) + len(q) + think_budget > budget: hist = encode(session_summary(turns)) + [SEP]
+    older = retrieve(question, scope=session)               # earlier turns by content, as evidence
+    codes = hist + ev + encode("User: " + question + "\nAssistant:")
+    spans = {source i: positions of its codes}              # the copy pointer may point only inside spans
+    conf  = {source i: (lexical, dense, rerank)}
+    return Context(codes, spans, conf, think_budget)</pre>
+
+<h3>10.5 Generator core</h3>
+<pre>class Block:                        # modern block, pre-norm
+    forward(x):                     # x: (B, T, D)
+        q, k, v = split(Wqkv @ rmsnorm(x)); q, k = rope(q), rope(k)   # grouped-query: Hkv < H heads for k, v
+        x = x + Wo @ attention(q, k, v, causal)
+        return x + Wdown @ (silu(Wgate @ rmsnorm(x)) * Wup @ rmsnorm(x))   # SwiGLU, inner = 8D/3
+
+class MemoryLayer:                  # product-key memory, after block L/2
+    keys: two tables of sqrt(N) half-keys (D/2 each); values: Embedding(N, D)
+    forward(x): q = Wq @ x; top-k over cartesian product of half-key scores (k=32); return x + sum softmax(s) * values[idx]
+
+class Core:
+    hidden(codes):                  # (B, T) -> (B, T, D)
+        h = E[codes]; for i, b in enumerate(blocks): h = b(h); if i == L//2: h = memory_layer(h)
+        return rmsnorm_f(h)
+    logits(h): return h @ E.T       # tied output
+    mtp_heads: 2 small heads predicting codes t+2, t+3 from h (training loss + drafts)</pre>
+
+<h3>10.6 Trust head and copy pointer (one position)</h3>
+<pre>mix(h_last, ctx, sources):          # h_last: (D,) ; returns log-probabilities over V
+    p_net  = softmax(h_last @ E.T)
+    # copy pointer: attend over the window's states where spans allow; probability mass goes to the follower code
+    s      = (Wq_copy @ h_last) . (Wk_copy @ states[j]) / sqrt(D)  for j < t and j in allowed spans
+    a      = softmax(s); p_copy = scatter_add(zeros(V), next_code[j], a[j])
+    p_mem  = softmax(memory_layer.readout(h_last))              # optional direct readout of the learned tier
+    p_tool = one_hot(tool_result_code) if a tool fired else zeros(V)
+    conf   = [max a, entropy(a), lexical, dense, rerank, gate]  # retrieval confidence enters here
+    w      = softmax(Wmix @ concat(h_last, conf))               # weights over (net, copy, mem, tool)
+    return log(w . [p_net, p_copy, p_mem, p_tool] + 1e-9)       # computed in fp32
+
+training loss (stage 2) = -log mix(...)[target] on answer codes only; 30% of windows carry a distractor or no evidence</pre>
+
+<h3>10.7 Decoder: graph step and copy-as-draft</h3>
+<pre>buffers (fixed, on GPU): win[C] codes, K[L][H][C][d], V[L][H][C][d], states[C][D], copy_keys[C][D], spans[C], pos scalar
+
+graph_step(code, p):                # recorded once with torch.cuda.graph, replayed per code
+    win[p] = code; h = E[code] (+ rope by p inside attention)
+    for l in blocks: K[l][:, p], V[l][:, p] = project(h); h = block_l(h, K[l][:, :p+1], V[l][:, :p+1]); states[p] = h
+    copy_keys[p] = Wk_copy @ h
+    return mix(h, win, spans)        # logits for position p+1
+
+answer(ctx, max_codes):
+    prefill: run the whole context once eagerly, fill the buffers; logits = mix(last state)
+    p = len(ctx.codes); out = []
+    while len(out) < max_codes:
+        c = argmax(logits masked by never-seen codes and repeat blocking)
+        if c == EOS: break
+        out.append(c)
+        if copying (w_copy > 0.5) and pointer target j has k following codes:            # copy-as-draft
+            draft = win[j+1 : j+1+k]
+            logits_k = graph_verify(draft, p)        # one batched replay over k positions
+            accept the longest prefix where argmax(logits_k[i]) == draft[i]; append; p += accepted
+            logits = logits_k[accepted]; continue
+        logits = graph_step(c, p); p += 1
+    return out, per-code source weights w</pre>
+
+<h3>10.8 Reasoning: thinking codes, self-requested search, support check</h3>
+<pre>turn(question, session):
+    hits = retrieve(question, session.turns)
+    if hits and hits[0].lexical == 1.0: reply = entries[hits[0].id].payload; store(session, question, reply); return reply, sources=[hits[0].id]
+    ctx = build(session.turns, hits, question)
+    for attempt in range(2):
+        codes, w = answer(ctx + [THINK], max_codes=think_budget + answer_budget)
+        while SEARCH in codes:                                   # the model asked for evidence mid-thought
+            query = decode(codes after SEARCH up to END)
+            more  = retrieve(query, session.turns); ctx = insert(ctx, more); codes, w = resume(ctx, codes)
+        thought, reply = split(codes, END)                       # thought is never shown
+        verdict = support_check(reply, w, ctx)
+        if verdict.ok: break
+        ctx = insert(ctx, retrieve(reply_as_query(reply)))       # one more search, then give up honestly
+    if not verdict.ok: reply = "I don't know. The closest I have: " + decode(entries[hits[0].id].payload) if hits else "I don't know."
+    learner.write_back(session, question, reply, verdict); return reply, verdict.sources
+
+support_check(reply, w, ctx):
+    content = [i for i, c in enumerate(reply) if is_content_word(c)]
+    supported = [i for i in content if w[i].copy >= 0.5 or w[i].tool >= 0.5 or w[i].net_prob >= 0.6]
+    share = len(supported) / max(1, len(content))
+    return Verdict(ok = share >= 0.7, sources = {evidence id of each copied code}, share)
+
+stage-3 training (verified practice): for task in (reading EM, multi-hop EM, dialogue consistency):
+    sample 4 answers with thinking at temperature 0.7; keep those whose answer the checker confirms; fine-tune heads + adapters on them</pre>
+
+<h3>10.9 Learning that never stops</h3>
+<pre>write_back(session, q, reply, verdict):
+    session_store.add(q, reply)                                  # always
+    if verdict.ok and verdict.share >= 0.9: memory.add(pair, q, reply, source="self", via duplicate check)
+    for fact in user_stated_facts(q): memory.add(pair, fact.question_form, fact.answer, source="user")
+
+practise(budget_s):                 # idle time, low priority, stops when a chat starts
+    for q, gold in sample(passage_tier questions with known answers):
+        traces = [turn_with_thinking(q) for _ in range(4)]; keep = [t for t in traces if checker(t.reply, gold)]
+        train(heads + adapters, keep, lr=1e-4, rehearsal=0.3)
+
+consolidate(budget_s):
+    hot = entries used >= 5 times this week
+    train(memory_layer + domain adapters, windows built from hot, lr=1e-5, rehearsal=0.3)   # core frozen
+    archive entries unused for 90 days (never delete)</pre>
+
+<h3>10.10 Training stages, as commands</h3>
+<pre>S1  scale_run.py  mix  --sizes custom --shape W,L,H --block modern --amp --optimizer {winner} --schedule wsd --max-steps N --fused
+S2  m2_qa.py      data --init S1.pt --amp --copy-head --greedy --eos --loss-answer-only --lr 1e-4 --head-lr 1e-3
+                  --rehearse mix --rehearse-p 0.3 --dense 2 --dense-train --distractor-p 0.3 --multi-turn
+S3  star.py       --tasks reading,multihop,consistency --think-budget 96 --temperature 0.7 --samples 4 --keep verified
+S4  dpo.py        --pairs better_worse.jsonl --beta 0.1 --adapters-only
+S5  consolidate.py --hot-threshold 5 --lr 1e-5 --rehearse-p 0.3  (nightly)
+every stage: writes results/*.json with cost; chat_probe.py --graph --precision bf16 (+ --precision int8 --tag _int8)</pre>
+
+<h3>10.11 Hardware schedule</h3>
+<pre>answering (one process):
+    CPU threads: encode/decode, exact hash, inverted index, context packing, support check, dialogue state
+    GPU stream 0: prefill (eager, once) then graph replays; stream 1: dense encoder + reranker for the next likely query
+    buffers pinned; the only per-code host transfer is the chosen code
+
+training:
+    N worker processes build windows into shared pinned memory (random windows for prose; aligned for structured units)
+    GPU: bf16 autocast, flash attention, fused optimiser step, eval every 300 s on a side stream, checkpoint before scoring
+    power sampled every 2 s -> joules per step in the result; utilisation target >= 90%
+    warmup-stable-decay: a run can stop at any step in the flat phase and resume the next night</pre>
 </div>
 </body>
 </html>
