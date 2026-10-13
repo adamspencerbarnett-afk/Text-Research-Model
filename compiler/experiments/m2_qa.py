@@ -274,18 +274,72 @@ class ExchangeMemory:
         return 1.0 if key == other else shared / max(union, 1e-9)
 
 
-def perturb_question(q: bytes, rng, donor: list[bytes]) -> bytes:
+def build_synonyms(questions: list[bytes], device: str, work: Path, min_count: int = 5, threshold: float = 0.76,
+                   per_word: int = 6) -> dict[bytes, list[bytes]]:
+    """Meaning-equivalent substitutions for question words, from the questions' own vocabulary: every
+    content word and content bigram seen at least min_count times is embedded by the dense key, and a
+    word's substitutes are the phrases at cosine >= threshold that neither contain it nor are contained
+    in it (food -> meal, cooking -> culinary, famous -> renowned). Cached in the work folder."""
+    import hashlib as _h
+    key = _h.sha256(b"\0".join(questions[:2000]) + repr((len(questions), min_count, threshold, per_word)).encode()).hexdigest()[:16]
+    path = work / f"synonyms_{key}.json"
+    if path.exists():
+        return {k.encode("latin-1"): [v.encode("latin-1") for v in vs] for k, vs in json.loads(path.read_text()).items()}
+    import dense_keys
+    cnt = collections.Counter()
+    for q in questions:
+        w = re.findall(rb"[a-z][a-z0-9'-]+", q.lower())
+        for i, x in enumerate(w):
+            if x.decode("latin-1") in STOP:
+                continue
+            if len(x) > 2:
+                cnt[x] += 1
+            if i + 1 < len(w) and w[i + 1].decode("latin-1") not in STOP:
+                cnt[x + b" " + w[i + 1]] += 1
+    vocab = [p for p, c in cnt.items() if c >= min_count]
+    E = dense_keys.DenseKeys(device).embed(vocab, batch=1024)
+    words = [i for i, p in enumerate(vocab) if b" " not in p]
+    syn: dict[bytes, list[bytes]] = {}
+    for s in range(0, len(words), 1024):
+        rows = words[s:s + 1024]
+        sims = E[rows] @ E.T
+        top = torch.topk(sims, per_word * 3, dim=1)
+        for r, (vals, ids) in enumerate(zip(top.values.tolist(), top.indices.tolist())):
+            w = vocab[rows[r]]
+            # not containing / contained (food items), and not the same stem (virus / viral, cook / cooked)
+            out = [vocab[j] for v, j in zip(vals, ids) if v >= threshold and w not in vocab[j] and vocab[j] not in w
+                   and vocab[j][:4] != w[:4]][:per_word]
+            if out:
+                syn[w] = out
+    path.write_text(json.dumps({k.decode("latin-1"): [v.decode("latin-1") for v in vs] for k, vs in syn.items()}))
+    return syn
+
+
+def perturb_question(q: bytes, rng, donor: list[bytes], syn: dict | None = None) -> bytes:
     """A reworded stand-in for a question, for training the copy head on near matches: each word
     is dropped (20%) or replaced by a word from another question (10%), then neighbouring words
-    are swapped (15% per pair). Deterministic given the generator."""
+    are swapped (15% per pair). With ``syn`` (build_synonyms), a word that has meaning-equivalent
+    substitutes is replaced by one of them 40% of the time instead (capitalised words inside the question,
+    names, never are), and the drop, donor and swap rates fall to 5%, 2% and 5%, so the rewording reads
+    like a paraphrase. Deterministic given the generator."""
     words, out = q.split(b" "), []
-    for w in words:
+    for n, w in enumerate(words):
         r = rng.random()
+        if syn is not None:
+            core = w.lower().strip(b".,?!:;\"'()")
+            subs = None if (n > 0 and w[:1].isupper()) else syn.get(core)   # names keep their meaning: never substituted
+            if subs and r < 0.4:
+                out.append(w.lower().replace(core, subs[int(rng.integers(len(subs)))], 1))
+                continue
+            if r > 0.95:
+                continue
+            out.append(donor[int(rng.integers(len(donor)))] if (r > 0.93 and donor) else w)
+            continue
         if r < 0.2:
             continue
         out.append(donor[int(rng.integers(len(donor)))] if (r < 0.3 and donor) else w)
     for k in range(len(out) - 1):
-        if rng.random() < 0.15:
+        if rng.random() < (0.05 if syn is not None else 0.15):
             out[k], out[k + 1] = out[k + 1], out[k]
     return b" ".join(out) if out else words[0]
 
@@ -700,6 +754,7 @@ def main() -> int:
     ap.add_argument("--lr", type=float, default=1e-3, help="AdamW peak learning rate")
     ap.add_argument("--key-head", default=None, help="K1 key head (runs/<core>/key_head.pt): retrieve by literal + learned question key")
     ap.add_argument("--amp", action="store_true", help="train in bfloat16 autocast (scores stay in full precision)")
+    ap.add_argument("--perturb-synonyms", action="store_true", help="with --perturb-self: reword with meaning-equivalent substitutes from the dense key (food -> meal) instead of mostly random edits")
     ap.add_argument("--rerank-core", type=int, default=0, help="rerank the top N retrieval candidates by the core's own surprise at the question (0: off; 10 is the design's value)")
     ap.add_argument("--dense-train", action="store_true", help="with --dense: training neighbours are retrieved densely as well")
     ap.add_argument("--dense", type=float, default=0.0, help="weight of a pretrained sentence encoder's cosine in retrieval (dense_keys.py; 0: off, 2: best on QQP rewordings)")
@@ -736,6 +791,10 @@ def main() -> int:
     # The nearest-neighbour pass is deterministic in the training questions and the key settings,
     # and costs minutes on Alpaca, so it is cached beside the work files.
     import hashlib
+    SYN = None
+    if a.perturb_synonyms:          # reworded self windows use meaning-equivalent substitutions (build_synonyms)
+        SYN = build_synonyms([q for q, _ in train_x], a.device, work)
+        say(f"synonym table: {len(SYN):,} words with substitutes, e.g. food -> {SYN.get(b'food', [])[:3]}")
     if a.dense and a.dense_train:   # training windows also use dense retrieval, so the network learns to copy from it
         import dense_keys
         mem.attach_learned(dense_keys.DenseKeys(a.device, weight=a.dense))
@@ -851,7 +910,7 @@ def main() -> int:
             # the exchange itself, but with its question reworded: copying is right, and the
             # question no longer matches word for word (the case the chat probe showed failing)
             q_i, ans_i = train_x[i]
-            q_p = perturb_question(q_i, rng, train_x[int(rng.integers(len(train_x)))][0].split(b" "))
+            q_p = perturb_question(q_i, rng, train_x[int(rng.integers(len(train_x)))][0].split(b" "), SYN)
             nb = enc.encode(render(q_p, ans_i))[0][-a.neighbor_codes:]
             sim = mem.similarity_keys(mem.keys[i], mem.key_of(q_p))
             perturbed = True
