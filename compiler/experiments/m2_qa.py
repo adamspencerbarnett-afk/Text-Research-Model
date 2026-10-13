@@ -655,6 +655,7 @@ def main() -> int:
     ap.add_argument("--stop-at-blank", action="store_true", help="a reply ends at its first blank line (single-span answers, e.g. SQuAD)")
     ap.add_argument("--lr", type=float, default=1e-3, help="AdamW peak learning rate")
     ap.add_argument("--key-head", default=None, help="K1 key head (runs/<core>/key_head.pt): retrieve by literal + learned question key")
+    ap.add_argument("--amp", action="store_true", help="train in bfloat16 autocast (scores stay in full precision)")
     ap.add_argument("--dense-train", action="store_true", help="with --dense: training neighbours are retrieved densely as well")
     ap.add_argument("--dense", type=float, default=0.0, help="weight of a pretrained sentence encoder's cosine in retrieval (dense_keys.py; 0: off, 2: best on QQP rewordings)")
     ap.add_argument("--eos", action="store_true", help="train an end-of-answer code after every exchange (inside the loss) and stop generation at it")
@@ -866,8 +867,11 @@ def main() -> int:
     while train_time < a.budget and not (a.max_steps and step >= a.max_steps):
         t = time.perf_counter()
         x, y, m, s, sims = batch(rng.integers(0, len(train_x), size=a.batch))
-        nll = model.nll(x, y, s, sims)
-        loss = (nll * m).sum() / m.sum().clamp_min(1.0)
+        # --amp: the training step in bfloat16 autocast (weights and optimiser stay float32; validation
+        # and every score stay in full precision), as the core stage has trained since the scale run
+        with torch.autocast(device_type="cuda" if dev.type == "cuda" else "cpu", dtype=torch.bfloat16, enabled=a.amp):
+            nll = model.nll(x, y, s, sims)
+        loss = (nll.float() * m).sum() / m.sum().clamp_min(1.0)
         if a.schedule == "cosine":   # warm-up over 100 steps, cosine decay to 10% over the run (the usual fine-tuning schedule)
             frac = step / a.max_steps if a.max_steps else train_time / a.budget
             for g in opt.param_groups:
