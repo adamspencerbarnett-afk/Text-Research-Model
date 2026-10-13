@@ -46,6 +46,7 @@ def main() -> int:
     ap.add_argument("--fused", action="store_true")
     ap.add_argument("--resume", action="store_true", help="checkpoint every --checkpoint-every s and continue from the last checkpoint after an interruption")
     ap.add_argument("--checkpoint-every", type=float, default=1800.0)
+    ap.add_argument("--accum", type=int, default=1, help="split each batch into this many slices with summed gradients (same update, less GPU memory)")
     ap.add_argument("--shape", default=None, help="width,layers,heads for a custom size named 'custom' in --sizes (depth sweeps)")
     a = ap.parse_args()
     work = Path(a.work); work.mkdir(parents=True, exist_ok=True)
@@ -82,7 +83,7 @@ def main() -> int:
                              min_delta=a.min_delta, device=a.device, amp=a.amp, max_steps=a.max_steps, align=a.align, block=a.block,
                              optimizer=a.optimizer, schedule=a.schedule, fused=a.fused,
                              resume_path=str(work / f"scale_{size}_{name}.resume.pt") if a.resume else None,
-                             checkpoint_every_s=a.checkpoint_every)
+                             checkpoint_every_s=a.checkpoint_every, accum=a.accum)
             r["config"], r["size"] = name, size
             results["runs"][key] = r
             out.parent.mkdir(parents=True, exist_ok=True)

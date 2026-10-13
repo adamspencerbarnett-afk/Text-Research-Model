@@ -754,6 +754,7 @@ def main() -> int:
     ap.add_argument("--lr", type=float, default=1e-3, help="AdamW peak learning rate")
     ap.add_argument("--key-head", default=None, help="K1 key head (runs/<core>/key_head.pt): retrieve by literal + learned question key")
     ap.add_argument("--amp", action="store_true", help="train in bfloat16 autocast (scores stay in full precision)")
+    ap.add_argument("--accum", type=int, default=1, help="split each batch into this many slices with summed gradients (same update, less GPU memory)")
     ap.add_argument("--perturb-synonyms", action="store_true", help="with --perturb-self: reword with meaning-equivalent substitutes from the dense key (food -> meal) instead of mostly random edits")
     ap.add_argument("--rerank-core", type=int, default=0, help="rerank the top N retrieval candidates by the core's own surprise at the question (0: off; 10 is the design's value)")
     ap.add_argument("--dense-train", action="store_true", help="with --dense: training neighbours are retrieved densely as well")
@@ -980,14 +981,20 @@ def main() -> int:
         x, y, m, s, sims = batch(rng.integers(0, len(train_x), size=a.batch))
         # --amp: the training step in bfloat16 autocast (weights and optimiser stay float32; validation
         # and every score stay in full precision), as the core stage has trained since the scale run
-        with torch.autocast(device_type="cuda" if dev.type == "cuda" else "cpu", dtype=torch.bfloat16, enabled=a.amp):
-            nll = model.nll(x, y, s, sims)
-        loss = (nll.float() * m).sum() / m.sum().clamp_min(1.0)
         if a.schedule == "cosine":   # warm-up over 100 steps, cosine decay to 10% over the run (the usual fine-tuning schedule)
             frac = step / a.max_steps if a.max_steps else train_time / a.budget
             for g in opt.param_groups:
                 g["lr"] = g["peak"] * min(1.0, (step + 1) / 100) * (0.1 + 0.9 * 0.5 * (1 + math.cos(math.pi * min(1.0, frac))))
-        opt.zero_grad(set_to_none=True); loss.backward(); torch.nn.utils.clip_grad_norm_(dense, 1.0); opt.step()
+        opt.zero_grad(set_to_none=True)
+        # --accum: the batch in equal slices with summed gradients, normalised by the whole batch's mask count,
+        # so the update equals the full-batch one with less activation memory (13 October, for the 100M stage)
+        denom = m.sum().clamp_min(1.0); loss = 0.0
+        for part in np.array_split(np.arange(x.shape[0]), getattr(a, "accum", 1)):
+            with torch.autocast(device_type="cuda" if dev.type == "cuda" else "cpu", dtype=torch.bfloat16, enabled=a.amp):
+                nll = model.nll(x[part], y[part], s[part], sims[part])
+            part_loss = (nll.float() * m[part]).sum() / denom
+            part_loss.backward(); loss = loss + part_loss.detach()
+        torch.nn.utils.clip_grad_norm_(dense, 1.0); opt.step()
         step += 1; train_time += time.perf_counter() - t
         if train_time >= next_eval or train_time >= a.budget or (a.max_steps and step >= a.max_steps):
             v = valid_bpb(eval_x)
