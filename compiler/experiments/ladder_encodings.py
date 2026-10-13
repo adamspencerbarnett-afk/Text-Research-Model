@@ -75,7 +75,9 @@ class V0Dict(Encoding):
         if not self.native:
             return super().encode_file(path, work)
         out = Path(work) / f"{self.name}__{Path(path).stem}.ids"
-        if not out.exists():
+        # the cache is keyed by file name, so it is rebuilt whenever the text file is newer than it (found
+        # 13 October 2026: a rewritten evaluation file of the same name was scored with stale codes)
+        if not out.exists() or out.stat().st_mtime < Path(path).stat().st_mtime:
             subprocess.run([self.native, "encode", self.path, str(path), str(out)], check=True, capture_output=True)
         raw = out.read_bytes()
         magic, version, width, dict_hash, count = struct.unpack_from("<4sBB2xQQ", raw)

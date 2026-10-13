@@ -67,7 +67,10 @@ def main() -> int:
             kept = 0
             for p in ps:
                 h = norm_hash(p)
-                if h in trained or h in seen:
+                # a paragraph is clean only if neither it nor any line inside it was trained on (an evidence
+                # pair is one paragraph of two lines, each of which may occur alone in the training text)
+                lines = [x.strip() for x in p.split("\n") if len(x.strip()) >= 60]
+                if h in trained or h in seen or any(norm_hash(x) in trained for x in lines):
                     continue
                 seen.add(h); clean[src].append(p); kept += 1
             m = man["sources"].setdefault(src, {"paragraphs": 0, "kept": 0})
