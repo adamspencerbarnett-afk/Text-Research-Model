@@ -9,6 +9,9 @@
 PY=.venv/Scripts/python.exe
 N="$(pwd -W)/data/cv0.exe"
 until [ -f results/probe_qa_s2b_100m_int8.json ] || grep -lq Traceback runs/core_P100.log runs/core_eval_P100.log runs/s2b_100m.log 2>/dev/null; do sleep 120; done
+# first: the 100M core's clean report card (data_core/eval_clean: no paragraph in any training mix), so it compares
+# fairly with the 5M and 50M clean cards (chains/clean_rescore.sh)
+[ -f results/core_eval_core_P100_scale_custom_v0_8k_clean.json ] || $PY -B compiler/experiments/core_eval.py runs/core_P100/scale_custom_v0_8k.pt     --data data_core/eval_clean --evidence-file data_core/eval_clean/evidence_clean.jsonl --device cuda --precision bf16 --tag _clean > runs/core_eval_P100_clean.log 2>&1
 for R in conf: confall:--no-retrieval-p,0.2,--distractor-p,0.25; do
   T=${R%%:*}; X=${R#*:}; X=${X//,/ }; Q=runs/s2b_${T}512
   mkdir -p $Q && cp -n runs/s2b_dense512/neighbors_5bd4da54591f44cb.json $Q/ 2>/dev/null

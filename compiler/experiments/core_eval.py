@@ -90,6 +90,8 @@ def main() -> int:
     ap.add_argument("--threads", type=int, default=8)
     ap.add_argument("--precision", choices=["fp32", "bf16", "int8", "int4"], default="fp32", help="round the weights to this format before scoring")
     ap.add_argument("--tag", default="", help="suffix for the output name")
+    ap.add_argument("--evidence-file", default=str(ROOT / "data_core" / "eval" / "evidence_val.jsonl"),
+                    help="evidence-gain pairs; data_core/eval_clean/evidence_clean.jsonl holds pairs no training mix has seen (clean_eval.py)")
     a = ap.parse_args()
     torch.set_num_threads(a.threads)
     native = a.native if Path(a.native).exists() else None
@@ -98,7 +100,7 @@ def main() -> int:
         import precision
         print("weights rounded:", precision.apply(model, a.precision))
     rng = random.Random(a.seed)
-    res = {"checkpoint": a.checkpoint, "data": a.data, "precision": a.precision, "fluency": {}, "evidence": {}, "questions": {}}
+    res = {"checkpoint": a.checkpoint, "data": a.data, "evidence_file": a.evidence_file, "precision": a.precision, "fluency": {}, "evidence": {}, "questions": {}}
     t0 = time.time()
 
     # 1. fluency: network-only bits per byte on each held-out file (first 400 KB of each)
@@ -117,7 +119,7 @@ def main() -> int:
     print("fluency", res["fluency"], f"({time.time() - t0:.0f}s)", flush=True)
 
     # 2. evidence gain
-    ev = [json.loads(l) for l in open(ROOT / "data_core" / "eval" / "evidence_val.jsonl", encoding="utf-8")]
+    ev = [json.loads(l) for l in open(a.evidence_file, encoding="utf-8")]
     rng.shuffle(ev); ev = ev[: a.n_evidence]
     rel = unr = nb = 0.0
     for i, e in enumerate(ev):

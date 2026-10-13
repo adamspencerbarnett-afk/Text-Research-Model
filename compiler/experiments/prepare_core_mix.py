@@ -363,13 +363,31 @@ def norm_hash(p: str) -> bytes:
     return hashlib.md5(re.sub(r"\W+", " ", p.lower()).strip().encode()).digest()
 
 
-def cmd_mix(src_dir: str, out: str, mb: float, recipe: str) -> None:
+def para_lines(d: str):
+    """Paragraphs of a document and the lines inside them (an evidence pair is one paragraph of two lines)."""
+    for p in d.split("\n\n"):
+        yield p
+        if "\n" in p:
+            yield from p.split("\n")
+
+
+def cmd_mix(src_dir: str, out: str, mb: float, recipe: str, exclude_heldout: str = "") -> None:
     shares = RECIPES[recipe]
     outp = Path(out)
     for s in ("train", "heldout", "ood"):
         (outp / s).mkdir(parents=True, exist_ok=True)
     seen: set = set()
-    manifest = {"recipe": recipe, "target_mb": mb, "sources": {}}
+    # Held-out text must not reach training inside evidence pairs (found 13 October 2026: the pairs are
+    # drawn from whole sources, so 10-23% of held-out Wikipedia and web paragraphs were trained on). Every
+    # held-out paragraph of this mix, and of any --exclude-heldout folder (another mix whose held-out text is
+    # used for evaluation), is collected; evidence documents containing one are dropped.
+    held_hashes: set = set()
+    for hd in filter(None, exclude_heldout.split(",")):
+        for f in Path(hd).glob("*.txt"):
+            for p in para_lines(f.read_text(encoding="utf-8", errors="replace")):
+                if len(p.strip()) >= 60:
+                    held_hashes.add(norm_hash(p.strip()))
+    manifest = {"recipe": recipe, "target_mb": mb, "exclude_heldout": exclude_heldout, "sources": {}}
     for name, share in shares.items():
         docs = [normalise(d) for d in read_docs(f"{src_dir}/{name}.txt")]
         if name == "evidence":
@@ -377,12 +395,18 @@ def cmd_mix(src_dir: str, out: str, mb: float, recipe: str) -> None:
             # start always holds the evidence together with the text that uses it
             docs = [d.replace("\n\n", "\n", 1) for d in docs]
         budget = int(mb * 1e6 * share)
-        train, held, size, dup = [], [], 0, 0
+        train, held, size, dup, leak = [], [], 0, 0, 0
         for d in docs:
             h = int.from_bytes(hashlib.sha256(d.encode()).digest()[:4], "little")
             if h % 100 == 0:                              # 1% held out by document hash
                 if sum(len(x) for x in held) < 2_000_000:
                     held.append(d)
+                for p in para_lines(d):                    # never trained on, also not inside evidence pairs
+                    if len(p.strip()) >= 60:
+                        held_hashes.add(norm_hash(p.strip()))
+                continue
+            if name == "evidence" and any(len(p.strip()) >= 60 and norm_hash(p.strip()) in held_hashes for p in para_lines(d)):
+                leak += 1
                 continue
             paras = d.split("\n\n")
             keep = []
@@ -401,8 +425,9 @@ def cmd_mix(src_dir: str, out: str, mb: float, recipe: str) -> None:
         (outp / "train" / f"{name}.txt").write_bytes((DOC.join(train) + DOC).encode("utf-8"))
         (outp / "heldout" / f"{name}.txt").write_bytes(("\n\n".join(held) + "\n").encode("utf-8"))
         manifest["sources"][name] = {"share": share, "train_bytes": size, "train_docs": len(train), "heldout_bytes": sum(len(x) for x in held),
-                                     "paragraphs_dropped_as_duplicates": dup, "budget_bytes": budget, "budget_met": size >= 0.95 * budget}
-        print(f"  {name:10s} {size/1e6:7.1f} MB of {budget/1e6:7.1f} MB  ({len(train):,} docs; {dup:,} duplicate paragraphs dropped)")
+                                     "paragraphs_dropped_as_duplicates": dup, "documents_dropped_as_heldout_leaks": leak,
+                                     "budget_bytes": budget, "budget_met": size >= 0.95 * budget}
+        print(f"  {name:10s} {size/1e6:7.1f} MB of {budget/1e6:7.1f} MB  ({len(train):,} docs; {dup:,} duplicate paragraphs, {leak:,} held-out leaks dropped)", flush=True)
     (outp / "manifest.json").write_text(json.dumps(manifest, indent=1))
     print(f"mix {recipe} -> {out}: {sum(v['train_bytes'] for v in manifest['sources'].values())/1e6:.1f} MB")
 
@@ -422,6 +447,7 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("cmd"); ap.add_argument("src"); ap.add_argument("out")
     ap.add_argument("--mb", type=float, default=400); ap.add_argument("--recipe", default="D3")
+    ap.add_argument("--exclude-heldout", default="", help="mix: comma-separated held-out folders (e.g. data_core/mix_D3_5M/heldout) whose paragraphs must not reach training inside evidence pairs")
     ap.add_argument("--max-docs", type=int, default=0); ap.add_argument("--max-pairs", type=int, default=400_000)
     ap.add_argument("--min-len", type=int, default=200); ap.add_argument("--max-len", type=int, default=450)
     a = ap.parse_args()
@@ -433,7 +459,7 @@ def main() -> int:
     elif a.cmd == "metamath": cmd_metamath(a.src, a.out)
     elif a.cmd == "qqp": cmd_qqp(a.src, a.out)
     elif a.cmd == "evidence": cmd_evidence(a.src, a.out, a.max_pairs, min_len=a.min_len, max_len=a.max_len)
-    elif a.cmd == "mix": cmd_mix(a.src, a.out, a.mb, a.recipe)
+    elif a.cmd == "mix": cmd_mix(a.src, a.out, a.mb, a.recipe, a.exclude_heldout)
     else:
         raise SystemExit(f"unknown command {a.cmd}")
     return 0
