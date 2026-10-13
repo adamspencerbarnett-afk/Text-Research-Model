@@ -18,3 +18,4 @@ Short session entries: date, task, files touched, decisions, blockers, next acti
 - **Files:** `m2_qa.py` (`--distractor-p`), `chains/session22_evidence.sh`, ledger, README.
 - **Decisions:** WSD adopted for larger cores; Muon + WSD pending seed 2; dense keys adopted.
 - **Next:** session 22 (bf16 Q&A control, bad-evidence training, Muon + WSD seed 2), then session 23 (passage tier, evidence cache, in-domain retrieval key).
+- **Session 22 (done 05:56):** bf16 Q&A stage is level with fp32 (stored 0.891); bad-evidence training lifts network-alone F1 0.229 -> 0.274 and stored to 0.901 / 62% exact, reworded falls; Muon + WSD text gain confirmed on seed 2 (1.1826 vs 1.1810). Session 23 (core reranking, copy under rewording) running.

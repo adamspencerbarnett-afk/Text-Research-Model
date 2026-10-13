@@ -1,0 +1,442 @@
+{
+ "model": "runs/s2b_amp512/qa_s2b_amp512.pt",
+ "precision": "bf16",
+ "kernels": "fp32",
+ "graph": true,
+ "dense": 0.0,
+ "rerank_core": 0,
+ "min_sim": 0.0,
+ "summary": {
+  "stored": {
+   "n": 5,
+   "ok": 5,
+   "ok_without_memory": 0
+  },
+  "reworded": {
+   "n": 5,
+   "ok": 1,
+   "ok_without_memory": 1
+  },
+  "knowledge": {
+   "n": 5,
+   "ok": 4,
+   "ok_without_memory": 1
+  },
+  "heldout": {
+   "n": 5,
+   "ok": 4,
+   "ok_without_memory": 3
+  },
+  "taught": {
+   "n": 6,
+   "ok": 5,
+   "ok_without_memory": 0
+  },
+  "arithmetic": {
+   "n": 3,
+   "ok": 1,
+   "ok_without_memory": 0
+  },
+  "chat": {
+   "n": 3,
+   "ok": 1,
+   "ok_without_memory": 1
+  }
+ },
+ "cost": {
+  "seconds": 2.9,
+  "gpu_avg_w": 139.7,
+  "gpu_kj": 0.4,
+  "peak_mem_mb": 94,
+  "power_samples": 4,
+  "units": 32,
+  "s_per_unit": 0.0902,
+  "j_per_unit": 12.6
+ },
+ "rows": [
+  {
+   "section": "stored",
+   "question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "answer": "A traditional Thanksgiving meal in the United States typically includes turkey, stuffing, mashed potatoes, gravy, cranberry sauce, vegetables, and pumpkin pie.",
+   "answer_without_memory": "A food that is traditionally served during Thanksgiving in the US is a traditional dish made with a variety of ingredients, including a varietydrug, a varietyt, and a varietytar.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "seconds": 0.54
+  },
+  {
+   "section": "stored",
+   "question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "answer": "A simple example of gravity can be demonstrated by dropping a ball; the ball falls to the ground due to the force of gravity pulling it downwards.",
+   "answer_without_memory": "The gravity of gravity is a force that is able to move in a position, such as a force or force. It is a measure of gravity that is capable of moving in a direction, such that it is able for a force to move on a particular direction.\n\nThe gravity of the gravity of a force is a constant force that can be used to move the object. It can be measured in a way that is used to measure the force of a object. The force of the object is used for a field of gravity, such a force as a field.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "seconds": 0.24
+  },
+  {
+   "section": "stored",
+   "question": "Create a list of 10 verbs related to cooking",
+   "answer": "- Mix\n- Boil \n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+   "answer_without_memory": "1. \"Features of the Fish\" by Robert Frost\n2. \u2022 \u2192 \u2212 10\n3. 'Fe - 15\n4. \u00b7 16\n5. 17\n6. 20\n7. 30\n8. 40\n9. 50\n10. 60\n00.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Create a list of 10 verbs related to cooking",
+   "seconds": 0.23
+  },
+  {
+   "section": "stored",
+   "question": "Name some computer viruses",
+   "answer": "Some computer viruses are: \n- WannaCry\n- Stuxnet\n- Trojan Horse\n- Code Red\n- Sality\n- CryptoLocker\n- ILoveYou\n- Chimera\n- MyDoom\n- Melissa",
+   "answer_without_memory": "Some computer viruses that are not known about the origin of the virus include:\n\n1. Along the way to the virus:\n\n2. Alice's birthday:\n\n3. Algorithm:\n\n4. Always know about the virus and its origins:\n\n5. Alternatively:\n\n6. Alriage in the virus.\n\n7. Alphabet:\n\n8. Alaskan viruses:\n\n9. Alan Turing:\n\n0. Alabaman:\n\n- Alice is a virus that is not known",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Name some computer viruses",
+   "seconds": 0.29
+  },
+  {
+   "section": "stored",
+   "question": "Come up with two statistics related to the US population.",
+   "answer": "According to the US Census Bureau, the current US population is approximately 331 million, and the current U.S. population growth rate is 0.7%.",
+   "answer_without_memory": "1. The US population is 100,000.\n2. The United States population is approximately 1,050,500 people.\n3. The U.S. population is estimated to be 15,090,400 (2005).\n4. The 2019 population is the highest in the United States, 16,080,600 in the US.\n5. The American population is about 12,040,80",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Come up with two statistics related to the US population.",
+   "seconds": 0.25
+  },
+  {
+   "section": "reworded",
+   "question": "What food do Americans usually eat on Thanksgiving?",
+   "answer": "The United States is a popular food producer in the United States. It is a traditional food producers who are able to make delicious dishes, such as rice, seafood, and vegetables. They are also known for their delicious dishes made from local ingredients like chickpeas, chorizo, and pork.",
+   "answer_without_memory": "Americans usually eat on Thanksgiving because of their high quality food intake. They usually eat a variety of vegetables, vegetables, and vegetables, which are often served with a varietydrug.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.384,
+   "retrieved_question": "What kind of food do they usually eat in Spain?",
+   "seconds": 0.19
+  },
+  {
+   "section": "reworded",
+   "question": "Can you give me an example that shows how gravity works?",
+   "answer": "Sure, here's an example that shows how gravity works:\n\n1. The machine is a complex machine; each part must work together to form a function. 2. The algorithm is a simple algorithm that can be used to create a function that is used to generate a function, such as a function or a function in the machine. 3. The function is a linear algorithm that is powered by the evidence, arguments, and outcomes of the function.",
+   "answer_without_memory": "Sure, here's an example that shows how gravity works:\n\n1. In the 1960s, the \"Fourth\"\n\n2. In 1890s and 1700s the 2000's were the first to show how gravity was used.\n\n2, the Fifth\"\n\n3. The \"Great\"\n\n4. The Fiftth\" is a \"fourth,\" which is a measure of gravity that is used to measure gravity.\n\n5. The Hipp",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.298,
+   "retrieved_question": "Create an analogy that shows how the legal system works",
+   "seconds": 0.35
+  },
+  {
+   "section": "reworded",
+   "question": "List ten verbs you would use when cooking.",
+   "answer": "- Mix the verbs in the sentence \"make\" and \"object\". \n- Mitchell \nMake \n1. Make \n2. Make a list of words\n2 - Make a prediction\n3. Make the list of 10 words\n3 - Use the 15 words\n4. Make an argument\n5. Make it a list\n6. Make sure to use the 20 words in the list.",
+   "answer_without_memory": "- \"I'm a good cooker, I'm sorry to hear the sound of the sun's rays.\"\n- \u2022 \"The sun'll be warm, I can't wait to see you.\"",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.473,
+   "retrieved_question": "Create a list of 10 verbs related to cooking",
+   "seconds": 0.28
+  },
+  {
+   "section": "reworded",
+   "question": "What are some well-known computer viruses?",
+   "answer": "Some well-known computer viruses are: \n1. WannaCry \n2. Wan, Wan\n3. Win, Win\n4. Wo, Wo\n5. Wi-Fi \n6. Wu, Wi",
+   "answer_without_memory": "Some well-known computer viruses are:\n\n1. Along the way to the right, such as the \"background\" virus, the 'back hole' virus, or the 2000 virus, which is a virus that is a common virus.\n\n2. Alice's Alice - Alice has a virus which is caused by a virus called the 100-megapix virus. It is a type of virus that can be used to treat the virus. The virus is a kind of virus which can be spread",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.509,
+   "retrieved_question": "Name some computer viruses",
+   "seconds": 0.3
+  },
+  {
+   "section": "reworded",
+   "question": "Tell me two facts about the population of the United States.",
+   "answer": "Two facts about the population of the United States are that the United Kingdom is the second largest country in the world, with a population of 1,247,500.",
+   "answer_without_memory": "1. The United States is the world's largest economy, with a population of 1,000,050,500.\n2. The world') is the largest economy in the world, with an estimated population of over 100 million.\n3. The US is the second largest economy and is the third largest economy.\n4. The country's third largest country, the United States, is the fourth largest economy with an estimate of 2.5% of the total population.\n5. The U.S.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.65,
+   "retrieved_question": "Tell me the population of the United States.",
+   "seconds": 0.27
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the largest planet in our solar system?",
+   "answer": "The largest planet in our solar system is the Sun.",
+   "answer_without_memory": "The largest planet in our solar system is the Sun, which is located in the southern hemisphere.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.744,
+   "retrieved_question": "Name a planet from our solar system.",
+   "seconds": 0.09
+  },
+  {
+   "section": "knowledge",
+   "question": "Who wrote Romeo and Juliet?",
+   "answer": "William Shakespeare",
+   "answer_without_memory": "Romeo and Juliet were two of the most influential and influential figures in the history of Romeo, and they were the first to use the term Romeo as a term in their own history.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.789,
+   "retrieved_question": "Who wrote the play Romeo and Juliet?",
+   "seconds": 0.1
+  },
+  {
+   "section": "knowledge",
+   "question": "What is photosynthesis?",
+   "answer": "Photosynthesis is a process in which plants use light energy to convert light energy into energy. Photography is a form of photosynthesis that is used to convert the energy into electricity. Phonegraphs are used to create energy by converting light energy from the sun into chemical energy.",
+   "answer_without_memory": "Photosynthesis is a process in which the cells are divided into two groups of cells. The first group of cells is the Photography of the cell. The second group is the photogramic cell.\n\n Photos/motogras are the pharmacist cells that are divided by the Phoenix cell. Photoshopic cells are the Phtopacist cell.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.589,
+   "retrieved_question": "Write a sentence to explain the process of photosynthesis.",
+   "seconds": 0.25
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the boiling point of water in Celsius?",
+   "answer": "The approximate boiling point of water in Celsius is 100 degrees.",
+   "answer_without_memory": "The boiling point of water in Celsius is 100 degrees.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.76,
+   "retrieved_question": "What is the approximate boiling point of water in Celsius?",
+   "seconds": 0.09
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the capital of Japan?",
+   "answer": "The capital of Japan is Tokyo.",
+   "answer_without_memory": "The capital of Japan is $100,000.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Give me the capital of Japan.",
+   "seconds": 0.07
+  },
+  {
+   "section": "heldout",
+   "question": "Generate a creative poem describing the night sky.",
+   "answer": "The night sky was a beautiful night, with a gentle breeze, a gentle, yet peaceful, and gentle gentle breeding.",
+   "answer_without_memory": "The night sky was a beautiful night,\nA night sky, a beautiful day.\nThe sky was filled with a gentle breeze.\nA gentle breed of birds, a gentle gentle bred.\nBringing a gentle, a warm, gentle breaches.\n\nThe night sky filled with the gentle breeding of the night, its gentle breeds.\n\nIn the night sky had a gentle and gentle brept,\nThe gentle breing of the breeding, a breed that was never seen.\n\nAs the night grew dark,\nB. The night was",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.48,
+   "retrieved_question": "Write a creative sentence starting with \"The night sky\".",
+   "seconds": 0.26
+  },
+  {
+   "section": "heldout",
+   "question": "Come up with a creative sentence to describe a summer day.",
+   "answer": "The summer day is like a cozy blanket.",
+   "answer_without_memory": "I am a summer day.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.379,
+   "retrieved_question": "Generate a creative metaphor to describe a warm summer day.\n<no input>",
+   "seconds": 0.08
+  },
+  {
+   "section": "heldout",
+   "question": "List 5 famous Italian dishes.",
+   "answer": "1. Italian cuisine\n2. Italian dishes\n3. Italian cake\n4. Italian spaghetti\n5. Italian cheese\n6. Italian sauce\n7. Italian tomatoes\n8. Italian salad\n9. Italian pizza\n10. Italian bread\n11. Italy (1999)",
+   "answer_without_memory": "1. Vegetable\n\n2. Vegano, Italian\n2. Italian\n3. Italian\n\n3. Vacuum Cleaner\n\n4. Italian (1970s)\n5. Italian cuisine\n6. Italian cheese\n\n6. Village (2000s, 1980s and 1890s - 100, 2010s- 21, 30, and 40, respectively)",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.453,
+   "retrieved_question": "Build a database for all Italian dishes",
+   "seconds": 0.31
+  },
+  {
+   "section": "heldout",
+   "question": "Tell me the most common hairstyle for men.",
+   "answer": "The most common hairstyle for men is a low-top, retro-style sneaker.",
+   "answer_without_memory": "The most common hairstyle for men is a hairst texture. It is made from a variety of different types of hair, such as hair, hair, and hair. It can be used to create a variety and make a variety.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.346,
+   "retrieved_question": "What is the most common type of sneaker for men?",
+   "seconds": 0.14
+  },
+  {
+   "section": "heldout",
+   "question": "Print the following statement: \"I want to learn to code\".",
+   "answer": "I want to learn to code.",
+   "answer_without_memory": "I want to learn to code.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.336,
+   "retrieved_question": "Convert the following statement into a code snippet.\nPrint the sum of 1 and 2.",
+   "seconds": 0.07
+  },
+  {
+   "section": "taught",
+   "question": "What is the name of Adam's research model?",
+   "answer": "Adam's research model is called the Text Research Model.",
+   "answer_without_memory": "Adam's research model is a type of research model that is based on the idea of a specific field of research. It is based upon the idea that the research model has a specific purpose and should be based on a specific topic. It can be used to model the research environment and to be used in a variety of ways.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "What is the name of Adam's research model?",
+   "seconds": 0.14
+  },
+  {
+   "section": "taught",
+   "question": "What GPU does the research computer use?",
+   "answer": "The research computer uses an NVIDIA RTX 3090 GPU.",
+   "answer_without_memory": "The research computer uses a variety of techniques to identify and analyze data, including:\n\n1. Computer-aided analysis: The study of computer-axis would be able to identify patterns in the data, such as the data.\n\n2. Compare the data: The data used in the study of computers is used to analyze the data and identify patterns and patterns in data. This could be used to identify the data patterns in a dataset, such that the data is analyzed and analyzed.\n\n3. Compose the data into a variety: The researchers used",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "What GPU does the research computer use?",
+   "seconds": 0.23
+  },
+  {
+   "section": "taught",
+   "question": "When was Version 1 of the compiler frozen?",
+   "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+   "answer_without_memory": "Version 1 of the compiler frozen is a compiletries, usually a \"password\", which is a word that is used to describe a person or group of people. It is usually used to refer to a person who is not a person, but rather to a group of individuals who are not a group or group.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "When was Version 1 of the compiler frozen?",
+   "seconds": 0.17
+  },
+  {
+   "section": "taught",
+   "question": "What is Adam's research model called?",
+   "answer": "Adam's research model is called the Text Research Model.",
+   "answer_without_memory": "Adam's research model is a research model that is based on the research model's findings. It is based upon the research models of the human brain and its impact on the environment. It can be used to model the environment and to model how the environment is interacting with the environment, such as the environment itself. It may also be used for the development of new technologies, such a model can be applied to the environment in a more efficient manner.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.74,
+   "retrieved_question": "What is the name of Adam's research model?",
+   "seconds": 0.2
+  },
+  {
+   "section": "taught",
+   "question": "Which graphics card is in the research computer?",
+   "answer": "The research computer is a computer that is used to create a computer with a computer. It is used for images, graphics, and other purposes. It can be used to make a computer look more efficient and effective, and can be easily used to generate a more accurate and accurate image.",
+   "answer_without_memory": "The graphics card is a type of card that is designed to provide a visual representation of the data. It is designed for a variety of purposes, including visuals, visuals and visuals. It can be used to create visuals that are visually appealing, such as a graphic or graphic.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.398,
+   "retrieved_question": "Give three types of computer graphics.",
+   "seconds": 0.21
+  },
+  {
+   "section": "taught",
+   "question": "On what date was Version 1 frozen?",
+   "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+   "answer_without_memory": "Version 1 frozen is a frozen.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.476,
+   "retrieved_question": "When was Version 1 of the compiler frozen?",
+   "seconds": 0.08
+  },
+  {
+   "section": "arithmetic",
+   "question": "What is 12 plus 30?",
+   "answer": "12 is 13.",
+   "answer_without_memory": "12 is equal to 100.\nAnswer: 1/2",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.65,
+   "retrieved_question": "Calculate 5 plus 2",
+   "seconds": 0.07
+  },
+  {
+   "section": "arithmetic",
+   "question": "If I have 5 apples and eat 2, how many are left?",
+   "answer": "You have 5 apples and eat 2, so there are 5 - 2 = 3 left.",
+   "answer_without_memory": "If 5 apples eat 2, and each apple eats 2 apples, then there are 5 * 2 = 10 apples left.\nIf each apple contains 2.5 apples, and there are a total of 15 apples + 25 apples x 2/5 = x apples left, then 1.5 + x = y apples left and y apples.\nTherefore, 5.5 y = X * y * x * z = z * Z * Y =",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.486,
+   "retrieved_question": "If there are two apples and you give away one, how many apples do you have left?",
+   "seconds": 0.25
+  },
+  {
+   "section": "arithmetic",
+   "question": "What is 7 times 8?",
+   "answer": "7 times 8 is 7.",
+   "answer_without_memory": "7 times 8 is equal to 7 * 8 = 36.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.599,
+   "retrieved_question": "Calculate 7 times 5.",
+   "seconds": 0.07
+  },
+  {
+   "section": "chat",
+   "question": "Hello, how are you today?",
+   "answer": "I am not a professional, but I can provide you with some tips on how to make a difference in my life. Here are some tips for making a difference:\n\n1. Make a list of your tasks: I can make a list. I can also make a positive list.\n\n2. Make an argument: I'm not a good candidate for a job. I'll be able to make an argument.\n\n3. Make sure to use a list: I don't have to be able, but it's important to make sure that I've been working on a",
+   "answer_without_memory": "I am not a software software software. However, I can provide you with a list of the most popular software software solutions you've ever installed. Here are some of the popular software solutions that you can use to solve this problem:\n\n1. Publishers: You can use Published Pub.com to create a Pubreat for your software.\n\n2. Customers: You could use Customized Customs to create your software that is easy to use and can be used to create new products or services.\n\n3. Certific",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.491,
+   "retrieved_question": "Generate a to-do-list for today.",
+   "seconds": 0.37
+  },
+  {
+   "section": "chat",
+   "question": "Can you help me write a short email to my boss asking for a day off?",
+   "answer": "Dear Boss,\n\nI am writing to express my interest in receiving a raise. I have been a dedicated and hardworking employee since I started at this company and believe that I am deserving of a higher wage for my efforts. I would like to discuss the details at our next meeting and I hope that we can reach an agreement that is mutually beneficial.\n\nThank you for your time and consideration. \n\nSincerely,\n[Your name]",
+   "answer_without_memory": "Sure, here's a short email that you can use to write a short story:\n\n\"I'm a [minute],\" \"I am a (minutes),\" and \"You're a \"min_min\".\"\n\n\"You can't be a 'min',\"\n\"You don't have to be a good 'n',\nYou can be a great 'i',\n\n\"The 'I'\"",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.373,
+   "retrieved_question": "Draft an email to your boss asking for a raise.",
+   "seconds": 0.35
+  },
+  {
+   "section": "chat",
+   "question": "What should I cook for dinner tonight?",
+   "answer": "I should cook for dinner tonight.",
+   "answer_without_memory": "To cook for dinner tonight, you can use a variety of ingredients such as olive oil, olive oil and olive oil. You can also use a combination of olive oil or olive oil to make a delicious and delicious meal. You may also want to add some fresh air, a few drops of olives or a few teaspoon of olive green cargo to make the dish more delicious. You could also use some freshly-draining vegetables such as carrots, celery, or onions. You might also want a more flavorful meal, such as a few",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.365,
+   "retrieved_question": "Generate a list of five vegetables to cook for a healthy dinner",
+   "seconds": 0.21
+  }
+ ]
+}
