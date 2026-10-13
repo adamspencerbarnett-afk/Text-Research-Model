@@ -145,9 +145,10 @@ with no loss on stored answers.
 ### 9. Chat quality, graded by hand
 
 A 32-question battery (stored facts, rewordings, general knowledge, facts taught during the
-chat, arithmetic, small talk) is run on every model. Best so far: 24 of 32 (75%) at 50M with a
-memory gate that lets the model decline a poor match, against 11 of 32 (34%) for the network
-alone. Transcripts and grades are in [`docs/CHAT_NOTES.md`](docs/CHAT_NOTES.md).
+chat, arithmetic, small talk) is run on every model. Best so far: 24 of 32 (75%), reached both by
+the 50M model with a memory gate and, on 13 October, by the 5M model trained to copy the right
+answer from a reworded question. That 5M model answers all five reworded questions correctly,
+where earlier 5M models managed one to three. The network alone scores 11 of 32 (34%). Transcripts and grades are in [`docs/CHAT_NOTES.md`](docs/CHAT_NOTES.md).
 
 ## Where it is going
 
@@ -160,7 +161,10 @@ for mid-answer, exact typed programs for counting, dates and conversation state,
 that says "I don't know" when nothing supports an answer. The generator grows to 100–300M
 parameters, the size where reading is likely to become good, while knowledge stays in memory.
 
-Latest training-recipe result: a warmup-stable-decay schedule lowers text error 0.8% at no cost,
+Training on evidence was the night's biggest lever. Shown misleading evidence 20% of the time, the
+5M model answered 20% better on its own and copied stored answers more precisely (62% exact).
+Shown the right answer under a reworded question, it reached 24 of 32 on the chat probe, its best
+ever. Latest training-recipe result: a warmup-stable-decay schedule lowers text error 0.8% at no cost,
 and with the Muon optimiser 0.9%; at 5M neither changed answer scores. Running now (see the
 queue in [`docs/RUN_LEDGER.md`](docs/RUN_LEDGER.md)): training on misleading evidence so the
 model learns when not to copy, and a second seed of the best training recipe.
