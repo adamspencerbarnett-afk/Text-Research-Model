@@ -13,17 +13,30 @@
 
 namespace {
 
+// Files are read and written in 256 MiB pieces with 64-bit sizes. Reading through an ostringstream
+// stopped at 2^31 - 1 bytes on Windows without any error, which silently cut every corpus above
+// 2 GiB (found 13 October 2026: the 50M core lost the last 184 MB of its mix, the 100M mix 1.06 GB).
 std::string read_file(const std::string& path) {
-    std::ifstream f(path, std::ios::binary);
+    std::ifstream f(path, std::ios::binary | std::ios::ate);
     if (!f) throw std::runtime_error("cannot open " + path);
-    std::ostringstream s;
-    s << f.rdbuf();
-    return s.str();
+    const std::streamoff size = f.tellg();
+    if (size < 0) throw std::runtime_error("cannot size " + path);
+    f.seekg(0, std::ios::beg);
+    std::string out((size_t)size, '\0');
+    const std::streamoff piece = std::streamoff(1) << 28;
+    for (std::streamoff at = 0; at < size; at += piece) {
+        const std::streamoff n = std::min(piece, size - at);
+        f.read(&out[(size_t)at], (std::streamsize)n);
+        if (f.gcount() != n) throw std::runtime_error("short read on " + path);
+    }
+    return out;
 }
 
 void write_file(const std::string& path, const std::string& data) {
     std::ofstream f(path, std::ios::binary);
-    f.write(data.data(), (std::streamsize)data.size());
+    const size_t piece = size_t(1) << 28;
+    for (size_t at = 0; at < data.size(); at += piece)
+        f.write(data.data() + at, (std::streamsize)std::min(piece, data.size() - at));
     if (!f) throw std::runtime_error("cannot write " + path);
 }
 
