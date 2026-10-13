@@ -120,6 +120,9 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 | gsm_d160x16 | Q&A | 8000 | 870 | 9.200 |  |  |  |  |  |  |
 | s2b_modern512 | Q&A | 15565 | 1469 | 10.590 | 379.200 | 557.120 | 3929 | 1.006 | 55.820 | 17 |
 | gsm_modern512 | Q&A | 8000 | 750 | 10.670 | 386.700 | 289.940 | 3911 |  |  |  |
+| prec_5m_fp32 | Q&A | 0 | 0 |  | 123.200 | 0.000 | 27 |  |  |  |
+| prec_5m_bf16 | Q&A | 0 | 0 |  | 126.200 | 0.000 | 27 |  |  |  |
+| prec_5m_int8 | Q&A | 0 | 0 |  | 123.500 | 0.000 | 27 |  |  |  |
 
 ## Queue of planned runs
 | id | run | question it answers | status |
@@ -142,11 +145,11 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 | STaR | verified self-training on GSM8K, two rounds | does the model learn to choose operations from its own checked solutions? | done: 2.5% -> 3.5% -> 4.0%; confirmations +22% |
 | 50M | the large-scale test (docs/PLAN_50M.md) | does the recipe scale? | Q&A (60% of steps): new 0.33, network alone 0.27, probe alone 11/32; gate test and full run queued |
 | R2 | SQuAD 1.1: copy a span from a given passage, exact match | the cleanest test of the copy head | done (failed: rambling, memorised passages) |
-| R4 | GSM8K/SVAMP: retrieval by solution structure (operator sequence key), template copying | reasoning by analogy over worked examples | next after R2 (design written) |
-| R5 | number channel in the compiler (number unit → code + value) | removes digit-run failures | needs compiler change |
+| R4 | GSM8K/SVAMP: retrieval by solution structure (operator sequence key), template copying | reasoning by analogy over worked examples | paused 12 October: math gets its own research line later |
+| R5 | number channel in the compiler (number unit → code + value) | removes digit-run failures | paused 12 October (math line) |
 | R6 | ARC / OpenBookQA / CommonsenseQA, one-letter answers with retrieved facts | accuracy vs chance (25%) | needs --format |
 | R7 | bAbI deduction / counting / path tasks | V1's ground; expect the design to shine | needs download mirror |
-| R8 | full check loop: verify, refine, restart, 'unknown' | precision of 'unknown' | after R4 |
+| R8 | full check loop: verify, refine, restart, 'unknown' | precision of 'unknown' | paused 12 October (math line) |
 | R9 | 19M core on the winning design | decides the 'smaller at equal quality' claim for reasoning | after R4 |
 | T1 | scale: domain feature for the trust head; per-domain tables (REASONING_PLAN 2.4) | can the tables be made harmless at 19M? | queued, low priority |
 | DEPTH | depth at equal parameters and steps: 384x3, 192x11, 160x16 (128x24 dropped 12 October: 11 layers already lost to 6 at equal steps) | does depth buy language or step choice? | done: 3 = 6 > 11 > 16 layers on language; GSM8K within noise at every depth; 256x6 stays |
