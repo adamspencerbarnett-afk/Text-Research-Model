@@ -247,11 +247,18 @@ class ExchangeMemory:
                 cos[exclude] = -2.0
             cand = set(sorted(lit, key=lit.get, reverse=True)[:50]) | set(torch.topk(cos, min(50, len(cos))).indices.tolist())
             ranked = sorted(cand, key=lambda i: lit.get(i, 0.0) / L.lit_std + L.weight * float(cos[i]) / L.key_std, reverse=True)
-            return [(lit.get(i, 0.0), i) for i in ranked[:k]]
-        if not lit:
-            return []
-        out = sorted(((v, i) for i, v in lit.items()), reverse=True)
-        return out[:k]
+        else:
+            if not lit:
+                return []
+            ranked = sorted(lit, key=lambda i: (lit[i], -i), reverse=True)
+        rr = getattr(self, "reranker", None)
+        if rr is not None and exclude is None and len(ranked) > 1:
+            # reranking by the core itself (HYBRID_DESIGN 3.3): the top candidates reordered by how well the
+            # model predicts this question with each candidate exchange in its window; the score returned
+            # stays the literal similarity, so the gate and the evaluation groups keep their meaning
+            n = rr.top
+            ranked = rr(question, ranked[:n]) + ranked[n:]
+        return [(lit.get(i, 0.0), i) for i in ranked[:k]]
 
     def exact_hit(self, question: bytes):
         return self.exact.get(self.key_of(question))
@@ -312,6 +319,37 @@ class LearnedKeys:
             v = (h * mt).sum(1) / mt.sum(1).clamp_min(1)
             out.append(F.normalize(self.head((v - self.mu) / self.sd), dim=-1))
         return torch.cat(out) if out else torch.zeros(0, 128, device=self.dev)
+
+
+class CoreReranker:
+    """Rerank retrieval candidates with the Q&A model itself (HYBRID_DESIGN 3.3, research item 15): for each
+    candidate exchange, the window [candidate tail, SEP, "User: question\\nAssistant:"] goes through the model
+    and the bits it needs for the question codes are summed; fewer bits = the candidate explains the question
+    better. One batched forward pass per question, no parameters of its own."""
+
+    def __init__(self, model, enc, codes_of, sep, neighbor_codes: int, ctx: int, device, top: int = 10):
+        self.model, self.enc, self.codes_of, self.sep = model, enc, codes_of, np.asarray(sep, dtype=np.int64)
+        self.nb, self.ctx, self.dev, self.top = neighbor_codes, ctx, device, top
+
+    @torch.no_grad()
+    def __call__(self, question: bytes, cand: list[int]) -> list[int]:
+        qc = np.asarray(self.enc.encode(render(question, None))[0], dtype=np.int64)
+        rows, spans = [], []
+        for c in cand:
+            nb = np.asarray(self.codes_of(c), dtype=np.int64)[-self.nb:]
+            seq = np.concatenate([nb, self.sep, qc])[: self.ctx + 1]
+            rows.append(seq); spans.append((len(nb), len(nb) + len(self.sep), len(seq)))
+        L = max(len(r) for r in rows)
+        x = np.zeros((len(rows), L), dtype=np.int64); src = np.zeros((len(rows), L), dtype=bool)
+        for r, (seq, (nl, q0, end)) in enumerate(zip(rows, spans)):
+            x[r, :len(seq)] = seq; src[r, :nl] = True
+        xt = torch.from_numpy(x).to(self.dev)
+        was = self.model.training; self.model.eval()
+        nll = self.model.nll(xt[:, :-1], xt[:, 1:], torch.from_numpy(src[:, :-1]).to(self.dev),
+                             torch.zeros(len(rows), device=self.dev))
+        self.model.train(was)
+        score = [float(nll[r, q0 - 1:end - 1].sum()) for r, (nl, q0, end) in enumerate(spans)]
+        return [c for _, c in sorted(zip(score, cand), key=lambda t: t[0])]
 
 
 def parse_exchanges(text: bytes) -> list[tuple[bytes, bytes]]:
@@ -406,7 +444,7 @@ class QAEngine:
     """
 
     def __init__(self, checkpoint: str, native: str | None = None, device: str = "cpu", data: str | None = None, log=print,
-                 precision: str = "fp32", kernels: str = "fp32", dense: float = 0.0):
+                 precision: str = "fp32", kernels: str = "fp32", dense: float = 0.0, rerank: int = 0):
         ck = torch.load(checkpoint, map_location="cpu", weights_only=False)
         self.a = a = argparse.Namespace(**ck["args"])
         global FOLD_KEYS
@@ -460,6 +498,11 @@ class QAEngine:
             log(f"answer kernels: {_precision.to_kernels(self.model, kernels)}")
         self.model.eval()
         self.sep = enc.encode(b"\n\n")[0]
+        rerank = rerank or getattr(a, "rerank_core", 0)
+        if rerank:
+            self.mem.reranker = CoreReranker(self.model, enc, lambda i: enc.encode(render(*self.mem.exchanges[i]))[0],
+                                             self.sep, a.neighbor_codes, a.ctx, self.dev, rerank)
+            log(f"retrieval reranked by the core: top {rerank}")
         self.equals = int(enc.encode(b"=")[0][-1])
         self.newline = int(enc.encode(bytes([10]))[0][-1])
         log(f"loaded {Path(checkpoint).name}: {self.model.param_counts()['total']:,} learned parameters, "
@@ -657,6 +700,7 @@ def main() -> int:
     ap.add_argument("--lr", type=float, default=1e-3, help="AdamW peak learning rate")
     ap.add_argument("--key-head", default=None, help="K1 key head (runs/<core>/key_head.pt): retrieve by literal + learned question key")
     ap.add_argument("--amp", action="store_true", help="train in bfloat16 autocast (scores stay in full precision)")
+    ap.add_argument("--rerank-core", type=int, default=0, help="rerank the top N retrieval candidates by the core's own surprise at the question (0: off; 10 is the design's value)")
     ap.add_argument("--dense-train", action="store_true", help="with --dense: training neighbours are retrieved densely as well")
     ap.add_argument("--dense", type=float, default=0.0, help="weight of a pretrained sentence encoder's cosine in retrieval (dense_keys.py; 0: off, 2: best on QQP rewordings)")
     ap.add_argument("--eos", action="store_true", help="train an end-of-answer code after every exchange (inside the loss) and stop generation at it")
@@ -763,6 +807,9 @@ def main() -> int:
     if getattr(a, "precision", "fp32") != "fp32":
         import precision
         say(f"weights rounded: {precision.apply(model, a.precision)}")
+    if a.rerank_core:
+        mem.reranker = CoreReranker(model, enc, codes_of, sep, a.neighbor_codes, a.ctx, dev, a.rerank_core)
+        say(f"retrieval reranked by the core: top {a.rerank_core} candidates")
     say(f"core: {model.param_counts()['total']:,} learned parameters, sources: network, 2 tables"
         + (", copy head" if a.copy_head else "") + (", evidence table" if a.evidence else ""))
     dense = [p for n, p in model.named_parameters()]
