@@ -55,6 +55,7 @@ SETTINGS = dict(
     QA_MAX_CODES=120,       # longest reply, in codes (about 3.5 bytes each)
     QA_NO_REPEAT=3,         # block any 3-code phrase from repeating inside a reply (0: off)
     QA_SHOW_MEMORY=True,    # print which stored question the answer was built from
+    QA_FAST="graph",        # "graph": CUDA-graph answer step (same replies, 3-9x faster on the GPU); True: the eager loop
     QA_MIN_SIM=0.0,         # memory gate: a nearest match below this similarity is ignored and the network
                             # answers alone. 0.0 for the 5M model (gate 0.5 drops the probe 21 -> 19/32);
                             # 0.5 for the 50M models (21 -> 24/32), whose network alone is good enough
@@ -321,7 +322,7 @@ def chat_qa(path: str) -> None:
         if line.startswith("/nomem "):
             line, use_mem = line[7:], False
         t0 = time.perf_counter()
-        out, info = eng.ask(line.encode("utf-8"), S["QA_MAX_CODES"], S["QA_NO_REPEAT"], use_memory=use_mem, min_sim=S["QA_MIN_SIM"])
+        out, info = eng.ask(line.encode("utf-8"), S["QA_MAX_CODES"], S["QA_NO_REPEAT"], use_memory=use_mem, min_sim=S["QA_MIN_SIM"], fast=S["QA_FAST"])
         dt = time.perf_counter() - t0
         print(f"model> {out.decode('utf-8', 'replace')}")
         if S["QA_SHOW_MEMORY"]:

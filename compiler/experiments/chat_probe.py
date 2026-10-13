@@ -84,11 +84,13 @@ def main() -> int:
     ap.add_argument("--min-sim", type=float, default=0.0, help="use memory only for exact hits or nearest matches at least this similar")
     ap.add_argument("--tag", default="", help="suffix for the output names")
     ap.add_argument("--precision", choices=["fp32", "bf16", "int8", "int4"], default="fp32", help="round the weights to this format before answering")
+    ap.add_argument("--kernels", choices=["fp32", "bf16", "int8", "nf4"], default="fp32", help="compute the blocks with real low-bit kernels (bf16 autocast, bitsandbytes int8 / NF4)")
+    ap.add_argument("--graph", action="store_true", help="answer with the CUDA-graph step (fast_decode.py): same replies, several times faster")
     a = ap.parse_args()
     import torch
     torch.set_num_threads(a.threads)
     native = ROOT / "data" / "cv0.exe"
-    eng = m2_qa.QAEngine(a.model, native=str(native) if native.exists() else None, device=a.device, precision=a.precision)
+    eng = m2_qa.QAEngine(a.model, native=str(native) if native.exists() else None, device=a.device, precision=a.precision, kernels=a.kernels)
     for q, ans in TEACH:
         eng.add(q.encode(), ans.encode())
     import cost
@@ -96,9 +98,9 @@ def main() -> int:
     with cost.Meter(a.device) as meter:
       for section, q, groups in PROBES:
         t0 = time.perf_counter()
-        out, info = eng.ask(q.encode(), a.max_codes, a.no_repeat, min_sim=a.min_sim)
+        out, info = eng.ask(q.encode(), a.max_codes, a.no_repeat, min_sim=a.min_sim, fast="graph" if a.graph else True)
         answer_s += time.perf_counter() - t0
-        alone, _ = eng.ask(q.encode(), a.max_codes, a.no_repeat, use_memory=False)
+        alone, _ = eng.ask(q.encode(), a.max_codes, a.no_repeat, use_memory=False, fast="graph" if a.graph else True)
         text, text_alone = out.decode("utf-8", "replace"), alone.decode("utf-8", "replace")
         rows.append({"section": section, "question": q, "answer": text, "answer_without_memory": text_alone,
                      "keywords_ok": check(text, groups), "keywords_ok_without_memory": check(text_alone, groups),
@@ -111,7 +113,7 @@ def main() -> int:
         s["n"] += 1; s["ok"] += r["keywords_ok"]; s["ok_without_memory"] += r["keywords_ok_without_memory"]
     # cost of the with-memory answers only (half the metered span is the without-memory control)
     c = meter.summary(answer_s, len(rows))
-    (ROOT / "results" / f"probe_{stem}.json").write_text(json.dumps({"model": a.model, "precision": a.precision, "min_sim": a.min_sim, "summary": summary, "cost": c, "rows": rows}, indent=1))
+    (ROOT / "results" / f"probe_{stem}.json").write_text(json.dumps({"model": a.model, "precision": a.precision, "kernels": a.kernels, "graph": a.graph, "min_sim": a.min_sim, "summary": summary, "cost": c, "rows": rows}, indent=1))
     print(f"cost: {c['s_per_unit']:.2f} s per answer" + (f", {c['gpu_avg_w']} W, {c['j_per_unit']} J per answer" if c["gpu_avg_w"] else ""))
     md = [f"# Chat probe: `{a.model}`\n\n*{time.strftime('%Y-%m-%d %H:%M')}. Greedy decoding, repeated 3-code phrases blocked, "
           f"replies up to {a.max_codes} codes. Facts in the 'taught' section were added with /add just before, with no training. "

@@ -41,6 +41,9 @@ def main() -> int:
     ap.add_argument("--max-steps", type=int, default=0, help="equal training across runs: stop at this many steps (budget is then a cap)")
     ap.add_argument("--align", action="store_true", help="training windows start at paragraph starts")
     ap.add_argument("--block", choices=["legacy", "modern"], default="legacy")
+    ap.add_argument("--optimizer", choices=["adamw", "muon"], default="adamw")
+    ap.add_argument("--schedule", choices=["cosine", "wsd"], default="cosine")
+    ap.add_argument("--fused", action="store_true")
     ap.add_argument("--shape", default=None, help="width,layers,heads for a custom size named 'custom' in --sizes (depth sweeps)")
     a = ap.parse_args()
     work = Path(a.work); work.mkdir(parents=True, exist_ok=True)
@@ -74,7 +77,8 @@ def main() -> int:
             r = train_lm.run(enc, tokens, lens, eval_sets, work, budgets[size], width, layers, heads, a.ctx, a.batch, a.lr,
                              table, a.seed, a.eval_every, log=ladder1.say, save_path=str(work / f"scale_{size}_{name}.pt"),
                              table_orders=orders, ngram_orders=ngram, ngram_topk=topk, patience=a.patience,
-                             min_delta=a.min_delta, device=a.device, amp=a.amp, max_steps=a.max_steps, align=a.align, block=a.block)
+                             min_delta=a.min_delta, device=a.device, amp=a.amp, max_steps=a.max_steps, align=a.align, block=a.block,
+                             optimizer=a.optimizer, schedule=a.schedule, fused=a.fused)
             r["config"], r["size"] = name, size
             results["runs"][key] = r
             out.parent.mkdir(parents=True, exist_ok=True)

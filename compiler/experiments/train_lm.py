@@ -548,7 +548,8 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
         work: Path, budget_s: float, width=128, layers=4, heads=4, ctx=256, batch=16, lr=1e-3,
         table_rows=0, seed=1, eval_every_s=120.0, quick_bytes=150_000, prompt=b"We went to the park",
         gen_tokens=200, log=print, save_path=None, table_orders=(2,), ngram_orders=(), ngram_topk=16,
-        valid_share=0.02, patience=0, min_delta=0.002, keep_model=False, device="cpu", max_steps=0, amp=False, align=False, block="legacy") -> dict:
+        valid_share=0.02, patience=0, min_delta=0.002, keep_model=False, device="cpu", max_steps=0, amp=False, align=False, block="legacy",
+        optimizer="adamw", schedule="cosine", fused=False) -> dict:
     """Train for up to ``budget_s`` seconds of training time.
 
     The last ``valid_share`` of the training stream is held back as the validation split: it
@@ -576,8 +577,21 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
     sparse = [p for n, p in model.named_parameters() if n.startswith("table")]
     decay = [p for p in dense if p.dim() >= 2]
     no_decay = [p for p in dense if p.dim() < 2]
-    opts = [torch.optim.AdamW([{"params": decay, "weight_decay": 0.1}, {"params": no_decay, "weight_decay": 0.0}],
-                              lr=lr, betas=(0.9, 0.95))]
+    fused_ok = fused and str(device).startswith("cuda")
+    if optimizer == "muon":
+        # Muon (orthogonalised momentum) for the matrices inside the blocks; AdamW for the embedding
+        # (tied to the output), the trust head and every vector, as Muon's authors prescribe. The
+        # "match_rms_adamw" scaling makes Muon's step size comparable, so both share one schedule.
+        names = dict((id(p), n) for n, p in model.named_parameters())
+        inner = [p for p in decay if names[id(p)].startswith("blocks.")]
+        outer = [p for p in decay if not names[id(p)].startswith("blocks.")]
+        opts = [torch.optim.Muon(inner, lr=lr, weight_decay=0.1, momentum=0.95, adjust_lr_fn="match_rms_adamw"),
+                torch.optim.AdamW([{"params": outer, "weight_decay": 0.1}, {"params": no_decay, "weight_decay": 0.0}],
+                                  lr=lr, betas=(0.9, 0.95), fused=fused_ok or None)]
+        log(f"[{enc.name}] optimiser: Muon for {len(inner)} block matrices, AdamW for {len(outer) + len(no_decay)} other tensors")
+    else:
+        opts = [torch.optim.AdamW([{"params": decay, "weight_decay": 0.1}, {"params": no_decay, "weight_decay": 0.0}],
+                                  lr=lr, betas=(0.9, 0.95), fused=fused_ok or None)]
     if sparse:
         opts.append(torch.optim.SparseAdam(sparse, lr=lr))
     counts = model.param_counts()
@@ -594,7 +608,12 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
 
     def lr_at(frac, step):
         warm = min(1.0, step / 100)
-        return lr * warm * (0.1 + 0.9 * 0.5 * (1 + math.cos(math.pi * min(1.0, frac))))
+        frac = min(1.0, frac)
+        if schedule == "wsd":
+            # warmup-stable-decay: flat for 80% of training, then a "1 - sqrt" decay to 10% over the
+            # last 20% (MiniCPM 2024; the flat phase can be extended or branched without restarting)
+            return lr * warm * (1.0 if frac < 0.8 else 0.1 + 0.9 * (1 - math.sqrt((frac - 0.8) / 0.2)))
+        return lr * warm * (0.1 + 0.9 * 0.5 * (1 + math.cos(math.pi * frac)))
 
     n = len(train_tokens)
     offsets_base = np.arange(ctx + 1)
@@ -663,7 +682,7 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
                                                       "batch": batch, "peak_lr": lr, "table_rows": table_rows,
                                                       "table_orders": list(model.table_orders), "params": counts,
                                                       "ngram_tables": ngram_info},
-              "training": {"budget_s": budget_s, "max_steps": max_steps, "amp": amp, "aligned_windows": None if starts is None else int(len(starts)), "train_s": round(train_time, 1), "steps": step, "tokens_seen": tokens_seen,
+              "training": {"budget_s": budget_s, "max_steps": max_steps, "amp": amp, "optimizer": optimizer, "schedule": schedule, "fused": fused_ok, "aligned_windows": None if starts is None else int(len(starts)), "train_s": round(train_time, 1), "steps": step, "tokens_seen": tokens_seen,
                            "bytes_seen": bytes_seen, "tokens_per_s": round(tokens_seen / train_time, 1),
                            "bytes_per_s": round(bytes_seen / train_time, 1), "final_train_bits_per_token": round(ema, 4),
                            "train_tokens": int(n), "valid_tokens": int(len(valid_tokens)), "valid_bytes": int(valid_lens.sum()),
@@ -755,6 +774,9 @@ def main(argv=None) -> int:
     ap.add_argument("--max-steps", type=int, default=0, help="stop after this many steps and run the LR schedule over them (0: time budget only)")
     ap.add_argument("--amp", action="store_true", help="train in bfloat16 autocast (scores stay in full precision)")
     ap.add_argument("--block", choices=["legacy", "modern"], default="legacy", help="modern: RoPE + RMSNorm + SwiGLU at equal parameters")
+    ap.add_argument("--optimizer", choices=["adamw", "muon"], default="adamw", help="muon: Muon for the block matrices, AdamW for the rest")
+    ap.add_argument("--schedule", choices=["cosine", "wsd"], default="cosine", help="wsd: warmup, flat for 80%%, decay over the last 20%%")
+    ap.add_argument("--fused", action="store_true", help="fused AdamW kernel on the GPU (same maths, one launch per step)")
     a = ap.parse_args(argv)
     if a.threads:
         torch.set_num_threads(a.threads)
@@ -770,7 +792,8 @@ def main(argv=None) -> int:
                  a.batch, a.lr, a.table_rows, a.seed, a.eval_every,
                  table_orders=tuple(int(o) for o in a.table_orders.split(",")),
                  ngram_orders=tuple(int(o) for o in a.ngram_orders.split(",") if o), ngram_topk=a.ngram_topk,
-                 valid_share=a.valid_share, patience=a.patience, min_delta=a.min_delta, device=a.device, max_steps=a.max_steps, amp=a.amp, block=a.block)
+                 valid_share=a.valid_share, patience=a.patience, min_delta=a.min_delta, device=a.device, max_steps=a.max_steps, amp=a.amp, block=a.block,
+                 optimizer=a.optimizer, schedule=a.schedule, fused=a.fused)
     result["args"] = vars(a)
     Path(a.out).write_text(json.dumps(result, indent=1))
     return 0

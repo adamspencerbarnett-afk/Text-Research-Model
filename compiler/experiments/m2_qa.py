@@ -164,7 +164,9 @@ class V2LM(train_lm.LM):
             return logits
         p, confs = [F.softmax(logits, -1)], []
         for table in self.ngrams:
-            ids, counts, totals = table.features(x, h_last.device)
+            # only the last position is used: its context is the last table.k codes, so look up
+            # just those (the whole window cost a 512 x 64 gather per table per generated code)
+            ids, counts, totals = table.features(x[:, -(table.k + 1):], h_last.device)
             dense = torch.zeros_like(p[0])
             ok = ids[:, -1] >= 0
             probs = counts[:, -1] / counts[:, -1].sum(-1, keepdim=True).clamp_min(1.0)
@@ -402,7 +404,7 @@ class QAEngine:
     """
 
     def __init__(self, checkpoint: str, native: str | None = None, device: str = "cpu", data: str | None = None, log=print,
-                 precision: str = "fp32"):
+                 precision: str = "fp32", kernels: str = "fp32"):
         ck = torch.load(checkpoint, map_location="cpu", weights_only=False)
         self.a = a = argparse.Namespace(**ck["args"])
         global FOLD_KEYS
@@ -445,6 +447,10 @@ class QAEngine:
         if precision != "fp32":
             import precision as _precision
             log(f"weights rounded: {_precision.apply(self.model, precision)}")
+        self.kernels = self.model._kernels = kernels
+        if kernels != "fp32":
+            import precision as _precision
+            log(f"answer kernels: {_precision.to_kernels(self.model, kernels)}")
         self.model.eval()
         self.sep = enc.encode(b"\n\n")[0]
         self.equals = int(enc.encode(b"=")[0][-1])
@@ -468,10 +474,17 @@ class QAEngine:
         r = self.mem.retrieve(q, 1)
         return (r[0][1], r[0][0], "nearest") if r else (None, 0.0, "none")
 
+    def ask(self, q: bytes, *args, **kw):
+        """See _ask. With kernels="bf16" the whole answer runs under bfloat16 autocast."""
+        if getattr(self, "kernels", "fp32") == "bf16" and self.dev.type == "cuda":
+            with torch.autocast("cuda", dtype=torch.bfloat16):
+                return self._ask(q, *args, **kw)
+        return self._ask(q, *args, **kw)
+
     @torch.no_grad()
-    def ask(self, q: bytes, max_codes: int = 120, no_repeat: int = 3, calculator: bool | None = None, use_memory: bool = True,
+    def _ask(self, q: bytes, max_codes: int = 120, no_repeat: int = 3, calculator: bool | None = None, use_memory: bool = True,
             temperature: float = 0.0, top_k: int = 20, gen: torch.Generator | None = None, exclude: int | None = None,
-            min_sim: float = 0.0, fast: bool = True):
+            min_sim: float = 0.0, fast: bool | str = True):
         """Answer through the compiler: retrieve, place the exchange in the window, generate greedily
         with the copy head, decode. Returns (reply bytes, info dict)."""
         a, enc, model = self.a, self.enc, self.model
@@ -498,6 +511,55 @@ class QAEngine:
         if getattr(self, "_never_dev", None) is None or self._never_dev.device != seq_dev.device:
             self._never_dev = self.never_seen.to(dev)
             self._digit_dev = torch.tensor([c for c in range(enc.vocab) if enc.d.id_bytes[c][:1].isdigit()], device=dev)
+        graph = None
+        if fast == "graph" and len(seq) + max_codes + 8 <= a.ctx:
+            import fast_decode
+            if fast_decode.supported(model):
+                if getattr(self, "_graph", None) is None:
+                    self._graph = fast_decode.GraphStep(model)
+                graph = self._graph
+                pos0 = torch.arange(len(seq), device=dev)
+                span0 = pos0 < len(nb)
+                if getattr(a, "copy_question", False):
+                    span0 |= (pos0 >= len(nb) + len(self.sep)) & (pos0 < start)
+                pending = graph.prefill(seq_dev, span0, sim)
+        while graph is not None and len(seq) - start < max_codes:
+            logits = pending.masked_fill(self._never_dev, float("-inf"))
+            banned = repeat_banned(seq[start:], no_repeat)
+            if banned:
+                logits[0, banned] = float("-inf")
+            if after_value:
+                logits[0, self._digit_dev] = float("-inf")
+                after_value = False
+            if temperature > 0:
+                lg = logits[0] / temperature
+                kth = torch.topk(lg, top_k).values[-1]
+                lg = lg.masked_fill(lg < kth, float("-inf"))
+                nxt = int(torch.multinomial(F.softmax(lg, -1).cpu(), 1, generator=gen).item())
+            else:
+                nxt = int(logits.argmax(-1).item())
+            if getattr(a, "eos", False) and nxt == EOS:
+                break
+            seq.append(nxt)
+            added = [nxt]
+            if calculator and nxt == self.equals:
+                value = evaluate_tail(enc.decode(seq[start:]))
+                if value is not None:
+                    computed.append(value)
+                    vc = [int(t) for t in enc.encode(b" " + value.encode())[0]]
+                    seq.extend(vc); added.extend(vc)
+                    after_value = True
+            for j, c in enumerate(added):
+                pending = graph.step(c, len(seq) - len(added) + j)
+            text = enc.decode(seq[max(start, len(seq) - len(added) - 16):])
+            if b"\nUser" in text or b"\nAssistant:" in text:
+                break
+        if graph is not None:
+            out = enc.decode(seq[start:]).split(b"\nUser")[0].split(b"\nAssistant:")[0].strip()
+            info = {"memory": how, "similarity": round(sim, 3), "codes": len(seq) - start, "computed": computed}
+            if idx is not None:
+                info["retrieved_question"] = self.mem.exchanges[idx][0][:120].decode("utf-8", "replace")
+            return out, info
         while len(seq) - start < max_codes:
             x = seq_dev[-a.ctx:][None]
             off = max(0, len(seq) - a.ctx)
@@ -542,7 +604,9 @@ class QAEngine:
                     seq.extend(vc); added.extend(vc)
                     after_value = True
             seq_dev = torch.cat([seq_dev, torch.tensor(added, device=dev)])
-            text = enc.decode(seq[start:])
+            # a stop marker can only complete inside the codes just added; every code is at least one
+            # byte, so the last len(added) + 16 codes cover the 11-byte marker (no full decode per step)
+            text = enc.decode(seq[max(start, len(seq) - len(added) - 16):])
             if b"\nUser" in text or b"\nAssistant:" in text:   # the next turn, or an invented one
                 break
         out = enc.decode(seq[start:]).split(b"\nUser")[0].split(b"\nAssistant:")[0].strip()

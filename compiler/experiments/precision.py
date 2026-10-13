@@ -49,3 +49,36 @@ def apply(model: torch.nn.Module, mode: str) -> dict:
             p.copy_(_fake_quant(p, 4, 32))
         touched += 1; numel += p.numel()
     return {"precision": mode, "tensors": touched, "weights": numel}
+
+
+KERNELS = ("fp32", "bf16", "int8", "nf4")
+
+
+@torch.no_grad()
+def to_kernels(model: torch.nn.Module, mode: str) -> dict:
+    """Real low-bit compute for answering (unlike ``apply``, which only rounds the stored weights):
+    every nn.Linear inside the Transformer blocks is replaced by a bitsandbytes layer that keeps its
+    weights in int8 (LLM.int8 matmul) or 4-bit NF4 (dequantised per block into bf16 for the matmul).
+    "bf16" is handled by the caller with autocast. The embedding, the count tables, the copy head and
+    the trust head stay in float32: they are small, and the trust head mixes probabilities."""
+    if mode in ("fp32", "bf16"):
+        return {"kernels": mode, "replaced": 0}
+    import warnings
+    import bitsandbytes as bnb
+    warnings.filterwarnings("ignore", message=".*inputs will be cast.*")
+    replaced = 0
+    for block in model.blocks:
+        for name, lin in list(block.named_children()):
+            if not isinstance(lin, torch.nn.Linear):
+                continue
+            dev = lin.weight.device
+            if mode == "int8":
+                q = bnb.nn.Linear8bitLt(lin.in_features, lin.out_features, bias=lin.bias is not None,
+                                        has_fp16_weights=False, threshold=6.0)   # LLM.int8: outlier features in fp16
+            else:
+                q = bnb.nn.Linear4bit(lin.in_features, lin.out_features, bias=lin.bias is not None,
+                                      compute_dtype=torch.bfloat16, quant_type="nf4")
+            q.load_state_dict(lin.state_dict())
+            setattr(block, name, q.to(dev))
+            replaced += 1
+    return {"kernels": mode, "replaced": replaced}
