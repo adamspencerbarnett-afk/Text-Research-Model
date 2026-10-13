@@ -1,0 +1,36 @@
+{
+ "checkpoint": "runs/core_muon_cosine512/scale_5M_v0_8k_ng64.pt",
+ "data": "data_core/mix_D3_5M",
+ "precision": "bf16",
+ "fluency": {
+  "evidence": 1.5447,
+  "fineweb": 1.5885,
+  "math": 0.8502,
+  "oasst": 1.4604,
+  "qqp": 1.3362,
+  "ultrachat": 1.2776,
+  "wiki": 1.6014,
+  "v2_books/Heart-of-Darkness_219": 2.1174,
+  "v2_books/The-Adventures-of-Sherlock-Holmes_1661": 1.9116,
+  "v2_books/The-Prince_1232": 1.9121,
+  "v2_books/Walden-and-On-The-Duty-Of-Civil-Disobedience_205": 2.041
+ },
+ "evidence": {
+  "pairs": 209,
+  "bpb_related": 1.1803,
+  "bpb_unrelated": 1.8187,
+  "evidence_gain_pct": 35.1
+ },
+ "questions": {
+  "core_state": {
+   "n": 2000,
+   "recall_at_1": 0.481,
+   "recall_at_10": 0.745
+  },
+  "literal_key": {
+   "n": 2000,
+   "recall_at_1": 0.7335,
+   "recall_at_10": 0.9595
+  }
+ }
+}

@@ -1,0 +1,563 @@
+{
+ "setup": {
+  "data": "data_qa",
+  "work": "runs/s2b_muon_cosine512",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 3600.0,
+  "ctx": 512,
+  "batch": 32,
+  "topk": 64,
+  "neighbor_codes": 250,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/s2b_muon_cosine512.json",
+  "seed": 1,
+  "self_context_p": 0.5,
+  "copy_bias": 0.0,
+  "device": "cuda",
+  "threads": 0,
+  "width": 256,
+  "layers": 6,
+  "heads": 8,
+  "block": "legacy",
+  "precision": "fp32",
+  "greedy": true,
+  "no_repeat": 0,
+  "patience": 0,
+  "min_delta": 0.005,
+  "max_steps": 15565,
+  "dict": "runs/core_muon_cosine512/v0_8k_plain.cv0d",
+  "init": "runs/core_muon_cosine512/scale_5M_v0_8k_ng64.pt",
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "copy_question": false,
+  "calculator": false,
+  "perturb_self": 0.0,
+  "sim_feature": false,
+  "no_retrieval_p": 0.0,
+  "loss_answer_only": true,
+  "stop_at_blank": false,
+  "lr": 0.0001,
+  "key_head": null,
+  "amp": true,
+  "dense_train": false,
+  "dense": 0.0,
+  "eos": true,
+  "head_lr": 0.001,
+  "schedule": "cosine",
+  "net_n": 200,
+  "rehearse": "data_core/mix_D3s_5M",
+  "rehearse_p": 0.3,
+  "save": "runs/s2b_muon_cosine512/qa_s2b_muon_cosine512.pt",
+  "train_exchanges": 50965,
+  "eval": 520,
+  "added": 521,
+  "distinct_keys": 50605
+ },
+ "training": {
+  "steps": 15565,
+  "train_s": 662.9,
+  "stop_reason": "budget",
+  "best_valid": 0.9342,
+  "history": [
+   {
+    "train_s": 60.0,
+    "step": 1368,
+    "train_bits_per_code": 3.627,
+    "valid_bits_per_byte": 0.9783
+   },
+   {
+    "train_s": 120.0,
+    "step": 2783,
+    "train_bits_per_code": 3.95,
+    "valid_bits_per_byte": 0.9688
+   },
+   {
+    "train_s": 180.0,
+    "step": 4195,
+    "train_bits_per_code": 3.41,
+    "valid_bits_per_byte": 0.966
+   },
+   {
+    "train_s": 240.0,
+    "step": 5608,
+    "train_bits_per_code": 4.303,
+    "valid_bits_per_byte": 0.9553
+   },
+   {
+    "train_s": 300.0,
+    "step": 7032,
+    "train_bits_per_code": 3.454,
+    "valid_bits_per_byte": 0.9492
+   },
+   {
+    "train_s": 360.0,
+    "step": 8441,
+    "train_bits_per_code": 2.922,
+    "valid_bits_per_byte": 0.9454
+   },
+   {
+    "train_s": 420.0,
+    "step": 9856,
+    "train_bits_per_code": 3.902,
+    "valid_bits_per_byte": 0.9413
+   },
+   {
+    "train_s": 480.0,
+    "step": 11279,
+    "train_bits_per_code": 4.129,
+    "valid_bits_per_byte": 0.9391
+   },
+   {
+    "train_s": 540.0,
+    "step": 12691,
+    "train_bits_per_code": 4.038,
+    "valid_bits_per_byte": 0.9342
+   },
+   {
+    "train_s": 600.0,
+    "step": 14086,
+    "train_bits_per_code": 3.73,
+    "valid_bits_per_byte": 0.9337
+   },
+   {
+    "train_s": 660.0,
+    "step": 15501,
+    "train_bits_per_code": 3.686,
+    "valid_bits_per_byte": 0.9295
+   },
+   {
+    "train_s": 662.9,
+    "step": 15565,
+    "train_bits_per_code": 4.134,
+    "valid_bits_per_byte": 0.9301
+   }
+  ],
+  "cost": {
+   "seconds": 662.9,
+   "gpu_avg_w": 369.1,
+   "gpu_kj": 244.66,
+   "peak_mem_mb": 2608,
+   "power_samples": 338,
+   "units": 15565,
+   "s_per_unit": 0.0426,
+   "j_per_unit": 15.72
+  }
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.98,
+   "exact": 1.0
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 200,
+   "f1": 0.8725,
+   "exact": 0.54,
+   "f1_no_m1": 0.8709,
+   "f1_bias": 0.8725,
+   "exact_bias": 0.54
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 38,
+   "f1": 0.2283,
+   "exact": 0.0,
+   "f1_no_m1": 0.2454,
+   "f1_bias": 0.2283,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.231
+  },
+  "unseen_network_with_nearest": {
+   "n": 162,
+   "f1": 0.2776,
+   "exact": 0.0,
+   "f1_no_m1": 0.2774,
+   "f1_bias": 0.2776,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.1955
+  },
+  "heldout_network_without_memory": {
+   "n": 200,
+   "f1": 0.2149,
+   "exact": 0.0
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.2688
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.9567,
+   "exact": 0.985
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 200,
+   "f1": 0.8491,
+   "exact": 0.555,
+   "f1_no_m1": 0.8487,
+   "f1_bias": 0.8491,
+   "exact_bias": 0.555
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Simplify the following definition: \n\"The magnitude of an earthquake is a measure",
+    "a": "An earthquake's magnitude is its intensity, based on seismic waves.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "An earthquake's magnitude is its intensity, based on seismic waves.",
+    "f1_no_m1": 1.0,
+    "a_bias": "An earthquake's magnitude is its intensity, based on seismic waves.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Design a user interface",
+    "a": "The user interface should have a clean, intuitive design that can be easily accessed and used by all users. To achieve this, it should have visual consistency a",
+    "f1": 0.898550724637681,
+    "exact": 0.0,
+    "a_no_m1": "The user interface should have a clean, intuitive design that can be easily accessed and used by all users. To achieve this, it should have visual consistency a",
+    "f1_no_m1": 0.898550724637681,
+    "a_bias": "The user interface should have a clean, intuitive design that can be easily accessed and used by all users. To achieve this, it should have visual consistency a",
+    "f1_bias": 0.898550724637681,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "What are some of the advantages of using artificial intelligence?",
+    "a": "Using Artificial Intelligence can offer many advantages, such as automating tedious and repetitive tasks, being able to respond quickly and accurately to inquir",
+    "f1": 0.9565217391304348,
+    "exact": 0.0,
+    "a_no_m1": "Using Artificial Intelligence can offer many advantages, such as automating tedious and repetitive tasks, being able to respond quickly and accurately to inquir",
+    "f1_no_m1": 0.9565217391304348,
+    "a_bias": "Using Artificial Intelligence can offer many advantages, such as automating tedious and repetitive tasks, being able to respond quickly and accurately to inquir",
+    "f1_bias": 0.9565217391304348,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Generate a list of tips for people who want to make a successful career change.",
+    "a": "Here are some tips for people who want to make a successful career change:\n1. Research your target field thoroughly to understand the current job market, indust",
+    "f1": 0.49541284403669716,
+    "exact": 0.0,
+    "a_no_m1": "Here are some tips for people who want to make a successful career change:\n1. Research your target field thoroughly to understand the current job market, indust",
+    "f1_no_m1": 0.49541284403669716,
+    "a_bias": "Here are some tips for people who want to make a successful career change:\n1. Research your target field thoroughly to understand the current job market, indust",
+    "f1_bias": 0.49541284403669716,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Explain the significance of the Battle of Tsushima in the Russo-Japanese war.",
+    "a": "The Battle of Tsushima was the decisive naval battle of the Russo-Japanese War of 1904-1905, in which the Japanese navy destroyed almost all of the Russian Balt",
+    "f1": 0.98,
+    "exact": 0.0,
+    "a_no_m1": "The Battle of Tsushima was the decisive naval battle of the Russo-Japanese War of 1904-1905, in which the Japanese navy destroyed almost all of the Russian Balt",
+    "f1_no_m1": 0.98,
+    "a_bias": "The Battle of Tsushima was the decisive naval battle of the Russo-Japanese War of 1904-1905, in which the Japanese navy destroyed almost all of the Russian Balt",
+    "f1_bias": 0.98,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Describe what the sky looks like in a sentence.",
+    "a": "The sky is a lush blue, dotted with white fluffy clouds that drift lazily across the expanse.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The sky is a lush blue, dotted with white fluffy clouds that drift lazily across the expanse.",
+    "f1_no_m1": 1.0,
+    "a_bias": "The sky is a lush blue, dotted with white fluffy clouds that drift lazily across the expanse.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Name two possible solutions to reduce the effects of global warming.",
+    "a": "Two possible solutions to reduce global warming include: \n1. Reduce the amount of greenhouse gases in the atmosphere.\n2. Increased greenhouse gases in the atmos",
+    "f1": 0.29508196721311475,
+    "exact": 0.0,
+    "a_no_m1": "Two possible solutions to reduce global warming include: reducing the effects of global warming include reducing our emissions of greenhouse gases such as carbo",
+    "f1_no_m1": 0.41860465116279066,
+    "a_bias": "Two possible solutions to reduce global warming include: \n1. Reduce the amount of greenhouse gases in the atmosphere.\n2. Increased greenhouse gases in the atmos",
+    "f1_bias": 0.29508196721311475,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.698,
+    "f1_vs_retrieved": 0.25742574257425743,
+    "retrieved_answer_f1_vs_ref": 0.4047619047619047
+   },
+   {
+    "q": "Write a function that takes an array of numbers and sorts them in ascending orde",
+    "a": "[5, 2, 9, 7, 4, 1]",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "[5, 2, 9, 7, 4, 1]",
+    "f1_no_m1": 0.0,
+    "a_bias": "[5, 2, 9, 7, 4, 1]",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.532,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.10714285714285714
+   },
+   {
+    "q": "Generate an example use case of how an AI system can improve customer service.",
+    "a": "An example of how an AI system can improve customer service is the ability to automate customer service. AI systems can be used to automate customer service ope",
+    "f1": 0.5142857142857143,
+    "exact": 0.0,
+    "a_no_m1": "An example of how an AI system can improve customer service is the ability to automate customer service tasks by providing customer feedback and providing perso",
+    "f1_no_m1": 0.36065573770491804,
+    "a_bias": "An example of how an AI system can improve customer service is the ability to automate customer service. AI systems can be used to automate customer service ope",
+    "f1_bias": 0.5142857142857143,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.629,
+    "f1_vs_retrieved": 0.6347305389221556,
+    "retrieved_answer_f1_vs_ref": 0.45901639344262296
+   },
+   {
+    "q": "Write an essay about what makes a good leader.",
+    "a": "A good leader is motivated, motivated, and persuasive.",
+    "f1": 0.03937007874015748,
+    "exact": 0.0,
+    "a_no_m1": "A good leader is motivated, motivated, and persuasive.",
+    "f1_no_m1": 0.03937007874015748,
+    "a_bias": "A good leader is motivated, motivated, and persuasive.",
+    "f1_bias": 0.03937007874015748,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.683,
+    "f1_vs_retrieved": 0.7368421052631579,
+    "retrieved_answer_f1_vs_ref": 0.03891050583657587
+   },
+   {
+    "q": "Compute the given arithmetic equation.\n9 + 4 x 3",
+    "a": "425",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "425",
+    "f1_no_m1": 0.0,
+    "a_bias": "425",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.543,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Create a conclusion paragraph for a persuasive essay on the importance of voting",
+    "a": "voting is a powerful tool that allows citizens to participate in their government\u2019s decisions and ensure their desires are respected and taken into account. A c",
+    "f1": 0.2011834319526627,
+    "exact": 0.0,
+    "a_no_m1": "voting is a powerful weapon that allows citizens to participate in their government\u2019s decisions and ensure their desires are respected and taken into account. A",
+    "f1_no_m1": 0.2011834319526627,
+    "a_bias": "voting is a powerful tool that allows citizens to participate in their government\u2019s decisions and ensure their desires are respected and taken into account. A c",
+    "f1_bias": 0.2011834319526627,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.599,
+    "f1_vs_retrieved": 0.24170616113744073,
+    "retrieved_answer_f1_vs_ref": 0.23126338329764454
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Develop a website for a travel blog",
+    "a": "The website for a travel blog is https://www.wikipedia.com/wikipedia/commons/",
+    "f1": 0.11214953271028037,
+    "exact": 0.0,
+    "a_no_m1": "The website for a travel blog is http: The World of the World.",
+    "f1_no_m1": 0.16822429906542058,
+    "a_bias": "The website for a travel blog is https://www.wikipedia.com/wikipedia/commons/",
+    "f1_bias": 0.11214953271028037,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.361,
+    "f1_vs_retrieved": 0.17391304347826086,
+    "retrieved_answer_f1_vs_ref": 0.03846153846153846
+   },
+   {
+    "q": "Generate a list of questions the user can ask a chatbot about home insurance.",
+    "a": "1. What is the best home insurance option?\n2. How do you think home insurance is the best option?\n3. What are the best home insurance options?\n4. How can I get ",
+    "f1": 0.3875968992248062,
+    "exact": 0.0,
+    "a_no_m1": "1. What products do you have in stock?\n2. How do you pay for home insurance?\n3. What are your store hours?\n4. Do you offer any discounts?\n5. What payment option",
+    "f1_no_m1": 0.1509433962264151,
+    "a_bias": "1. What is the best home insurance option?\n2. How do you think home insurance is the best option?\n3. What are the best home insurance options?\n4. How can I get ",
+    "f1_bias": 0.3875968992248062,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.424,
+    "f1_vs_retrieved": 0.2195121951219512,
+    "retrieved_answer_f1_vs_ref": 0.09523809523809525
+   },
+   {
+    "q": "Create a paragraph to describe the moon.",
+    "a": "The moon is a beautiful, beautiful, beautiful, beautiful, beautiful,\nThe moon is a beautiful, beautiful, beautiful,\nThe moon is a beautiful, beautiful, beautifu",
+    "f1": 0.20289855072463767,
+    "exact": 0.0,
+    "a_no_m1": "The moon is a beautiful and beautiful night, with a bright light and a bright light.",
+    "f1_no_m1": 0.21359223300970878,
+    "a_bias": "The moon is a beautiful, beautiful, beautiful, beautiful, beautiful,\nThe moon is a beautiful, beautiful, beautiful,\nThe moon is a beautiful, beautiful, beautifu",
+    "f1_bias": 0.20289855072463767,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.397,
+    "f1_vs_retrieved": 0.16216216216216217,
+    "retrieved_answer_f1_vs_ref": 0.30434782608695654
+   },
+   {
+    "q": "Describe a technique to make effective use of hashtags on social media.",
+    "a": "A technique to make effective use of hashtags is to use a hashtag to create a hashtag that is easy to use and can be used to create a hashtag that is easy to us",
+    "f1": 0.272,
+    "exact": 0.0,
+    "a_no_m1": "A technique to make effective use of hashtags is to create a more engaging and engaging way to engage with users. This can include creating content that is enga",
+    "f1_no_m1": 0.2589928057553957,
+    "a_bias": "A technique to make effective use of hashtags is to use a hashtag to create a hashtag that is easy to use and can be used to create a hashtag that is easy to us",
+    "f1_bias": 0.272,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.437,
+    "f1_vs_retrieved": 0.42748091603053434,
+    "retrieved_answer_f1_vs_ref": 0.35714285714285715
+   },
+   {
+    "q": "Why is it important to know the environment of a place before visiting?",
+    "a": "The environment of a place is important for the environment because it helps maintain healthy habitats by providing food, oxygen, and shelter for wildlife. It h",
+    "f1": 0.33576642335766427,
+    "exact": 0.0,
+    "a_no_m1": "The environment of a place is important for the environment because it helps maintain healthy habitats by providing food, oxygen, and shelter for wildlife. It h",
+    "f1_no_m1": 0.33576642335766427,
+    "a_bias": "The environment of a place is important for the environment because it helps maintain healthy habitats by providing food, oxygen, and shelter for wildlife. It h",
+    "f1_bias": 0.33576642335766427,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.235,
+    "f1_vs_retrieved": 0.5571428571428573,
+    "retrieved_answer_f1_vs_ref": 0.24516129032258066
+   },
+   {
+    "q": "Explain what is a Block Chain.",
+    "a": "A Block Chain is a type of water that is used to clean and clean the water. It is used to clean the water and the water is used to clean the water. It is used t",
+    "f1": 0.24793388429752067,
+    "exact": 0.0,
+    "a_no_m1": "A Block Chain is a type of water that is used to clean and clean the water. It is used to clean the water and the water is used to clean the water. It is used t",
+    "f1_no_m1": 0.24793388429752067,
+    "a_bias": "A Block Chain is a type of water that is used to clean and clean the water. It is used to clean the water and the water is used to clean the water. It is used t",
+    "f1_bias": 0.24793388429752067,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.281,
+    "f1_vs_retrieved": 0.16,
+    "retrieved_answer_f1_vs_ref": 0.13186813186813184
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Find the number of times the letter E appears in the following sentence.\nThe qui",
+    "a": "The letter E appears 3 times in the sentence.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The letter E appears 3 times in the sentence.",
+    "f1_no_m1": 1.0,
+    "a_bias": "The letter E appears 3 times in the sentence.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Fix any grammar and spelling errors in the following sentence.\nThe malloys bough",
+    "a": "The Malloys bought a box of chocolates.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The Malloys bought a box of chocolates.",
+    "f1_no_m1": 1.0,
+    "a_bias": "The Malloys bought a box of chocolates.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "What describes the following equation: y = x^2 - 3",
+    "a": "This equation is a parabola with its vertex at (0, -3). The parabola opens upward, as the sign of y = x^2 is positive.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "This equation is a parabola with its vertex at (0, -3). The parabola opens upward, as the sign of y = x^2 is positive.",
+    "f1_no_m1": 1.0,
+    "a_bias": "This equation is a parabola with its vertex at (0, -3). The parabola opens upward, as the sign of y = x^2 is positive.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Rewrite the sentence in the negative form and output the result.\nI was delighted",
+    "a": "I was not delighted to hear from you.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "I was not delighted to hear from you.",
+    "f1_no_m1": 1.0,
+    "a_bias": "I was not delighted to hear from you.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Write a short paragraph to explain the importance of communication in the workpl",
+    "a": "Effective communication in the workplace is essential for the success of any business. It enables employees to share information and collaborate on projects, wh",
+    "f1": 0.8333333333333334,
+    "exact": 0.0,
+    "a_no_m1": "Effective communication in the workplace is essential for the success of any business. It enables employees to share information and collaborate on projects, wh",
+    "f1_no_m1": 0.8333333333333334,
+    "a_bias": "Effective communication in the workplace is essential for the success of any business. It enables employees to share information and collaborate on projects, wh",
+    "f1_bias": 0.8333333333333334,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Determine which of the two words is the antonym of the other.\nAbundant and Rare",
+    "a": "Abundant and Rare are antonyms.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "Abundant and Rare are antonyms.",
+    "f1_no_m1": 1.0,
+    "a_bias": "Abundant and Rare are antonyms.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ]
+ },
+ "checks": {}
+}
