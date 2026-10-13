@@ -651,6 +651,7 @@ def main() -> int:
     ap.add_argument("--perturb-self", type=float, default=0.0, help="share of self-context windows whose retrieved question is reworded (words dropped, swapped, replaced): teaches copying from near matches")
     ap.add_argument("--sim-feature", action="store_true", help="the retrieval similarity is a trust-head input")
     ap.add_argument("--no-retrieval-p", type=float, default=0.0, help="share of non-self windows trained with nothing retrieved")
+    ap.add_argument("--distractor-p", type=float, default=0.0, help="share of the remaining non-self windows whose retrieved exchange is replaced by a random wrong one")
     ap.add_argument("--loss-answer-only", action="store_true", help="train and validate on the answer codes only, not the question")
     ap.add_argument("--stop-at-blank", action="store_true", help="a reply ends at its first blank line (single-span answers, e.g. SQuAD)")
     ap.add_argument("--lr", type=float, default=1e-3, help="AdamW peak learning rate")
@@ -792,6 +793,10 @@ def main() -> int:
         src_i = i if (a.self_context_p and rng.random() < a.self_context_p) else neighbors[i]
         if a.no_retrieval_p and src_i != i and rng.random() < a.no_retrieval_p:
             src_i = None                     # nothing retrieved: the core must answer alone, as at test time when memory has nothing
+        elif getattr(a, "distractor_p", 0.0) and src_i not in (i, None) and rng.random() < a.distractor_p:
+            # a wrong exchange in the window (HYBRID_DESIGN 3.6): copying from it is wrong, so the model
+            # must learn from the low similarity and the content when not to copy
+            src_i = int(rng.integers(len(train_x) - 1)); src_i += src_i >= i
         nb = codes_of(src_i)[-a.neighbor_codes:] if a.neighbor_codes and src_i is not None else np.array([], dtype=np.int64)
         sim = 0.0 if src_i is None else (1.0 if src_i == i else mem.similarity_keys(mem.keys[i], mem.keys[src_i]))
         perturbed = False
