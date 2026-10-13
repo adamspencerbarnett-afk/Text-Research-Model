@@ -238,11 +238,13 @@ class ExchangeMemory:
         for i, s in scores.items():
             union = sum(denom.values()) + sum(self.idf(w) for w in self.keys[i] if w not in key)
             lit[i] = s / max(union, 1e-9)
-        if self.learned is not None and exclude is None:
+        if self.learned is not None and (exclude is None or getattr(self.learned, "for_training", False)):
             # hybrid: rank by literal + learned similarity (weights fitted on held-out rewordings in K1);
             # the returned score stays the literal similarity, so group definitions do not change
             L = self.learned
             cos = (L.vectors @ L.embed([question])[0]).cpu()
+            if exclude is not None:
+                cos[exclude] = -2.0
             cand = set(sorted(lit, key=lit.get, reverse=True)[:50]) | set(torch.topk(cos, min(50, len(cos))).indices.tolist())
             ranked = sorted(cand, key=lambda i: lit.get(i, 0.0) / L.lit_std + L.weight * float(cos[i]) / L.key_std, reverse=True)
             return [(lit.get(i, 0.0), i) for i in ranked[:k]]
@@ -404,7 +406,7 @@ class QAEngine:
     """
 
     def __init__(self, checkpoint: str, native: str | None = None, device: str = "cpu", data: str | None = None, log=print,
-                 precision: str = "fp32", kernels: str = "fp32"):
+                 precision: str = "fp32", kernels: str = "fp32", dense: float = 0.0):
         ck = torch.load(checkpoint, map_location="cpu", weights_only=False)
         self.a = a = argparse.Namespace(**ck["args"])
         global FOLD_KEYS
@@ -433,6 +435,11 @@ class QAEngine:
             self.mem.add(q, ans)
         if getattr(a, "key_head", None) and Path(resolve(a.key_head)).exists():
             self.mem.attach_learned(LearnedKeys(resolve(a.key_head), native, device if torch.cuda.is_available() or device == "cpu" else "cpu"))
+        dense = dense or getattr(a, "dense", 0.0)
+        if dense:                      # pretrained sentence encoder as the second key (dense_keys.py)
+            import dense_keys
+            self.mem.attach_learned(dense_keys.DenseKeys(device, weight=dense))
+            log(f"dense question keys: {dense_keys.MODEL}, weight {dense}")
         t0 = time.time()
         # the file is the rendered exchanges back to back, so encoding it whole gives the same codes
         all_codes = enc.encode_file(train_file, work)[0] if native else np.concatenate([enc.encode(render(q, x))[0] for q, x in train_x])
@@ -648,6 +655,8 @@ def main() -> int:
     ap.add_argument("--stop-at-blank", action="store_true", help="a reply ends at its first blank line (single-span answers, e.g. SQuAD)")
     ap.add_argument("--lr", type=float, default=1e-3, help="AdamW peak learning rate")
     ap.add_argument("--key-head", default=None, help="K1 key head (runs/<core>/key_head.pt): retrieve by literal + learned question key")
+    ap.add_argument("--dense-train", action="store_true", help="with --dense: training neighbours are retrieved densely as well")
+    ap.add_argument("--dense", type=float, default=0.0, help="weight of a pretrained sentence encoder's cosine in retrieval (dense_keys.py; 0: off, 2: best on QQP rewordings)")
     ap.add_argument("--eos", action="store_true", help="train an end-of-answer code after every exchange (inside the loss) and stop generation at it")
     ap.add_argument("--head-lr", type=float, default=0.0, help="learning rate for the new heads (copy head, trust head); 0: same as --lr")
     ap.add_argument("--schedule", choices=["constant", "cosine"], default="constant", help="cosine: 100-step warm-up, decay to 10%% of the peak")
@@ -681,7 +690,13 @@ def main() -> int:
     # The nearest-neighbour pass is deterministic in the training questions and the key settings,
     # and costs minutes on Alpaca, so it is cached beside the work files.
     import hashlib
-    nb_key = hashlib.sha256(b"\0".join(q for q, _ in train_x) + repr((FOLD_KEYS, sorted(STOP))).encode()).hexdigest()[:16]
+    if a.dense and a.dense_train:   # training windows also use dense retrieval, so the network learns to copy from it
+        import dense_keys
+        mem.attach_learned(dense_keys.DenseKeys(a.device, weight=a.dense))
+        mem.learned.for_training = True
+        say(f"dense keys for training neighbours too: {len(mem.learned.vectors):,} questions embedded")
+    nb_key = hashlib.sha256(b"\0".join(q for q, _ in train_x) + repr((FOLD_KEYS, sorted(STOP))).encode()
+                            + (repr(("dense", a.dense)).encode() if a.dense and a.dense_train else b"")).hexdigest()[:16]
     nb_cache = work / f"neighbors_{nb_key}.json"
     if not a.neighbor_codes:             # no retrieved exchange in the window: the pass is unused
         neighbors = [None] * len(train_x)
@@ -692,6 +707,9 @@ def main() -> int:
         nb_cache.write_text(json.dumps(neighbors))
     if a.key_head:     # K1: retrieval at answer time ranks by literal + learned key (training windows keep the literal neighbours)
         mem.attach_learned(LearnedKeys(a.key_head, a.native, a.device))
+    if a.dense and not a.dense_train:   # dense retrieval at answer time only; training windows keep the literal neighbours
+        import dense_keys
+        mem.attach_learned(dense_keys.DenseKeys(a.device, weight=a.dense))
         say(f"learned question key attached: {len(mem.learned.vectors):,} questions embedded")
     say(f"M2 built: {len(mem.exact):,} distinct keys; nearest-neighbour pass {time.time() - t0:.0f}s; "
         f"{sum(n is None for n in neighbors)} exchanges without a neighbour")
