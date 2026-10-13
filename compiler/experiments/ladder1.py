@@ -32,6 +32,10 @@ import train_lm  # noqa: E402
 
 DICTS = {  # name: (vocab, phrases, max_phrase_units)
     "v0_8k_plain": (8192, 0, 1),
+    # dictionary-size study (13 October; HYBRID_DESIGN item 16): fewer codes per text = fewer steps per answer
+    "v0_16k_plain": (16384, 0, 1),
+    "v0_32k_plain": (32768, 0, 1),
+    "v0_64k_plain": (65536, 0, 1),
     "v0_8k_phr3": (8192, 1024, 3),
     "v0_8k_phr6": (8192, 2048, 6),
 }
