@@ -95,6 +95,9 @@ the model is by unseen text; lower is better.
 | 5M | 11.7 | 1.75 | 6.7x |
 | 50M | 14.6 | 3.6 | 4.1x |
 
+On an idle GPU a full answer now takes 0.08 s and 10 joules at 5M (from 0.45 s and 29 J), and
+0.15 s and 24 joules at 50M, with the same chat-probe score.
+
 At these sizes the GPU was spending its time launching about 300 tiny jobs per generated word
 piece, not computing. The answer step is now recorded once as a CUDA graph and replayed with
 a single launch. Replies are byte-identical to the old loop on every test question. Low-bit
