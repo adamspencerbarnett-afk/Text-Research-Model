@@ -1,9 +1,9 @@
 # Text Research Model
 
-*Research concept and direction by Adam Barnett. Updated 12 October 2026.*
+*Research concept and direction by Adam Barnett. Updated 13 October 2026.*
 
 A small language model that keeps its knowledge outside its weights. Instead of one large
-network that must memorise everything, this project pairs a small network (5 to 50 million
+network that must memorise everything, this project pairs a small network (5 to 100 million
 parameters, trained on one consumer GPU) with a memory of past conversations it can read from
 and copy out of, a calculator it can call, and a deterministic text compiler that turns text
 into codes and back without loss.
@@ -126,11 +126,32 @@ the work.
 A small pretrained sentence encoder used beside the word-based key raised the rate at which a
 reworded question finds its stored twin from 75.1% to 80.9%. It now finds "What GPU does the
 research computer use?" when asked about the graphics card. Retrieved answers are 11–13% closer
-to the right answer on reworded and new questions. Trained with this retrieval in the loop, the
-5M model reached its best score yet on new questions (0.299 F1) and 22 of 32 on the chat probe,
-with no loss on stored answers.
+to the right answer on reworded and new questions, and a model trained with this retrieval in the
+loop reached its best new-question score (0.299 F1) with no loss on stored answers.
 
-### 8. What did not work, and why that matters
+### 8. What the model is shown in training matters most
+
+| training change (5M, same core, same steps) | effect |
+| --- | --- |
+| retrieval in the loop, plus the right answer shown under a reworded question 30% of the time | chat probe 24 and 23 of 32 over two seeds; reworded questions 5/5 and 4/5, against 1–3/5 for every earlier 5M model |
+| misleading evidence (10% nothing, 10% a wrong exchange) | network answering alone +20% (0.229 → 0.274 F1); stored answers 62% exact; reworded questions lower |
+| both together | in between (probe 22/32): at 5M the two lessons partly cancel |
+| synonym rewording instead of random edits | a tie: more exact copying (66% vs 57%), slightly fewer reworded answers |
+
+The first row is the best 5M chat model of the research, equal to the best 50M score at a tenth
+of the size. Its weakness was found by reading its answers: it had only ever copied from a
+word-identical question in training, so it learned "copy only on an exact match". Showing it the
+right answer under imperfect wording fixed that.
+
+### 9. Better text does not mean better answers at 5M
+
+Three changes made the 5M core a better text model and left answers unchanged: the modern block
+(1–7% lower error), the Muon optimiser with a warmup-stable-decay schedule (0.9% lower, confirmed
+on two seeds), and more depth. At 5M, answers are set by copying from memory, and the network has
+no spare capacity to read better. That is the case for the 100M core: the network has to grow
+for reading and combining evidence to improve, while knowledge stays in memory.
+
+### 10. What did not work, and why that matters
 
 - **A cleverer text encoding is not intelligence.** The lossless compiler matched a standard
   tokenizer to within 1%. Kept because it is exact and makes copying simple, not because it
@@ -141,8 +162,10 @@ with no loss on stored answers.
   and speed, and it never moved maths.
 - **The bottleneck was never the network.** A 50M and a 5M model answered at nearly the same
   speed, which is what pointed to launch overhead and the graph fix above.
+- **Reranking with the model itself.** Scoring candidates by how well they predict the question
+  rewards candidates worded like the question, not ones whose answer fits; every score fell.
 
-### 9. Chat quality, graded by hand
+### 11. Chat quality, graded by hand
 
 A 32-question battery (stored facts, rewordings, general knowledge, facts taught during the
 chat, arithmetic, small talk) is run on every model. Best so far: 24 of 32 (75%), reached both by
@@ -161,13 +184,11 @@ for mid-answer, exact typed programs for counting, dates and conversation state,
 that says "I don't know" when nothing supports an answer. The generator grows to 100–300M
 parameters, the size where reading is likely to become good, while knowledge stays in memory.
 
-Training on evidence was the night's biggest lever. Shown misleading evidence 20% of the time, the
-5M model answered 20% better on its own and copied stored answers more precisely (62% exact).
-Shown the right answer under a reworded question, it reached 24 of 32 on the chat probe, its best
-ever. Latest training-recipe result: a warmup-stable-decay schedule lowers text error 0.8% at no cost,
-and with the Muon optimiser 0.9%; at 5M neither changed answer scores. Running now (see the
-queue in [`docs/RUN_LEDGER.md`](docs/RUN_LEDGER.md)): training on misleading evidence so the
-model learns when not to copy, and a second seed of the best training recipe.
+**Next: the 100M core.** The data (a 3.3 GB mix without worked maths), the shape (1,024 wide,
+8 layers, 109M parameters) and the recipe (modern block, Muon, warmup-stable-decay, bf16,
+resumable across nights) are prepared and tested; it trains on 2 billion codes in about 11 hours,
+then goes through the best Q&A recipe and the chat probe. See the queue in
+[`docs/RUN_LEDGER.md`](docs/RUN_LEDGER.md).
 
 ## Try it
 
@@ -177,13 +198,12 @@ python -m venv .venv
 .\.venv\Scripts\python.exe run_model.py
 ```
 
-`run_model.py` shows a menu: train on a folder of text files, or chat with a saved model
-(`models/qa_best_5M_512.pt` is the small model in git; the newer best chat model,
-`models/qa_best_5M_dense.pt`, 24 of 32 on the chat probe, is local until its upload goes through
-and uses the optional `sentence-transformers` package for its retrieval key). Chat commands include `/add
-question || answer` to teach a fact and `/load file.txt` to teach many at once. Settings are at
+`run_model.py` shows a menu: train on a folder of text files, or chat with a saved model; option 3
+opens the best chat model, `models/qa_best_5M_dense.pt` (24 of 32 on the chat probe). Model files
+are not in git: train one with the pipeline in `docs/SETUP.md`, which writes it locally. Chat
+commands include `/add question || answer` to teach a fact and `/load file.txt` to teach many at once. Settings are at
 the top of the script. Full setup, including corpus rebuilds and GPU use, is in
-[`docs/HANDOFF_LOCAL.md`](docs/HANDOFF_LOCAL.md).
+[`docs/SETUP.md`](docs/SETUP.md).
 
 ## Read more
 
@@ -192,14 +212,15 @@ the top of the script. Full setup, including corpus rebuilds and GPU use, is in
 | [`MODEL_EXPLAINED.html`](MODEL_EXPLAINED.html) | how the model works, with real codes, lookups and answers |
 | [`docs/RUN_LEDGER.md`](docs/RUN_LEDGER.md) | every run's settings and results, the queue, and the findings per session |
 | [`docs/ENCODER_RESEARCH_PLAN.md`](docs/ENCODER_RESEARCH_PLAN.md) | the dated research log with the cause behind each result |
-| [`docs/REASONING_PLAN.md`](docs/REASONING_PLAN.md), [`docs/PLAN_50M.md`](docs/PLAN_50M.md) | the maths and scale plans |
+| [`docs/REASONING_PLAN.md`](docs/REASONING_PLAN.md), [`docs/PLAN_50M.md`](docs/PLAN_50M.md) | the maths plan (paused) and the 50M plan |
+| [`docs/SETUP.md`](docs/SETUP.md) | environment, data, the full training pipeline and the best recipes, as commands |
 | [`docs/DATASETS.md`](docs/DATASETS.md), [`docs/CORE_TRAINING_PLAN.md`](docs/CORE_TRAINING_PLAN.md) | what the model reads and how the mix was built |
 | [`HYBRID_DESIGN.html`](HYBRID_DESIGN.html) | the next system: a hybrid memory model that keeps what the research proved, adds the modern retrieval stack, reasons in steps, and a research plan with UML and hardware diagrams |
 | [`BRAIN_DESIGN.html`](BRAIN_DESIGN.html) | the follow-on design: a brain-inspired model with full reconstruction spec and history |
 | [`Traditional_Hybrid.html`](Traditional_Hybrid.html) | the best ideas here applied to a standard Transformer |
 | [`COMPILER_AND_MODERN_METHODS.html`](COMPILER_AND_MODERN_METHODS.html) | why a compressed encoding cannot add intelligence; review of modern methods; ranked tests |
 | [`docs/VERSION_1.md`](docs/VERSION_1.md), [`docs/DESIGN_V2.md`](docs/DESIGN_V2.md) | the frozen first version and the design that replaced it |
-| [`archive/`](archive/README.md) | the original September research (semantic parser and executor) and the frozen Version 1 |
+| [`archive/`](archive/README.md) | the September research (semantic parser and executor), the frozen Version 1, finished October experiments, and the paused maths line |
 
 ## Repository layout
 
@@ -209,14 +230,14 @@ the top of the script. Full setup, including corpus rebuilds and GPU use, is in
 ├── compiler/           # the text compiler, native encoder, tests, experiments/ (all training scripts)
 ├── docs/               # plans, ledger, research log, chat transcripts
 ├── results/            # one JSON per run; corpus manifests with SHA-256
-├── models/             # small saved models (large 50M checkpoints stay local in runs/)
+├── models/             # dictionaries in git; model checkpoints (*.pt) stay local
 ├── archive/            # earlier research, kept whole
 ├── *.html              # design documents, open in a browser
 └── requirements.txt
 ```
 
-Training corpora are not in git. `results/corpus_v*_manifest.json` records every file's size
-and hash, and `docs/HANDOFF_LOCAL.md` has the rebuild commands.
+Training corpora and model checkpoints are not in git. `results/corpus_v*_manifest.json` and each
+mix's `manifest.json` record sizes and hashes, and `docs/SETUP.md` has the rebuild commands.
 
 ## Research standard
 

@@ -1,5 +1,5 @@
 """Turn an instruction dataset into plain chat text the compiler can encode, so a model can be
-trained (or continued) on it like any other text and talked to through chat.py.
+trained (or continued) on it like any other text; the Q&A stage is m2_qa.py.
 
     python -I compiler/experiments/prepare_qa.py ALPACA.json OUT_DIR [--max 52000]
     python -I compiler/experiments/prepare_qa.py GSM8K_DIR OUT_DIR --format gsm8k   # train.jsonl + test.jsonl

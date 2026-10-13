@@ -86,13 +86,23 @@ class RMSNorm(nn.Module):
         return x * torch.rsqrt(x.float().square().mean(-1, keepdim=True) + self.eps).to(x.dtype) * self.weight
 
 
+_ROPE_CACHE: dict = {}
+
+
 def rope(x, start: int = 0):
     """Rotary positions: rotate pairs of query/key dimensions by an angle that grows with the absolute
     position, so attention scores depend on the distance between positions. x: (B, H, T, D)."""
     T, D = x.shape[-2], x.shape[-1]
-    inv = 1.0 / (10000 ** (torch.arange(0, D, 2, device=x.device, dtype=torch.float32) / D))
-    ang = torch.arange(start, start + T, device=x.device, dtype=torch.float32)[:, None] * inv[None, :]
-    c, s = ang.cos()[None, None].to(x.dtype), ang.sin()[None, None].to(x.dtype)
+    key = (start, T, D, x.device, x.dtype)
+    cs = _ROPE_CACHE.get(key)
+    if cs is None:   # the tables depend only on positions and width: computed once, not every step
+        inv = 1.0 / (10000 ** (torch.arange(0, D, 2, device=x.device, dtype=torch.float32) / D))
+        ang = torch.arange(start, start + T, device=x.device, dtype=torch.float32)[:, None] * inv[None, :]
+        cs = (ang.cos()[None, None].to(x.dtype), ang.sin()[None, None].to(x.dtype))
+        if len(_ROPE_CACHE) > 4096:
+            _ROPE_CACHE.clear()
+        _ROPE_CACHE[key] = cs
+    c, s = cs
     a, b = x[..., 0::2], x[..., 1::2]
     return torch.stack((a * c - b * s, a * s + b * c), dim=-1).flatten(-2)
 
@@ -549,7 +559,7 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
         table_rows=0, seed=1, eval_every_s=120.0, quick_bytes=150_000, prompt=b"We went to the park",
         gen_tokens=200, log=print, save_path=None, table_orders=(2,), ngram_orders=(), ngram_topk=16,
         valid_share=0.02, patience=0, min_delta=0.002, keep_model=False, device="cpu", max_steps=0, amp=False, align=False, block="legacy",
-        optimizer="adamw", schedule="cosine", fused=False) -> dict:
+        optimizer="adamw", schedule="cosine", fused=False, resume_path=None, checkpoint_every_s=1800.0) -> dict:
     """Train for up to ``budget_s`` seconds of training time.
 
     The last ``valid_share`` of the training stream is held back as the validation split: it
@@ -635,6 +645,31 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
     best_quick, bad_evals, stop_reason = float("inf"), 0, "budget"
     import cost as _cost
     meter = _cost.Meter(device).__enter__()
+    # Resumable training (13 October): with resume_path, the model, optimiser states, sampler state and
+    # progress are saved every checkpoint_every_s of wall time and loaded at start, so a long run (the
+    # 100M core, ~10-12 h) continues across nights; the schedule is a function of the step, so a resumed
+    # run follows the same learning-rate curve as an uninterrupted one.
+    def save_ck():
+        if not resume_path:
+            return
+        tmp = str(resume_path) + ".tmp"
+        torch.save({"model": model.state_dict(), "opts": [o.state_dict() for o in opts], "step": step, "train_time": train_time,
+                    "tokens_seen": tokens_seen, "bytes_seen": bytes_seen, "ema": ema, "history": history, "next_eval": next_eval,
+                    "best_quick": best_quick, "bad_evals": bad_evals, "np_rng": rng.bit_generator.state,
+                    "torch_rng": torch.get_rng_state(), "cuda_rng": torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None}, tmp)
+        Path(tmp).replace(resume_path)
+    if resume_path and Path(resume_path).exists():
+        ck = torch.load(resume_path, map_location=device, weights_only=False)
+        model.load_state_dict(ck["model"])
+        for o, sd in zip(opts, ck["opts"]):
+            o.load_state_dict(sd)
+        step, train_time, tokens_seen, bytes_seen, ema = ck["step"], ck["train_time"], ck["tokens_seen"], ck["bytes_seen"], ck["ema"]
+        history, next_eval, best_quick, bad_evals = ck["history"], ck["next_eval"], ck["best_quick"], ck["bad_evals"]
+        rng.bit_generator.state = ck["np_rng"]; torch.set_rng_state(ck["torch_rng"].cpu())
+        if ck.get("cuda_rng") is not None and torch.cuda.is_available():
+            torch.cuda.set_rng_state_all([s.cpu() for s in ck["cuda_rng"]])
+        log(f"[{enc.name}] resumed from {resume_path}: step {step:,}, {train_time:.0f}s of training done")
+    last_ck = time.time()
     model.train()
     while train_time < budget_s and not (max_steps and step >= max_steps):
         t0 = time.perf_counter()
@@ -677,6 +712,10 @@ def run(enc: LE.Encoding, train_tokens: np.ndarray, train_lens: np.ndarray, eval
                     stop_reason = f"plateau: no improvement over {min_delta} bits/byte in {patience} evaluations"
                     log(f"[{enc.name}] stopping early at {train_time:.0f}s: {stop_reason}")
                     break
+        if resume_path and time.time() - last_ck >= checkpoint_every_s:
+            save_ck(); last_ck = time.time()
+            log(f"[{enc.name}] checkpoint saved at step {step:,}")
+    save_ck()
 
     result = {"encoding": enc.describe(), "model": {"width": width, "layers": layers, "heads": heads, "ctx": ctx, "block": block,
                                                       "batch": batch, "peak_lr": lr, "table_rows": table_rows,

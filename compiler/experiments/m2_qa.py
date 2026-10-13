@@ -346,7 +346,7 @@ def perturb_question(q: bytes, rng, donor: list[bytes], syn: dict | None = None)
 
 class LearnedKeys:
     """K1 key: the frozen stage-1 core's mean hidden state over the question, through the trained
-    key head, as a unit vector (compiler/experiments/k1_question_key.py)."""
+    key head, as a unit vector (archive/experiments_oct2026/scripts/k1_question_key.py; superseded by dense_keys.py)."""
 
     def __init__(self, head_path: str, native: str | None, device: str = "cpu"):
         import core_eval

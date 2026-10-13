@@ -22,3 +22,11 @@ Short session entries: date, task, files touched, decisions, blockers, next acti
 - **Session 23 (done 06:46):** copy under rewording (dense + --perturb-self 0.3) gives probe 24/32 (best 5M, equals best 50M), reworded section 5/5, new 0.311, stored 0.901 / 62%; adopted. Core reranking by query likelihood hurts (probe 20/32); rejected. Session 24 (all lessons combined) running.
 - **Session 24 (done 07:15):** all lessons combined: probe 22/32, exact 67%; lessons partly cancel at 5M. Best chat model (23 B) copied to `models/qa_best_5M_dense.pt` and made the `run_model.py` default. Session 25 (seed 2 of 23 B) running.
 - **Session 25 (done 07:47):** seed 2 of the best chat model: probe 23/32, reworded 4/5 (seed 1: 24, 5/5); adopted. Model upload to GitHub timing out (HTTP 408) since 07:15; file is local in `models/` and retried at each wake-up.
+
+## 2026-10-13 (morning)
+
+- **Task:** session 26 logged; repository cleanup; README and HYBRID_DESIGN updated from sessions 20–26; 100M core prepared.
+- **Results:** synonym rewording ties random edits (option kept); finding: the trust head never saw retrieval confidence in the stage-2 runs (likely why combined lessons cancelled).
+- **Files:** archived 11 old scripts and 18 old chains (`archive/experiments_oct2026/`, `archive/math_line/`); `docs/HANDOFF_LOCAL.md` archived, `docs/SETUP.md` new; model checkpoints untracked (`*.pt` in `.gitignore`); `requirements.txt` to the verified environment; `train_lm.py` / `scale_run.py` resume and rotary-table cache; `prepare_core_mix.py` recipe P100; `chains/session27_100m.sh`.
+- **Decisions (Adam):** no models in git; 100M next.
+- **Next:** session 27 (100M core ~11 h, then Q&A stage and probes); then the 5M retrieval-confidence test.

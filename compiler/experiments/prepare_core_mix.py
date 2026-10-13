@@ -342,6 +342,10 @@ RECIPES = {   # shares of the mix by bytes; see docs/CORE_TRAINING_PLAN.md
     # kept at the D3e shares that helped, web text raised because Wikipedia here is 0.63 GB
     "P50": {"wiki": 0.25, "fineweb": 0.32, "books": 0.07, "oasst": 0.002, "ultrachat": 0.12, "evidence": 0.12, "math": 0.08, "qqp": 0.008},
     "D3": {"wiki": 0.30, "fineweb": 0.22, "books": 0.08, "oasst": 0.04, "ultrachat": 0.08, "evidence": 0.18, "math": 0.05, "qqp": 0.05},
+    # 100M core (13 October; HYBRID_DESIGN 3.5): about 3.2 GB from src_p50, every source used close to fully except
+    # web text. No worked math (math paused 12 October); its share goes to conversation, which the chat goal needs,
+    # and to evidence pairs, which teach reading (evidence gain rose with every core that saw more of them).
+    "P100": {"wiki": 0.185, "fineweb": 0.44, "books": 0.068, "oasst": 0.001, "ultrachat": 0.17, "evidence": 0.10, "qqp": 0.005},
 }
 
 

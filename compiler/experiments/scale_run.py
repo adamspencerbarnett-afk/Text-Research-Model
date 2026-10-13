@@ -44,6 +44,8 @@ def main() -> int:
     ap.add_argument("--optimizer", choices=["adamw", "muon"], default="adamw")
     ap.add_argument("--schedule", choices=["cosine", "wsd"], default="cosine")
     ap.add_argument("--fused", action="store_true")
+    ap.add_argument("--resume", action="store_true", help="checkpoint every --checkpoint-every s and continue from the last checkpoint after an interruption")
+    ap.add_argument("--checkpoint-every", type=float, default=1800.0)
     ap.add_argument("--shape", default=None, help="width,layers,heads for a custom size named 'custom' in --sizes (depth sweeps)")
     a = ap.parse_args()
     work = Path(a.work); work.mkdir(parents=True, exist_ok=True)
@@ -78,7 +80,9 @@ def main() -> int:
                              table, a.seed, a.eval_every, log=ladder1.say, save_path=str(work / f"scale_{size}_{name}.pt"),
                              table_orders=orders, ngram_orders=ngram, ngram_topk=topk, patience=a.patience,
                              min_delta=a.min_delta, device=a.device, amp=a.amp, max_steps=a.max_steps, align=a.align, block=a.block,
-                             optimizer=a.optimizer, schedule=a.schedule, fused=a.fused)
+                             optimizer=a.optimizer, schedule=a.schedule, fused=a.fused,
+                             resume_path=str(work / f"scale_{size}_{name}.resume.pt") if a.resume else None,
+                             checkpoint_every_s=a.checkpoint_every)
             r["config"], r["size"] = name, size
             results["runs"][key] = r
             out.parent.mkdir(parents=True, exist_ok=True)

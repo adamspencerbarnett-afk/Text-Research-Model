@@ -1,7 +1,7 @@
-# Verified release environment: Python 3.12, NumPy 2.2.6, PyTorch 2.8.0.
-# CPU inference and tests use the standard PyPI build. Install a matching
-# accelerator build separately when running CUDA experiments.
-numpy==2.2.6
-torch==2.8.0
-bitsandbytes>=0.50  # optional: real int8 / NF4 answer kernels (precision.py to_kernels)
-sentence-transformers>=6.1  # optional: dense question keys (dense_keys.py)
+# Verified research environment (13 October 2026): Python 3.12, NumPy 2.5.3, PyTorch 2.11 (CUDA 12.8 build).
+# PyTorch 2.11 or later is needed for torch.optim.Muon. Install the CUDA build of torch for GPU work:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu128
+numpy>=2.2
+torch>=2.11
+sentence-transformers>=6.1  # dense question keys (dense_keys.py); used by the best chat models
+bitsandbytes>=0.50          # optional: real int8 / NF4 answer kernels (precision.py to_kernels); slower at 5-100M

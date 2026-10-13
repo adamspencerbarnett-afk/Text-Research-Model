@@ -238,7 +238,7 @@ def load_model(path: str):
     if ck.get("ngram_orders"):
         rm = ck.get("run_model")
         if rm is None:
-            raise SystemExit("this model was not trained by run_model.py; use compiler/experiments/chat.py with --data")
+            raise SystemExit("this model was not trained by run_model.py: chat with Q&A models (m2_qa.py) here, or core models through compiler/experiments/core_eval.py")
         files = [p if Path(p).exists() else str(Path(rm["dataset"]) / Path(p).name) for p in rm["train_files"]]
         say(f"recounting the tables from {len(files)} training files")
         tokens, _ = load_tokens(enc, files, work)

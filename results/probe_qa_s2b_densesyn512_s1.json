@@ -1,0 +1,442 @@
+{
+ "model": "runs/s2b_densesyn512_s1/qa_s2b_densesyn512_s1.pt",
+ "precision": "bf16",
+ "kernels": "fp32",
+ "graph": true,
+ "dense": 0.0,
+ "rerank_core": 0,
+ "min_sim": 0.0,
+ "summary": {
+  "stored": {
+   "n": 5,
+   "ok": 5,
+   "ok_without_memory": 0
+  },
+  "reworded": {
+   "n": 5,
+   "ok": 3,
+   "ok_without_memory": 0
+  },
+  "knowledge": {
+   "n": 5,
+   "ok": 4,
+   "ok_without_memory": 1
+  },
+  "heldout": {
+   "n": 5,
+   "ok": 4,
+   "ok_without_memory": 3
+  },
+  "taught": {
+   "n": 6,
+   "ok": 5,
+   "ok_without_memory": 0
+  },
+  "arithmetic": {
+   "n": 3,
+   "ok": 0,
+   "ok_without_memory": 0
+  },
+  "chat": {
+   "n": 3,
+   "ok": 1,
+   "ok_without_memory": 0
+  }
+ },
+ "cost": {
+  "seconds": 2.8,
+  "gpu_avg_w": 142.6,
+  "gpu_kj": 0.41,
+  "peak_mem_mb": 257,
+  "power_samples": 3,
+  "units": 32,
+  "s_per_unit": 0.0888,
+  "j_per_unit": 12.66
+ },
+ "rows": [
+  {
+   "section": "stored",
+   "question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "answer": "A traditional Thanksgiving meal in the United States typically includes turkey, stuffing, mashed potatoes, gravy, cranberry sauce, vegetables, and pumpkin pie.",
+   "answer_without_memory": "The United States is a country that is traditionally served during Thanksgiving in the US. It is a popular food for people of all sizes, from 1920 to 1890. It has a variety of flavors, including a variety from sweet and sweet, and a variety with a variety in flavors such as sweet and tart.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "seconds": 0.54
+  },
+  {
+   "section": "stored",
+   "question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "answer": "A simple example of gravity can be demonstrated by dropping a ball; the ball falls to the ground due to the force of gravity pulling it downwards.",
+   "answer_without_memory": "The equation of the equation of a function is called the \"measure of the function\".",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "seconds": 0.11
+  },
+  {
+   "section": "stored",
+   "question": "Create a list of 10 verbs related to cooking",
+   "answer": "- Mix\n- Boil \n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+   "answer_without_memory": "1. \"Fruits\"\n2. \u2022 10\n3. 15\n4. 5\n5. 6\n6. 7\n7. 8\n8. 9\n9. 3\n10. 20\n11.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Create a list of 10 verbs related to cooking",
+   "seconds": 0.18
+  },
+  {
+   "section": "stored",
+   "question": "Name some computer viruses",
+   "answer": "Some computer viruses are: \n- WannaCry\n- Stuxnet\n- Trojan Horse\n- Code Red\n- Sality\n- CryptoLocker\n- ILoveYou\n- Chimera\n- MyDoom\n- Melissa",
+   "answer_without_memory": "Some computer viruses that are not known to cause a disease include:\n\n1. Along the way to infect the virus:\n\n2. Alice's Alice: Alice has a virus that is spread to the lungs and is spreading to the brain.\n\n3. Alyxia: Alyyx is a virus which is spread from the lung and is transmitted through the brain to the heart.\n\n4. Alyssia:Alyx has a disease that is transmuted through the lung.\n\n5. Algorithmia:",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Name some computer viruses",
+   "seconds": 0.3
+  },
+  {
+   "section": "stored",
+   "question": "Come up with two statistics related to the US population.",
+   "answer": "According to the US Census Bureau, the current US population is approximately 331 million, and the current U.S. population is 0.7%.",
+   "answer_without_memory": "The US population of the United States is 1,000,010,500.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Come up with two statistics related to the US population.",
+   "seconds": 0.11
+  },
+  {
+   "section": "reworded",
+   "question": "What food do Americans usually eat on Thanksgiving?",
+   "answer": "Americans usually eat on Thanksgiving because they are often served in a variety of dishes, such as burdens, salary, and other items.",
+   "answer_without_memory": "American food is a type of food that is often eaten in a variety of ways. It is typically made from vegetables, vegetables, and vegetables, such as carrots, potatoes, and potatoes. It can also be used to make a variety in dishes such as salmon, cakes, and cakes.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.223,
+   "retrieved_question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "seconds": 0.18
+  },
+  {
+   "section": "reworded",
+   "question": "Can you give me an example that shows how gravity works?",
+   "answer": "Sure, I can give you an example of gravity that shows how gravity works.",
+   "answer_without_memory": "Sure, here's an example of a sentence that shows how gravity works:\n\n\"The earth is like a rock, the wind is like the wind, the waves are like the waves.\"\n\n\"Light is like an octagon, the sun is like it's a cloud, the stars are like a cloud.\" (Me and the moon are like this)\n\n\"It's like a water, the moon is like this.\"\n\"The sun is shining brightly, the sky is like that.\" The sky is blue, the night",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.275,
+   "retrieved_question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "seconds": 0.24
+  },
+  {
+   "section": "reworded",
+   "question": "List ten verbs you would use when cooking.",
+   "answer": "- Mix\n- Boil\n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+   "answer_without_memory": "\"I'm a good-by-step cooked through.\"",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.473,
+   "retrieved_question": "Create a list of 10 verbs related to cooking",
+   "seconds": 0.13
+  },
+  {
+   "section": "reworded",
+   "question": "What are some well-known computer viruses?",
+   "answer": "Some well-known computer viruses are:\n\n1. WannaCry - a computer virus that is used to detect and detect the virus in the computer.\n\n2. Wan, Wan and Wan - an virus that can detect the spread of viruses.\n\n3. Wyoming - the virus that has been spreading through the computer and can detect viruses in the environment.\n\n4. WoR - used to infect the virus with a virus that was spreading in the 1990s.\n\n5. Wor",
+   "answer_without_memory": "Some well-known computer viruses are:\n\n1. Along the way to the computer: Along with the computer's own computer, Along is a popular computer virus. Algorithm is a virus that is spread across the world, and it is a common virus.\n\n2. Al Language: Alice is a computer virus that spreads through the Internet, and its spread is spread through the internet. Alice can spread through various platforms, such as internet, internet, and other platforms.\n\n3. Al Run: Ala is a",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.509,
+   "retrieved_question": "Name some computer viruses",
+   "seconds": 0.39
+  },
+  {
+   "section": "reworded",
+   "question": "Tell me two facts about the population of the United States.",
+   "answer": "The population of the United States is approximately 328 million people.",
+   "answer_without_memory": "The population of the United States is 1,000,050,500.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.65,
+   "retrieved_question": "Tell me the population of the United States.",
+   "seconds": 0.1
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the largest planet in our solar system?",
+   "answer": "The largest planet in our solar system is the Sun.",
+   "answer_without_memory": "The largest planet in the solar system is the Sun, which is the largest planet with a total of 100,000 years.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.744,
+   "retrieved_question": "Name a planet from our solar system.",
+   "seconds": 0.11
+  },
+  {
+   "section": "knowledge",
+   "question": "Who wrote Romeo and Juliet?",
+   "answer": "William Shakespeare",
+   "answer_without_memory": "Romeo and Juliet are two of the most popular Italian-style Italian-American-based Italian-based French-based Spanish-based Mexican-based American-based Chinese-based Japanese-based Asian-based Korean-based European-based Japan.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.789,
+   "retrieved_question": "Who wrote the play Romeo and Juliet?",
+   "seconds": 0.13
+  },
+  {
+   "section": "knowledge",
+   "question": "What is photosynthesis?",
+   "answer": "Photosynthesis is the process by which plants use light energy to convert carbon dioxide and water into oxygen and sugars. It involves the transfer of electrons and protons between molecules as chlorophyll in the presence of light absorbs the light energy used to drive the reaction. The oxygen produced is released into the atmosphere, and the sugar produced is used by the plant for growth.",
+   "answer_without_memory": "The photosynthesis is a type of photosyntem that is used to create a photo. It is used for photosyne and is used in photography. It can be used to make photography by using a photos or a photon.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.589,
+   "retrieved_question": "Describe the process of photosynthesis to me.",
+   "seconds": 0.24
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the boiling point of water in Celsius?",
+   "answer": "The approximate boiling point of water in Celsius is 100 degrees.",
+   "answer_without_memory": "The boiling point of water in Celsius is 100 degrees.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.76,
+   "retrieved_question": "What is the approximate boiling point of water in Celsius?",
+   "seconds": 0.09
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the capital of Japan?",
+   "answer": "The capital of Japan is Tokyo.",
+   "answer_without_memory": "The capital of Japan is the capital of the United States.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Give me the capital of Japan.",
+   "seconds": 0.06
+  },
+  {
+   "section": "heldout",
+   "question": "Generate a creative poem describing the night sky.",
+   "answer": "The night sky is a beautiful night,\nA beautiful night that is full of beauty.\nThe night sky, the stars keep their place,\nThe stars keep burning so bright,\nAs the night sky was a beautiful sight.\nA. The night was dark, the night was full of joy,\nIt was a perfect night.",
+   "answer_without_memory": "The night sky was a beautiful night, with a gentle breeze, a gentle, yet peaceful,\nA gentle breed of peaceful and peaceful.\nThe night sky, a beautiful sight, a sight,\nThe gentle bred of peace, a peaceful sight.\n\nThe night was a gentle and kind, a warm,\nBringing a gentle simmer of the night,\nIt was a perfect night, a perfect day.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.468,
+   "retrieved_question": "Write a poem about the beauty of the night sky.",
+   "seconds": 0.29
+  },
+  {
+   "section": "heldout",
+   "question": "Come up with a creative sentence to describe a summer day.",
+   "answer": "The summer day is like a cozy blanket.",
+   "answer_without_memory": "The sun was shining brightly in the sun,\nA warming. The sun is shining,\nThe sun is setting in the gentle breeze.\nThe air is filled with a gentle breaches.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.379,
+   "retrieved_question": "Generate a creative metaphor to describe a warm summer day.\n<no input>",
+   "seconds": 0.14
+  },
+  {
+   "section": "heldout",
+   "question": "List 5 famous Italian dishes.",
+   "answer": "1. Italian dishes\n2. Italian cuisine\n3. Italian restaurants\n4. Italian cake\n5. Italian cheese\n6. Italian sauce\n7. Italian spaghetti\n8. Italian salad\n9. Italian pasta\n10. Italian dish\n11. Italy (option>\n12. Italy)\n13. Italy\n14. Italy",
+   "answer_without_memory": "1. Vegetable\n\n2. Vegano\n\n3. Vitaminute\n\n4. Village\n\n5. Vacuum\n\n6. Vintage\n\n7. Vice President\n\n8. Vincent van Gogh\n\n9. Viller\n\n10. Vito Corleone\n\n11. 12. 20\n\n12, 13. 30",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.453,
+   "retrieved_question": "Build a database for all Italian dishes",
+   "seconds": 0.29
+  },
+  {
+   "section": "heldout",
+   "question": "Tell me the most common hairstyle for men.",
+   "answer": "The most common hairstyle for men is hair, which is a type of hair that is typically used for hair. It is typically made from a hair that has a thin, thin, and thin, which can be used for a variety of purposes.",
+   "answer_without_memory": "The most common hairstyle for men is a hairstage that is made of a soft, soft, and soft. It is made from a soft and soft material that is soft and is soft, while a soft material is made with soft material. It also has a soft texture that is smooth and soft, whereas a softer, more softer.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.22,
+   "retrieved_question": "Come up with some tips for choosing a hairstyle.",
+   "seconds": 0.22
+  },
+  {
+   "section": "heldout",
+   "question": "Print the following statement: \"I want to learn to code\".",
+   "answer": "I want to learn to code.",
+   "answer_without_memory": "\"I want to learn to code\".",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.336,
+   "retrieved_question": "Convert the following statement into a code snippet.\nPrint the sum of 1 and 2.",
+   "seconds": 0.08
+  },
+  {
+   "section": "taught",
+   "question": "What is the name of Adam's research model?",
+   "answer": "Adam's research model is called the Text Research Model.",
+   "answer_without_memory": "Adam's research model is a type of research model that is used to analyze and analyze data. It is used in a variety of applications, including data analysis, data analysis and data analysis.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "What is the name of Adam's research model?",
+   "seconds": 0.1
+  },
+  {
+   "section": "taught",
+   "question": "What GPU does the research computer use?",
+   "answer": "The research computer uses an NVIDIA RTX 3090 GPU.",
+   "answer_without_memory": "The research computer uses a variety of techniques to identify and analyze data, including:\n\n1. Computer-aided learning algorithms: GPUs are used to analyze and analyse data to identify patterns and trends in data. They can analyze the data to determine the patterns and patterns of data.\n\n2. Compare and contrast: Computers are more used to identify the patterns in data, such as the data, the data and the data. Comperos are also used to compare the patterns of the data in a given way.\n\n3. Compani",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "What GPU does the research computer use?",
+   "seconds": 0.23
+  },
+  {
+   "section": "taught",
+   "question": "When was Version 1 of the compiler frozen?",
+   "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+   "answer_without_memory": "Version 1 of the compiler frozen is a simple, simple, and simple-minded frozen.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "When was Version 1 of the compiler frozen?",
+   "seconds": 0.1
+  },
+  {
+   "section": "taught",
+   "question": "What is Adam's research model called?",
+   "answer": "Adam's research model is called the Text Research Model.",
+   "answer_without_memory": "Adam's research model called is called Adam'ing model. It is a type of data model that is used to analyze data and analyze the data. It can be used to identify patterns and trends in data, such as the data, the data and the data used to generate predictions.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.74,
+   "retrieved_question": "What is the name of Adam's research model?",
+   "seconds": 0.15
+  },
+  {
+   "section": "taught",
+   "question": "Which graphics card is in the research computer?",
+   "answer": "The graphics card is a card that is used to create a computer that is designed to be used in a variety of applications. It is designed for a variety in a wide range of applications, including:\n\n1. Computers: Computer computers are used to make computers that are designed to work in a range of different applications.\n\n2. Compare and contrast: Compare the graphics cards and their similarities to the graphic cards.\n\n3. Comple-like: Comple and contrast the graphs of a computer with a graphic card.\n\n4. Comp",
+   "answer_without_memory": "The graphics card is a type of card that is designed to provide a variety of information about the user's behavior, such as the user\u2019s behavior or the user interface. It is designed for users to interact with their environment, such a variety that can be used to create a user interface, such that the user can easily access the user experience.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.253,
+   "retrieved_question": "What GPU does the research computer use?",
+   "seconds": 0.32
+  },
+  {
+   "section": "taught",
+   "question": "On what date was Version 1 frozen?",
+   "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+   "answer_without_memory": "Version 1 frozen is 1000.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.476,
+   "retrieved_question": "When was Version 1 of the compiler frozen?",
+   "seconds": 0.09
+  },
+  {
+   "section": "arithmetic",
+   "question": "What is 12 plus 30?",
+   "answer": "12 is a 10-minute-based diet.",
+   "answer_without_memory": "12 is equal to 100.\nSo, 14 is equal for 18.\nAnswer: 15",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.623,
+   "retrieved_question": "Add 2 plus 3.",
+   "seconds": 0.1
+  },
+  {
+   "section": "arithmetic",
+   "question": "If I have 5 apples and eat 2, how many are left?",
+   "answer": "You have one apple left.",
+   "answer_without_memory": "If I have 5 apples and eat 2, how many are left?\nIf I have a total of 5 + 2 = 7.\nIf there are 10 apples, then there are a total number of 1 + x apples left.\nTherefore, there are an total of x + y apples left, which is 11 - x = x - y apples.\nWe are given that the total number is 20, so we can write: x * (x - 2) =",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.486,
+   "retrieved_question": "If there are two apples and you give away one, how many apples do you have left?",
+   "seconds": 0.23
+  },
+  {
+   "section": "arithmetic",
+   "question": "What is 7 times 8?",
+   "answer": "35",
+   "answer_without_memory": "7 times 8 is equal to 7 * 8 = 36 times.\nAnswer: 37",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.599,
+   "retrieved_question": "Calculate 7 times 5.",
+   "seconds": 0.09
+  },
+  {
+   "section": "chat",
+   "question": "Hello, how are you today?",
+   "answer": "Today, I'm sorry to hear that you're here.",
+   "answer_without_memory": "I am not a software engineer. I am a software engineering student, but I am an engineer who is a software developer, and I am the designer of a software development team. I have a software designer, but they are not able to work with the software. I'm a software programmer, and they are a software software developr. I also have a programmer who is an engineer, and their team is a computer developer. I can also be a software project manager, and my team is an engineering student.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.383,
+   "retrieved_question": "Rewrite this sentence:\n\n\"Hello, how are you?\"",
+   "seconds": 0.22
+  },
+  {
+   "section": "chat",
+   "question": "Can you help me write a short email to my boss asking for a day off?",
+   "answer": "I am writing to kindly request a leave of absence for tomorrow, [date]. I have an important personal matter that I need to attend to and would greatly appreciate your understanding in this matter.\n\nI assure you that I will make up for any work missed during my leave and look forward to hearing your response. \n\nBest regards, \n[Name]",
+   "answer_without_memory": "Sure, here's a short email that includes a few words: \"I'm a good boss,\" \"You're a good Boss, I'm an excellent boss.\"",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.336,
+   "retrieved_question": "Write a formal email to the boss politely asking for leave the next day.\nNoinput",
+   "seconds": 0.23
+  },
+  {
+   "section": "chat",
+   "question": "What should I cook for dinner tonight?",
+   "answer": "I should cook for dinner tonight.",
+   "answer_without_memory": "To make dinner tonight, you can use the following ingredients: 1 cup of coffee, 1/2 cup of sugar, 2 tablespoons of sugar and 1 teaspoon of salt.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.14,
+   "retrieved_question": "What kind of food would be appropriate for a romantic dinner?",
+   "seconds": 0.11
+  }
+ ]
+}
