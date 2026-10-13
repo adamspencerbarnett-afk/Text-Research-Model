@@ -102,6 +102,8 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-sp
 <tr><td>Compiler against a standard tokenizer</td><td class="num">±1%</td><td>The compiler is a tokenizer with stable word keys; keep it for exact copying, expect no intelligence from it.</td></tr>
 <tr><td>Verified self-training (keep only checked solutions)</td><td class="num">2.5% → 4.0% at 5M</td><td>Practice with a verifier is the one method that moved reasoning; apply it to text tasks with checkable answers.</td></tr>
 <tr><td>Energy per answer, 5M, idle GPU</td><td class="num">29 J, 0.45 s</td><td>Record cost beside accuracy for every run; the "lighter" claim must be a measured joule count.</td></tr>
+<tr><td>Copying into a retrieved template vs choosing the operations (GSM8K, every size and depth)</td><td class="num">42–45% vs 0–2%</td><td>Let the network fill slots, never compute: a program tier in memory with an exact executor (3.11), the descendant of the September typed-program work.</td></tr>
+<tr><td>The September system whenever its typed program was correct (Phase 12, V1 routine set)</td><td class="num">98–100%</td><td>Exact execution works; its failure was the parse from open language, which in this design is retrieval plus copying, trained on open text.</td></tr>
 </table></div>
 
 <h2 id="picture">2. The system in one picture</h2>
@@ -118,7 +120,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-sp
 <text class="s" x="175" y="108">1 exact hash (µs)</text><text class="s" x="175" y="122">2 lexical + dense (ms)</text><text class="s" x="175" y="136">3 reranker, top 10</text><text class="s" x="175" y="150">4 learned gate</text><text class="s" x="175" y="164">also: duplicate check</text>
 <!-- memory tiers -->
 <rect class="box m" x="310" y="70" width="130" height="110" rx="6"/><text class="t" x="320" y="90">Memory tiers</text>
-<text class="s" x="320" y="108">exact Q&amp;A pairs</text><text class="s" x="320" y="122">passages (200–500 w)</text><text class="s" x="320" y="136">session (this chat)</text><text class="s" x="320" y="150">learned layer (in core)</text><text class="s" x="320" y="164">tools: calculator, date</text>
+<text class="s" x="320" y="108">exact Q&amp;A pairs</text><text class="s" x="320" y="122">passages (200–500 w)</text><text class="s" x="320" y="136">session (this chat)</text><text class="s" x="320" y="150">programs (typed, exact)</text><text class="s" x="320" y="164">learned layer (in core)</text>
 <!-- context builder -->
 <rect class="box" x="165" y="220" width="275" height="100" rx="6"/><text class="t" x="175" y="240">Context builder</text>
 <text class="s" x="175" y="258">packs the window: recent turns · top-k evidence with</text><text class="s" x="175" y="272">confidence tags · question · thinking budget</text>
@@ -129,7 +131,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-sp
 <rect class="box" x="495" y="118" width="60" height="30" rx="4"/><text class="s" x="501" y="137">network</text>
 <rect class="box" x="562" y="118" width="60" height="30" rx="4"/><text class="s" x="568" y="137">copy ptr</text>
 <rect class="box" x="629" y="118" width="60" height="30" rx="4"/><text class="s" x="635" y="137">mem layer</text>
-<rect class="box" x="696" y="118" width="50" height="30" rx="4"/><text class="s" x="702" y="137">tools</text>
+<rect class="box" x="696" y="118" width="50" height="30" rx="4"/><text class="s" x="700" y="137">program</text>
 <text class="s" x="495" y="166">inputs to the trust head: hidden state, retrieval</text><text class="s" x="495" y="180">similarity and rerank score, copy confidence</text>
 <text class="s" x="495" y="194">reasoning: think codes, SEARCH requests mid-answer</text>
 <!-- decoder -->
@@ -182,7 +184,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-sp
 <div class="part mem"><h3>3.2 Memory tiers and the duplicate check</h3>
 <dl class="kv">
 <dt>Role</dt><dd>Hold knowledge outside the weights in the cheapest store that is still correct for its kind.</dd>
-<dt>Design</dt><dd>Four tiers. <b>Exact:</b> question–answer pairs keyed by content words, hashed; returns the stored answer verbatim. <b>Passage:</b> documents cut into 200–500-word chunks with a title and source, indexed lexically and densely; this is the RAG tier we lack. <b>Session:</b> the current conversation's turns, indexed the same way, cleared or archived at the end. <b>Learned:</b> a product-key memory layer inside the core (section 3.5), filled by consolidation. Tools (calculator, date, unit conversion) are a fifth source the mixer can call.</dd>
+<dt>Design</dt><dd>Five tiers. <b>Exact:</b> question–answer pairs keyed by content words, hashed; returns the stored answer verbatim. <b>Passage:</b> documents cut into 200–500-word chunks with a title and source, indexed lexically and densely; this is the RAG tier we lack. <b>Session:</b> the current conversation's turns, indexed the same way, cleared or archived at the end. <b>Program:</b> question patterns paired with small typed programs with slots, run by an exact executor (section 3.11); the calculator and date arithmetic are its first entries. <b>Learned:</b> a product-key memory layer inside the core (section 3.5), filled by consolidation. All five are searched by the same cascade.</dd>
 <dt>Duplicate check</dt><dd>On every add: exact hash (µs); if no hit, the rarest two or three content words select candidates from the inverted index and only those are scored (ms); between 0.5 and 0.9 similarity, the model is asked the question and the pair is skipped if it already answers correctly. Conflicts (same question, different answer) replace the old entry and log it.</dd>
 <dt>Evidence</dt><dd>Exact path 100%; taught facts 77% F1 after rewording; evidence shown to the core cuts its error 33–36%; count tables (an untrained memory layer) reversed with size, so the in-core tier must be trained.</dd>
 <dt>Interface</dt><dd><code>add(kind, key_text, payload, source) → id | duplicate_of</code>; <code>candidates(query, k) → [(id, lexical, dense)]</code>; <code>get(id) → codes</code>.</dd>
@@ -216,7 +218,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-sp
 <div class="part core"><h3>3.5 Generator core</h3>
 <dl class="kv">
 <dt>Role</dt><dd>Read what it is given, write fluent language, and plan a few steps; it does not need to know facts.</dd>
-<dt>Design</dt><dd>Shallow-wide Transformer, 100–300M parameters, modern block (RoPE, RMSNorm, SwiGLU), 6–8 layers, width 1,024–1,536, grouped-query attention for a small cache, tied embeddings, bf16 training, int8 weights at rest. A product-key memory layer after the middle block, 1–10M entries, is the learned tier. Multi-token prediction heads (2 extra) give draft codes for the decoder and a small planning gain. Training recipe: whichever of AdamW, Muon, cosine and warmup-stable-decay wins session 20, trained long (the 50M core saw only ~20 codes per parameter; the 5M core ~200).</dd>
+<dt>Design</dt><dd>Shallow-wide Transformer, 100–300M parameters, modern block (RoPE, RMSNorm, SwiGLU), 6–8 layers, width 1,024–1,536, grouped-query attention for a small cache, tied embeddings, bf16 training, int8 weights at rest. A product-key memory layer after the middle block is the learned tier: 256k–1M entries with 128-wide values projected up to the width (33–130M parameters, int8 at rest; values at full width would be billions of parameters, so the value width is the lever). Multi-token prediction heads (2 extra) give draft codes for the decoder and a small planning gain. The copy pointer reuses the last layer's attention keys instead of its own projection (one fewer matrix product per code). Training recipe: whichever of AdamW, Muon, cosine and warmup-stable-decay wins session 20, trained long (the 50M core saw only ~20 codes per parameter; the 5M core ~200). Dictionary size is a research item: 16k–32k codes would shorten sequences by about 15–20% at a small embedding cost (11.1).</dd>
 <dt>Evidence</dt><dd>Reading 1% → 28% from 5M to 50M; depth did not help and cost speed; modern block −1 to −7% on text; count tables reversed with size.</dd>
 <dt>Interface</dt><dd><code>hidden(codes) → states</code>, <code>step(code, pos, cache) → logits, state</code>; the mixer and decoder see only these.</dd>
 <dt>Failure modes</dt><dd>Memorising the Q&amp;A set in stage 2 (rehearsal of stage-1 text, 30%, as now); the learned layer hoarding frequent trivia (consolidation picks by use, with decay); undertrained at 300M on one GPU (WSD lets the run be resumed across nights).</dd>
@@ -227,7 +229,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-sp
 <div class="part core"><h3>3.6 Output mixer: the trust head</h3>
 <dl class="kv">
 <dt>Role</dt><dd>For every code, choose between the network, the copy pointer, the learned memory and a tool, by how much each can be trusted right now.</dd>
-<dt>Design</dt><dd>As today, a small head over the hidden state that outputs mixture weights over sources, extended with the retrieval scores (lexical, dense, rerank, gate decision) and the copy pointer's confidence. Tools are a source whose "distribution" is a single code sequence (the calculator's result, a date). The mixer is trained jointly with the core on the stage-2 loss, so it learns when copying is right and when it is not.</dd>
+<dt>Design</dt><dd>As today, a small head over the hidden state that outputs mixture weights over sources, extended with the retrieval scores (lexical, dense, rerank, gate decision) and the copy pointer's confidence. The program tier is a source whose "distribution" is a single code sequence: the executor's result, copied out in one draft. The mixer is trained jointly with the core on the stage-2 loss, so it learns when copying is right and when it is not. Training windows carry three kinds of bad evidence, a distractor, nothing, and two conflicting pieces with different confidence tags, so the head learns to prefer the better-tagged source and to fall back to the network.</dd>
 <dt>Evidence</dt><dd>The copy pointer is what lifted 13% to 89%; the leave-one-out trust head over count tables gave 9–11% at 5M and was dropped at 20M, so the head itself works and the sources must be the right ones.</dd>
 <dt>Interface</dt><dd><code>mix(state, sources, confidences) → log-probabilities over codes</code>.</dd>
 <dt>Failure modes</dt><dd>Over-copying from a wrong match (distractor training in 3.5 and the gate); mixing probabilities in bf16 (the mixer runs in fp32, as now).</dd>
@@ -238,7 +240,7 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-sp
 <div class="part core"><h3>3.7 Decoder: one graph replay per code, several codes when copying</h3>
 <dl class="kv">
 <dt>Role</dt><dd>Make answering as fast as the hardware allows.</dd>
-<dt>Design</dt><dd><b>CUDA graph step</b> (built, 12 October): fixed-size buffers for the window, attention cache and copy keys; one launch per code; identical replies. <b>Copy-as-draft:</b> when the pointer is copying from a retrieved answer, the next k codes of that answer are a draft; one forward pass over the draft verifies them and keeps the longest agreeing prefix (prompt-lookup decoding, which is strongest exactly on evidence-copying answers). The multi-token heads supply drafts when not copying. <b>Precision:</b> bf16 weights (identical to fp32), int8 at rest; compute in fp32 inside the graph because low-bit kernels were slower at these sizes.</dd>
+<dt>Design</dt><dd><b>CUDA graph step</b> (built, 12 October): fixed-size buffers for the window, attention cache and copy keys; one launch per code; identical replies. <b>Copy-as-draft:</b> when the pointer is copying, the next k codes after its target are a draft, taken from anywhere in the window (the retrieved answer, a passage, an earlier turn); one batched replay verifies them and keeps the longest agreeing prefix (prompt-lookup decoding, strongest exactly on evidence-copying answers). The multi-token heads supply drafts when nothing matches; a program result is one draft. <b>Evidence cache:</b> every passage's attention keys and values are computed once and stored unrotated; the rotary rotation is applied at attention time by the evidence's slot in the window, so cached states are position-independent and prefill covers only the question and history. Without this, prefill dominates at 1–2k-code windows. <b>Early stop:</b> the support check runs inside the loop as a running count of unsupported content words, so a failing answer stops early. <b>Precision:</b> bf16 weights (identical to fp32), int8 at rest; compute in fp32 inside the graph because low-bit kernels were slower at these sizes.</dd>
 <dt>Evidence</dt><dd>11.7 → 1.75 ms per code at 5M, 14.6 → 3.6 at 50M; low-bit kernels 1.4–4x slower and altered replies; the GPU is launch-bound below ~300M.</dd>
 <dt>Interface</dt><dd><code>answer(context, max_codes, draft_source) → codes</code>, with the per-code mixer called inside the graph.</dd>
 <dt>Failure modes</dt><dd>Answers past the window (fall back to the eager loop); drafts verified in a different numeric path than single steps (verify with the same graph shape, batch of k); graphs captured per window size (one per budget).</dd>
@@ -249,9 +251,9 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-sp
 <div class="part acc"><h3>3.8 Reasoning and dialogue: a chatbot, not a lookup</h3>
 <p>A lookup system returns what it finds. A chatbot has to follow the conversation, decide what it needs, think in steps and know when it is wrong. The research says a small network cannot do that from its weights alone (math stayed at 2–4% at every size and depth), so reasoning here is built from pieces that each work at small scale: memory of the conversation, retrieval the model can request, explicit thinking codes trained by verified practice, and a check before answering.</p>
 <dl class="kv">
-<dt>Dialogue state</dt><dd>The session tier holds every turn; the context builder always includes the last two turns verbatim and retrieves older ones by content, so "the second one" and "as I said earlier" have referents. Entities named in the conversation are added to the exact tier as temporary facts ("my dog's name is Rex") and retrieved like any other.</dd>
-<dt>Retrieval the model asks for</dt><dd>Interleaved retrieval: a special code <code>SEARCH</code> followed by a short query ends a thinking step; the engine runs the cascade, inserts the results, and generation continues. Multi-hop questions become two short searches instead of one impossible one. Trained from traces built automatically from the evidence pairs (question → query → passage → answer).</dd>
-<dt>Thinking codes</dt><dd>A bounded scratch region before the answer (special <code>THINK … END</code> codes, never shown) in which the model writes the steps: restate what is asked, list what the evidence says, resolve references, decide. Small models gain from explicit steps because each step is a short, local prediction. The budget is small (64–128 codes) and cheap under the graph.</dd>
+<dt>Dialogue state</dt><dd>The session tier holds every turn; the context builder always includes the last two turns verbatim and retrieves older ones by content, so "the second one" and "as I said earlier" have referents. Facts the user states ("my dog's name is Rex", "I have five apples") are added to the exact tier and, where they fit a pattern, to the program tier as typed state (entity, attribute, value), the September event row; "how many apples now?" is then a state query, executed exactly. Older history is summarised extractively (entity facts plus the last answers), never by generation, so summaries are free and verifiable.</dd>
+<dt>Retrieval the model asks for</dt><dd>Interleaved retrieval: a special code <code>SEARCH</code> followed by a short query ends a thinking step; the engine runs the cascade, inserts the results, and generation continues. Multi-hop questions become two short searches instead of one impossible one, with a two-hop limit. Trained from traces built automatically from the evidence pairs (question → query → passage → answer) and from synthetic two-hop chains.</dd>
+<dt>Thinking codes</dt><dd>A bounded scratch region before the answer (special <code>THINK … END</code> codes, never shown) in which the model writes the steps: restate what is asked, list what the evidence says, resolve references, decide. Small models gain from explicit steps because each step is a short, local prediction. The budget is small (64–128 codes) and cheap under the graph. <b>Thinking is adaptive:</b> exact hits, program answers and matches the gate marks confident skip it entirely, so most turns spend no thinking codes; only uncertain turns think. The loss on thinking codes comes only from verified traces, never from unverified ones, or the model learns to ramble.</dd>
 <dt>How it is trained</dt><dd>Verified practice, the method that moved math 2.5% → 4.0% and the one behind current reasoning models, applied to text tasks with checkable answers: reading comprehension with exact-match answers (SQuAD, HotpotQA-style multi-hop), entity tracking in dialogue, consistency questions over the session ("what did I say my name was?"). The model samples thinking + answer; only traces whose answer the checker confirms are kept and trained on. Then preference tuning (DPO) on pairs of better and worse conversational answers for tone, staying on topic and stopping.</dd>
 <dt>Self-check and refusal</dt><dd>The support check (3.9) runs on the draft answer; if unsupported, the model may search once more or answer "I don't know, the closest I have is …" with the nearest match. A chatbot that says this is more useful than one that guesses.</dd>
 <dt>Open research</dt><dd>How much thinking a 100–300M model can use before it drifts; whether thinking traces should be retrievable (a worked pattern memory, the text version of the math template idea); interleaved search against single-shot top-k; the right checkers for conversational tasks.</dd>
@@ -264,8 +266,8 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-sp
 <dt>Design</dt><dd>For each content word of the draft answer, the trust head's source weights say whether it was copied (from which evidence id), produced by the network with what probability, or computed by a tool. An answer whose unsupported share exceeds a threshold is flagged; the engine then searches once more or returns a refusal with the nearest match. Replies carry source ids; the chat prints them, as the memory line does today.</dd>
 <dt>Evidence</dt><dd>The memory path cannot hallucinate; the network path does (the 'graphics card' reply). The signals already exist in the mixer; this is the text version of the paused math check loop.</dd>
 <dt>Interface</dt><dd><code>check(answer_codes, source_weights) → support_share, sources, verdict</code>.</dd>
-<dt>Failure modes</dt><dd>Fluent connective words counted as unsupported (only content words count); paraphrased copies missed (match on the dense key of the sentence, not only exact words).</dd>
-<dt>Open research</dt><dd>Calibrating the threshold per size; learning the verdict instead of thresholding.</dd>
+<dt>Failure modes</dt><dd>Fluent connective words counted as unsupported (only content words count); paraphrased copies missed (match on the dense key of the sentence, not only exact words); a slot copied into a program from the wrong entity gives a confident wrong answer (slot copies carry the pointer's confidence like any copy, and a low one blocks execution).</dd>
+<dt>Open research</dt><dd>The support threshold is a placeholder: it is fitted per core size on a set with known-unanswerable questions; learning the verdict instead of thresholding.</dd>
 <dt>Decides</dt><dd>Refusal precision and recall on a set with known-unanswerable questions; hallucination rate on new questions.</dd>
 </dl></div>
 
@@ -280,6 +282,19 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-sp
 <dt>Decides</dt><dd>Added-fact accuracy after consolidation, stored accuracy must not fall, probe before and after a night of practice.</dd>
 </dl></div>
 
+<div class="part acc"><h3>3.11 Program tier: exact execution of retrieved typed programs</h3>
+<p>The September system's strongest idea returns in the one form that fits an open-language chat: not a hand-written grammar, but programs stored in memory and found by retrieval. The network never computes; it chooses a pattern and fills its slots by copying, which is its proven strength, and an executor does the rest exactly.</p>
+<dl class="kv">
+<dt>Role</dt><dd>Give a small network exact multi-step results it cannot produce from its weights: counting, comparing, dates and durations, units, list operations, dialogue state ("I had five, gave two"), consistency against stored facts, and multi-hop queries over memory (find, filter, join). Arithmetic word problems join later, when the math line opens, through the same slot.</dd>
+<dt>Design</dt><dd>An entry is (question pattern, typed program with slots, executor). Programs are V1's event rows generalised: a short list of typed operations over entities, attributes and values. At answer time the cascade retrieves candidate patterns like any other entry; the network fills each slot by pointing at a span in the question or evidence (the copy pointer, with its confidence); the executor runs the program on the CPU in microseconds; the result becomes a source for the trust head and is copied out as one draft. A result is fully supported by construction, so the support check never fires on it. Low slot confidence blocks execution and the turn falls back to text.</dd>
+<dt>Evidence</dt><dd>GSM8K: templates copied at 42–45% on stored problems while operation choice stayed at 0–2% at every size and depth, so choosing, not filling, is the failure; Phase 12 composed programs 98%; V1 at 100% when the program was right; the calculator already confirms steps. The parse from open language was V1's failure, and here the parse is retrieval plus copy, trained on open text.</dd>
+<dt>Interface</dt><dd><code>programs.match(question, hits) → [(pattern_id, slots: [(name, type)])]</code>; <code>fill(slots, pointer) → values, confidences</code>; <code>execute(program, values) → result_codes | error</code>.</dd>
+<dt>Training</dt><dd>Programs give ground truth for free: unlimited question–program–answer traces are generated by executing programs over synthetic worlds, as V1's test worlds were, then reworded through the dense key's neighbours and the rewording data. Verified practice therefore has a perfect checker for this tier. Stage 2 trains slot pointing; stage 3 trains pattern choice on the traces.</dd>
+<dt>Failure modes</dt><dd>Coverage: only what has a program is exact; everything else goes to the network, so this raises the floor on structured questions and is not a general reasoner. Wrong pattern retrieved: exact and wrong, so the gate and reranker matter here as much as for text. Slot errors: handled by confidence; measured as a separate error class.</dd>
+<dt>Open research</dt><dd>How large a program library a 100–300M model can choose from before pattern choice degrades; whether patterns should be retrieved by the question's dense key or by a learned "program key"; composing two programs in one turn; when to add the arithmetic library (math line).</dd>
+<dt>Decides</dt><dd>Exact rate on a structured-question set (dates, counts, state, consistency) against the network alone; pattern-choice accuracy; slot error rate; refusal precision on questions with no program.</dd>
+</dl></div>
+
 <h2 id="software">4. Software architecture</h2>
 <p>One process per chat engine; retrieval and encoding on CPU threads; one GPU stream for generation; a second for the dense encoder and reranker so they overlap with decoding of the previous turn. Every module has one job, one interface, and a test that compares it with the eager reference implementation, as the graph step is tested today.</p>
 <h3>4.1 Module map</h3>
@@ -287,7 +302,8 @@ td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-sp
 memory/              ExactStore, PassageStore, SessionStore, Dedup     (ExchangeMemory exists; split and extend)
 retrieval/           LexicalIndex, DenseIndex, Reranker, Gate, Cascade (lexical + dense exist)
 context/             ContextBuilder, SpanMasks, Budget
-model/               Core (blocks, memory layer, MTP heads), CopyHead, TrustHead, Tools   (V2LM exists)
+model/               Core (blocks, memory layer, MTP heads), CopyHead, TrustHead   (V2LM exists)
+programs/            ProgramStore, SlotFiller, Executor (typed ops: state, count, compare, date, unit, find/filter/join)
 decode/              GraphStep, DraftDecoder, EagerLoop (reference)   (GraphStep exists)
 reason/              Dialogue, ThinkBudget, SearchRequest, SupportCheck
 learn/               WriteBack, Practice (STaR), Consolidate, Trainer (stages 1–4), Cost meter   (STaR, cost exist)
@@ -455,8 +471,13 @@ AddReport= (stored: int, duplicates: int, conflicts_replaced: int)</pre>
 <tr><td>9</td><td>Does a learned memory layer keep helping as size grows?</td><td>Product-key layer, 1–10M entries, at 5M and the larger core</td><td>report card and stored/new groups at equal compute</td><td>2 days</td><td>session 27</td></tr>
 <tr><td>10</td><td>At what size does reading become good?</td><td>100M, 200M, 300M cores, same recipe, trained long</td><td>SQuAD EM from passages; probe; joules</td><td>3–5 nights</td><td>session 28</td></tr>
 <tr><td>11</td><td>Does the design hold against a conventional RAG system?</td><td>0.5B instruct model with the same retriever and questions, both at their best precision</td><td>accuracy and joules per answer, side by side</td><td>1 day</td><td>session 29</td></tr>
-<tr><td>12</td><td>Can retrieval be ours end to end?</td><td>In-domain contrastive key replacing the outside encoder</td><td>recall@1 vs all-MiniLM</td><td>2 days</td><td>later</td></tr>
+<tr><td>12</td><td>Can retrieval be ours end to end?</td><td>The core's own state through a 128-wide head, trained contrastively on in-domain rewordings, replacing the outside encoder</td><td>recall@1 vs all-MiniLM; parameters saved (22M)</td><td>2 days</td><td>session 23</td></tr>
 <tr><td>13</td><td>Adapters vs memory layer for consolidation; practice per night</td><td>Nightly runs on the chat logs with checkers</td><td>added-fact accuracy over a week; stored unchanged</td><td>ongoing</td><td>later</td></tr>
+<tr><td>14</td><td>Does a program tier give exact answers a small network cannot?</td><td>Program store with state, count, compare, date and unit programs; synthetic verified traces; slot pointing in S2, pattern choice in S3</td><td>exact rate on a structured set vs network alone; slot and pattern error rates</td><td>3 days</td><td>session 25</td></tr>
+<tr><td>15</td><td>Can the core rerank its own candidates?</td><td>Score top 10 by the drop in the question's surprise given each candidate (evidence gain), one batched prefill</td><td>recall@1 vs a cross-encoder; zero new parameters</td><td>half a day</td><td>session 22</td></tr>
+<tr><td>16</td><td>Does a larger dictionary make answers faster per byte?</td><td>16k and 32k dictionaries at 100M, equal text</td><td>codes per KB, ms per byte, bits per byte, memory recall unchanged</td><td>1 night</td><td>session 28</td></tr>
+<tr><td>17</td><td>How much does the evidence cache save?</td><td>Unrotated cached keys/values per passage, rotation at attention time</td><td>prefill ms at 1k and 2k windows; replies identical</td><td>1 day code</td><td>session 23</td></tr>
+<tr><td>18</td><td>Is a trained gate better than a threshold?</td><td>Gate trained on whether using the evidence improved the answer; adaptive thinking keyed to it</td><td>wrong-evidence test; thinking codes spent per turn</td><td>1 day</td><td>session 22</td></tr>
 </table></div>
 
 <h2 id="risks">8. Risks and honest limits</h2>
@@ -472,7 +493,7 @@ AddReport= (stored: int, duplicates: int, conflicts_replaced: int)</pre>
 <li>Reranker, distractor training, copy-as-draft decoding, duplicate check in the chat tool.</li>
 <li>Passage tier and the multi-turn probe; session memory in the chat.</li>
 <li>Modern dialogue data, multi-turn windows, preference tuning.</li>
-<li>Thinking codes and self-requested search with verified practice; the support check and refusal.</li>
+<li>Program tier (state, count, date, unit, find/filter/join) with synthetic verified traces; thinking codes and self-requested search with verified practice; the support check and refusal.</li>
 <li>Learned memory layer; consolidation and nightly practice.</li>
 <li>100M, 200M, 300M cores with the winning recipe, trained across nights; int8 release.</li>
 <li>The 0.5B RAG baseline on the same questions, accuracy and joules side by side; write-up.</li>
@@ -547,7 +568,8 @@ gate(hits, k):                      # learned; a 2-layer net on (lexical, dense,
         ev += [TAG[bucket(h.rerank)]] + encode(render(h)) + [SEP]
     hist = []
     for t in turns[-2:]: hist += encode("User: " + t.user + "\nAssistant: " + t.reply) + [SEP]
-    if len(hist) + len(ev) + len(q) + think_budget > budget: hist = encode(session_summary(turns)) + [SEP]
+    if len(hist) + len(ev) + len(q) + think_budget > budget:
+        hist = encode(extractive_summary(turns)) + [SEP]        # entity facts + last answers; never generated
     older = retrieve(question, scope=session)               # earlier turns by content, as evidence
     codes = hist + ev + encode("User: " + question + "\nAssistant:")
     spans = {source i: positions of its codes}              # the copy pointer may point only inside spans
@@ -562,8 +584,9 @@ gate(hits, k):                      # learned; a 2-layer net on (lexical, dense,
         return x + Wdown @ (silu(Wgate @ rmsnorm(x)) * Wup @ rmsnorm(x))   # SwiGLU, inner = 8D/3
 
 class MemoryLayer:                  # product-key memory, after block L/2
-    keys: two tables of sqrt(N) half-keys (D/2 each); values: Embedding(N, D)
-    forward(x): q = Wq @ x; top-k over cartesian product of half-key scores (k=32); return x + sum softmax(s) * values[idx]
+    keys: two tables of sqrt(N) half-keys (D/2 each); values: Embedding(N, 128); up: Linear(128, D)   # N = 256k..1M
+    forward(x): q = Wq @ x; top-k over cartesian product of half-key scores (k=32); return x + up(sum softmax(s) * values[idx])
+    # value width 128 keeps the tier at 33-130M parameters (int8 at rest); full-width values would be billions
 
 class Core:
     hidden(codes):                  # (B, T) -> (B, T, D)
@@ -576,15 +599,17 @@ class Core:
 <pre>mix(h_last, ctx, sources):          # h_last: (D,) ; returns log-probabilities over V
     p_net  = softmax(h_last @ E.T)
     # copy pointer: attend over the window's states where spans allow; probability mass goes to the follower code
-    s      = (Wq_copy @ h_last) . (Wk_copy @ states[j]) / sqrt(D)  for j < t and j in allowed spans
+    s      = (Wq_copy @ h_last) . K_last[j] / sqrt(D)  for j < t and j in allowed spans   # K_last: the last block's attention keys, reused
     a      = softmax(s); p_copy = scatter_add(zeros(V), next_code[j], a[j])
     p_mem  = softmax(memory_layer.readout(h_last))              # optional direct readout of the learned tier
-    p_tool = one_hot(tool_result_code) if a tool fired else zeros(V)
+    p_prog = one_hot(program_result_code) if a program ran else zeros(V)
     conf   = [max a, entropy(a), lexical, dense, rerank, gate]  # retrieval confidence enters here
-    w      = softmax(Wmix @ concat(h_last, conf))               # weights over (net, copy, mem, tool)
-    return log(w . [p_net, p_copy, p_mem, p_tool] + 1e-9)       # computed in fp32
+    w      = softmax(Wmix @ concat(h_last, conf))               # weights over (net, copy, mem, program)
+    return log(w . [p_net, p_copy, p_mem, p_prog] + 1e-9)       # computed in fp32
 
-training loss (stage 2) = -log mix(...)[target] on answer codes only; 30% of windows carry a distractor or no evidence</pre>
+training loss (stage 2) = -log mix(...)[target] on answer codes only
+    30% of windows carry bad evidence: a distractor (10%), nothing (10%), or two conflicting pieces with different tags (10%)
+    the gate is trained on the same windows with the target "did using the evidence lower the answer loss?"</pre>
 
 <h3>10.7 Decoder: graph step and copy-as-draft</h3>
 <pre>buffers (fixed, on GPU): win[C] codes, K[L][H][C][d], V[L][H][C][d], states[C][D], copy_keys[C][D], spans[C], pos scalar
@@ -595,30 +620,43 @@ graph_step(code, p):                # recorded once with torch.cuda.graph, repla
     copy_keys[p] = Wk_copy @ h
     return mix(h, win, spans)        # logits for position p+1
 
+evidence_cache[id] = (K_unrotated[L][H][n][d], V[L][H][n][d])    # computed once per passage, stored int8 on disk / fp16 in RAM
+
+prefill(ctx):
+    for each evidence span e at slot s: K[l][:, s:s+n] = rotate(evidence_cache[e].K, by positions s..s+n); V likewise   # no recompute
+    run the history + question codes eagerly (the only new tokens); logits = mix(last state)
+
 answer(ctx, max_codes):
-    prefill: run the whole context once eagerly, fill the buffers; logits = mix(last state)
-    p = len(ctx.codes); out = []
+    prefill(ctx); p = len(ctx.codes); out = []; unsupported = 0
     while len(out) < max_codes:
         c = argmax(logits masked by never-seen codes and repeat blocking)
         if c == EOS: break
         out.append(c)
-        if copying (w_copy > 0.5) and pointer target j has k following codes:            # copy-as-draft
-            draft = win[j+1 : j+1+k]
-            logits_k = graph_verify(draft, p)        # one batched replay over k positions
-            accept the longest prefix where argmax(logits_k[i]) == draft[i]; append; p += accepted
-            logits = logits_k[accepted]; continue
-        logits = graph_step(c, p); p += 1
+        if is_content(c) and not (w.copy >= 0.5 or w.program >= 0.5 or p_net[c] >= 0.6): unsupported += 1
+        if unsupported > SUPPORT_LIMIT: break                 # early stop: the support check runs inside the loop
+        if a program fired: draft = result_codes            # one draft, fully supported
+        elif copying (w.copy > 0.5): j = pointer target; draft = win[j+1 : j+1+k]   # any span: answer, passage, earlier turn
+        else: draft = mtp_heads(h)                            # 2 codes from the multi-token heads
+        logits_k = graph_verify(draft, p)                     # one batched replay over k positions
+        accept the longest prefix where argmax(logits_k[i]) == draft[i]; append; p += accepted
+        logits = logits_k[accepted] if accepted < k else graph_step(draft[-1], p)
     return out, per-code source weights w</pre>
 
 <h3>10.8 Reasoning: thinking codes, self-requested search, support check</h3>
 <pre>turn(question, session):
     hits = retrieve(question, session.turns)
     if hits and hits[0].lexical == 1.0: reply = entries[hits[0].id].payload; store(session, question, reply); return reply, sources=[hits[0].id]
+    prog = programs.match(question, hits)                        # program tier: exact where a pattern fits
+    if prog and (values, conf := fill(prog.slots, pointer)) and min(conf) >= 0.8:
+        result = execute(prog, values)
+        if result is not error: reply = render(result); store(session, question, reply); return reply, sources=[prog.id] + slot sources
     ctx = build(session.turns, hits, question)
+    think = not (hits and gate_confident(hits[0]))                # adaptive: confident matches skip thinking
     for attempt in range(2):
-        codes, w = answer(ctx + [THINK], max_codes=think_budget + answer_budget)
-        while SEARCH in codes:                                   # the model asked for evidence mid-thought
-            query = decode(codes after SEARCH up to END)
+        codes, w = answer(ctx + ([THINK] if think else []), max_codes=(think_budget if think else 0) + answer_budget)
+        hops = 0
+        while SEARCH in codes and hops < 2:                      # the model asked for evidence mid-thought; two hops at most
+            hops += 1; query = decode(codes after SEARCH up to END)
             more  = retrieve(query, session.turns); ctx = insert(ctx, more); codes, w = resume(ctx, codes)
         thought, reply = split(codes, END)                       # thought is never shown
         verdict = support_check(reply, w, ctx)
@@ -631,10 +669,26 @@ support_check(reply, w, ctx):
     content = [i for i, c in enumerate(reply) if is_content_word(c)]
     supported = [i for i in content if w[i].copy >= 0.5 or w[i].tool >= 0.5 or w[i].net_prob >= 0.6]
     share = len(supported) / max(1, len(content))
-    return Verdict(ok = share >= 0.7, sources = {evidence id of each copied code}, share)
+    return Verdict(ok = share >= THRESHOLD[core_size], sources = {evidence id of each copied code}, share)   # fitted per size on known-unanswerable questions
 
-stage-3 training (verified practice): for task in (reading EM, multi-hop EM, dialogue consistency):
-    sample 4 answers with thinking at temperature 0.7; keep those whose answer the checker confirms; fine-tune heads + adapters on them</pre>
+stage-3 training (verified practice): for task in (reading EM, multi-hop EM, dialogue consistency, program traces):
+    sample 4 answers with thinking at temperature 0.7; keep those whose answer the checker confirms; fine-tune heads + adapters on them
+    loss on THINK..END codes only from kept traces (never from unverified ones)</pre>
+
+<h3>10.8b Program tier</h3>
+<pre>ProgramEntry = (pattern: question text with slot markers, slots: [(name, type)], program: [op, ...], executor)
+    types: entity, attribute, number, date, duration, unit, list, text
+    ops (typed, exact, CPU): set(entity, attr, value) · add(entity, attr, delta) · get(entity, attr) · count(list, pred)
+                            compare(a, b) · date_add(date, duration) · date_diff(a, b) · convert(value, unit, unit)
+                            find(tier, pred) · filter(rows, pred) · join(rows, rows, key) · check(fact, rows)
+    the September event row (kind, A, B, value, active) is set/add/get over entity state
+
+programs.match(question, hits): candidates = [h for h in hits if h.tier == program][:3]   # retrieved like any entry
+fill(slots, pointer):   for each slot: j = pointer over question + evidence spans restricted to the slot's type; value = parse(type, span j); conf = max attention
+execute(program, values): run ops in order on a fresh state seeded from the session's typed facts; return rendered result or error
+
+synthetic traces (unlimited, verified): world = random entities/attrs/dates; program = random short op list; question = template(program) reworded
+    through the rewording data; answer = execute(program, world)  ->  (question, pattern, slots, answer) for stages 2 and 3</pre>
 
 <h3>10.9 Learning that never stops</h3>
 <pre>write_back(session, q, reply, verdict):
@@ -672,6 +726,30 @@ training:
     GPU: bf16 autocast, flash attention, fused optimiser step, eval every 300 s on a side stream, checkpoint before scoring
     power sampled every 2 s -> joules per step in the result; utilisation target >= 90%
     warmup-stable-decay: a run can stop at any step in the flat phase and resume the next night</pre>
+
+<h2 id="revision">11. Revision after review: what changed in this design and why</h2>
+<p>The first draft of this document was reviewed against the three objectives, smaller, faster, smarter. Two errors were found and fixed, and the rest of the review became design changes or research items. Each is listed so the reasoning is on record.</p>
+<div class="tablewrap"><table>
+<tr><th>#</th><th>Change</th><th>Objective</th><th>Why</th><th>Where</th></tr>
+<tr><td>1</td><td><b>Memory-layer values at 128 wide, 256k–1M entries</b> (was: 1–10M entries at full width)</td><td>smaller</td><td>Full-width values at 1–10M entries are 1–10 billion parameters, not a 100–300M model. The value width is the lever; the tier is now 33–130M parameters, int8 at rest.</td><td>3.5, 10.5, item 9</td></tr>
+<tr><td>2</td><td><b>Evidence cache with unrotated keys</b></td><td>faster</td><td>Rotary positions rotate keys by absolute position, so cached passage states could not be reused at another slot; prefill would dominate at 1–2k-code windows. Storing unrotated keys and rotating at attention time makes the cache position-independent.</td><td>3.7, 10.7, item 17</td></tr>
+<tr><td>3</td><td><b>Program tier with exact execution</b></td><td>smarter, smaller</td><td>The September result that exact programs score 98–100% when correct, and the GSM8K finding that the network copies templates at 42–45% but chooses operations at 0–2%: let retrieval choose and the network fill, never compute. Skills cost no parameters.</td><td>3.11, 10.8b, item 14</td></tr>
+<tr><td>4</td><td><b>Retrieval key from the core's own state</b>, trained in-domain, replacing the 22M outside encoder</td><td>smaller</td><td>The outside encoder is bigger than our 5M core and imports outside knowledge. The earlier learned key failed on the wrong training data, not on the idea.</td><td>3.3, item 12</td></tr>
+<tr><td>5</td><td><b>Rerank with the core</b> by evidence gain, no cross-encoder</td><td>smaller</td><td>Scoring top 10 by how much each candidate lowers the question's surprise is the report card's measurement; one batched prefill, zero new parameters.</td><td>3.3, item 15</td></tr>
+<tr><td>6</td><td><b>Copy pointer reuses the last block's attention keys</b></td><td>faster, smaller</td><td>One fewer matrix product and buffer per code.</td><td>3.5, 10.6</td></tr>
+<tr><td>7</td><td><b>Adaptive thinking</b>: exact hits, program answers and confident matches skip thinking</td><td>faster</td><td>The draft always prepended thinking codes; most turns need none. The gate's decision already says when to think.</td><td>3.8, 10.8</td></tr>
+<tr><td>8</td><td><b>Drafts from anywhere in the window</b>, multi-token heads otherwise, program result as one draft</td><td>faster</td><td>More matches accepted per replay than drafting from the retrieved answer only.</td><td>3.7, 10.7</td></tr>
+<tr><td>9</td><td><b>Support check inside the loop</b>, early stop</td><td>faster</td><td>A failing answer stops when its unsupported count passes the limit instead of finishing and being checked afterwards.</td><td>3.7, 10.7</td></tr>
+<tr><td>10</td><td><b>Extractive session summaries</b></td><td>faster</td><td>Generating a summary costs a generation; entity facts plus last answers are free and verifiable.</td><td>3.8, 10.4</td></tr>
+<tr><td>11</td><td><b>Gate trained on outcomes</b>, not a fixed threshold</td><td>smarter</td><td>The stage-2 loss says directly whether using the evidence helped; the gate should learn that.</td><td>10.6, item 18</td></tr>
+<tr><td>12</td><td><b>Three kinds of bad evidence</b> in training: distractor, none, conflicting</td><td>smarter</td><td>Conflicting evidence with different confidence tags teaches the head to prefer the better-tagged source.</td><td>3.6, 10.6</td></tr>
+<tr><td>13</td><td><b>Two-hop limit</b> on self-requested search, with synthetic two-hop traces</td><td>smarter</td><td>Bounded and trained rather than hoped for.</td><td>3.8, 10.8</td></tr>
+<tr><td>14</td><td><b>Thinking loss only from verified traces</b></td><td>smarter</td><td>Training on unverified thoughts teaches rambling.</td><td>3.8, 10.8</td></tr>
+<tr><td>15</td><td><b>Support threshold fitted per size</b></td><td>smarter</td><td>0.7 was a placeholder; it must be calibrated on known-unanswerable questions for each core.</td><td>3.9, 10.8</td></tr>
+<tr><td>16</td><td><b>Dictionary size as a research item</b> (16k–32k)</td><td>faster</td><td>About 15–20% fewer codes per text means faster answers per byte and more evidence per window, at a small embedding cost at 100M.</td><td>3.5, item 16</td></tr>
+<tr><td>17</td><td><b>Index at int8, approximate search past 1M entries</b></td><td>smaller, faster</td><td>Brute-force cosine is fine to about a million entries; beyond that an approximate index, and int8 vectors are a quarter of the size.</td><td>3.3</td></tr>
+</table></div>
+<div class="note"><b>The through-line.</b> From the September semantic compiler to this design, one principle has held: keep exact what can be exact, and learn only the boundary with language. The first attempt placed the boundary at a hand-written grammar and could not leave it. This design places it inside a small trained network with memory on both sides, and brings the exact machinery back as a retrievable program tier.</div>
 </div>
 </body>
 </html>
