@@ -178,7 +178,9 @@ python -m venv .venv
 ```
 
 `run_model.py` shows a menu: train on a folder of text files, or chat with a saved model
-(`models/qa_best_5M_512.pt` is the best small model in git). Chat commands include `/add
+(`models/qa_best_5M_512.pt` is the small model in git; the newer best chat model,
+`models/qa_best_5M_dense.pt`, 24 of 32 on the chat probe, is local until its upload goes through
+and uses the optional `sentence-transformers` package for its retrieval key). Chat commands include `/add
 question || answer` to teach a fact and `/load file.txt` to teach many at once. Settings are at
 the top of the script. Full setup, including corpus rebuilds and GPU use, is in
 [`docs/HANDOFF_LOCAL.md`](docs/HANDOFF_LOCAL.md).

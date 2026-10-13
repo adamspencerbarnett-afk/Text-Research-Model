@@ -60,7 +60,7 @@ SETTINGS = dict(
                             # answers alone. 0.0 for the 5M model (gate 0.5 drops the probe 21 -> 19/32);
                             # 0.5 for the 50M models (21 -> 24/32), whose network alone is good enough
     # --- places
-    BEST_MODEL="models/qa_best_5M_512.pt",     # the best Q&A model in git (menu option 3); the 50M models are local in runs/
+    BEST_MODEL="models/qa_best_5M_dense.pt",   # the best Q&A model in git (menu option 3): probe 24/32; needs sentence-transformers; the 50M models are local in runs/
     MODELS_SUBDIR="models",                    # created inside the dataset folder
     START_DIR=str(Path.home() / "OneDrive" / "Desktop" / "Text Files"),   # where the popups open
 )
