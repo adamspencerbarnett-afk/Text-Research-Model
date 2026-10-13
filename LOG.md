@@ -10,3 +10,11 @@ Short session entries: date, task, files touched, decisions, blockers, next acti
 - **Decisions (Adam):** math paused; bf16 + int8 only; focus on text, Q&A, conversation; build the hybrid design.
 - **Blockers:** none.
 - **Next:** session 20 (Muon / WSD recipe, running), session 21 (dense retrieval in training), then session 22 (core reranking, bad-evidence training, copy-as-draft decoding).
+
+## 2026-10-13 (overnight)
+
+- **Task:** sessions 20 (training recipe) and 21 (dense retrieval) completed; session 22 written and started.
+- **Results:** Muon + warmup-stable-decay best text core (-0.9% bits/byte), WSD alone -0.8% at no cost, answers unchanged at 5M; dense retrieval: retrieved-answer F1 +11-13%, reworded 0.259 -> 0.276, new 0.290 -> 0.299, probe 22/32.
+- **Files:** `m2_qa.py` (`--distractor-p`), `chains/session22_evidence.sh`, ledger, README.
+- **Decisions:** WSD adopted for larger cores; Muon + WSD pending seed 2; dense keys adopted.
+- **Next:** session 22 (bf16 Q&A control, bad-evidence training, Muon + WSD seed 2), then session 23 (passage tier, evidence cache, in-domain retrieval key).

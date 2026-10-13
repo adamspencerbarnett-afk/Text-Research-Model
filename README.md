@@ -125,8 +125,10 @@ the work.
 
 A small pretrained sentence encoder used beside the word-based key raised the rate at which a
 reworded question finds its stored twin from 75.1% to 80.9%. It now finds "What GPU does the
-research computer use?" when asked about the graphics card. Training the model to trust these
-matches is running now.
+research computer use?" when asked about the graphics card. Retrieved answers are 11–13% closer
+to the right answer on reworded and new questions. Trained with this retrieval in the loop, the
+5M model reached its best score yet on new questions (0.299 F1) and 22 of 32 on the chat probe,
+with no loss on stored answers.
 
 ### 8. What did not work, and why that matters
 
@@ -158,9 +160,10 @@ for mid-answer, exact typed programs for counting, dates and conversation state,
 that says "I don't know" when nothing supports an answer. The generator grows to 100–300M
 parameters, the size where reading is likely to become good, while knowledge stays in memory.
 
-Running now (see the queue in [`docs/RUN_LEDGER.md`](docs/RUN_LEDGER.md)): modern training
-recipes (the Muon optimiser and a warmup-stable-decay schedule) on the 5M core, then dense
-retrieval in the training loop.
+Latest training-recipe result: a warmup-stable-decay schedule lowers text error 0.8% at no cost,
+and with the Muon optimiser 0.9%; at 5M neither changed answer scores. Running now (see the
+queue in [`docs/RUN_LEDGER.md`](docs/RUN_LEDGER.md)): training on misleading evidence so the
+model learns when not to copy, and a second seed of the best training recipe.
 
 ## Try it
 
