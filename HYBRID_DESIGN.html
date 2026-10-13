@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hybrid Memory Model Design</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root {
+  --bg: #f6f5f1; --fg: #22251f; --muted: #626a5f; --line: #d9d7cd; --panel: #ffffff; --code: #efeee8;
+  --accent: #7a3e6a; --mem: #2f6f9a; --core: #3d7a46; --gate: #a3561d; --risk: #9b2f2f;
+  --display: "Fraunces", Georgia, serif; --body: "Atkinson Hyperlegible", system-ui, sans-serif; --mono: "JetBrains Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #16181a; --fg: #e7e5de; --muted: #a2a89d; --line: #33383a; --panel: #1e2123; --code: #25292b;
+  --accent: #d394c2; --mem: #7fb6dc; --core: #8fcb95; --gate: #e6a26c; --risk: #ec8b8b; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #16181a; --fg: #e7e5de; --muted: #a2a89d; --line: #33383a; --panel: #1e2123; --code: #25292b;
+  --accent: #d394c2; --mem: #7fb6dc; --core: #8fcb95; --gate: #e6a26c; --risk: #ec8b8b; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--fg); font-family: var(--body); font-size: 16.5px; line-height: 1.6; }
+.wrap { max-width: 920px; margin: 0 auto; padding-block: 36px 72px; padding-inline: 20px; }
+h1 { font-family: var(--display); font-weight: 600; font-size: 2.35rem; line-height: 1.12; margin: 6px 0 10px; text-wrap: balance; }
+h2 { font-family: var(--display); font-weight: 600; font-size: 1.55rem; margin: 52px 0 10px; text-wrap: balance; border-top: 1px solid var(--line); padding-top: 22px; }
+h3 { font-size: 1.07rem; margin: 24px 0 6px; }
+h4 { font-size: .95rem; margin: 14px 0 4px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+p, li { max-width: 74ch; }
+p { margin: 0 0 12px; }
+ul, ol { padding-left: 1.3em; margin: 0 0 12px; }
+li { margin-bottom: 4px; }
+.eyebrow { font-size: .78rem; letter-spacing: .09em; text-transform: uppercase; color: var(--accent); font-weight: 700; margin: 0; }
+.lede { font-size: 1.08rem; color: var(--muted); }
+.status { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 4px; }
+.pill { font-size: .8rem; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line); background: var(--panel); }
+.pill b { color: var(--accent); }
+code { font-family: var(--mono); font-size: .86em; background: var(--code); padding: 1px 4px; border-radius: 3px; }
+pre { font-family: var(--mono); font-size: .8rem; line-height: 1.45; background: var(--code); border: 1px solid var(--line); border-radius: 6px; padding: 12px 14px; overflow-x: auto; margin: 10px 0 16px; }
+.tablewrap { overflow-x: auto; margin: 12px 0 18px; }
+table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+th, td { text-align: left; padding: 7px 9px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: .76rem; letter-spacing: .05em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.part { border-left: 3px solid var(--line); padding: 4px 0 4px 16px; margin: 22px 0; }
+.part.mem { border-color: var(--mem); } .part.core { border-color: var(--core); } .part.gate { border-color: var(--gate); } .part.acc { border-color: var(--accent); }
+.part h3 { margin-top: 0; }
+.kv { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 14px; font-size: .95rem; margin: 6px 0 4px; }
+.kv dt { color: var(--muted); }
+.kv dd { margin: 0; min-width: 0; }
+.note { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 12px 16px; margin: 16px 0; }
+.note.risk { border-left: 4px solid var(--risk); }
+.note.win { border-left: 4px solid var(--core); }
+.diagram { width: 100%; height: auto; display: block; margin: 10px 0 18px; }
+.diagram text { font-family: var(--body); font-size: 12.5px; fill: var(--fg); }
+.diagram .s { font-size: 10.5px; fill: var(--muted); }
+.diagram .t { font-weight: 700; }
+.diagram .mono { font-family: var(--mono); font-size: 10.5px; }
+.diagram .box { fill: var(--panel); stroke: var(--line); stroke-width: 1.2; }
+.diagram .box.m { stroke: var(--mem); stroke-width: 1.6; } .diagram .box.c { stroke: var(--core); stroke-width: 1.6; }
+.diagram .box.g { stroke: var(--gate); stroke-width: 1.6; } .diagram .box.a { stroke: var(--accent); stroke-width: 1.6; }
+.diagram .zone { fill: none; stroke: var(--line); stroke-dasharray: 4 4; }
+.diagram .ln { fill: none; stroke: var(--muted); stroke-width: 1.4; marker-end: url(#arr); }
+.diagram .ln.m { stroke: var(--mem); } .diagram .ln.c { stroke: var(--core); } .diagram .ln.g { stroke: var(--gate); } .diagram .ln.a { stroke: var(--accent); }
+.diagram .dash { stroke-dasharray: 5 4; }
+.diagram .bar { stroke: var(--fg); stroke-width: 1; }
+.diagram .life { stroke: var(--line); stroke-dasharray: 3 3; }
+.diagram .act { fill: var(--code); stroke: var(--line); }
+.stage { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 4px 14px; margin: 14px 0; }
+.stage .id { font-family: var(--mono); font-weight: 500; color: var(--accent); padding-top: 2px; }
+.stage .body { min-width: 0; }
+.stage .done { font-size: .9rem; color: var(--muted); }
+@media (max-width: 560px) { body { font-size: 15.5px; } h1 { font-size: 1.9rem; } .kv { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<p class="eyebrow">Design document · Text Research Model · 12 October 2026</p>
+<h1>The Hybrid Memory Model: a fast, lightweight chat system that keeps its knowledge outside its weights</h1>
+<p class="lede">Research concept and direction by Adam Barnett. This document takes what three weeks of measured results established, adds the parts of modern retrieval-augmented generation (RAG) that fix our measured weaknesses, and designs one system around them: a small network that reads, copies, reasons in steps and checks itself, over a memory it can search in microseconds and learn into at once. Each part is designed in the same loop: role, design, evidence from our runs, interfaces, failure modes, open research, and the measurement that decides it.</p>
+<div class="status">
+  <span class="pill"><b>Status</b> design, not yet built</span>
+  <span class="pill"><b>Evidence</b> docs/RUN_LEDGER.md (every number here)</span>
+  <span class="pill"><b>Target</b> 100–300M core · bf16 · int8 weights · one consumer GPU</span>
+  <span class="pill"><b>Math</b> out of scope (own research line later)</span>
+</div>
+
+<h2 id="learned">1. What the research proved, and what each result forces in the design</h2>
+<p>Every design decision below descends from a number in the ledger. The right-hand column is the rule the result imposes.</p>
+<div class="tablewrap"><table>
+<tr><th>Result</th><th class="num">Measured</th><th>Design rule</th></tr>
+<tr><td>A network trained with its retrieved exchange in the window, plus a copy pointer, answers stored questions</td><td class="num">13% → 89% F1</td><td>Train the generator with retrieval in the loop. Keep the copy pointer. These are the two strongest results of the research.</td></tr>
+<tr><td>Stored questions through the exact memory path</td><td class="num">100% exact</td><td>Keep an exact tier that never generates. Taught facts answer instantly with no training.</td></tr>
+<tr><td>Reworded and new questions, the weakest groups</td><td class="num">0.21–0.30 F1</td><td>Retrieval is the bottleneck for rewording; fix it with dense keys, a reranker and distractor-aware training.</td></tr>
+<tr><td>Dense question keys beside the word key</td><td class="num">recall@1 75.1% → 80.9%</td><td>Hybrid lexical + dense retrieval, with the word key kept for stability and exact matching.</td></tr>
+<tr><td>Reading a passage scales with size (SQuAD exact match 5M → 50M)</td><td class="num">1% → 28%</td><td>Knowledge lives in memory; the network must be big enough to <em>read</em>. Target 100–300M.</td></tr>
+<tr><td>Cleaner data at equal steps (conversation error)</td><td class="num">2.02 → 1.30 bits/byte</td><td>Curate and upgrade the training data before adding parameters.</td></tr>
+<tr><td>Depth at equal parameters and steps (3 / 6 / 11 / 16 layers)</td><td class="num">1.1905 / 1.1915 / 1.1990 / 1.2032</td><td>Shallow and wide. 3 layers matched 6 and generated 30% faster; 16 halved the speed.</td></tr>
+<tr><td>Modern block (RoPE, RMSNorm, SwiGLU) on text, and on answers at 5M</td><td class="num">−1 to −7% error; answers level</td><td>Adopt it for the larger core, where the network does more of the work; it did not pay at 5M.</td></tr>
+<tr><td>Exact n-gram count tables</td><td class="num">+10% at 0.8M, −1% at 20M</td><td>Replace hand-built statistics with a trainable memory layer that does not reverse with size.</td></tr>
+<tr><td>Memory gate (decline weak matches)</td><td class="num">50M 21 → 24/32; 5M 21 → 19/32</td><td>The gate helps once the network alone is competent. Make it learned and size-aware.</td></tr>
+<tr><td>CUDA-graph answer step</td><td class="num">11.7 → 1.75 ms/code (5M)</td><td>The GPU is launch-bound at these sizes; one graph replay per code. Low-bit kernels were slower and are not used.</td></tr>
+<tr><td>Weight precision</td><td class="num">bf16 = fp32; int8 within noise; int4 −13% F1</td><td>Train in bf16, store int8. No int4.</td></tr>
+<tr><td>Compiler against a standard tokenizer</td><td class="num">±1%</td><td>The compiler is a tokenizer with stable word keys; keep it for exact copying, expect no intelligence from it.</td></tr>
+<tr><td>Verified self-training (keep only checked solutions)</td><td class="num">2.5% → 4.0% at 5M</td><td>Practice with a verifier is the one method that moved reasoning; apply it to text tasks with checkable answers.</td></tr>
+<tr><td>Energy per answer, 5M, idle GPU</td><td class="num">29 J, 0.45 s</td><td>Record cost beside accuracy for every run; the "lighter" claim must be a measured joule count.</td></tr>
+</table></div>
+
+<h2 id="picture">2. The system in one picture</h2>
+<p>A chat turn flows left to right. Memory and retrieval are cheap and run first; the network runs last and only for the words memory cannot supply. Two loops run outside the turn: write-back (facts and turns stored at once) and consolidation (what is used often is trained into the network's own memory layer during quiet time).</p>
+<svg class="diagram" viewBox="0 0 900 500" role="img" aria-label="System overview: dialogue manager, retrieval cascade over memory tiers, context builder, generator with mixer, decoder, support check, write-back and consolidation loops">
+<defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor" style="fill: var(--muted)"/></marker></defs>
+<!-- zones -->
+<rect class="zone" x="150" y="40" width="300" height="300" rx="8"/><text class="s" x="160" y="56">memory and retrieval (CPU + small GPU jobs)</text>
+<rect class="zone" x="470" y="40" width="300" height="300" rx="8"/><text class="s" x="480" y="56">generation (GPU, one graph replay per code)</text>
+<!-- user / dialogue -->
+<rect class="box a" x="10" y="150" width="120" height="58" rx="6"/><text class="t" x="20" y="174">Dialogue</text><text class="s" x="20" y="190">turn history, state,</text><text class="s" x="20" y="202">entities, intent</text>
+<!-- retrieval cascade -->
+<rect class="box g" x="165" y="70" width="130" height="110" rx="6"/><text class="t" x="175" y="90">Retrieval cascade</text>
+<text class="s" x="175" y="108">1 exact hash (µs)</text><text class="s" x="175" y="122">2 lexical + dense (ms)</text><text class="s" x="175" y="136">3 reranker, top 10</text><text class="s" x="175" y="150">4 learned gate</text><text class="s" x="175" y="164">also: duplicate check</text>
+<!-- memory tiers -->
+<rect class="box m" x="310" y="70" width="130" height="110" rx="6"/><text class="t" x="320" y="90">Memory tiers</text>
+<text class="s" x="320" y="108">exact Q&amp;A pairs</text><text class="s" x="320" y="122">passages (200–500 w)</text><text class="s" x="320" y="136">session (this chat)</text><text class="s" x="320" y="150">learned layer (in core)</text><text class="s" x="320" y="164">tools: calculator, date</text>
+<!-- context builder -->
+<rect class="box" x="165" y="220" width="275" height="100" rx="6"/><text class="t" x="175" y="240">Context builder</text>
+<text class="s" x="175" y="258">packs the window: recent turns · top-k evidence with</text><text class="s" x="175" y="272">confidence tags · question · thinking budget</text>
+<text class="s" x="175" y="290">orders by relevance; distractor-aware (training</text><text class="s" x="175" y="304">saw bad evidence too)</text>
+<!-- generator -->
+<rect class="box c" x="485" y="70" width="270" height="130" rx="6"/><text class="t" x="495" y="90">Generator: shallow-wide core, 100–300M, modern block</text>
+<text class="s" x="495" y="108">each code is chosen by the trust head from four sources:</text>
+<rect class="box" x="495" y="118" width="60" height="30" rx="4"/><text class="s" x="501" y="137">network</text>
+<rect class="box" x="562" y="118" width="60" height="30" rx="4"/><text class="s" x="568" y="137">copy ptr</text>
+<rect class="box" x="629" y="118" width="60" height="30" rx="4"/><text class="s" x="635" y="137">mem layer</text>
+<rect class="box" x="696" y="118" width="50" height="30" rx="4"/><text class="s" x="702" y="137">tools</text>
+<text class="s" x="495" y="166">inputs to the trust head: hidden state, retrieval</text><text class="s" x="495" y="180">similarity and rerank score, copy confidence</text>
+<text class="s" x="495" y="194">reasoning: think codes, SEARCH requests mid-answer</text>
+<!-- decoder -->
+<rect class="box c" x="485" y="220" width="130" height="100" rx="6"/><text class="t" x="495" y="240">Decoder</text>
+<text class="s" x="495" y="258">CUDA graph step</text><text class="s" x="495" y="272">KV cache, fixed buffers</text><text class="s" x="495" y="286">copy-as-draft: verify</text><text class="s" x="495" y="300">k copied codes at once</text><text class="s" x="495" y="314">bf16 weights, int8 store</text>
+<!-- support check -->
+<rect class="box g" x="630" y="220" width="125" height="100" rx="6"/><text class="t" x="640" y="240">Support check</text>
+<text class="s" x="640" y="258">every content word</text><text class="s" x="640" y="272">traced to evidence</text><text class="s" x="640" y="286">or high confidence;</text><text class="s" x="640" y="300">else "I don't know"</text><text class="s" x="640" y="314">+ nearest match</text>
+<!-- reply -->
+<rect class="box a" x="790" y="240" width="100" height="58" rx="6"/><text class="t" x="800" y="264">Reply</text><text class="s" x="800" y="280">with sources</text><text class="s" x="800" y="292">and confidence</text>
+<!-- learning loops -->
+<rect class="box m" x="165" y="380" width="275" height="100" rx="6"/><text class="t" x="175" y="400">Learning that never stops</text>
+<text class="s" x="175" y="418">write-back: verified answers and turns stored at once</text><text class="s" x="175" y="432">practice: self-answers kept only when a checker agrees</text>
+<text class="s" x="175" y="446">consolidation: frequent facts trained into the learned</text><text class="s" x="175" y="460">layer and domain adapters in quiet time ("sleep")</text>
+<rect class="box c" x="485" y="380" width="270" height="100" rx="6"/><text class="t" x="495" y="400">Training pipeline (section 6)</text>
+<text class="s" x="495" y="418">stage 1 text · stage 2 retrieval-augmented Q&amp;A and dialogue</text><text class="s" x="495" y="432">with distractors · stage 3 verified practice · stage 4 preference</text>
+<text class="s" x="495" y="446">bf16, Muon or AdamW (session 20 decides), warmup-stable-decay</text><text class="s" x="495" y="460">so runs extend; cost metered per run</text>
+<!-- arrows -->
+<path class="ln a" d="M130,179 L165,130"/>
+<path class="ln g" d="M295,125 L310,125"/>
+<path class="ln m" d="M310,140 L295,140"/>
+<path class="ln" d="M230,180 L230,220"/>
+<path class="ln" d="M440,270 L485,270"/>
+<path class="ln c" d="M550,200 L550,220"/>
+<path class="ln" d="M615,270 L630,270"/>
+<path class="ln g" d="M755,270 L790,270"/>
+<path class="ln dash g" d="M690,200 L690,220"/>
+<path class="ln dash a" d="M840,298 L840,430 L440,430"/>
+<path class="ln dash m" d="M375,380 L375,180"/>
+<path class="ln dash c" d="M440,450 L485,450"/>
+<path class="ln dash c" d="M620,380 L620,320"/>
+<text class="s" x="705" y="445">store · practise</text>
+<text class="s" x="380" y="365">consolidate</text>
+</svg>
+
+<h2 id="loop">3. Each part, designed in the same loop</h2>
+<p>For every component: what it does, how it is built, the evidence that shaped it, its interface to the rest, how it fails, what is still open, and the measurement that decides it. Colours follow the picture: <span style="color:var(--mem)">memory</span>, <span style="color:var(--gate)">judgement</span>, <span style="color:var(--core)">network</span>, <span style="color:var(--accent)">dialogue</span>.</p>
+
+<div class="part mem"><h3>3.1 Compiler and codes</h3>
+<dl class="kv">
+<dt>Role</dt><dd>Turn text into codes and back without loss; give every word a stable key that memory can hash.</dd>
+<dt>Design</dt><dd>Unchanged: the deterministic 8,192-entry dictionary with byte fallback, native C++ encoder, one dictionary per training mix, hashed for reproducibility.</dd>
+<dt>Evidence</dt><dd>Within ±1% of a standard tokenizer on prediction; stable keys are what made the exact tier and the copy pointer simple. Phrase codes lost 2.5–4%; byte codes lost 8%.</dd>
+<dt>Interface</dt><dd><code>encode(bytes) → codes</code>, <code>decode(codes) → bytes</code>, <code>key(question) → set of content words</code>.</dd>
+<dt>Failure modes</dt><dd>Digit runs split unpredictably (a number channel is a later, math-line item); dictionary drift between mixes breaks weight reuse, so the dictionary hash is checked at load.</dd>
+<dt>Open research</dt><dd>Learned dynamic chunking (surprise-based boundaries) is the one compiler idea with modern evidence, and a medium project with uncertain payoff for keys. Not before the core work.</dd>
+<dt>Decides</dt><dd>Bits per byte at equal compute and reply speed; memory recall must not fall.</dd>
+</dl></div>
+
+<div class="part mem"><h3>3.2 Memory tiers and the duplicate check</h3>
+<dl class="kv">
+<dt>Role</dt><dd>Hold knowledge outside the weights in the cheapest store that is still correct for its kind.</dd>
+<dt>Design</dt><dd>Four tiers. <b>Exact:</b> question–answer pairs keyed by content words, hashed; returns the stored answer verbatim. <b>Passage:</b> documents cut into 200–500-word chunks with a title and source, indexed lexically and densely; this is the RAG tier we lack. <b>Session:</b> the current conversation's turns, indexed the same way, cleared or archived at the end. <b>Learned:</b> a product-key memory layer inside the core (section 3.5), filled by consolidation. Tools (calculator, date, unit conversion) are a fifth source the mixer can call.</dd>
+<dt>Duplicate check</dt><dd>On every add: exact hash (µs); if no hit, the rarest two or three content words select candidates from the inverted index and only those are scored (ms); between 0.5 and 0.9 similarity, the model is asked the question and the pair is skipped if it already answers correctly. Conflicts (same question, different answer) replace the old entry and log it.</dd>
+<dt>Evidence</dt><dd>Exact path 100%; taught facts 77% F1 after rewording; evidence shown to the core cuts its error 33–36%; count tables (an untrained memory layer) reversed with size, so the in-core tier must be trained.</dd>
+<dt>Interface</dt><dd><code>add(kind, key_text, payload, source) → id | duplicate_of</code>; <code>candidates(query, k) → [(id, lexical, dense)]</code>; <code>get(id) → codes</code>.</dd>
+<dt>Failure modes</dt><dd>Stale facts (handled by conflict replacement and a timestamp); passages too long for the window (chunk at paragraph boundaries, 300 words target); session memory leaking across users (scoped by session id).</dd>
+<dt>Open research</dt><dd>Chunk size against reading accuracy; whether a per-domain adapter (the "synapse" idea in BRAIN_DESIGN) beats a shared learned layer; forgetting policy for session memory.</dd>
+<dt>Decides</dt><dd>Stored and added exact rates; SQuAD-style exact match from the passage tier; duplicate precision on a labelled set.</dd>
+</dl></div>
+
+<div class="part gate"><h3>3.3 Retrieval cascade</h3>
+<dl class="kv">
+<dt>Role</dt><dd>Find the right memory fast, and say how sure it is.</dd>
+<dt>Design</dt><dd>Four stages, each only when the previous did not settle it. <b>1 Exact hash.</b> <b>2 Hybrid search:</b> inverted index over content words (IDF-weighted, as now) and a dense encoder, scores combined at a weight fitted on held-out rewordings (2.0 today); top 50 from each. <b>3 Reranker:</b> a small cross-encoder scores the top 10 candidates with the question, which is the modern RAG step that lifts precision at rank 1. <b>4 Gate:</b> a learned threshold on (lexical, dense, rerank) that decides whether to use the best match, use several, or none. The cascade returns the candidates <em>with their scores</em>; the trust head sees them.</dd>
+<dt>Evidence</dt><dd>Literal 75.1% → hybrid 80.9% recall@1 on rewordings; the gate helped at 50M (21 → 24/32) and hurt at 5M (21 → 19/32), so it must be learned and size-aware; the earlier similarity feature alone showed nothing, which argues for the richer score set.</dd>
+<dt>Interface</dt><dd><code>retrieve(query, history, k) → [(id, tier, lexical, dense, rerank)]</code>, latency budget 5 ms for stages 1–2, 20 ms with the reranker.</dd>
+<dt>Failure modes</dt><dd>Dense encoder is an outside pretrained model (labelled in every result; an in-domain contrastive key is the replacement); reranker cost grows with k (cap at 10); the gate learned on one size misfires on another (train per size).</dd>
+<dt>Open research</dt><dd>Train our own dense key on in-domain pairs; rerank with the generator's own state instead of a separate model; multi-hop: a second retrieval conditioned on the first result.</dd>
+<dt>Decides</dt><dd>Recall@1 and @10 on rewordings; reworded and new-question F1 after the stage-2 model is trained on the new retriever.</dd>
+</dl></div>
+
+<div class="part gate"><h3>3.4 Context builder</h3>
+<dl class="kv">
+<dt>Role</dt><dd>Pack the window so the generator sees the right things in the right order, within a fixed code budget.</dd>
+<dt>Design</dt><dd>Window layout: [recent turns, newest last] [evidence 1..k, each prefixed by a tier and confidence tag] [question] [thinking budget] [answer]. Evidence is ordered by rerank score with the best nearest the question (small models attend locally). The budget is 1,024 codes at 100M and 2,048 at 300M; turns are summarised by the session tier when they overflow.</dd>
+<dt>Evidence</dt><dd>512 beat 256 on every Q&amp;A group; a single retrieved exchange is the design today, and top-3 retrieval has been queued since early October without a run; the 50M core trained at 1,024.</dd>
+<dt>Interface</dt><dd><code>build(turns, evidence, question, budget) → codes, span_masks, confidences</code>; span masks tell the copy pointer where it may point.</dd>
+<dt>Failure modes</dt><dd>Distractor evidence pulls the answer (fixed in training, 3.5); long histories crowd out evidence (summaries); the model copies the confidence tag text (tags are special codes, never decoded).</dd>
+<dt>Open research</dt><dd>How many passages a 100–300M model can use before accuracy falls; whether tag codes carrying confidence beat feeding the scores to the trust head only.</dd>
+<dt>Decides</dt><dd>Answer F1 against k; "lost in the middle" test with the gold passage at each position.</dd>
+</dl></div>
+
+<div class="part core"><h3>3.5 Generator core</h3>
+<dl class="kv">
+<dt>Role</dt><dd>Read what it is given, write fluent language, and plan a few steps; it does not need to know facts.</dd>
+<dt>Design</dt><dd>Shallow-wide Transformer, 100–300M parameters, modern block (RoPE, RMSNorm, SwiGLU), 6–8 layers, width 1,024–1,536, grouped-query attention for a small cache, tied embeddings, bf16 training, int8 weights at rest. A product-key memory layer after the middle block, 1–10M entries, is the learned tier. Multi-token prediction heads (2 extra) give draft codes for the decoder and a small planning gain. Training recipe: whichever of AdamW, Muon, cosine and warmup-stable-decay wins session 20, trained long (the 50M core saw only ~20 codes per parameter; the 5M core ~200).</dd>
+<dt>Evidence</dt><dd>Reading 1% → 28% from 5M to 50M; depth did not help and cost speed; modern block −1 to −7% on text; count tables reversed with size.</dd>
+<dt>Interface</dt><dd><code>hidden(codes) → states</code>, <code>step(code, pos, cache) → logits, state</code>; the mixer and decoder see only these.</dd>
+<dt>Failure modes</dt><dd>Memorising the Q&amp;A set in stage 2 (rehearsal of stage-1 text, 30%, as now); the learned layer hoarding frequent trivia (consolidation picks by use, with decay); undertrained at 300M on one GPU (WSD lets the run be resumed across nights).</dd>
+<dt>Open research</dt><dd>The size at which reading becomes good (100M, 200M, 300M points, same recipe); memory layer entries against accuracy and speed; mixture of experts as the alternative "more parameters, same compute".</dd>
+<dt>Decides</dt><dd>Report card (fluency, evidence gain, reword recall), SQuAD exact match from passages, chat probe, joules per answer.</dd>
+</dl></div>
+
+<div class="part core"><h3>3.6 Output mixer: the trust head</h3>
+<dl class="kv">
+<dt>Role</dt><dd>For every code, choose between the network, the copy pointer, the learned memory and a tool, by how much each can be trusted right now.</dd>
+<dt>Design</dt><dd>As today, a small head over the hidden state that outputs mixture weights over sources, extended with the retrieval scores (lexical, dense, rerank, gate decision) and the copy pointer's confidence. Tools are a source whose "distribution" is a single code sequence (the calculator's result, a date). The mixer is trained jointly with the core on the stage-2 loss, so it learns when copying is right and when it is not.</dd>
+<dt>Evidence</dt><dd>The copy pointer is what lifted 13% to 89%; the leave-one-out trust head over count tables gave 9–11% at 5M and was dropped at 20M, so the head itself works and the sources must be the right ones.</dd>
+<dt>Interface</dt><dd><code>mix(state, sources, confidences) → log-probabilities over codes</code>.</dd>
+<dt>Failure modes</dt><dd>Over-copying from a wrong match (distractor training in 3.5 and the gate); mixing probabilities in bf16 (the mixer runs in fp32, as now).</dd>
+<dt>Open research</dt><dd>Whether a per-position mixture beats a per-answer "mode" decision; adding the support-check signal as a source weight.</dd>
+<dt>Decides</dt><dd>Stored and added exact rates with and without each source; wrong-evidence test (gold replaced by a distractor) must not fall below the network-alone score.</dd>
+</dl></div>
+
+<div class="part core"><h3>3.7 Decoder: one graph replay per code, several codes when copying</h3>
+<dl class="kv">
+<dt>Role</dt><dd>Make answering as fast as the hardware allows.</dd>
+<dt>Design</dt><dd><b>CUDA graph step</b> (built, 12 October): fixed-size buffers for the window, attention cache and copy keys; one launch per code; identical replies. <b>Copy-as-draft:</b> when the pointer is copying from a retrieved answer, the next k codes of that answer are a draft; one forward pass over the draft verifies them and keeps the longest agreeing prefix (prompt-lookup decoding, which is strongest exactly on evidence-copying answers). The multi-token heads supply drafts when not copying. <b>Precision:</b> bf16 weights (identical to fp32), int8 at rest; compute in fp32 inside the graph because low-bit kernels were slower at these sizes.</dd>
+<dt>Evidence</dt><dd>11.7 → 1.75 ms per code at 5M, 14.6 → 3.6 at 50M; low-bit kernels 1.4–4x slower and altered replies; the GPU is launch-bound below ~300M.</dd>
+<dt>Interface</dt><dd><code>answer(context, max_codes, draft_source) → codes</code>, with the per-code mixer called inside the graph.</dd>
+<dt>Failure modes</dt><dd>Answers past the window (fall back to the eager loop); drafts verified in a different numeric path than single steps (verify with the same graph shape, batch of k); graphs captured per window size (one per budget).</dd>
+<dt>Open research</dt><dd>Draft length k against acceptance rate; at 300M, whether bf16 compute inside the graph finally pays (bandwidth-bound regime begins).</dd>
+<dt>Decides</dt><dd>ms per code and joules per answer on an idle GPU, replies byte-identical to the eager loop.</dd>
+</dl></div>
+
+<div class="part acc"><h3>3.8 Reasoning and dialogue: a chatbot, not a lookup</h3>
+<p>A lookup system returns what it finds. A chatbot has to follow the conversation, decide what it needs, think in steps and know when it is wrong. The research says a small network cannot do that from its weights alone (math stayed at 2–4% at every size and depth), so reasoning here is built from pieces that each work at small scale: memory of the conversation, retrieval the model can request, explicit thinking codes trained by verified practice, and a check before answering.</p>
+<dl class="kv">
+<dt>Dialogue state</dt><dd>The session tier holds every turn; the context builder always includes the last two turns verbatim and retrieves older ones by content, so "the second one" and "as I said earlier" have referents. Entities named in the conversation are added to the exact tier as temporary facts ("my dog's name is Rex") and retrieved like any other.</dd>
+<dt>Retrieval the model asks for</dt><dd>Interleaved retrieval: a special code <code>SEARCH</code> followed by a short query ends a thinking step; the engine runs the cascade, inserts the results, and generation continues. Multi-hop questions become two short searches instead of one impossible one. Trained from traces built automatically from the evidence pairs (question → query → passage → answer).</dd>
+<dt>Thinking codes</dt><dd>A bounded scratch region before the answer (special <code>THINK … END</code> codes, never shown) in which the model writes the steps: restate what is asked, list what the evidence says, resolve references, decide. Small models gain from explicit steps because each step is a short, local prediction. The budget is small (64–128 codes) and cheap under the graph.</dd>
+<dt>How it is trained</dt><dd>Verified practice, the method that moved math 2.5% → 4.0% and the one behind current reasoning models, applied to text tasks with checkable answers: reading comprehension with exact-match answers (SQuAD, HotpotQA-style multi-hop), entity tracking in dialogue, consistency questions over the session ("what did I say my name was?"). The model samples thinking + answer; only traces whose answer the checker confirms are kept and trained on. Then preference tuning (DPO) on pairs of better and worse conversational answers for tone, staying on topic and stopping.</dd>
+<dt>Self-check and refusal</dt><dd>The support check (3.9) runs on the draft answer; if unsupported, the model may search once more or answer "I don't know, the closest I have is …" with the nearest match. A chatbot that says this is more useful than one that guesses.</dd>
+<dt>Open research</dt><dd>How much thinking a 100–300M model can use before it drifts; whether thinking traces should be retrievable (a worked pattern memory, the text version of the math template idea); interleaved search against single-shot top-k; the right checkers for conversational tasks.</dd>
+<dt>Decides</dt><dd>Multi-turn probe (new section: reference resolution, consistency, follow-ups), multi-hop exact match, chat section of the probe, refusal precision (how often "I don't know" was right).</dd>
+</dl></div>
+
+<div class="part gate"><h3>3.9 Support check and provenance</h3>
+<dl class="kv">
+<dt>Role</dt><dd>Never state what nothing supports; show where an answer came from.</dd>
+<dt>Design</dt><dd>For each content word of the draft answer, the trust head's source weights say whether it was copied (from which evidence id), produced by the network with what probability, or computed by a tool. An answer whose unsupported share exceeds a threshold is flagged; the engine then searches once more or returns a refusal with the nearest match. Replies carry source ids; the chat prints them, as the memory line does today.</dd>
+<dt>Evidence</dt><dd>The memory path cannot hallucinate; the network path does (the 'graphics card' reply). The signals already exist in the mixer; this is the text version of the paused math check loop.</dd>
+<dt>Interface</dt><dd><code>check(answer_codes, source_weights) → support_share, sources, verdict</code>.</dd>
+<dt>Failure modes</dt><dd>Fluent connective words counted as unsupported (only content words count); paraphrased copies missed (match on the dense key of the sentence, not only exact words).</dd>
+<dt>Open research</dt><dd>Calibrating the threshold per size; learning the verdict instead of thresholding.</dd>
+<dt>Decides</dt><dd>Refusal precision and recall on a set with known-unanswerable questions; hallucination rate on new questions.</dd>
+</dl></div>
+
+<div class="part mem"><h3>3.10 Learning that never stops</h3>
+<dl class="kv">
+<dt>Role</dt><dd>Keep improving without retraining the whole model, and without forgetting.</dd>
+<dt>Design</dt><dd><b>Write-back:</b> every turn goes to the session tier; facts the user states go to the exact tier; answers confirmed by a checker or by the user go to the exact tier as new pairs, after the duplicate check. <b>Practice:</b> in idle time the model answers held-out questions from the passage tier, keeps verified traces, and fine-tunes the heads and adapters on them (STaR). <b>Consolidation:</b> entries used often are trained into the learned memory layer and per-domain adapters in a low-rate pass with rehearsal, so frequent knowledge becomes cheaper and the exact tier stays small. <b>Forgetting:</b> session entries expire; exact entries unused for long are archived, not deleted.</dd>
+<dt>Evidence</dt><dd>Instant learning works (taught facts 77% F1); full fine-tunes on self-solutions cost copying of new facts (−18 points on added questions at 50M), which argues for adapters; a gentle core rate with rehearsal kept stage-1 gains.</dd>
+<dt>Interface</dt><dd><code>learn.write_back(turn)</code>, <code>learn.practise(budget_s)</code>, <code>learn.consolidate(budget_s)</code>; all resumable and metered.</dd>
+<dt>Failure modes</dt><dd>Learning a user's mistake (only checker- or user-confirmed answers are stored; conflicts logged); drift of the core (adapters and heads only, core frozen between planned retrains).</dd>
+<dt>Open research</dt><dd>Adapter versus memory-layer consolidation; how much practice per night pays; when to retrain the core.</dd>
+<dt>Decides</dt><dd>Added-fact accuracy after consolidation, stored accuracy must not fall, probe before and after a night of practice.</dd>
+</dl></div>
+
+<h2 id="software">4. Software architecture</h2>
+<p>One process per chat engine; retrieval and encoding on CPU threads; one GPU stream for generation; a second for the dense encoder and reranker so they overlap with decoding of the previous turn. Every module has one job, one interface, and a test that compares it with the eager reference implementation, as the graph step is tested today.</p>
+<h3>4.1 Module map</h3>
+<pre>compiler/            encoder, dictionary, native cv0           (exists)
+memory/              ExactStore, PassageStore, SessionStore, Dedup     (ExchangeMemory exists; split and extend)
+retrieval/           LexicalIndex, DenseIndex, Reranker, Gate, Cascade (lexical + dense exist)
+context/             ContextBuilder, SpanMasks, Budget
+model/               Core (blocks, memory layer, MTP heads), CopyHead, TrustHead, Tools   (V2LM exists)
+decode/              GraphStep, DraftDecoder, EagerLoop (reference)   (GraphStep exists)
+reason/              Dialogue, ThinkBudget, SearchRequest, SupportCheck
+learn/               WriteBack, Practice (STaR), Consolidate, Trainer (stages 1–4), Cost meter   (STaR, cost exist)
+eval/                report card, Q&amp;A groups, chat probe, multi-turn probe, ledger      (exist; multi-turn new)</pre>
+
+<h3>4.2 Class diagram (UML)</h3>
+<svg class="diagram" viewBox="0 0 900 470" role="img" aria-label="UML class diagram of the engine and its components">
+<defs><marker id="dia" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="9" markerHeight="9" orient="auto"><path d="M1,6 L6,1 L11,6 L6,11 z" fill="none" style="stroke: var(--muted)" stroke-width="1.2"/></marker>
+<marker id="tri" viewBox="0 0 12 12" refX="11" refY="6" markerWidth="9" markerHeight="9" orient="auto"><path d="M1,1 L11,6 L1,11 z" fill="none" style="stroke: var(--muted)" stroke-width="1.2"/></marker></defs>
+<!-- Engine -->
+<rect class="box a" x="340" y="10" width="220" height="92" rx="3"/><line class="bar" x1="340" y1="32" x2="560" y2="32"/>
+<text class="t" x="420" y="26">ChatEngine</text>
+<text class="mono" x="348" y="48">+ ask(text, session) : Reply</text><text class="mono" x="348" y="62">+ teach(q, a) : id | dup</text>
+<text class="mono" x="348" y="76">+ load(file) : AddReport</text><text class="mono" x="348" y="90">- turn(ctx) : Reply</text>
+<!-- Memory -->
+<rect class="box m" x="20" y="150" width="200" height="100" rx="3"/><line class="bar" x1="20" y1="172" x2="220" y2="172"/>
+<text class="t" x="75" y="166">MemoryStore</text>
+<text class="mono" x="28" y="188">+ add(kind, key, payload)</text><text class="mono" x="28" y="202">+ candidates(q, k)</text><text class="mono" x="28" y="216">+ get(id) : codes</text><text class="mono" x="28" y="230">- dedup : Dedup</text>
+<text class="s" x="28" y="246">ExactStore · PassageStore · SessionStore</text>
+<!-- Retrieval -->
+<rect class="box g" x="240" y="150" width="200" height="100" rx="3"/><line class="bar" x1="240" y1="172" x2="440" y2="172"/>
+<text class="t" x="300" y="166">RetrievalCascade</text>
+<text class="mono" x="248" y="188">+ retrieve(q, hist, k) : [Hit]</text><text class="mono" x="248" y="202">- lexical : LexicalIndex</text><text class="mono" x="248" y="216">- dense : DenseIndex</text><text class="mono" x="248" y="230">- rerank : Reranker; gate : Gate</text>
+<text class="s" x="248" y="246">Hit = (id, tier, lex, dense, rerank)</text>
+<!-- Context -->
+<rect class="box" x="460" y="150" width="200" height="100" rx="3"/><line class="bar" x1="460" y1="172" x2="660" y2="172"/>
+<text class="t" x="520" y="166">ContextBuilder</text>
+<text class="mono" x="468" y="188">+ build(turns, hits, q, budget)</text><text class="mono" x="468" y="202">  : Context(codes, spans, conf)</text><text class="mono" x="468" y="216">- summarise(turns)</text>
+<!-- Reason -->
+<rect class="box a" x="680" y="150" width="200" height="100" rx="3"/><line class="bar" x1="680" y1="172" x2="880" y2="172"/>
+<text class="t" x="740" y="166">Reasoner</text>
+<text class="mono" x="688" y="188">+ think_budget : int</text><text class="mono" x="688" y="202">+ on_search(query) : [Hit]</text><text class="mono" x="688" y="216">+ check(answer, weights)</text><text class="mono" x="688" y="230">  : Verdict</text>
+<!-- Generator -->
+<rect class="box c" x="130" y="300" width="220" height="110" rx="3"/><line class="bar" x1="130" y1="322" x2="350" y2="322"/>
+<text class="t" x="200" y="316">Generator</text>
+<text class="mono" x="138" y="338">- core : Core</text><text class="mono" x="138" y="352">- copy : CopyHead</text><text class="mono" x="138" y="366">- trust : TrustHead</text><text class="mono" x="138" y="380">- tools : [Tool]</text>
+<text class="mono" x="138" y="394">+ logits(state, ctx) : Dist</text>
+<!-- Decoder -->
+<rect class="box c" x="380" y="300" width="220" height="110" rx="3"/><line class="bar" x1="380" y1="322" x2="600" y2="322"/>
+<text class="t" x="455" y="316">Decoder</text>
+<text class="mono" x="388" y="338">- graph : GraphStep</text><text class="mono" x="388" y="352">- draft : DraftDecoder</text><text class="mono" x="388" y="366">- eager : EagerLoop (reference)</text>
+<text class="mono" x="388" y="380">+ answer(ctx, max, draft_src)</text><text class="mono" x="388" y="394">  : codes, source_weights</text>
+<!-- Learner -->
+<rect class="box m" x="630" y="300" width="250" height="110" rx="3"/><line class="bar" x1="630" y1="322" x2="880" y2="322"/>
+<text class="t" x="720" y="316">Learner</text>
+<text class="mono" x="638" y="338">+ write_back(turn, verdict)</text><text class="mono" x="638" y="352">+ practise(budget_s) : Report</text><text class="mono" x="638" y="366">+ consolidate(budget_s)</text><text class="mono" x="638" y="380">- trainer : Trainer(stages 1–4)</text><text class="mono" x="638" y="394">- meter : CostMeter</text>
+<!-- composition lines (diamond at the owner) -->
+<path class="ln" style="marker-end: url(#dia)" d="M120,150 L120,120 L350,120 L350,102"/>
+<path class="ln" style="marker-end: url(#dia)" d="M340,150 L340,120"/>
+<path class="ln" style="marker-end: url(#dia)" d="M560,150 L560,120 L560,102"/>
+<path class="ln" style="marker-end: url(#dia)" d="M780,150 L780,120 L560,120"/>
+<path class="ln" style="marker-end: url(#dia)" d="M240,300 L240,270 L450,270 L450,102 L560,102"/>
+<path class="ln" style="marker-end: url(#dia)" d="M490,300 L490,270"/>
+<path class="ln" style="marker-end: url(#dia)" d="M750,300 L750,270 L450,270"/>
+<!-- uses -->
+<path class="ln dash" d="M350,355 L380,355"/><text class="s" x="352" y="348">uses</text>
+<path class="ln dash" d="M240,250 L220,250"/><text class="s" x="226" y="266">reads</text>
+<path class="ln dash" d="M630,355 L600,355"/><text class="s" x="604" y="348">reuses</text>
+<path class="ln dash" d="M680,230 L600,230 L600,250 L560,250"/>
+<text class="s" x="20" y="440">Solid lines with a diamond: composition (ChatEngine owns the parts). Dashed: uses. Every GPU module keeps an eager reference implementation and a test that the fast path reproduces it byte for byte.</text>
+</svg>
+
+<h3>4.3 One chat turn (sequence)</h3>
+<svg class="diagram" viewBox="0 0 900 400" role="img" aria-label="Sequence diagram of one chat turn">
+<g>
+<text class="t" x="30" y="24">User</text><line class="life" x1="48" y1="30" x2="48" y2="380"/>
+<text class="t" x="118" y="24">Engine</text><line class="life" x1="140" y1="30" x2="140" y2="380"/>
+<text class="t" x="220" y="24">Cascade</text><line class="life" x1="248" y1="30" x2="248" y2="380"/>
+<text class="t" x="330" y="24">Memory</text><line class="life" x1="356" y1="30" x2="356" y2="380"/>
+<text class="t" x="430" y="24">Context</text><line class="life" x1="456" y1="30" x2="456" y2="380"/>
+<text class="t" x="535" y="24">Decoder (GPU)</text><line class="life" x1="580" y1="30" x2="580" y2="380"/>
+<text class="t" x="668" y="24">Reasoner</text><line class="life" x1="700" y1="30" x2="700" y2="380"/>
+<text class="t" x="790" y="24">Learner</text><line class="life" x1="815" y1="30" x2="815" y2="380"/>
+</g>
+<path class="ln" d="M48,50 L140,50"/><text class="s" x="56" y="46">question</text>
+<path class="ln" d="M140,70 L248,70"/><text class="s" x="150" y="66">retrieve(q, history, k)</text>
+<path class="ln" d="M248,88 L356,88"/><text class="s" x="258" y="84">exact? → candidates</text>
+<path class="ln" d="M356,106 L248,106"/><text class="s" x="258" y="120">hits with scores</text>
+<path class="ln" d="M248,126 L140,126"/><text class="s" x="150" y="140">[Hit] (or exact answer → reply at once)</text>
+<path class="ln" d="M140,150 L456,150"/><text class="s" x="150" y="146">build(turns, hits, q, budget)</text>
+<path class="ln" d="M456,168 L140,168"/><text class="s" x="150" y="182">context, span masks, confidences</text>
+<path class="ln" d="M140,192 L580,192"/><text class="s" x="150" y="188">answer(context): prefill once, then one graph replay per code; drafts verified k at a time</text>
+<rect class="act" x="575" y="192" width="10" height="80"/>
+<path class="ln dash" d="M580,222 L700,222"/><text class="s" x="590" y="218">SEARCH "…" emitted during thinking</text>
+<path class="ln dash" d="M700,236 L248,236"/><text class="s" x="258" y="250">second retrieval, results inserted, generation resumes</text>
+<path class="ln" d="M580,272 L140,272"/><text class="s" x="150" y="286">answer codes + per-code source weights</text>
+<path class="ln" d="M140,296 L700,296"/><text class="s" x="150" y="292">check(answer, weights)</text>
+<path class="ln" d="M700,314 L140,314"/><text class="s" x="150" y="328">verdict: supported / search again / "I don't know" + nearest</text>
+<path class="ln" d="M140,340 L48,340"/><text class="s" x="56" y="336">reply, sources, confidence</text>
+<path class="ln dash" d="M140,360 L815,360"/><text class="s" x="150" y="356">write_back(turn, verdict), asynchronous; practise/consolidate in idle time</text>
+<text class="s" x="30" y="392">Budget per turn at 100M on the RTX 3090: retrieval ≤ 20 ms, prefill ≤ 30 ms, 2–3 ms per generated code, support check ≤ 5 ms.</text>
+</svg>
+
+<h3>4.4 Interface contracts</h3>
+<pre>Hit      = (id: int, tier: exact|passage|session, lexical: float, dense: float, rerank: float)
+Context  = (codes: int[], spans: bool[] per source, confidences: float[] per source, think_budget: int)
+Dist     = log-probabilities over codes at one position (fp32), plus source weights (network, copy, mem, tool)
+Reply    = (text, sources: [id], support_share: float, verdict, cost: {ms, joules})
+AddReport= (stored: int, duplicates: int, conflicts_replaced: int)</pre>
+<p>Rules that keep it fast and testable: no tensor leaves the GPU inside the per-code loop except the chosen code; every fast path has an eager twin and a byte-identity test; every run writes a JSON with its cost; the dictionary hash is checked on every load.</p>
+
+<h2 id="hardware">5. Using the hardware fully</h2>
+<p>The machine is an RTX 3090 (24 GB, bf16 tensor cores), 22 cores / 44 threads, 64 GB RAM. The measured bottleneck at our sizes is kernel launches, not arithmetic, so the design keeps the GPU doing few, large, pre-recorded jobs and gives every scalar job to the CPU.</p>
+<svg class="diagram" viewBox="0 0 900 430" role="img" aria-label="UML deployment diagram: CPU, GPU, RAM and disk with the jobs assigned to each, for answering and training">
+<!-- CPU -->
+<rect class="box" x="15" y="30" width="270" height="250" rx="6"/><text class="t" x="25" y="50">«device» CPU · 22 cores / 44 threads</text>
+<rect class="box m" x="25" y="62" width="250" height="50" rx="4"/><text class="s" x="33" y="80">compiler encode/decode (native C++)</text><text class="s" x="33" y="94">exact hash, inverted index, dedup (µs–ms)</text>
+<rect class="box g" x="25" y="120" width="250" height="36" rx="4"/><text class="s" x="33" y="138">dialogue state, context packing, support check</text>
+<rect class="box" x="25" y="164" width="250" height="50" rx="4"/><text class="s" x="33" y="182">training data: window sampling, mixing, dedup,</text><text class="s" x="33" y="196">evidence-pair building on 10–20 worker processes</text>
+<rect class="box" x="25" y="222" width="250" height="36" rx="4"/><text class="s" x="33" y="240">power meter, ledger, watchers, chain scripts</text>
+<!-- GPU -->
+<rect class="box" x="315" y="30" width="270" height="250" rx="6"/><text class="t" x="325" y="50">«device» GPU · RTX 3090 · 24 GB</text>
+<rect class="box c" x="325" y="62" width="250" height="64" rx="4"/><text class="s" x="333" y="80">stream 0: generation · CUDA graph per code,</text><text class="s" x="333" y="94">draft verification in one batched pass,</text><text class="s" x="333" y="108">KV cache + copy keys in fixed buffers</text>
+<rect class="box g" x="325" y="134" width="250" height="50" rx="4"/><text class="s" x="333" y="152">stream 1: dense encoder + reranker, batched,</text><text class="s" x="333" y="166">prefetched for the likely next turn</text>
+<rect class="box c" x="325" y="192" width="250" height="78" rx="4"/><text class="s" x="333" y="210">training: bf16 autocast, fused optimiser (Muon or</text><text class="s" x="333" y="224">AdamW), flash attention, batches sized to ~20 GB,</text><text class="s" x="333" y="238">eval on a side stream every 300 s, warmup-stable-</text><text class="s" x="333" y="252">decay so a run resumes across nights</text>
+<!-- RAM -->
+<rect class="box" x="615" y="30" width="270" height="120" rx="6"/><text class="t" x="625" y="50">«device» RAM · 64 GB</text>
+<rect class="box m" x="625" y="62" width="250" height="36" rx="4"/><text class="s" x="633" y="80">memory tiers, indices, dense vectors (fp16)</text>
+<rect class="box" x="625" y="106" width="250" height="36" rx="4"/><text class="s" x="633" y="124">code files memory-mapped; pinned staging buffers</text>
+<!-- Disk -->
+<rect class="box" x="615" y="160" width="270" height="120" rx="6"/><text class="t" x="625" y="180">«device» SSD</text>
+<rect class="box" x="625" y="192" width="250" height="36" rx="4"/><text class="s" x="633" y="210">int8 checkpoints (local, large ones never in git)</text>
+<rect class="box" x="625" y="236" width="250" height="36" rx="4"/><text class="s" x="633" y="254">corpora, neighbour caches, results JSON</text>
+<!-- links -->
+<path class="ln dash" d="M285,90 L315,90"/><text class="s" x="288" y="84">codes</text>
+<path class="ln dash" d="M585,80 L615,80"/><text class="s" x="588" y="74">hits</text>
+<path class="ln dash" d="M285,190 L315,230"/><text class="s" x="258" y="206">pinned batches</text>
+<path class="ln dash" d="M615,210 L585,230"/>
+<!-- targets -->
+<text class="t" x="15" y="310">Targets (measured today → target at 100–300M)</text>
+<text class="s" x="15" y="330">answer: 1.75 ms/code at 5M, 3.6 at 50M → ≤ 3 ms/code at 100M with drafts; ≤ 30 J per answer</text>
+<text class="s" x="15" y="346">retrieval: exact µs; hybrid + rerank ≤ 20 ms; dense vectors for 1M entries = 0.8 GB at fp16</text>
+<text class="s" x="15" y="362">training: 5M core 42,538 steps in 44 min (bf16); 100M core at the same steps ≈ 6–8 h; WSD lets it continue the next night</text>
+<text class="s" x="15" y="378">GPU utilisation during training ≥ 90% (window sampling on CPU threads, pinned transfer, fused optimiser)</text>
+<text class="s" x="15" y="394">idle time: practice and consolidation run at low priority, metered, and stop when a chat starts</text>
+</svg>
+<h3>5.1 Why these choices</h3>
+<ul>
+<li><b>Graphs over kernels.</b> The profile showed about 300 launches per code and the arithmetic a small part; the graph removed 85% of the time. Low-bit kernels cannot help a launch-bound model, so they are not in the design until the core is large enough to be bandwidth-bound (around 300M).</li>
+<li><b>Two GPU streams.</b> The dense encoder and reranker are batched jobs; on their own stream they overlap with the previous turn's decoding and never stall it.</li>
+<li><b>CPU does every scalar job.</b> Hashing, indices, span masks, the support check and dialogue state are microsecond jobs on a core; on the GPU each would be a launch.</li>
+<li><b>Training keeps the GPU full.</b> Window sampling and mixing on worker threads into pinned memory, bf16 autocast, a fused optimiser and eval on a side stream; the cost meter reports watts so under-utilisation is visible in the ledger.</li>
+<li><b>Resumable everything.</b> Warmup-stable-decay means a 100–300M run can train across several nights without restarting; chains skip finished steps; checkpoints save before scoring.</li>
+</ul>
+
+<h2 id="training">6. Training pipeline</h2>
+<div class="stage"><div class="id">S1</div><div class="body"><b>Language and reading.</b> The curated mix (books, Wikipedia, web, conversation, evidence pairs, rewordings), modern block, 100–300M, bf16, the session-20 optimiser and schedule, trained long and resumable. Windows contain evidence followed by the text it supports, so reading is learned in stage 1.<div class="done">Decides: report card (fluency, evidence gain, reword recall).</div></div></div>
+<div class="stage"><div class="id">S2</div><div class="body"><b>Retrieval-augmented Q&amp;A and dialogue.</b> Windows are built by the real cascade: the retrieved exchange or passages, with their confidence tags, then the question and answer; 30% of windows carry a distractor or nothing, so the model learns when not to copy; multi-turn windows from dialogue threads with the loss on assistant turns; rehearsal of stage-1 text at 30%. Core at a gentle rate, heads at full rate, answer-only loss, end code.<div class="done">Decides: Q&amp;A groups (stored, added, reworded, new, alone), wrong-evidence test, multi-turn probe.</div></div></div>
+<div class="stage"><div class="id">S3</div><div class="body"><b>Verified practice (reasoning).</b> Thinking traces and SEARCH requests sampled on tasks with checkers (reading exact match, multi-hop, dialogue consistency); only confirmed traces are trained on; adapters and heads, core frozen or gentle.<div class="done">Decides: multi-hop exact match, refusal precision, chat probe reasoning section.</div></div></div>
+<div class="stage"><div class="id">S4</div><div class="body"><b>Preference tuning.</b> DPO on better/worse answer pairs for tone, brevity, staying on topic and stopping; pairs built from the probe transcripts and the practice traces.<div class="done">Decides: chat section of the probe, human grading notes.</div></div></div>
+<div class="stage"><div class="id">S5</div><div class="body"><b>Consolidation (continuous).</b> Frequently used memory entries trained into the learned layer and domain adapters at low rate with rehearsal, in idle time.<div class="done">Decides: added-fact accuracy after consolidation; stored accuracy unchanged.</div></div></div>
+
+<h2 id="research">7. Research plan: what to study to get the most from this design</h2>
+<p>Ranked by expected gain per hour of the machine, each with the measurement that decides it and the session it maps to. Items 1–3 are already in the queue.</p>
+<div class="tablewrap"><table>
+<tr><th>#</th><th>Question</th><th>Method</th><th>Decides</th><th>Cost</th><th>Where</th></tr>
+<tr><td>1</td><td>Does the modern training recipe raise text and answer quality at equal steps?</td><td>Muon, warmup-stable-decay, both; 5M core; report card, Q&amp;A, probe</td><td>bits/byte and probe at equal steps</td><td>5 h</td><td>session 20</td></tr>
+<tr><td>2</td><td>Is retrieval the limit on rewordings?</td><td>Dense keys at answer time, then in the training loop</td><td>reworded and new F1</td><td>2 h</td><td>session 21</td></tr>
+<tr><td>3</td><td>Does a reranker and distractor training stop wrong copying?</td><td>Cross-encoder on top 10; 30% distractor windows in S2</td><td>wrong-evidence test ≥ network alone; reworded F1</td><td>1 day</td><td>session 22</td></tr>
+<tr><td>4</td><td>How fast can copying answers get?</td><td>Copy-as-draft decoding in the graph, k = 4–16</td><td>ms/code and acceptance rate, replies identical</td><td>1 day code</td><td>session 22</td></tr>
+<tr><td>5</td><td>Can the passage tier give reading at small size?</td><td>SQuAD-style passages as a memory tier, top-3 in window</td><td>exact match from retrieved passages vs gold passage</td><td>1 day</td><td>session 23</td></tr>
+<tr><td>6</td><td>Does modern dialogue data and turn history make it conversational?</td><td>SmolTalk / Tulu 3 SFT (licences checked), multi-turn windows, session tier</td><td>new multi-turn probe; chat section</td><td>2 days</td><td>session 24</td></tr>
+<tr><td>7</td><td>Can a small model reason with thinking codes and self-requested search?</td><td>S3 verified practice on reading, multi-hop and consistency tasks</td><td>multi-hop EM, refusal precision, drift with think budget</td><td>3 days</td><td>session 25</td></tr>
+<tr><td>8</td><td>Does preference tuning fix tone and rambling?</td><td>DPO on built pairs</td><td>chat section; hand grades</td><td>1 day</td><td>session 26</td></tr>
+<tr><td>9</td><td>Does a learned memory layer keep helping as size grows?</td><td>Product-key layer, 1–10M entries, at 5M and the larger core</td><td>report card and stored/new groups at equal compute</td><td>2 days</td><td>session 27</td></tr>
+<tr><td>10</td><td>At what size does reading become good?</td><td>100M, 200M, 300M cores, same recipe, trained long</td><td>SQuAD EM from passages; probe; joules</td><td>3–5 nights</td><td>session 28</td></tr>
+<tr><td>11</td><td>Does the design hold against a conventional RAG system?</td><td>0.5B instruct model with the same retriever and questions, both at their best precision</td><td>accuracy and joules per answer, side by side</td><td>1 day</td><td>session 29</td></tr>
+<tr><td>12</td><td>Can retrieval be ours end to end?</td><td>In-domain contrastive key replacing the outside encoder</td><td>recall@1 vs all-MiniLM</td><td>2 days</td><td>later</td></tr>
+<tr><td>13</td><td>Adapters vs memory layer for consolidation; practice per night</td><td>Nightly runs on the chat logs with checkers</td><td>added-fact accuracy over a week; stored unchanged</td><td>ongoing</td><td>later</td></tr>
+</table></div>
+
+<h2 id="risks">8. Risks and honest limits</h2>
+<div class="note risk"><b>Combining several passages into one answer still needs network size.</b> Everything up to 50M says the small core copies and reads one thing at a time. The 100–300M target is a hypothesis to be tested at three points, not a promise.</div>
+<div class="note risk"><b>The dense encoder and any instruction data are outside knowledge.</b> They are used in retrieval and in tuning, never as the generator; every result that uses them is labelled, and an in-domain key is planned.</div>
+<div class="note risk"><b>Thinking codes can drift.</b> A small model given room to think may wander; the budget is small, the traces are verified, and the support check runs after. Drift is measured, not assumed away.</div>
+<div class="note risk"><b>Speed claims are per code on an idle GPU with replies byte-identical to the eager loop.</b> Any change to that protocol is stated.</div>
+<div class="note win"><b>What is already certain.</b> Exact memory, instant teaching, retrieval-trained copying, the graph decoder, bf16 training with int8 weights, and the cost ledger are built and measured. The hybrid adds the pieces around them in an order where each step is scored before the next.</div>
+
+<h2 id="roadmap">9. Build order</h2>
+<ol>
+<li>Sessions 20–21 (queued): training recipe; dense retrieval at answer time and in training.</li>
+<li>Reranker, distractor training, copy-as-draft decoding, duplicate check in the chat tool.</li>
+<li>Passage tier and the multi-turn probe; session memory in the chat.</li>
+<li>Modern dialogue data, multi-turn windows, preference tuning.</li>
+<li>Thinking codes and self-requested search with verified practice; the support check and refusal.</li>
+<li>Learned memory layer; consolidation and nightly practice.</li>
+<li>100M, 200M, 300M cores with the winning recipe, trained across nights; int8 release.</li>
+<li>The 0.5B RAG baseline on the same questions, accuracy and joules side by side; write-up.</li>
+</ol>
+<p class="lede">Each step lands as a ledger entry with its cost, a commit, and a one-line verdict: adopted, dropped, or needs a second seed.</p>
+</div>
+</body>
+</html>

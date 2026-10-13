@@ -135,6 +135,7 @@ script. Full setup, including corpus rebuilds and GPU use, is in
 | [`docs/ENCODER_RESEARCH_PLAN.md`](docs/ENCODER_RESEARCH_PLAN.md) | the dated research log with the cause behind each result |
 | [`docs/REASONING_PLAN.md`](docs/REASONING_PLAN.md), [`docs/PLAN_50M.md`](docs/PLAN_50M.md) | the maths and scale plans |
 | [`docs/DATASETS.md`](docs/DATASETS.md), [`docs/CORE_TRAINING_PLAN.md`](docs/CORE_TRAINING_PLAN.md) | what the model reads and how the mix was built |
+| [`HYBRID_DESIGN.html`](HYBRID_DESIGN.html) | the next system: a hybrid memory model that keeps what the research proved, adds the modern retrieval stack, reasons in steps, and a research plan with UML and hardware diagrams |
 | [`BRAIN_DESIGN.html`](BRAIN_DESIGN.html) | the follow-on design: a brain-inspired model with full reconstruction spec and history |
 | [`Traditional_Hybrid.html`](Traditional_Hybrid.html) | the best ideas here applied to a standard Transformer |
 | [`COMPILER_AND_MODERN_METHODS.html`](COMPILER_AND_MODERN_METHODS.html) | why a compressed encoding cannot add intelligence; review of modern methods; ranked tests |
