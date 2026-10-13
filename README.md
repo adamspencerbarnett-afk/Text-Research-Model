@@ -77,8 +77,9 @@ score 77% F1, and the model stops cleanly at the end of an answer.
 Finding an answer inside a passage you are shown improves ten times over with size.
 Choosing the steps of a word problem does not. The calculator confirms the arithmetic is
 right; the model picks the wrong operations. Verified self-training (keep only the model's own
-checked solutions, retrain) raised the 5M score to 4.0%. The next lever is retrieving a
-solution template from memory, which is what the architecture is built for.
+checked solutions, retrain) raised the 5M score to 4.0%. Neither depth (3 to 16 layers) nor a
+modern block moved it. Maths is now paused and will get its own research line, starting from
+the September typed-program work: retrieve a program, fill its slots, execute it exactly.
 
 ### 3. Better data beat more data
 
@@ -87,31 +88,76 @@ Wikipedia, real conversations, worked maths) cut prediction error on conversatio
 (2.02 → 1.30 bits per byte) and on maths by 59% (2.23 → 0.91). Bits per byte is how surprised
 the model is by unseen text; lower is better.
 
-### 4. A modern Transformer block is 1% to 7% better at equal cost
+### 4. Answers are now 4 to 7 times faster, with identical replies
 
-Swapping the network's block for the design used by current models (rotary positions, RMS
-normalisation, gated feed-forward) lowered error on every held-out source, with 2% fewer
-parameters: Wikipedia -1.3%, web -1.3%, maths -2.9%, chat -1.5%, question pairs -7.2%.
+| model | before, ms per word piece | after | speedup |
+| --- | ---: | ---: | ---: |
+| 5M | 11.7 | 1.75 | 6.7x |
+| 50M | 14.6 | 3.6 | 4.1x |
 
-### 5. What did not work, and why that matters
+At these sizes the GPU was spending its time launching about 300 tiny jobs per generated word
+piece, not computing. The answer step is now recorded once as a CUDA graph and replayed with
+a single launch. Replies are byte-identical to the old loop on every test question. Low-bit
+kernels (int8, 4-bit) were tried and were slower, for the same reason.
+
+### 5. Precision: bf16 training is free, and so are 8-bit weights
+
+| test | result |
+| --- | --- |
+| training in bf16 vs fp32, same steps | error 1.1915 vs 1.1901 (0.1% apart); bf16 2.2x faster |
+| answering with 8-bit weights | within noise of full precision at 5M and 50M |
+| answering with 4-bit weights | 13% worse on stored answers at 5M; 8% worse on new questions at 50M |
+
+From here on every model trains in bf16 and is checked at 8 bits. 4-bit is not used.
+
+### 6. Shape and block: shallow and wide is enough
+
+At equal parameters and steps, 3 layers matched 6 on language and generated 30% faster; 11
+and 16 layers were worse and slower. A modern Transformer block (rotary positions, RMS
+normalisation, gated feed-forward) lowered error on every text source by 1% to 7%, but at 5M
+it did not improve answers, so it is kept for the larger cores, where the network does more of
+the work.
+
+### 7. Retrieval: finding reworded questions
+
+A small pretrained sentence encoder used beside the word-based key raised the rate at which a
+reworded question finds its stored twin from 75.1% to 80.9%. It now finds "What GPU does the
+research computer use?" when asked about the graphics card. Training the model to trust these
+matches is running now.
+
+### 8. What did not work, and why that matters
 
 - **A cleverer text encoding is not intelligence.** The lossless compiler matched a standard
   tokenizer to within 1%. Kept because it is exact and makes copying simple, not because it
   makes the model smarter.
 - **Hand-built word statistics reverse with size.** Exact n-gram count tables made a 5M model
   9 to 11% better and a 20M model 1% worse. Dropped for larger cores.
-- **Depth alone does not help yet.** A 3-layer wide core matches a 6-layer core on language at
-  equal steps (within 0.3%) and generates 30% faster. The remaining depth tests are running.
-- **Speed is not the network.** A 50M model and a 5M model answer 32 questions in 18.3 s and
-  16.7 s. The per-step Python loop, not the Transformer, sets the time, so that loop is the
-  engineering target before any speed claim.
+- **Depth does not buy intelligence at this size.** Past six layers it cost language quality
+  and speed, and it never moved maths.
+- **The bottleneck was never the network.** A 50M and a 5M model answered at nearly the same
+  speed, which is what pointed to launch overhead and the graph fix above.
 
-### 6. Chat quality, graded by hand
+### 9. Chat quality, graded by hand
 
 A 32-question battery (stored facts, rewordings, general knowledge, facts taught during the
 chat, arithmetic, small talk) is run on every model. Best so far: 24 of 32 (75%) at 50M with a
 memory gate that lets the model decline a poor match, against 11 of 32 (34%) for the network
 alone. Transcripts and grades are in [`docs/CHAT_NOTES.md`](docs/CHAT_NOTES.md).
+
+## Where it is going
+
+[`HYBRID_DESIGN.html`](HYBRID_DESIGN.html) designs the next system: a chatbot, not a lookup
+tool. It keeps what the research proved (exact memory, retrieval-trained copying, the graph
+decoder, bf16 with 8-bit weights) and adds what modern retrieval systems do well: passages as
+well as Q&A pairs, combined word and meaning search with reranking, training on misleading
+evidence so the model learns when not to copy, short thinking steps, searches the model can ask
+for mid-answer, exact typed programs for counting, dates and conversation state, and a check
+that says "I don't know" when nothing supports an answer. The generator grows to 100–300M
+parameters, the size where reading is likely to become good, while knowledge stays in memory.
+
+Running now (see the queue in [`docs/RUN_LEDGER.md`](docs/RUN_LEDGER.md)): modern training
+recipes (the Muon optimiser and a warmup-stable-decay schedule) on the 5M core, then dense
+retrieval in the training loop.
 
 ## Try it
 
@@ -122,8 +168,9 @@ python -m venv .venv
 ```
 
 `run_model.py` shows a menu: train on a folder of text files, or chat with a saved model
-(`models/qa_best_5M_512.pt` is the best small model in git). Settings are at the top of the
-script. Full setup, including corpus rebuilds and GPU use, is in
+(`models/qa_best_5M_512.pt` is the best small model in git). Chat commands include `/add
+question || answer` to teach a fact and `/load file.txt` to teach many at once. Settings are at
+the top of the script. Full setup, including corpus rebuilds and GPU use, is in
 [`docs/HANDOFF_LOCAL.md`](docs/HANDOFF_LOCAL.md).
 
 ## Read more

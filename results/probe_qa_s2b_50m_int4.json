@@ -1,0 +1,441 @@
+{
+ "model": "runs/s2b_50m/qa_s2b_50m.pt",
+ "precision": "int4",
+ "kernels": "fp32",
+ "graph": false,
+ "dense": 0.0,
+ "min_sim": 0.0,
+ "summary": {
+  "stored": {
+   "n": 5,
+   "ok": 5,
+   "ok_without_memory": 1
+  },
+  "reworded": {
+   "n": 5,
+   "ok": 3,
+   "ok_without_memory": 1
+  },
+  "knowledge": {
+   "n": 5,
+   "ok": 5,
+   "ok_without_memory": 0
+  },
+  "heldout": {
+   "n": 5,
+   "ok": 4,
+   "ok_without_memory": 4
+  },
+  "taught": {
+   "n": 6,
+   "ok": 4,
+   "ok_without_memory": 0
+  },
+  "arithmetic": {
+   "n": 3,
+   "ok": 0,
+   "ok_without_memory": 2
+  },
+  "chat": {
+   "n": 3,
+   "ok": 0,
+   "ok_without_memory": 2
+  }
+ },
+ "cost": {
+  "seconds": 18.4,
+  "gpu_avg_w": 90.9,
+  "gpu_kj": 1.67,
+  "peak_mem_mb": 274,
+  "power_samples": 26,
+  "units": 32,
+  "s_per_unit": 0.5747,
+  "j_per_unit": 52.25
+ },
+ "rows": [
+  {
+   "section": "stored",
+   "question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "answer": "A traditional Thanksgiving meal in the United States typically includes turkey, stuffing, mashed potatoes, gravy, cranberry sauce, vegetables, and pumpkin pie.",
+   "answer_without_memory": "One of the most popular food in the US is the traditional cuisine of the year. The cuisines of the United States are known for their high-quality ingredients, including fresh ingredients, meat, and vegetables. The food is often served during the holiday season, which is a time for family and friends to come and go.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "seconds": 2.04
+  },
+  {
+   "section": "stored",
+   "question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "answer": "A simple example of gravity can be demonstrated by dropping a ball; the ball falls to the ground due to the force of gravitation pulling it downwards.",
+   "answer_without_memory": "The concept of gravity is a concept in physics that describes how the Earth's surface is made of solid material. It is a form of matter that is made up of solids, such as water, water, and water, which are made up by the Earth. The concept is a result of the Earth\u2019s rotation and the Earth is made out of solid materials.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "seconds": 1.92
+  },
+  {
+   "section": "stored",
+   "question": "Create a list of 10 verbs related to cooking",
+   "answer": "- Mix\n- Boil \n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Grill\n- Simmer",
+   "answer_without_memory": "1. Picking\n2. Pitching\n3. Painting\n4. Pasting\n5. Pingle\n6. Passing\n7. Pipe\n8. Paper\n9. Pin\n10. Pie\n11. Cooking\n\n2. Punching\n2\n3\n3 \nPicking \n3/4\n30\nPingle \n12\nPin \n20\n35\nPoint \n40\n45\n50",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Create a list of 10 verbs related to cooking",
+   "seconds": 2.57
+  },
+  {
+   "section": "stored",
+   "question": "Name some computer viruses",
+   "answer": "Some computer viruses are: \n- WannaCry\n- Stuxnet\n- Trojan Horse\n- Code Red\n- Sality\n- CryptoLocker\n- ILoveYou\n- Chimera\n- MyDoom\n- Melissa",
+   "answer_without_memory": "Some computer viruses are:\n\n1. Viruses: Some viruses can be found in the United States, Canada, and other countries.\n\n2. Viral infections: Some viral infections can be spread by contact with infected people.\n\n3. Virus-specific viruses: Some types of viruses, such as viruses and bacteria, can be transmitted by infected people, or by direct contact with the infected person.\n\n4. Viroids: Some type of virus can be passed through the body, such that the infected individual is infected with the virus.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Name some computer viruses",
+   "seconds": 2.99
+  },
+  {
+   "section": "stored",
+   "question": "Come up with two statistics related to the US population.",
+   "answer": "According to the US Census Bureau, the current US population is approximately 331 million, and the current American population is 1.8%.",
+   "answer_without_memory": "1. According to the United States Census Bureau, the US population is estimated to be 14.5 million people, with a population of 11.5 billion people.\n2. Accordingly, the population of the United Kingdom is estimated at 15.57 million people.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Come up with two statistics related to the US population.",
+   "seconds": 1.5
+  },
+  {
+   "section": "reworded",
+   "question": "What food do Americans usually eat on Thanksgiving?",
+   "answer": "The American food culture is generally more diverse than on Thanksgiving. The American diet is generally low in processed foods, while the American diet includes a variety of foods, including vegetables, fruits, vegetables, and fruits.",
+   "answer_without_memory": "The American Heart Association recommends eating a variety of foods on Thanksgiving. Some of the foods that are typically eaten on Thanks--such as:\n1. Fruits (such as fruits, vegetables, fruits, and vegetables)\n2. Fish (like fish, poultry, and fish)\n3. Fried Food (including fish and chips)\n4. Frozen Fish\n5. Fowl (a type of fish)",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.384,
+   "retrieved_question": "What kind of food do they usually eat in Spain?",
+   "seconds": 2.42
+  },
+  {
+   "section": "reworded",
+   "question": "Can you give me an example that shows how gravity works?",
+   "answer": "One example that shows how gravity works is in the case of the Earth's atmosphere. The Earth''s surface is covered by a layer of dust, which is made up of particles of different sizes and shapes. The particles are then transported to the atmosphere through the atmosphere and into the atmosphere.",
+   "answer_without_memory": "Sure! Here's an example of a gravitational wave that can be used to show how gravity works:\n\nLet's say you have a large object in your house, and you have the object in the middle. You have the objects in the center of the house, which are the objects that are the object that are in the centre of the room. The object is the object's center, and the object is in the midpoint of the space. The objects in that room are the ones that are located in the same direction as the object. The gravity of the",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.298,
+   "retrieved_question": "Create an analogy that shows how the legal system works",
+   "seconds": 2.94
+  },
+  {
+   "section": "reworded",
+   "question": "List ten verbs you would use when cooking.",
+   "answer": "- Pasta \n- Pizza \n - Salt \n  \n- Bake \n    \n        \n      \n8. Pizze",
+   "answer_without_memory": "Verbs: \n1. \"I'm sorry\"\n2. (1) \"You're sorious\"\n3. 1. The verb \"to be\"\n4. 2. The noun \"your\"\n5. 3. The adjective \"sorry.\"\n6. 4. The adverb \"must be\"",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.473,
+   "retrieved_question": "Create a list of 10 verbs related to cooking",
+   "seconds": 2.18
+  },
+  {
+   "section": "reworded",
+   "question": "What are some well-known computer viruses?",
+   "answer": "Some well-known computer viruses are:\n1. Stuxnet\n2. Stimulation\n3. Storm\n4. Stupid\n5. Stop\n6. Stay\n7. Stuck\n8. Sticky\n9. Stagger\n10. Stone\n11. Strong\n12. Stream\n13. Straight\n14. Stretch\n15. Strength\n16. Stress\n17. Stroke\n18. Strossen",
+   "answer_without_memory": "Some well-known computer viruses are:\n1. Strictly-based viruses (SNS)\n2. Viruses\n3. Virus-based\n4. Viral-based (VR) viruses\n5. Viroid-based\n\nThese viruses can be found in many different countries, including the United States, Canada, and the United Kingdom. Some of these viruses include:\n- Strict-based, viroid-like viruses: These viruses have been found in the United Arab Emirates, where they are",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.509,
+   "retrieved_question": "Name some computer viruses",
+   "seconds": 3.78
+  },
+  {
+   "section": "reworded",
+   "question": "Tell me two facts about the population of the United States.",
+   "answer": "The population of the United States is approximately 328 million people.",
+   "answer_without_memory": "The population of the United States is estimated to be 1.5 million, with a population of 10 million people.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.65,
+   "retrieved_question": "Tell me the population of the United States.",
+   "seconds": 0.68
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the largest planet in our solar system?",
+   "answer": "The largest planet in our solar system is Jupiter.",
+   "answer_without_memory": "The largest planet in our solar system is the Solar System.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.744,
+   "retrieved_question": "Name a planet from our solar system.",
+   "seconds": 0.46
+  },
+  {
+   "section": "knowledge",
+   "question": "Who wrote Romeo and Juliet?",
+   "answer": "William Shakespeare",
+   "answer_without_memory": "Romeo and Juliet wrote Romeo for a variety of works, including \"The Girl in the Rye\" by R.M.S. Lewis.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.789,
+   "retrieved_question": "Who wrote the play Romeo and Juliet?",
+   "seconds": 0.69
+  },
+  {
+   "section": "knowledge",
+   "question": "What is photosynthesis?",
+   "answer": "Photosynthesis is the process by which plants use light energy to convert carbon dioxide and water into oxygen and sugars. It involves the transfer of electrons and protons between molecules as chlorophyll in the presence of light. The light energy is converted into oxygen by the plant for growth.",
+   "answer_without_memory": "Photosynthesis is the process by which plants use energy to convert carbon dioxide into oxygen, which is then used to make energy. This process is known as photosynthesis.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.589,
+   "retrieved_question": "Describe the process of photosynthesis to me.",
+   "seconds": 1.66
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the boiling point of water in Celsius?",
+   "answer": "The approximate boiling point of water in Celsius is 100 degrees.",
+   "answer_without_memory": "The boiling point of water in Celsius is 125\u00b0F (50\u00b0C).",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.76,
+   "retrieved_question": "What is the approximate boiling point of water in Celsius?",
+   "seconds": 0.77
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the capital of Japan?",
+   "answer": "The capital of Japan is Tokyo.",
+   "answer_without_memory": "The capital of Japan is Shikoku, located in the state of Kyoto. It is located in a state of the capital city of Kagoshima, Japan. It has a population of 1,000,093, and it is the second-largest city in Japan after Kyushu.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Give me the capital of Japan.",
+   "seconds": 1.34
+  },
+  {
+   "section": "heldout",
+   "question": "Generate a creative poem describing the night sky.",
+   "answer": "The night sky is a blanket of blue,\nThe stars twinkle in the night,\nA sight to behold.\n\nThe stars shimmer in the light,\nAs the night progresses, they shimmers,\nAnd the night is full of wonder.",
+   "answer_without_memory": "The night sky is a vast expanse of blue,\nThe vastness of the sky,\nA sight that's so vast,\nIt's a sight to behold.\n\nThe sky is so vast and so vast\nIts beauty is so grand,\nAnd it's the perfect night.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.48,
+   "retrieved_question": "Write a creative sentence starting with \"The night sky\".",
+   "seconds": 2.04
+  },
+  {
+   "section": "heldout",
+   "question": "Come up with a creative sentence to describe a summer day.",
+   "answer": "The sun was shining brightly in the sky.",
+   "answer_without_memory": "The sun was shining brightly in the sky, casting a warm glow across the sky. The sky was a deep shade of blue, and the sky was painted in a warm, inviting light.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.379,
+   "retrieved_question": "Generate a creative metaphor to describe a warm summer day.\n<no input>",
+   "seconds": 0.95
+  },
+  {
+   "section": "heldout",
+   "question": "List 5 famous Italian dishes.",
+   "answer": "1. Pizza \n2. Paprika \n3. Pasta \n4. Passion \n5. Pierre \n6. Piazza",
+   "answer_without_memory": "1. Pizza \n2. Pasta \n3. Paprika \n4. Passion \n5. Pilates \n6. Pitade \n7. Piran \n8. Piazza \n\nThese dishes are known for their high-quality ingredients and are often served with a variety of toppings. They are often made with fresh ingredients, such as tomatoes, mushrooms, and onions, and are a great way to add flavor to your meal.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.453,
+   "retrieved_question": "Build a database for all Italian dishes",
+   "seconds": 2.48
+  },
+  {
+   "section": "heldout",
+   "question": "Tell me the most common hairstyle for men.",
+   "answer": "The most common hairstyle for men is a \"hair\" style. This style of hair is typically made of a combination of white, gray, and white. The hair is usually made of white or gray hair, and the hair is often made of gray or grayscale. The style of the hairstylist is usually lighter and more comfortable.",
+   "answer_without_memory": "Mental health is a crucial factor in managing stress and anxiety. Mental wellbeing is a major factor in stress and stress, and it can affect both physical and mental health. Men are more likely to experience stress, which can lead to stress and a decrease in stress levels. Men who are more stressed and stressed are more vulnerable to stress, as they may experience a decreased risk of developing a chronic condition. Men also have a higher risk of chronic diseases, such as cancer, heart disease, and cancer. Men have a lower risk of certain cancers, and they",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.346,
+   "retrieved_question": "What is the most common type of sneaker for men?",
+   "seconds": 3.11
+  },
+  {
+   "section": "heldout",
+   "question": "Print the following statement: \"I want to learn to code\".",
+   "answer": "I want to learn to code.",
+   "answer_without_memory": "I want to learn to code.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.336,
+   "retrieved_question": "Convert the following statement into a code snippet.\nPrint the sum of 1 and 2.",
+   "seconds": 0.3
+  },
+  {
+   "section": "taught",
+   "question": "What is the name of Adam's research model?",
+   "answer": "Adam's research model is called the Text Research Model.",
+   "answer_without_memory": "Adam's research model is a model that focuses on the development of new technologies and technologies. It is a form of artificial intelligence that focusses on the use of data and knowledge to solve problems.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "What is the name of Adam's research model?",
+   "seconds": 0.95
+  },
+  {
+   "section": "taught",
+   "question": "What GPU does the research computer use?",
+   "answer": "The research computer uses an NVIDIA RTX 3090 GPU.",
+   "answer_without_memory": "The research computer uses a variety of algorithms to solve complex problems. Some of the key features of the computer are:\n\n1. Data Analysis: The computer uses algorithms that analyze data to identify patterns and trends. This helps to identify trends and patterns that can be used to improve the problem.\n\n2. Data Preparation: The algorithms are used to analyze large amounts of data to make predictions. This allows the computer to identify the best possible solution.\n\n3. Data Translation: The data is used to translate the data into the desired form",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "What GPU does the research computer use?",
+   "seconds": 2.19
+  },
+  {
+   "section": "taught",
+   "question": "When was Version 1 of the compiler frozen?",
+   "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+   "answer_without_memory": "Version 1 of the compiler frozen is a compile-time compile that was released in 2015. It was released on the compiled platform and is available for download and download from the compilable source code. The compiled version of the code is available on the platform's official website, and it is available to download through the compiles and other software.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "When was Version 1 of the compiler frozen?",
+   "seconds": 1.74
+  },
+  {
+   "section": "taught",
+   "question": "What is Adam's research model called?",
+   "answer": "Adam's research model is called the Text Research Model.",
+   "answer_without_memory": "Adam's research model is a model that focuses on the development of new technologies and technologies. It is based on the idea that technology is a way to make people more productive and productive.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.74,
+   "retrieved_question": "What is the name of Adam's research model?",
+   "seconds": 0.99
+  },
+  {
+   "section": "taught",
+   "question": "Which graphics card is in the research computer?",
+   "answer": "The research computer is in the research computer.",
+   "answer_without_memory": "The research computer is in the research computer. It is a computer that is used to create and manipulate data. It consists of a set of instructions and algorithms that are used to perform tasks such as image recognition, image recognition and text recognition.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.398,
+   "retrieved_question": "Give three types of computer graphics.",
+   "seconds": 0.98
+  },
+  {
+   "section": "taught",
+   "question": "On what date was Version 1 frozen?",
+   "answer": "Version 1 frozen was frozen on 15 October 2026.",
+   "answer_without_memory": "Version 1 frozen was a 1950s American film starring Johnny Cash, Kate, and Kate. It was a classic comedy film that was a hit and received critical acclaim.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.476,
+   "retrieved_question": "When was Version 1 of the compiler frozen?",
+   "seconds": 1.17
+  },
+  {
+   "section": "arithmetic",
+   "question": "What is 12 plus 30?",
+   "answer": "12 plus 30 is 15.",
+   "answer_without_memory": "12 + 30 = 42\nAnswer: 41",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.65,
+   "retrieved_question": "Calculate 5 plus 2",
+   "seconds": 0.55
+  },
+  {
+   "section": "arithmetic",
+   "question": "If I have 5 apples and eat 2, how many are left?",
+   "answer": "There are 5 apples left.",
+   "answer_without_memory": "If I have 5 apples, I have a total of 5 + 5/2 = 10 apples.\nIf I eat 2 apples, then there are 12 - 2 + x apples left.\nWe are given that there are no apples left, so we can write: 11 - x = x.\nSolving for x, we get: x - X = X.\nAdding X to both sides, we have: x+X = Y.\nSince we know that there is no value",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.486,
+   "retrieved_question": "If there are two apples and you give away one, how many apples do you have left?",
+   "seconds": 2.0
+  },
+  {
+   "section": "arithmetic",
+   "question": "What is 7 times 8?",
+   "answer": "7 times 8 is 54.",
+   "answer_without_memory": "7 times 8 is equal to 7 x 8 = 56.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.599,
+   "retrieved_question": "Calculate 42 times 7.",
+   "seconds": 0.53
+  },
+  {
+   "section": "chat",
+   "question": "Hello, how are you today?",
+   "answer": "I'm here to help you today.",
+   "answer_without_memory": "I'm glad you're doing. I hope you'll be able to find the best deals and deals for your business. Let me know if you have any questions or concerns.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.491,
+   "retrieved_question": "Generate a to-do-list for today.",
+   "seconds": 0.86
+  },
+  {
+   "section": "chat",
+   "question": "Can you help me write a short email to my boss asking for a day off?",
+   "answer": "Dear [Boss],\n\nI am writing to express my interest in receiving a raise. I have been a dedicated and hardworking employee since I started at this company and believe that I am deserving of a higher wage for my efforts. I would like to discuss the details at our next meeting and I hope that we can reach an agreement that is mutually beneficial.\n\nThank you for your time and consideration. \n\nSincerely,\n[Your name]",
+   "answer_without_memory": "Dear [Name],\n\nI am writing to request a day off for you to ask for a day Off for you. I am excited to ask you for a few more questions about your day off. I would like to ask if you have any questions about the day off, so I can help you with that.\n\nI would like you to know that you have a day away, so you can get back to your schedule and get a better idea of what you are looking for. I will be happy to help you get started.\n\nThank you for your time and",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.373,
+   "retrieved_question": "Draft an email to your boss asking for a raise.",
+   "seconds": 3.61
+  },
+  {
+   "section": "chat",
+   "question": "What should I cook for dinner tonight?",
+   "answer": "You can cook for dinner tonight by following the recipes provided in the previous section.",
+   "answer_without_memory": "You should cook for dinner tonight if you want to enjoy a meal. You can cook it in the morning or in the evening. You should also cook it on a platter or in a bowl. You may also want to cook it at the same time as you would like.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.365,
+   "retrieved_question": "Generate a list of five vegetables to cook for a healthy dinner",
+   "seconds": 1.25
+  }
+ ]
+}
