@@ -201,7 +201,9 @@ python -m venv .venv
 `run_model.py` shows a menu: train on a folder of text files, or chat with a saved model; option 3
 opens the best chat model, `models/qa_best_5M_dense.pt` (24 of 32 on the chat probe). Model files
 are not in git: train one with the pipeline in `docs/SETUP.md`, which writes it locally. Chat
-commands include `/add question || answer` to teach a fact and `/load file.txt` to teach many at once. Settings are at
+commands include `/add question || answer` to teach a fact and `/load file.txt` to teach many at once. Option 4
+switches between the CPU and the GPU and sets the CPU threads; replies are KV-cached and streamed (speeds in
+`inference_lab/RESULTS.md`). Settings are at
 the top of the script. Full setup, including corpus rebuilds and GPU use, is in
 [`docs/SETUP.md`](docs/SETUP.md).
 
@@ -226,6 +228,7 @@ the top of the script. Full setup, including corpus rebuilds and GPU use, is in
 
 ```text
 .
+├── inference_lab/      # inference speed tests (CPU/GPU, decoding paths, precision), own script copies
 ├── run_model.py        # menu: train on a folder or chat with a model
 ├── compiler/           # the text compiler, native encoder, tests, experiments/ (all training scripts)
 ├── docs/               # plans, ledger, research log, chat transcripts

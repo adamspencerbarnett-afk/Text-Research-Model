@@ -18,6 +18,7 @@ in results/ and docs/.
 from __future__ import annotations
 
 import argparse
+import codecs
 import json
 import os
 import shutil
@@ -48,7 +49,13 @@ SETTINGS = dict(
     VALID_SHARE=0.02,       # last share of the training stream kept for validation, never trained on
     HELDOUT_FILES=1,        # files (alphabetically last) scored as held-out when there is no heldout/ folder
     # --- hardware: "auto" = GPU if available, else "cpu", or "cuda:0"
-    DEVICE="auto", THREADS=0,
+    DEVICE="auto", THREADS=0,   # THREADS 0 = PyTorch's default; menu option 4 switches both while running
+    # --- reply speed (inference lab, 14 October 2026: inference_lab/RESULTS.md)
+    CORE_DECODE="cache",    # core chat: "cache" (KV cache: the window is processed once, then one code per step;
+                            # same codes, 2-28x faster on the CPU) or "recompute" (the whole window for every code: the old path)
+    STREAM=True,            # core chat: print the reply as it is generated
+    CPU_INT8=False,         # CPU only: int8 matrix kernels (dynamic quantisation) for the core chat. Off: on this
+                            # Xeon (AVX2, no int8 dot-product units) they were 1.5-2.5x slower than fp32 and changed replies
     # --- chat
     REPLY_TOKENS=120, TEMPERATURE=0.8, TOP_K=40,
     # --- chat with a Q&A model (memory + copy head; trained by compiler/experiments/m2_qa.py)
@@ -71,6 +78,7 @@ sys.path.insert(0, str(ROOT / "compiler"))
 sys.path.insert(0, str(ROOT / "compiler" / "experiments"))
 import numpy as np  # noqa: E402
 import torch  # noqa: E402
+import torch.nn.functional as F  # noqa: E402
 import compiler_v0 as cv  # noqa: E402
 import ladder_encodings as LE  # noqa: E402
 import train_lm  # noqa: E402
@@ -253,21 +261,72 @@ def load_model(path: str):
     if unexpected or any(not k.startswith("table") for k in missing):
         raise SystemExit(f"checkpoint does not match the model: missing {missing}, unexpected {unexpected}")
     dev = device()
+    if S["THREADS"]:
+        torch.set_num_threads(S["THREADS"])
     model.to(dev).eval()
+    if S["CPU_INT8"] and dev == "cpu":
+        model = torch.ao.quantization.quantize_dynamic(model, {torch.nn.Linear}, dtype=torch.qint8)
+        say("int8 matrix kernels (CPU)")
     return enc, model, dev
 
 
 @torch.no_grad()
-def reply(enc, model, dev, prompt: bytes, n_tokens: int, temperature: float, top_k: int, seed: int):
+def sample_from(model, h, x, gen, temperature: float, top_k: int) -> int:
+    """train_lm.LM.sample_next from an already computed last hidden state h (for the KV-cached reply)."""
+    def pick(logits):
+        logits = logits / temperature
+        if top_k:
+            kth = torch.topk(logits, top_k).values[..., -1, None]
+            logits = logits.masked_fill(logits < kth, float("-inf"))
+        return torch.multinomial(F.softmax(logits, -1).cpu(), 1, generator=gen).item()
+    if model.coords:
+        g = pick(model.head_g(h).masked_fill(~model.valid_group, float("-inf")))
+        lm = model.head_m(torch.cat([h, model.emb_g(torch.tensor([g], device=h.device))], -1))
+        return g * model.M + pick(lm.masked_fill(~model.valid[g], float("-inf")))
+    logits = model.mixed_logits(h, x)
+    if model.no_case_flags:
+        logits[:, 256:258] = float("-inf")
+    return pick(logits)
+
+
+@torch.no_grad()
+def reply(enc, model, dev, prompt: bytes, n_tokens: int, temperature: float, top_k: int, seed: int, stream=None):
+    """Continue the prompt. With CORE_DECODE="cache" the window goes through the network once and each new
+    code reuses the keys and values of the earlier ones; when the window is full its newest half is processed
+    again. ``stream`` is called with each new piece of text as soon as it is generated."""
     gen = torch.Generator().manual_seed(seed)
     p_tokens, _ = enc.encode(prompt)
-    seq = [int(t) for t in p_tokens]
+    seq = [int(t) for t in p_tokens] or [10]
+    start = len(seq) if len(p_tokens) else 1
+    use_cache = SETTINGS["CORE_DECODE"] == "cache"
+    cache, base, done, shown, first = None, 0, 0, b"", None
     t0 = time.perf_counter()
     for _ in range(n_tokens):
-        seq.append(model.sample_next(torch.tensor([seq[-model.ctx:]], device=dev), gen, temperature, top_k))
+        x = torch.tensor([seq[-model.ctx:]], device=dev)
+        if use_cache:
+            try:
+                if cache is None or len(seq) - base > model.ctx:      # first step, or the window is full
+                    base = len(seq) - model.ctx // 2 if len(seq) > model.ctx else 0
+                    h, cache = model.hidden_cached(torch.tensor([seq[base:]], device=dev), 0, None)
+                else:                                                # only the newest code goes through
+                    h, cache = model.hidden_cached(torch.tensor([seq[done:]], device=dev), done - base, cache)
+                done = len(seq)
+            except NotImplementedError:                              # hashed input tables: no cache for this model
+                use_cache = False
+        if use_cache:
+            seq.append(sample_from(model, h[:, -1], x, gen, temperature, top_k))
+        else:
+            seq.append(model.sample_next(x, gen, temperature, top_k))
+        if first is None:
+            first = time.perf_counter() - t0
+        if stream:
+            text = enc.decode(seq[start:])
+            if len(text) > len(shown):
+                stream(text[len(shown):]); shown = text
     dt = time.perf_counter() - t0
-    out = enc.decode(seq[len(p_tokens):])
-    return out, f"{n_tokens} codes, {len(out)} bytes in {dt:.1f}s ({len(out) / dt:.0f} B/s)"
+    out = enc.decode(seq[start:])
+    return out, (f"{n_tokens} codes, {len(out)} bytes in {dt:.1f}s ({len(out) / dt:.0f} B/s), "
+                 f"first code after {1000 * first:.0f} ms, {SETTINGS['CORE_DECODE']} on {dev}")
 
 
 def is_qa_model(path: str) -> bool:
@@ -366,8 +425,15 @@ def chat(path: str) -> None:
             except ValueError:
                 print("bad value")
             continue
-        out, stats = reply(enc, model, dev, line.encode("utf-8"), n_tok, temp, top_k, seed)
-        print(f"model> {out.decode('utf-8', 'replace')}\n       [{stats}]")
+        if S["STREAM"]:
+            print("model> ", end="", flush=True)
+            dec = codecs.getincrementaldecoder("utf-8")("replace")
+            out, stats = reply(enc, model, dev, line.encode("utf-8"), n_tok, temp, top_k, seed,
+                               stream=lambda b: print(dec.decode(b), end="", flush=True))
+            print(f"\n       [{stats}]")
+        else:
+            out, stats = reply(enc, model, dev, line.encode("utf-8"), n_tok, temp, top_k, seed)
+            print(f"model> {out.decode('utf-8', 'replace')}\n       [{stats}]")
 
 
 # ----------------------------------------------------------------------------- menu
@@ -384,7 +450,8 @@ def main() -> int:
     while True:
         best = ROOT / SETTINGS["BEST_MODEL"]
         print("\n  1  Train a model on a folder of text files\n  2  Chat with a saved model (popup)\n"
-              f"  3  Chat with the best research model ({SETTINGS['BEST_MODEL']})\n  4  Quit")
+              f"  3  Chat with the best research model ({SETTINGS['BEST_MODEL']})\n"
+              f"  4  Device and threads (now {SETTINGS['DEVICE']}, threads {SETTINGS['THREADS'] or 'default'})\n  5  Quit")
         choice = input("choose> ").strip()
         if choice == "1":
             folder = pick_folder("Choose the folder with the .txt files to train on")
@@ -399,7 +466,16 @@ def main() -> int:
                 chat(str(best))
             else:
                 print(f"not found: {best}")
-        elif choice in ("4", "q", ""):
+        elif choice == "4":
+            gpu = torch.cuda.is_available()
+            d = input(f"device: auto, cpu{', cuda' if gpu else ''} [{SETTINGS['DEVICE']}]> ").strip().lower()
+            if d in ("auto", "cpu") or (gpu and d.startswith("cuda")):
+                SETTINGS["DEVICE"] = d
+            t = input(f"CPU threads, 0 = default (this machine has {os.cpu_count()}) [{SETTINGS['THREADS']}]> ").strip()
+            if t.isdigit():
+                SETTINGS["THREADS"] = int(t)
+            print(f"device {SETTINGS['DEVICE']}, threads {SETTINGS['THREADS'] or 'default'}: used by the next chat or training")
+        elif choice in ("5", "q", ""):
             return 0
 
 

@@ -70,6 +70,7 @@ QUEUE = [
     ("MEMLAYER", "product-key memory layer inside the core (trainable form of the count tables); consolidation and nightly practice", "capacity without compute; should not reverse with size", "session 27"),
     ("SIZE", "100M, 200M, 300M shallow-wide cores with the winning recipe, trained across nights (WSD), int8 release; 16k and 32k dictionaries at 100M", "at what size does reading become good, and does a larger dictionary make answers faster per byte?", "session 28"),
     ("BASELINE", "a 0.5B instruct model with the same retriever and the same questions, both at their best precision; accuracy and joules per answer side by side", "does the design hold against a conventional RAG system?", "session 29, last"),
+    ("INF", "inference speed lab (inference_lab/, copies of the scripts): phase A CPU at 8 threads beside the queue (decoding path, threads, int8 and bf16 compute, prompt length, torch.compile); phase B GPU against CPU on an idle GPU (recompute, KV cache, CUDA graph, bf16 kernels, joules, 22 and 44 threads); phase C the winners as run_model.py settings", "how fast can replies get on this machine, CPU or GPU, and with which settings?", "phase A done (KV cache adopted, int8/bf16 CPU kernels rejected); phase C done for the CPU findings; phase B queued after S31 (inference_lab/chain_gpu.sh)"),
     ("COST", "record cost beside accuracy for every run: actual training seconds, steps/s, peak GPU memory, answer seconds per question, GPU power (joules per answer); ledger columns for train seconds and answer seconds", "is the model lighter and faster, in measured numbers?", "done: cost.py meters power, energy, memory and steps/s for every run; ledger cost table; probes record s and J per answer"),
 ]
 
@@ -87,6 +88,12 @@ FINDINGS = [
     ("9 Oct, session 3 (scale run)", [
         "The exact-table gain reverses with core size: +10% at 0.8M, 0 at 4.7M, -1% at 19M (equal time), and 9-12% worse on Wikipedia. The tables are a crutch for a small core; the trust head does not reject them off-domain.",
         "The tables stay as the store that learns by reading; they are not the mechanism for 'lighter and faster at equal quality'. The memory and the copy head are.",
+    ]),
+    ("14 Oct, inference lab phase A (CPU, inference_lab/, run beside the queue at 8 threads)", [
+        "KV-cached decoding gives the same codes as the full recompute in every case (cores 5M, 50M, 100M; Q&A models 5M and 50M, 6/6 answers identical) and is 1.7-28x faster on the CPU; the gain grows with the prompt: 100M with a 960-code prompt 923 -> 32 ms per code, 50M Q&A answers 2.5 -> 0.78 s.",
+        "Threads: 1 -> 8 makes the cached 100M 3x faster per code (83 -> 32 ms, long prompt) and the prompt pass 6x faster; the 5M gains little past 2 threads (memory-bound, small matrices).",
+        "Real int8 kernels (dynamic quantisation) are 1.5-2.5x slower than fp32 on this Xeon (AVX2, no int8 dot-product units) and change greedy replies (3-4 of 6 Q&A answers kept); not adopted for the CPU. bf16 compute on the CPU: prompt pass 7x slower, per code equal; not adopted. torch.compile on the CPU needs Microsoft's C++ compiler (cl), absent: not tested.",
+        "Adopted in run_model.py: the core chat uses the KV cache (CORE_DECODE, window full: newest half processed again), streams its reply (STREAM), shows the time to the first code, and menu option 4 switches device and threads. Phase B (GPU, every CPU thread) runs after session 31 on an idle GPU.",
     ]),
     ("11 Oct, session 8 (50M, speed, depth)", [
         "50M math (GSM8K stage on the P50 core, 8,000 steps, calculator): new problems 1.5% (3/198), no better than 5M (2.5-4.0%); stored 47% / F1 0.90; calculator-confirmed answers 524 (5M: 348-424); validation 0.66 (5M: 1.03). The steps are well formed and the operations wrong ('27 in 5 years: 27 * 5 = 135'): ten times the parameters at 20 codes each did not teach step choice. Practice with the verifier and depth are the open levers; queued.",

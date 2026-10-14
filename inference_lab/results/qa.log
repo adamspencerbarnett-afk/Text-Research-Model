@@ -1,0 +1,23 @@
+Loading weights:   0%|          | 0/103 [00:00<?, ?it/s]Loading weights: 100%|##########| 103/103 [00:00<00:00, 1584.55it/s]
+{'model': '5M chat', 'path': 'recompute', 'precision': 'fp32', 'threads': 1, 'load_s': 177.2, 'first_ms': 44.8, 's_answer': 1.747, 'ms_code': 40.79, 'cps': 87.1, 'same_answers': '6/6'}
+{'model': '5M chat', 'path': 'cache', 'precision': 'fp32', 'threads': 1, 'load_s': 177.2, 'first_ms': 41.8, 's_answer': 0.514, 'ms_code': 12.01, 'cps': 295.9, 'same_answers': '6/6'}
+{'model': '5M chat', 'path': 'cache', 'precision': 'fp32', 'threads': 2, 'load_s': 177.2, 'first_ms': 33.0, 's_answer': 0.449, 'ms_code': 10.47, 'cps': 339.2, 'same_answers': '6/6'}
+{'model': '5M chat', 'path': 'cache', 'precision': 'fp32', 'threads': 4, 'load_s': 177.2, 'first_ms': 25.6, 's_answer': 0.391, 'ms_code': 9.14, 'cps': 388.7, 'same_answers': '6/6'}
+{'model': '5M chat', 'path': 'recompute', 'precision': 'fp32', 'threads': 8, 'load_s': 177.2, 'first_ms': 22.0, 's_answer': 0.662, 'ms_code': 15.46, 'cps': 229.8, 'same_answers': '6/6'}
+{'model': '5M chat', 'path': 'cache', 'precision': 'fp32', 'threads': 8, 'load_s': 177.2, 'first_ms': 20.2, 's_answer': 0.378, 'ms_code': 8.83, 'cps': 402.4, 'same_answers': '6/6'}
+C:\Users\adams\OneDrive\Desktop\Text Bot Model Research\Text-Research-Model\inference_lab\bench.py:183: DeprecationWarning: torch.ao.quantization is deprecated and will be removed in 2.10. 
+For migrations of users: 
+1. Eager mode quantization (torch.ao.quantization.quantize, torch.ao.quantization.quantize_dynamic), please migrate to use torchao eager mode quantize_ API instead 
+2. FX graph mode quantization (torch.ao.quantization.quantize_fx.prepare_fx,torch.ao.quantization.quantize_fx.convert_fx, please migrate to use torchao pt2e quantization API instead (prepare_pt2e, convert_pt2e) 
+3. pt2e quantization has been migrated to torchao (https://github.com/pytorch/ao/tree/main/torchao/quantization/pt2e) 
+see https://github.com/pytorch/ao/issues/2259 for more details
+  eng.model = torch.ao.quantization.quantize_dynamic(eng.model, {nn.Linear}, dtype=torch.qint8)
+{'model': '5M chat', 'path': 'cache', 'precision': 'int8 dynamic', 'threads': 8, 'load_s': 177.2, 'first_ms': 35.5, 's_answer': 0.676, 'ms_code': 17.25, 'cps': 209.2, 'same_answers': '4/6'}
+{'model': '50M chat', 'path': 'recompute', 'precision': 'fp32', 'threads': 1, 'load_s': 6.1, 'first_ms': 220.3, 's_answer': 12.291, 'ms_code': 315.15, 'cps': 11.7, 'same_answers': '6/6'}
+{'model': '50M chat', 'path': 'cache', 'precision': 'fp32', 'threads': 1, 'load_s': 6.1, 'first_ms': 223.3, 's_answer': 1.782, 'ms_code': 45.69, 'cps': 80.6, 'same_answers': '6/6'}
+{'model': '50M chat', 'path': 'cache', 'precision': 'fp32', 'threads': 2, 'load_s': 6.1, 'first_ms': 119.8, 's_answer': 1.176, 'ms_code': 30.16, 'cps': 122.1, 'same_answers': '6/6'}
+{'model': '50M chat', 'path': 'cache', 'precision': 'fp32', 'threads': 4, 'load_s': 6.1, 'first_ms': 73.5, 's_answer': 0.825, 'ms_code': 21.16, 'cps': 174.1, 'same_answers': '6/6'}
+{'model': '50M chat', 'path': 'recompute', 'precision': 'fp32', 'threads': 8, 'load_s': 6.1, 'first_ms': 50.0, 's_answer': 2.499, 'ms_code': 64.08, 'cps': 57.5, 'same_answers': '6/6'}
+{'model': '50M chat', 'path': 'cache', 'precision': 'fp32', 'threads': 8, 'load_s': 6.1, 'first_ms': 52.0, 's_answer': 0.777, 'ms_code': 19.93, 'cps': 184.8, 'same_answers': '6/6'}
+{'model': '50M chat', 'path': 'cache', 'precision': 'int8 dynamic', 'threads': 8, 'load_s': 6.1, 'first_ms': 93.0, 's_answer': 1.493, 'ms_code': 33.05, 'cps': 103.6, 'same_answers': '3/6'}
+wrote C:\Users\adams\OneDrive\Desktop\Text Bot Model Research\Text-Research-Model\inference_lab\results\qa.json {'part': 'qa', 'date': '2026-10-14 14:39', 'device': 'cpu', 'torch': '2.11.0+cu128', 'max_threads': 8, 'seconds': 352}

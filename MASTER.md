@@ -34,7 +34,8 @@ the program tier, reasoning with thinking codes, the support check, continuous l
 
 | path | what |
 | --- | --- |
-| `run_model.py` | user entry: train on a folder, chat with a model (`/add`, `/load`), option 3 = best model |
+| `run_model.py` | user entry: train on a folder, chat with a model (`/add`, `/load`), option 3 = best model, option 4 = device and threads; core chat KV-cached and streamed |
+| `inference_lab/` | inference speed lab (own copies of the scripts in `lib/`): `bench.py`, `bench_gpu.py`, `chain_gpu.sh`, `RESULTS.md` |
 | `compiler/` | compiler v0, native encoder, tests |
 | `compiler/experiments/train_lm.py`, `scale_run.py` | core training (blocks, optimisers, schedules, bf16, resume) |
 | `compiler/experiments/m2_qa.py` | Q&A stage, memory, retrieval, training-window options, engine (`QAEngine`) |
