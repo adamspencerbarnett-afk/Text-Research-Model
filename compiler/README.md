@@ -7,14 +7,18 @@ Compiler v0 turns text (any bytes) into integer IDs for model training, and back
 | `compiler_v0.py` | Reference implementation: the specification, dictionary fitting, encode/decode, file formats, CLI |
 | `native/cv0.hpp`, `native/cv0.cpp` | Fast C++ encoder/decoder; must produce byte-identical ID files |
 | `test_compiler_v0.py` | Contract tests: scanner rules, round trips on adversarial and random input, statelessness, deterministic fitting, file formats, C++/Python parity |
-| `experiments/prepare_books.py` | Downloads and prepares the public-domain book corpus |
-| `experiments/initial_tests.py` | The initial measurements recorded in `results/compiler_v0_initial.json` |
-| `experiments/ladder_encodings.py` | One interface over the encodings under test: bytes, v0 dictionaries, dictionary-free hash codes |
-| `experiments/train_lm.py` | Trains one small Transformer on one encoding for a fixed time budget; reports bits per original byte, speed, a talk-back sample |
-| `experiments/ladder1.py` | Ladder 1: the same model and text across six encodings; writes `results/ladder1.json` |
-| `experiments/summarize_ladder.py` | Renders a ladder result as Markdown tables, including the equal-bytes view |
-| `experiments/chat.py` | Talks to a saved ladder model through its own encoder |
+| `experiments/ladder_encodings.py`, `experiments/ladder1.py` | One interface over the encodings (bytes, v0 dictionaries, hash codes) and the encoding helpers the trainers share |
+| `experiments/train_lm.py`, `experiments/scale_run.py` | Core (stage 1) training: legacy or modern block, AdamW or Muon, cosine or warmup-stable-decay, bf16, resumable checkpoints, cost metering |
+| `experiments/m2_qa.py` | The Q&A stage and the answering engine: exchange memory, literal + dense retrieval, copy and trust heads, distractor and reworded-self training, the CUDA-graph answer path |
+| `experiments/fast_decode.py` | The CUDA-graph answer step (one replay per generated code, replies identical to the eager loop) |
+| `experiments/dense_keys.py`, `experiments/precision.py`, `experiments/cost.py` | Dense question keys; weight rounding and low-bit kernels; GPU power and energy meter |
+| `experiments/core_eval.py`, `experiments/chat_probe.py`, `experiments/run_ledger.py` | Report card (fluency, evidence gain, reword recall), 32-question chat probe, run ledger generator |
+| `experiments/prepare_core_mix.py`, `experiments/evidence_parallel.py`, `experiments/prepare_qa.py` | Training mixes (recipes D1–D3, P50, P100), evidence pairs on worker processes, Q&A data (Alpaca, SQuAD) |
+| `experiments/prepare_books.py`, `experiments/prepare_corpus_v2.py` | The public-domain book corpus (held-out books used by the report card) |
 | `experiments/test_ladder.py` | Contract tests for the encodings and the harness |
+| `experiments/chains/` | The queued research sessions as resumable shell scripts, and `watch.sh` |
+
+Older experiment scripts (ladder summaries, the first chat tool, the K1 key trainer, speed probes, the V1 learning-by-reading test) are in `archive/experiments_oct2026/`; the paused maths line (verified self-training) is in `archive/math_line/`.
 
 ## How it encodes
 
@@ -67,25 +71,11 @@ file and opens a chat; the encoder and the count tables are rebuilt from the dat
 was trained on. Every knob (model size, encoding, tables, budget, device, sampling) is in the
 `SETTINGS` block at the top of the script. `--train DIR` and `--chat MODEL.pt` skip the menu.
 
-## Train and talk (needs PyTorch)
+## Train and evaluate (needs PyTorch)
 
-```bash
-python compiler/experiments/prepare_books.py data
-g++ -O2 -std=c++17 -o data/cv0 compiler/native/cv0.cpp
-python compiler/experiments/ladder1.py data data/work --native data/cv0 --budget 600 --out results/ladder1.json
-python compiler/experiments/summarize_ladder.py results/ladder1.json
-python compiler/experiments/chat.py data/work/ladder1_v0_8k_plain.pt --prompt "We went to the park"
-```
+The full pipeline, from raw sources to a chat model, is in [`docs/SETUP.md`](../docs/SETUP.md).
 
 In Python, `compiler_v0.read_ids(path, dictionary)` returns the IDs for training. For large corpora, `numpy.fromfile(path, dtype="<u2", offset=24)` reads a 16-bit ID file directly.
-
-## Reproduce the initial tests
-
-```bash
-python compiler/experiments/prepare_books.py DATA
-g++ -O2 -std=c++17 -o cv0 compiler/native/cv0.cpp
-python compiler/experiments/initial_tests.py DATA WORK --native ./cv0
-```
 
 ## Plan
 
@@ -94,6 +84,6 @@ The review of this encoder and the phased plan for the next experiments are in [
 ## Limits of v0
 
 - Letters are ASCII only. Other scripts and accented letters fall back to UTF-8 bytes (2–3 IDs per character).
-- Numbers are spelled digit by digit; the number channel is Track D.
+- Numbers are spelled digit by digit; a number channel belongs to the paused maths line.
 - Phrases make an ID depend on up to two neighbouring units. Encoding stays deterministic and local, but a sentence's IDs can differ at its edges depending on what touches it.
 - The dictionary is fixed. Changing it means a new dictionary hash and retraining the model's embeddings.
