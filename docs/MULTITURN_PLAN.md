@@ -34,6 +34,11 @@ stored facts, language quality)?
   UltraChat file, test split included, so most test conversations were seen as single exchanges).
 - **Window layout for a multi-turn example:** `[retrieved exchange] [sep] [earlier turns, newest last] User: question
   Assistant: reply`, loss on the final reply only; earlier turns are trimmed from the oldest end to fit.
+- **Long, multi-part messages are kept whole** (added 14 October, at Adam's question): 22% of user turns run past
+  350 characters, 37% have three or more sentences and 14% ask two or more questions (a passage then a request,
+  or several requests at once). The current message is kept up to 1,200 bytes (about 330 codes), so the model
+  learns to read a whole paragraph and answer every part; reading a long message and reading a conversation are
+  the same skill, so they train in the same stage rather than a separate one.
 
 ## 4. The new 5M core
 
@@ -55,10 +60,10 @@ engine and graph decoder. The best arm is repeated with a second seed before any
 
 ## 6. Tests (the same for every arm)
 
-1. **Multi-turn probe** (new, `mt_probe.py`): about 24 scripted conversations of 2-4 turns, keyword-graded,
-   in five groups: recall of a stated fact ("my sister is called Ana ... what is my sister's name?"),
-   reference resolution ("the second one"), follow-ups ("why?", "explain more simply"), corrections
-   ("actually it is 7 ... what did I say?"), returning to an earlier topic. Each question is also asked
+1. **Multi-turn probe** (new, `mt_probe.py`): 27 scripted conversations, keyword-graded, in six groups:
+   recall of a stated fact ("my sister is called Ana ... where does my sister live?"), reference resolution
+   ("the second one"), follow-ups, corrections ("actually it is 4471"), returning to an earlier topic, and
+   multi-part messages (one paragraph with two or more requests; correct only if every part is answered). Each question is also asked
    without its history, so the score shows how much the conversation itself helped.
 2. **History gain** on the held-out threads: bits per byte of each final reply with and without the earlier
    turns in the window (the conversation counterpart of evidence gain).

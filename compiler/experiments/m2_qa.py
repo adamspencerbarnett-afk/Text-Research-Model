@@ -786,6 +786,7 @@ def main() -> int:
     ap.add_argument("--amp", action="store_true", help="train in bfloat16 autocast (scores stay in full precision)")
     ap.add_argument("--mt-data", default="", help="folder from prepare_dialogue.py: whole conversations for multi-turn windows")
     ap.add_argument("--mt-p", type=float, default=0.0, help="share of training windows built from a conversation (earlier turns in the window)")
+    ap.add_argument("--mt-question-bytes", type=int, default=1200, help="longest current message kept in a conversation window, in bytes (from its end)")
     ap.add_argument("--history-codes", type=int, default=400, help="longest conversation history kept in a window, in codes")
     ap.add_argument("--lora-rank", type=int, default=0, help="train LoRA adapters of this rank on a frozen core (lora.py; merged before saving); 0: full fine-tune")
     ap.add_argument("--lora-lr", type=float, default=1e-3, help="learning rate of the LoRA adapters")
@@ -997,7 +998,9 @@ def main() -> int:
         t = dialogues[int(rng.integers(len(dialogues)))]
         ks = [k for k in range(3, len(t), 2)] or [1]
         k = ks[int(rng.integers(len(ks)))]
-        q = t[k - 1][1].encode("utf-8")[-350:]
+        # the current message is kept whole up to --mt-question-bytes (22% of user turns run past 350 characters:
+        # a passage then a request, or several requests at once; cutting them taught the model to skip their start)
+        q = t[k - 1][1].encode("utf-8")[-a.mt_question_bytes:]
         own = enc.encode(render(q, t[k][1].encode("utf-8")))[0]
         own = (np.append(own, EOS) if a.eos else own)[: a.ctx // 2]
         ql = min(len(enc.encode(render(q, None))[0]), len(own))

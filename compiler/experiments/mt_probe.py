@@ -51,6 +51,17 @@ CONVERSATIONS = [
     ("return", ["My cat is called Luna.", "What is the capital of Italy?"], "What is my cat called?", [["luna"]]),
     ("return", ["I am planning a trip to Spain in May.", "What is a good book to read on a plane?"], "Which country am I travelling to?", [["spain"]]),
     ("return", ["My brother plays the guitar.", "Name a famous painter."], "What instrument does my brother play?", [["guitar"]]),
+    # one paragraph-style message with several parts; correct only if every part is answered (14 October)
+    ("multipart", [], "I need two things. First, what is the capital of Canada? Second, what is the boiling point of water in Celsius?",
+     [["ottawa"], ["100"]]),
+    ("multipart", [], "Here is a note from my courier: 'Order 5521 will be delivered on Friday at noon.' When will it arrive, and what is the order number?",
+     [["friday"], ["5521"]]),
+    ("multipart", [], "I have three meetings tomorrow: budget at 9, design at 11 and hiring at 2. Which meeting is at 11, and what time is the hiring meeting?",
+     [["design"], ["2"]]),
+    ("multipart", [], "My name is Priya and I am learning to cook. I have chicken, rice and spinach at home. What could I make with them, and what is my name?",
+     [["chicken", "rice", "spinach"], ["priya"]]),
+    ("multipart", ["I am planning a party for 12 people next Saturday. It will be in my garden, and two of my guests are vegetarian."],
+     "How many guests are vegetarian, and where is the party?", [["two", "2"], ["garden"]]),
 ]
 
 

@@ -1,6 +1,6 @@
 # Multi-turn probe: `models/qa_best_5M_dense.pt`
 
-*2026-10-14 08:52. Earlier turns played live; the final question asked with the conversation and without it. Keyword check on the final answer.*
+*2026-10-14 09:55. Earlier turns played live; the final question asked with the conversation and without it. Keyword check on the final answer.*
 
 | group | with history | without |
 | --- | ---: | ---: |
@@ -9,9 +9,8 @@
 | followup | 1/4 | 0/4 |
 | correction | 1/4 | 0/4 |
 | return | 1/3 | 0/3 |
-| **all** | **5/22** | 0/22 |
-
-History gain on 300 held-out conversations: 4.34% (0.9776 -> 0.9351 bits per byte of the final reply).
+| multipart | 1/5 | 1/5 |
+| **all** | **6/27** | 1/27 |
 
 **recall**: *My sister is called Ana and she lives in Lisbon.* -> Ana is a small, small, and small, with a large, large, and large, with an estimated 100,000 to 150,500 people.
 
@@ -106,3 +105,34 @@ Ciro, Paris (1975)
 **return**: *My brother plays the guitar.* -> He plays the guitar. / *Name a famous painter.* -> He is a famous painter.
 
 > **What instrument does my brother play?** He is a famous painter. (no; without history: no)
+
+**multipart**: 
+
+> **I need two things. First, what is the capital of Canada? Second, what is the boiling point of water in Celsius?** The boiling point of water in Celsius is 100 degrees. (no; without history: no)
+
+**multipart**: 
+
+> **Here is a note from my courier: 'Order 5521 will be delivered on Friday at noon.' When will it arrive, and what is the order number?** Dear Customer,
+
+Thank you for your order number 234567. We have received your order and it is being processed. You will receive an email confirming your shipment shortly.
+
+Thanks,
+
+[Company Name] (no; without history: no)
+
+**multipart**: 
+
+> **I have three meetings tomorrow: budget at 9, design at 11 and hiring at 2. Which meeting is at 11, and what time is the hiring meeting?** 11: 10: 20:00
+11 : 30:10
+20 :05: 40:30
+30 (11.5:3): 50:20
+40 - 25:15:25
+50 = 12 (no; without history: no)
+
+**multipart**: 
+
+> **My name is Priya and I am learning to cook. I have chicken, rice and spinach at home. What could I make with them, and what is my name?** Priya and I have chicken, rice and spinach at home. (yes; without history: yes)
+
+**multipart**: *I am planning a party for 12 people next Saturday. It will be in my garden, and two of my guests are vegetarian.* -> I will start by planning a party for 12 people next Saturday. The party will be in a cool, delicious, and delicious.
+
+> **How many guests are vegetarian, and where is the party?** The party will be in a cool, delicious, and delicious. (no; without history: no)

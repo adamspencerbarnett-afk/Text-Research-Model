@@ -27,20 +27,20 @@
    "n": 3,
    "ok": 1,
    "ok_without_history": 0
+  },
+  "multipart": {
+   "n": 5,
+   "ok": 1,
+   "ok_without_history": 1
   }
  },
  "total": {
-  "n": 22,
-  "ok": 5,
-  "ok_without_history": 0
+  "n": 27,
+  "ok": 6,
+  "ok_without_history": 1
  },
- "history_gain": {
-  "threads": 300,
-  "bpb_with_history": 0.9351,
-  "bpb_without_history": 0.9776,
-  "history_gain_pct": 4.34
- },
- "seconds": 35.4,
+ "history_gain": null,
+ "seconds": 22.2,
  "rows": [
   {
    "group": "recall",
@@ -448,6 +448,63 @@
     [
      "Name a famous painter.",
      "He is a famous painter."
+    ]
+   ]
+  },
+  {
+   "group": "multipart",
+   "turns": [],
+   "question": "I need two things. First, what is the capital of Canada? Second, what is the boiling point of water in Celsius?",
+   "answer": "The boiling point of water in Celsius is 100 degrees.",
+   "answer_without_history": "The boiling point of water in Celsius is 100 degrees.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": []
+  },
+  {
+   "group": "multipart",
+   "turns": [],
+   "question": "Here is a note from my courier: 'Order 5521 will be delivered on Friday at noon.' When will it arrive, and what is the order number?",
+   "answer": "Dear Customer,\n\nThank you for your order number 234567. We have received your order and it is being processed. You will receive an email confirming your shipment shortly.\n\nThanks,\n\n[Company Name]",
+   "answer_without_history": "Dear Customer,\n\nThank you for your order number 234567. We have received your order and it is being processed. You will receive an email confirming your shipment shortly.\n\nThanks,\n\n[Company Name]",
+   "ok": false,
+   "ok_without_history": false,
+   "history": []
+  },
+  {
+   "group": "multipart",
+   "turns": [],
+   "question": "I have three meetings tomorrow: budget at 9, design at 11 and hiring at 2. Which meeting is at 11, and what time is the hiring meeting?",
+   "answer": "11: 10: 20:00\n11 : 30:10\n20 :05: 40:30\n30 (11.5:3): 50:20\n40 - 25:15:25\n50 = 12",
+   "answer_without_history": "11: 10: 20:00\n11 : 30:10\n20 :05: 40:30\n30 (11.5:3): 50:20\n40 - 25:15:25\n50 = 12",
+   "ok": false,
+   "ok_without_history": false,
+   "history": []
+  },
+  {
+   "group": "multipart",
+   "turns": [],
+   "question": "My name is Priya and I am learning to cook. I have chicken, rice and spinach at home. What could I make with them, and what is my name?",
+   "answer": "Priya and I have chicken, rice and spinach at home.",
+   "answer_without_history": "Priya and I have chicken, rice and spinach at home.",
+   "ok": true,
+   "ok_without_history": true,
+   "history": []
+  },
+  {
+   "group": "multipart",
+   "turns": [
+    "I am planning a party for 12 people next Saturday. It will be in my garden, and two of my guests are vegetarian."
+   ],
+   "question": "How many guests are vegetarian, and where is the party?",
+   "answer": "The party will be in a cool, delicious, and delicious.",
+   "answer_without_history": "The party is a great vegetarian restaurants and restaurants. They are typically served with a variety of dishes, including a varietyd, a varietyt, and a varietytation.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I am planning a party for 12 people next Saturday. It will be in my garden, and two of my guests are vegetarian.",
+     "I will start by planning a party for 12 people next Saturday. The party will be in a cool, delicious, and delicious."
     ]
    ]
   }
