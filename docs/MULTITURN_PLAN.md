@@ -100,3 +100,25 @@ Today: data (CPU) and code, tested on the CPU while the 100M Q&A stage, session 
 GPU. The new chain (session 31) starts after session 30 and fills in the winning options from sessions 28 and
 30: about 1 h for the core, 40 min per stage, 30 min of tests per arm: about 6 h in all. The dictionary study
 (session 29) stays on hold.
+
+## 10. Next line after this study: long context (added 14 October)
+
+Questions from Adam: can the model take a long pasted document, or write a short story? Today the reply length is a
+setting (120 codes in the chat), but the model only stays coherent within its window (512 codes for the current
+5M chat model, 1,024 for the new cores, about 1,800 and 3,600 characters); past it the engine slides the window and
+the start of the text is forgotten. Planned for after this study, built on whichever training structure wins here
+(HYBRID_DESIGN research item 24):
+
+1. **Per-request window budget:** the context builder splits the window by task: evidence for a factual question,
+   room for the message when a long text is pasted, room for the reply when asked to write.
+2. **Longer windows on the larger cores:** 2,000-4,000 codes at 100M (rotary positions allow it; fast attention keeps
+   memory linear), and position interpolation to stretch a trained window cheaply.
+3. **Long input through the passage tier:** a long document is chunked and the relevant parts retrieved, never pasted
+   whole into the window.
+4. **Long output, plan then sections:** an outline first, then each section written with the outline and a running
+   summary in the window; earlier sections go to session memory so names and details can be retrieved and copied.
+5. **Generation past the window:** a rolling cache keeping the first codes plus the most recent ones (attention sinks),
+   so quality does not collapse when the text outgrows the window.
+
+Tests: coherence over 1,000-3,000 codes (names, plot and facts from the start kept to the end), questions on long
+documents, and seconds and joules per long reply.
