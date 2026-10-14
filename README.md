@@ -168,7 +168,8 @@ for reading and combining evidence to improve, while knowledge stays in memory.
 ### 11. Chat quality, graded by hand
 
 A 32-question battery (stored facts, rewordings, general knowledge, facts taught during the
-chat, arithmetic, small talk) is run on every model. Best so far: 24 of 32 (75%), reached both by
+chat, arithmetic, small talk) is run on every model. Best so far: 25 of 32 (78%), by the 100M model
+(14 October; also at int8, 0.28 s and 55 J per answer). Before it, 24 of 32 (75%), reached both by
 the 50M model with a memory gate and, on 13 October, by the 5M model trained to copy the right
 answer from a reworded question. That 5M model answers all five reworded questions correctly,
 where earlier 5M models managed one to three. The network alone scores 11 of 32 (34%). Transcripts and grades are in [`docs/CHAT_NOTES.md`](docs/CHAT_NOTES.md).
