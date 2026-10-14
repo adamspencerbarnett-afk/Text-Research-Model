@@ -175,10 +175,13 @@ def load_encoder(info: dict, work: Path, native: str | None) -> LE.Encoding:
         return LE.HashCodes.load(str(work / f"{info['name']}.json"))
     if info["name"].startswith("bpe_"):
         return LE.StandardBPE.load(str(work / f"{info['name']}.merges.json"))
-    dict_path = Path(info["dictionary"])
-    if not dict_path.exists():                 # the dataset folder was moved: look beside the model
-        dict_path = work / dict_path.name
-    return LE.V0Dict(str(dict_path), native)
+    recorded = Path(info["dictionary"])
+    # the recorded path may be relative to the project folder (research runs) or the dataset folder may have
+    # moved: try it as recorded, from the project folder, beside the model, then in the model's work folder
+    for dict_path in (recorded, ROOT / recorded, work.parent / recorded.name, work / recorded.name):
+        if dict_path.exists():
+            return LE.V0Dict(str(dict_path), native)
+    raise SystemExit(f"dictionary {recorded.name} not found (looked as recorded, in {ROOT}, beside the model, and in {work})")
 
 
 # ----------------------------------------------------------------------------- train
