@@ -36,3 +36,7 @@ Short session entries: date, task, files touched, decisions, blockers, next acti
 - **12:15:** 100M slowed 3x when GPU memory filled (23.97 of 24.6 GB with desktop programs); added gradient accumulation (--accum 2, identical update); resumed from step 7,688 at 0.68 s/step, 18.6 GB. 100M Q&A stage: --accum 2, budget 28,000 s for all 15,565 steps.
 - **19:40:** session 29 (dictionary-size stage 2) put on hold at Adam's request; queue ends after session 28.
 - **20:30:** DLI course lessons built as opt-in options (two-phase fine-tuning, dropout, typo augmentation, overfitting gap, typo probe); default path verified identical; session 30 queued after session 28; segment embeddings, span head and own retrieval encoder planned (need new model parts).
+
+## 2026-10-14
+
+- **03:55:** 100M core finished (61,035 steps, 2B codes, 18.0 h of training, 6.6 kWh); held-out wiki 1.033, conversation 0.699 bits/byte on its own mix; fluent generation. Report card, Q&A stage, probes running.
