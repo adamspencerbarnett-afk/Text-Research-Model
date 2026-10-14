@@ -70,6 +70,7 @@ SETTINGS = dict(
     BEST_MODEL="models/qa_best_5M_dense.pt",   # the best Q&A model in git (menu option 3): probe 24/32; needs sentence-transformers; the 50M models are local in runs/
     MODELS_SUBDIR="models",                    # created inside the dataset folder
     START_DIR=str(Path.home() / "OneDrive" / "Desktop" / "Text Files"),   # where the popups open
+    MODEL_DIR="runs",       # where the model popup (menu option 2) opens; relative to this script's folder
 )
 # ----------------------------------------------------------------------------- end of settings
 
@@ -96,10 +97,10 @@ def pick_folder(title: str) -> str | None:
     return path or None
 
 
-def pick_file(title: str, patterns) -> str | None:
+def pick_file(title: str, patterns, start: str | None = None) -> str | None:
     from tkinter import Tk, filedialog
     root = Tk(); root.withdraw(); root.attributes("-topmost", True)
-    path = filedialog.askopenfilename(title=title, initialdir=SETTINGS["START_DIR"], filetypes=patterns)
+    path = filedialog.askopenfilename(title=title, initialdir=start or SETTINGS["START_DIR"], filetypes=patterns)
     root.destroy()
     return path or None
 
@@ -458,7 +459,7 @@ def main() -> int:
             if folder:
                 train(folder)
         elif choice == "2":
-            path = pick_file("Choose a model (.pt)", [("Model", "*.pt"), ("All files", "*.*")])
+            path = pick_file("Choose a model (.pt)", [("Model", "*.pt"), ("All files", "*.*")], str(ROOT / SETTINGS["MODEL_DIR"]))
             if path:
                 chat(path)
         elif choice == "3":
