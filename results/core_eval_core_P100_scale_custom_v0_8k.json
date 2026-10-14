@@ -1,0 +1,37 @@
+{
+ "checkpoint": "runs/core_P100/scale_custom_v0_8k.pt",
+ "data": "data_core/mix_D3_5M",
+ "evidence_file": "C:\\Users\\adams\\OneDrive\\Desktop\\Text Bot Model Research\\Text-Research-Model\\data_core\\eval\\evidence_val.jsonl",
+ "precision": "bf16",
+ "fluency": {
+  "evidence": 0.9214,
+  "fineweb": 1.0557,
+  "math": 1.0385,
+  "oasst": 0.8981,
+  "qqp": 0.7047,
+  "ultrachat": 0.7051,
+  "wiki": 1.0313,
+  "v2_books/Heart-of-Darkness_219": 1.4823,
+  "v2_books/The-Adventures-of-Sherlock-Holmes_1661": 1.3104,
+  "v2_books/The-Prince_1232": 1.2854,
+  "v2_books/Walden-and-On-The-Duty-Of-Civil-Disobedience_205": 1.4553
+ },
+ "evidence": {
+  "pairs": 209,
+  "bpb_related": 0.7067,
+  "bpb_unrelated": 1.0368,
+  "evidence_gain_pct": 31.84
+ },
+ "questions": {
+  "core_state": {
+   "n": 2000,
+   "recall_at_1": 0.5655,
+   "recall_at_10": 0.819
+  },
+  "literal_key": {
+   "n": 2000,
+   "recall_at_1": 0.7335,
+   "recall_at_10": 0.9595
+  }
+ }
+}

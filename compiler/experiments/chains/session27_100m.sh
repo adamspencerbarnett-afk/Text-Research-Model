@@ -24,7 +24,7 @@ Q=runs/s2b_100m; mkdir -p $Q && cp -n runs/s2b_dense512/neighbors_5bd4da54591f44
 [ -f results/s2b_100m.json ] || $PY -B compiler/experiments/m2_qa.py data_qa $Q --native "$N" --device cuda --batch 32 --max-steps 15565 --budget 28000 \
     --self-context-p 0.5 --eval-n 200 --net-n 200 --copy-head --greedy --lr 1e-4 --head-lr 1e-3 --schedule cosine --loss-answer-only --eos --rehearse-p 0.3 \
     --dict $C/v0_8k_plain.cv0d --init $C/scale_custom_v0_8k.pt --block modern --width 1024 --layers 8 --heads 16 --ctx 1024 --neighbor-codes 400 \
-    --dense 2 --dense-train --perturb-self 0.3 --amp --accum 2 --rehearse data_core/mix_P100 --out results/s2b_100m.json --save $Q/qa_s2b_100m.pt > $Q.log 2>&1
+    --dense 2 --dense-train --perturb-self 0.3 --amp --accum 8 --rehearse data_core/mix_P100 --out results/s2b_100m.json --save $Q/qa_s2b_100m.pt > $Q.log 2>&1
 [ -f results/probe_qa_s2b_100m.json ] || $PY -B compiler/experiments/chat_probe.py $Q/qa_s2b_100m.pt --device cuda --graph --precision bf16 > runs/probe_s2b_100m.log 2>&1
 [ -f results/probe_qa_s2b_100m_int8.json ] || $PY -B compiler/experiments/chat_probe.py $Q/qa_s2b_100m.pt --device cuda --graph --precision int8 --tag _int8 > runs/probe_s2b_100m_int8.log 2>&1
 ls results/core_P100_100M.json results/core_eval_core_P100_*.json results/s2b_100m.json results/probe_qa_s2b_100m*.json
