@@ -1,0 +1,2851 @@
+{
+ "setup": {
+  "data": "data_qa",
+  "work": "runs/s2b_100m",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 28000.0,
+  "ctx": 1024,
+  "batch": 32,
+  "topk": 64,
+  "neighbor_codes": 400,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/s2b_100m.json",
+  "seed": 1,
+  "self_context_p": 0.5,
+  "copy_bias": 0.0,
+  "device": "cuda",
+  "threads": 0,
+  "width": 1024,
+  "layers": 8,
+  "heads": 16,
+  "block": "modern",
+  "precision": "fp32",
+  "greedy": true,
+  "no_repeat": 0,
+  "patience": 0,
+  "min_delta": 0.005,
+  "max_steps": 15565,
+  "dict": "runs/core_P100/v0_8k_plain.cv0d",
+  "init": "runs/core_P100/scale_custom_v0_8k.pt",
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "copy_question": false,
+  "calculator": false,
+  "perturb_self": 0.3,
+  "sim_feature": false,
+  "no_retrieval_p": 0.0,
+  "distractor_p": 0.0,
+  "loss_answer_only": true,
+  "stop_at_blank": false,
+  "lr": 0.0001,
+  "key_head": null,
+  "amp": true,
+  "dropout": 0.0,
+  "freeze_core_steps": 0,
+  "typo_p": 0.0,
+  "track_gap": false,
+  "accum": 8,
+  "perturb_synonyms": false,
+  "rerank_core": 0,
+  "dense_train": true,
+  "dense": 2.0,
+  "eos": true,
+  "head_lr": 0.001,
+  "schedule": "cosine",
+  "net_n": 200,
+  "rehearse": "data_core/mix_P100",
+  "rehearse_p": 0.3,
+  "save": "runs/s2b_100m/qa_s2b_100m.pt",
+  "train_exchanges": 50965,
+  "eval": 520,
+  "added": 521,
+  "distinct_keys": 50605
+ },
+ "training": {
+  "steps": 15565,
+  "train_s": 23466.8,
+  "stop_reason": "budget",
+  "best_valid": 0.6348,
+  "history": [
+   {
+    "train_s": 61.4,
+    "step": 42,
+    "train_bits_per_code": 2.124,
+    "valid_bits_per_byte": 0.7104
+   },
+   {
+    "train_s": 121.1,
+    "step": 84,
+    "train_bits_per_code": 3.306,
+    "valid_bits_per_byte": 0.689
+   },
+   {
+    "train_s": 180.2,
+    "step": 124,
+    "train_bits_per_code": 3.27,
+    "valid_bits_per_byte": 0.6913
+   },
+   {
+    "train_s": 240.9,
+    "step": 168,
+    "train_bits_per_code": 2.893,
+    "valid_bits_per_byte": 0.6863
+   },
+   {
+    "train_s": 301.2,
+    "step": 210,
+    "train_bits_per_code": 3.165,
+    "valid_bits_per_byte": 0.6803
+   },
+   {
+    "train_s": 361.2,
+    "step": 249,
+    "train_bits_per_code": 3.503,
+    "valid_bits_per_byte": 0.6795
+   },
+   {
+    "train_s": 420.8,
+    "step": 288,
+    "train_bits_per_code": 3.143,
+    "valid_bits_per_byte": 0.6824
+   },
+   {
+    "train_s": 480.5,
+    "step": 327,
+    "train_bits_per_code": 3.2,
+    "valid_bits_per_byte": 0.6785
+   },
+   {
+    "train_s": 541.3,
+    "step": 368,
+    "train_bits_per_code": 2.81,
+    "valid_bits_per_byte": 0.6806
+   },
+   {
+    "train_s": 600.2,
+    "step": 410,
+    "train_bits_per_code": 3.174,
+    "valid_bits_per_byte": 0.6792
+   },
+   {
+    "train_s": 660.7,
+    "step": 453,
+    "train_bits_per_code": 3.101,
+    "valid_bits_per_byte": 0.6748
+   },
+   {
+    "train_s": 721.2,
+    "step": 496,
+    "train_bits_per_code": 3.186,
+    "valid_bits_per_byte": 0.6737
+   },
+   {
+    "train_s": 780.8,
+    "step": 539,
+    "train_bits_per_code": 3.202,
+    "valid_bits_per_byte": 0.672
+   },
+   {
+    "train_s": 841.3,
+    "step": 583,
+    "train_bits_per_code": 3.174,
+    "valid_bits_per_byte": 0.6735
+   },
+   {
+    "train_s": 900.2,
+    "step": 626,
+    "train_bits_per_code": 3.501,
+    "valid_bits_per_byte": 0.671
+   },
+   {
+    "train_s": 960.6,
+    "step": 670,
+    "train_bits_per_code": 3.258,
+    "valid_bits_per_byte": 0.67
+   },
+   {
+    "train_s": 1021.0,
+    "step": 714,
+    "train_bits_per_code": 3.286,
+    "valid_bits_per_byte": 0.6691
+   },
+   {
+    "train_s": 1081.0,
+    "step": 758,
+    "train_bits_per_code": 3.473,
+    "valid_bits_per_byte": 0.6692
+   },
+   {
+    "train_s": 1140.5,
+    "step": 802,
+    "train_bits_per_code": 2.747,
+    "valid_bits_per_byte": 0.6682
+   },
+   {
+    "train_s": 1201.1,
+    "step": 847,
+    "train_bits_per_code": 3.217,
+    "valid_bits_per_byte": 0.6672
+   },
+   {
+    "train_s": 1261.0,
+    "step": 891,
+    "train_bits_per_code": 2.84,
+    "valid_bits_per_byte": 0.6697
+   },
+   {
+    "train_s": 1320.6,
+    "step": 935,
+    "train_bits_per_code": 2.999,
+    "valid_bits_per_byte": 0.667
+   },
+   {
+    "train_s": 1380.2,
+    "step": 979,
+    "train_bits_per_code": 3.255,
+    "valid_bits_per_byte": 0.6665
+   },
+   {
+    "train_s": 1440.3,
+    "step": 1023,
+    "train_bits_per_code": 2.941,
+    "valid_bits_per_byte": 0.6655
+   },
+   {
+    "train_s": 1500.3,
+    "step": 1067,
+    "train_bits_per_code": 3.153,
+    "valid_bits_per_byte": 0.6663
+   },
+   {
+    "train_s": 1560.2,
+    "step": 1111,
+    "train_bits_per_code": 3.081,
+    "valid_bits_per_byte": 0.6649
+   },
+   {
+    "train_s": 1620.1,
+    "step": 1155,
+    "train_bits_per_code": 3.283,
+    "valid_bits_per_byte": 0.6659
+   },
+   {
+    "train_s": 1680.9,
+    "step": 1199,
+    "train_bits_per_code": 2.99,
+    "valid_bits_per_byte": 0.6628
+   },
+   {
+    "train_s": 1741.1,
+    "step": 1243,
+    "train_bits_per_code": 3.104,
+    "valid_bits_per_byte": 0.6653
+   },
+   {
+    "train_s": 1800.2,
+    "step": 1286,
+    "train_bits_per_code": 2.563,
+    "valid_bits_per_byte": 0.6632
+   },
+   {
+    "train_s": 1860.9,
+    "step": 1330,
+    "train_bits_per_code": 3.338,
+    "valid_bits_per_byte": 0.663
+   },
+   {
+    "train_s": 1921.1,
+    "step": 1374,
+    "train_bits_per_code": 3.106,
+    "valid_bits_per_byte": 0.6622
+   },
+   {
+    "train_s": 1980.1,
+    "step": 1416,
+    "train_bits_per_code": 2.947,
+    "valid_bits_per_byte": 0.6612
+   },
+   {
+    "train_s": 2040.2,
+    "step": 1460,
+    "train_bits_per_code": 3.085,
+    "valid_bits_per_byte": 0.6615
+   },
+   {
+    "train_s": 2100.7,
+    "step": 1504,
+    "train_bits_per_code": 3.488,
+    "valid_bits_per_byte": 0.6638
+   },
+   {
+    "train_s": 2160.3,
+    "step": 1547,
+    "train_bits_per_code": 2.955,
+    "valid_bits_per_byte": 0.6622
+   },
+   {
+    "train_s": 2220.5,
+    "step": 1591,
+    "train_bits_per_code": 3.34,
+    "valid_bits_per_byte": 0.6619
+   },
+   {
+    "train_s": 2281.1,
+    "step": 1635,
+    "train_bits_per_code": 3.084,
+    "valid_bits_per_byte": 0.6596
+   },
+   {
+    "train_s": 2341.3,
+    "step": 1679,
+    "train_bits_per_code": 3.402,
+    "valid_bits_per_byte": 0.6607
+   },
+   {
+    "train_s": 2400.6,
+    "step": 1722,
+    "train_bits_per_code": 3.19,
+    "valid_bits_per_byte": 0.6624
+   },
+   {
+    "train_s": 2461.1,
+    "step": 1766,
+    "train_bits_per_code": 3.02,
+    "valid_bits_per_byte": 0.6597
+   },
+   {
+    "train_s": 2521.4,
+    "step": 1809,
+    "train_bits_per_code": 3.059,
+    "valid_bits_per_byte": 0.6571
+   },
+   {
+    "train_s": 2580.5,
+    "step": 1851,
+    "train_bits_per_code": 3.062,
+    "valid_bits_per_byte": 0.6599
+   },
+   {
+    "train_s": 2641.2,
+    "step": 1890,
+    "train_bits_per_code": 2.989,
+    "valid_bits_per_byte": 0.662
+   },
+   {
+    "train_s": 2700.4,
+    "step": 1929,
+    "train_bits_per_code": 3.203,
+    "valid_bits_per_byte": 0.6594
+   },
+   {
+    "train_s": 2760.5,
+    "step": 1967,
+    "train_bits_per_code": 2.962,
+    "valid_bits_per_byte": 0.6596
+   },
+   {
+    "train_s": 2821.5,
+    "step": 2006,
+    "train_bits_per_code": 2.64,
+    "valid_bits_per_byte": 0.6581
+   },
+   {
+    "train_s": 2880.5,
+    "step": 2045,
+    "train_bits_per_code": 3.146,
+    "valid_bits_per_byte": 0.6572
+   },
+   {
+    "train_s": 2940.4,
+    "step": 2087,
+    "train_bits_per_code": 2.989,
+    "valid_bits_per_byte": 0.6606
+   },
+   {
+    "train_s": 3000.9,
+    "step": 2129,
+    "train_bits_per_code": 2.925,
+    "valid_bits_per_byte": 0.6601
+   },
+   {
+    "train_s": 3061.3,
+    "step": 2172,
+    "train_bits_per_code": 2.757,
+    "valid_bits_per_byte": 0.6582
+   },
+   {
+    "train_s": 3120.3,
+    "step": 2214,
+    "train_bits_per_code": 3.617,
+    "valid_bits_per_byte": 0.6585
+   },
+   {
+    "train_s": 3180.4,
+    "step": 2257,
+    "train_bits_per_code": 3.187,
+    "valid_bits_per_byte": 0.6582
+   },
+   {
+    "train_s": 3240.5,
+    "step": 2300,
+    "train_bits_per_code": 3.309,
+    "valid_bits_per_byte": 0.6583
+   },
+   {
+    "train_s": 3301.0,
+    "step": 2343,
+    "train_bits_per_code": 3.271,
+    "valid_bits_per_byte": 0.657
+   },
+   {
+    "train_s": 3360.8,
+    "step": 2385,
+    "train_bits_per_code": 3.442,
+    "valid_bits_per_byte": 0.6608
+   },
+   {
+    "train_s": 3421.2,
+    "step": 2429,
+    "train_bits_per_code": 2.908,
+    "valid_bits_per_byte": 0.6606
+   },
+   {
+    "train_s": 3480.9,
+    "step": 2472,
+    "train_bits_per_code": 3.359,
+    "valid_bits_per_byte": 0.6568
+   },
+   {
+    "train_s": 3541.4,
+    "step": 2515,
+    "train_bits_per_code": 3.202,
+    "valid_bits_per_byte": 0.6565
+   },
+   {
+    "train_s": 3600.9,
+    "step": 2557,
+    "train_bits_per_code": 3.085,
+    "valid_bits_per_byte": 0.6543
+   },
+   {
+    "train_s": 3660.7,
+    "step": 2599,
+    "train_bits_per_code": 3.363,
+    "valid_bits_per_byte": 0.6568
+   },
+   {
+    "train_s": 3721.2,
+    "step": 2642,
+    "train_bits_per_code": 3.169,
+    "valid_bits_per_byte": 0.658
+   },
+   {
+    "train_s": 3780.5,
+    "step": 2684,
+    "train_bits_per_code": 3.436,
+    "valid_bits_per_byte": 0.6577
+   },
+   {
+    "train_s": 3840.8,
+    "step": 2727,
+    "train_bits_per_code": 3.022,
+    "valid_bits_per_byte": 0.656
+   },
+   {
+    "train_s": 3900.2,
+    "step": 2770,
+    "train_bits_per_code": 2.864,
+    "valid_bits_per_byte": 0.6559
+   },
+   {
+    "train_s": 3960.9,
+    "step": 2814,
+    "train_bits_per_code": 2.982,
+    "valid_bits_per_byte": 0.6563
+   },
+   {
+    "train_s": 4020.2,
+    "step": 2857,
+    "train_bits_per_code": 3.472,
+    "valid_bits_per_byte": 0.6565
+   },
+   {
+    "train_s": 4081.1,
+    "step": 2902,
+    "train_bits_per_code": 2.935,
+    "valid_bits_per_byte": 0.6543
+   },
+   {
+    "train_s": 4140.4,
+    "step": 2945,
+    "train_bits_per_code": 2.877,
+    "valid_bits_per_byte": 0.653
+   },
+   {
+    "train_s": 4201.2,
+    "step": 2988,
+    "train_bits_per_code": 2.896,
+    "valid_bits_per_byte": 0.6556
+   },
+   {
+    "train_s": 4260.6,
+    "step": 3030,
+    "train_bits_per_code": 2.983,
+    "valid_bits_per_byte": 0.6541
+   },
+   {
+    "train_s": 4320.7,
+    "step": 3073,
+    "train_bits_per_code": 3.643,
+    "valid_bits_per_byte": 0.6539
+   },
+   {
+    "train_s": 4381.3,
+    "step": 3116,
+    "train_bits_per_code": 2.917,
+    "valid_bits_per_byte": 0.6547
+   },
+   {
+    "train_s": 4440.7,
+    "step": 3158,
+    "train_bits_per_code": 3.347,
+    "valid_bits_per_byte": 0.6553
+   },
+   {
+    "train_s": 4501.0,
+    "step": 3201,
+    "train_bits_per_code": 2.834,
+    "valid_bits_per_byte": 0.6569
+   },
+   {
+    "train_s": 4560.9,
+    "step": 3244,
+    "train_bits_per_code": 2.851,
+    "valid_bits_per_byte": 0.6551
+   },
+   {
+    "train_s": 4621.1,
+    "step": 3286,
+    "train_bits_per_code": 3.096,
+    "valid_bits_per_byte": 0.6516
+   },
+   {
+    "train_s": 4680.3,
+    "step": 3328,
+    "train_bits_per_code": 2.682,
+    "valid_bits_per_byte": 0.6533
+   },
+   {
+    "train_s": 4741.2,
+    "step": 3371,
+    "train_bits_per_code": 2.007,
+    "valid_bits_per_byte": 0.6551
+   },
+   {
+    "train_s": 4801.3,
+    "step": 3413,
+    "train_bits_per_code": 2.882,
+    "valid_bits_per_byte": 0.6539
+   },
+   {
+    "train_s": 4860.2,
+    "step": 3455,
+    "train_bits_per_code": 2.602,
+    "valid_bits_per_byte": 0.6527
+   },
+   {
+    "train_s": 4920.7,
+    "step": 3497,
+    "train_bits_per_code": 3.362,
+    "valid_bits_per_byte": 0.6534
+   },
+   {
+    "train_s": 4980.7,
+    "step": 3539,
+    "train_bits_per_code": 3.023,
+    "valid_bits_per_byte": 0.6547
+   },
+   {
+    "train_s": 5041.2,
+    "step": 3582,
+    "train_bits_per_code": 3.365,
+    "valid_bits_per_byte": 0.6527
+   },
+   {
+    "train_s": 5100.1,
+    "step": 3624,
+    "train_bits_per_code": 3.197,
+    "valid_bits_per_byte": 0.6527
+   },
+   {
+    "train_s": 5160.5,
+    "step": 3667,
+    "train_bits_per_code": 2.344,
+    "valid_bits_per_byte": 0.6525
+   },
+   {
+    "train_s": 5220.9,
+    "step": 3710,
+    "train_bits_per_code": 3.254,
+    "valid_bits_per_byte": 0.6532
+   },
+   {
+    "train_s": 5281.3,
+    "step": 3753,
+    "train_bits_per_code": 3.362,
+    "valid_bits_per_byte": 0.6544
+   },
+   {
+    "train_s": 5340.2,
+    "step": 3795,
+    "train_bits_per_code": 3.407,
+    "valid_bits_per_byte": 0.6538
+   },
+   {
+    "train_s": 5400.4,
+    "step": 3838,
+    "train_bits_per_code": 3.035,
+    "valid_bits_per_byte": 0.6529
+   },
+   {
+    "train_s": 5460.8,
+    "step": 3881,
+    "train_bits_per_code": 3.207,
+    "valid_bits_per_byte": 0.6537
+   },
+   {
+    "train_s": 5521.3,
+    "step": 3924,
+    "train_bits_per_code": 2.722,
+    "valid_bits_per_byte": 0.6543
+   },
+   {
+    "train_s": 5580.2,
+    "step": 3966,
+    "train_bits_per_code": 3.287,
+    "valid_bits_per_byte": 0.6526
+   },
+   {
+    "train_s": 5640.6,
+    "step": 4009,
+    "train_bits_per_code": 3.395,
+    "valid_bits_per_byte": 0.6541
+   },
+   {
+    "train_s": 5700.9,
+    "step": 4052,
+    "train_bits_per_code": 3.178,
+    "valid_bits_per_byte": 0.6541
+   },
+   {
+    "train_s": 5760.1,
+    "step": 4094,
+    "train_bits_per_code": 3.5,
+    "valid_bits_per_byte": 0.6506
+   },
+   {
+    "train_s": 5820.9,
+    "step": 4137,
+    "train_bits_per_code": 2.954,
+    "valid_bits_per_byte": 0.654
+   },
+   {
+    "train_s": 5881.1,
+    "step": 4180,
+    "train_bits_per_code": 2.666,
+    "valid_bits_per_byte": 0.6515
+   },
+   {
+    "train_s": 5940.1,
+    "step": 4222,
+    "train_bits_per_code": 3.63,
+    "valid_bits_per_byte": 0.6507
+   },
+   {
+    "train_s": 6000.3,
+    "step": 4265,
+    "train_bits_per_code": 3.294,
+    "valid_bits_per_byte": 0.6512
+   },
+   {
+    "train_s": 6061.2,
+    "step": 4306,
+    "train_bits_per_code": 2.942,
+    "valid_bits_per_byte": 0.6512
+   },
+   {
+    "train_s": 6121.1,
+    "step": 4347,
+    "train_bits_per_code": 2.901,
+    "valid_bits_per_byte": 0.6514
+   },
+   {
+    "train_s": 6180.7,
+    "step": 4390,
+    "train_bits_per_code": 3.051,
+    "valid_bits_per_byte": 0.6499
+   },
+   {
+    "train_s": 6241.3,
+    "step": 4434,
+    "train_bits_per_code": 2.784,
+    "valid_bits_per_byte": 0.6498
+   },
+   {
+    "train_s": 6300.0,
+    "step": 4477,
+    "train_bits_per_code": 3.033,
+    "valid_bits_per_byte": 0.6501
+   },
+   {
+    "train_s": 6360.6,
+    "step": 4521,
+    "train_bits_per_code": 3.286,
+    "valid_bits_per_byte": 0.6495
+   },
+   {
+    "train_s": 6421.3,
+    "step": 4565,
+    "train_bits_per_code": 3.257,
+    "valid_bits_per_byte": 0.6499
+   },
+   {
+    "train_s": 6480.8,
+    "step": 4608,
+    "train_bits_per_code": 3.199,
+    "valid_bits_per_byte": 0.6501
+   },
+   {
+    "train_s": 6541.2,
+    "step": 4651,
+    "train_bits_per_code": 3.05,
+    "valid_bits_per_byte": 0.6479
+   },
+   {
+    "train_s": 6600.2,
+    "step": 4693,
+    "train_bits_per_code": 2.909,
+    "valid_bits_per_byte": 0.6489
+   },
+   {
+    "train_s": 6661.3,
+    "step": 4736,
+    "train_bits_per_code": 2.396,
+    "valid_bits_per_byte": 0.6469
+   },
+   {
+    "train_s": 6721.0,
+    "step": 4779,
+    "train_bits_per_code": 3.395,
+    "valid_bits_per_byte": 0.6462
+   },
+   {
+    "train_s": 6780.9,
+    "step": 4822,
+    "train_bits_per_code": 2.845,
+    "valid_bits_per_byte": 0.6469
+   },
+   {
+    "train_s": 6840.2,
+    "step": 4865,
+    "train_bits_per_code": 2.903,
+    "valid_bits_per_byte": 0.649
+   },
+   {
+    "train_s": 6901.3,
+    "step": 4909,
+    "train_bits_per_code": 3.11,
+    "valid_bits_per_byte": 0.6468
+   },
+   {
+    "train_s": 6961.1,
+    "step": 4949,
+    "train_bits_per_code": 2.81,
+    "valid_bits_per_byte": 0.6474
+   },
+   {
+    "train_s": 7021.5,
+    "step": 4988,
+    "train_bits_per_code": 2.922,
+    "valid_bits_per_byte": 0.648
+   },
+   {
+    "train_s": 7080.2,
+    "step": 5026,
+    "train_bits_per_code": 3.077,
+    "valid_bits_per_byte": 0.6462
+   },
+   {
+    "train_s": 7140.6,
+    "step": 5065,
+    "train_bits_per_code": 2.871,
+    "valid_bits_per_byte": 0.6481
+   },
+   {
+    "train_s": 7200.6,
+    "step": 5104,
+    "train_bits_per_code": 2.834,
+    "valid_bits_per_byte": 0.6472
+   },
+   {
+    "train_s": 7260.8,
+    "step": 5143,
+    "train_bits_per_code": 2.905,
+    "valid_bits_per_byte": 0.6482
+   },
+   {
+    "train_s": 7321.1,
+    "step": 5182,
+    "train_bits_per_code": 2.807,
+    "valid_bits_per_byte": 0.6465
+   },
+   {
+    "train_s": 7381.5,
+    "step": 5221,
+    "train_bits_per_code": 2.686,
+    "valid_bits_per_byte": 0.6474
+   },
+   {
+    "train_s": 7441.4,
+    "step": 5260,
+    "train_bits_per_code": 2.8,
+    "valid_bits_per_byte": 0.648
+   },
+   {
+    "train_s": 7500.5,
+    "step": 5301,
+    "train_bits_per_code": 3.068,
+    "valid_bits_per_byte": 0.6462
+   },
+   {
+    "train_s": 7561.0,
+    "step": 5343,
+    "train_bits_per_code": 3.372,
+    "valid_bits_per_byte": 0.6467
+   },
+   {
+    "train_s": 7620.9,
+    "step": 5385,
+    "train_bits_per_code": 3.3,
+    "valid_bits_per_byte": 0.6448
+   },
+   {
+    "train_s": 7681.2,
+    "step": 5426,
+    "train_bits_per_code": 3.109,
+    "valid_bits_per_byte": 0.6473
+   },
+   {
+    "train_s": 7740.2,
+    "step": 5467,
+    "train_bits_per_code": 3.153,
+    "valid_bits_per_byte": 0.648
+   },
+   {
+    "train_s": 7801.2,
+    "step": 5510,
+    "train_bits_per_code": 3.178,
+    "valid_bits_per_byte": 0.6468
+   },
+   {
+    "train_s": 7860.2,
+    "step": 5552,
+    "train_bits_per_code": 2.49,
+    "valid_bits_per_byte": 0.6475
+   },
+   {
+    "train_s": 7920.2,
+    "step": 5594,
+    "train_bits_per_code": 2.595,
+    "valid_bits_per_byte": 0.6481
+   },
+   {
+    "train_s": 7981.0,
+    "step": 5635,
+    "train_bits_per_code": 2.917,
+    "valid_bits_per_byte": 0.6471
+   },
+   {
+    "train_s": 8041.3,
+    "step": 5675,
+    "train_bits_per_code": 2.819,
+    "valid_bits_per_byte": 0.6482
+   },
+   {
+    "train_s": 8100.3,
+    "step": 5714,
+    "train_bits_per_code": 3.217,
+    "valid_bits_per_byte": 0.6481
+   },
+   {
+    "train_s": 8160.2,
+    "step": 5755,
+    "train_bits_per_code": 3.402,
+    "valid_bits_per_byte": 0.6456
+   },
+   {
+    "train_s": 8220.1,
+    "step": 5797,
+    "train_bits_per_code": 3.112,
+    "valid_bits_per_byte": 0.6449
+   },
+   {
+    "train_s": 8280.4,
+    "step": 5839,
+    "train_bits_per_code": 3.281,
+    "valid_bits_per_byte": 0.6448
+   },
+   {
+    "train_s": 8340.5,
+    "step": 5879,
+    "train_bits_per_code": 2.967,
+    "valid_bits_per_byte": 0.6432
+   },
+   {
+    "train_s": 8400.5,
+    "step": 5919,
+    "train_bits_per_code": 3.213,
+    "valid_bits_per_byte": 0.6448
+   },
+   {
+    "train_s": 8460.3,
+    "step": 5961,
+    "train_bits_per_code": 2.593,
+    "valid_bits_per_byte": 0.6463
+   },
+   {
+    "train_s": 8521.1,
+    "step": 6004,
+    "train_bits_per_code": 2.693,
+    "valid_bits_per_byte": 0.6441
+   },
+   {
+    "train_s": 8581.1,
+    "step": 6046,
+    "train_bits_per_code": 3.49,
+    "valid_bits_per_byte": 0.644
+   },
+   {
+    "train_s": 8641.4,
+    "step": 6089,
+    "train_bits_per_code": 3.067,
+    "valid_bits_per_byte": 0.6455
+   },
+   {
+    "train_s": 8700.2,
+    "step": 6131,
+    "train_bits_per_code": 3.043,
+    "valid_bits_per_byte": 0.6428
+   },
+   {
+    "train_s": 8760.9,
+    "step": 6174,
+    "train_bits_per_code": 3.155,
+    "valid_bits_per_byte": 0.6454
+   },
+   {
+    "train_s": 8820.4,
+    "step": 6213,
+    "train_bits_per_code": 2.096,
+    "valid_bits_per_byte": 0.6451
+   },
+   {
+    "train_s": 8880.5,
+    "step": 6252,
+    "train_bits_per_code": 3.122,
+    "valid_bits_per_byte": 0.6442
+   },
+   {
+    "train_s": 8940.1,
+    "step": 6291,
+    "train_bits_per_code": 3.28,
+    "valid_bits_per_byte": 0.6453
+   },
+   {
+    "train_s": 9000.5,
+    "step": 6329,
+    "train_bits_per_code": 2.832,
+    "valid_bits_per_byte": 0.6448
+   },
+   {
+    "train_s": 9061.2,
+    "step": 6367,
+    "train_bits_per_code": 2.796,
+    "valid_bits_per_byte": 0.6437
+   },
+   {
+    "train_s": 9120.2,
+    "step": 6404,
+    "train_bits_per_code": 3.218,
+    "valid_bits_per_byte": 0.6437
+   },
+   {
+    "train_s": 9181.2,
+    "step": 6444,
+    "train_bits_per_code": 2.972,
+    "valid_bits_per_byte": 0.6432
+   },
+   {
+    "train_s": 9240.8,
+    "step": 6483,
+    "train_bits_per_code": 3.306,
+    "valid_bits_per_byte": 0.6428
+   },
+   {
+    "train_s": 9300.8,
+    "step": 6522,
+    "train_bits_per_code": 3.259,
+    "valid_bits_per_byte": 0.6435
+   },
+   {
+    "train_s": 9360.8,
+    "step": 6561,
+    "train_bits_per_code": 2.882,
+    "valid_bits_per_byte": 0.6439
+   },
+   {
+    "train_s": 9420.9,
+    "step": 6600,
+    "train_bits_per_code": 3.252,
+    "valid_bits_per_byte": 0.6431
+   },
+   {
+    "train_s": 9481.4,
+    "step": 6639,
+    "train_bits_per_code": 3.254,
+    "valid_bits_per_byte": 0.6433
+   },
+   {
+    "train_s": 9541.3,
+    "step": 6677,
+    "train_bits_per_code": 3.063,
+    "valid_bits_per_byte": 0.6439
+   },
+   {
+    "train_s": 9600.4,
+    "step": 6714,
+    "train_bits_per_code": 3.08,
+    "valid_bits_per_byte": 0.6439
+   },
+   {
+    "train_s": 9660.7,
+    "step": 6752,
+    "train_bits_per_code": 3.138,
+    "valid_bits_per_byte": 0.6418
+   },
+   {
+    "train_s": 9720.7,
+    "step": 6790,
+    "train_bits_per_code": 3.171,
+    "valid_bits_per_byte": 0.6429
+   },
+   {
+    "train_s": 9780.1,
+    "step": 6828,
+    "train_bits_per_code": 3.239,
+    "valid_bits_per_byte": 0.6438
+   },
+   {
+    "train_s": 9840.9,
+    "step": 6867,
+    "train_bits_per_code": 2.519,
+    "valid_bits_per_byte": 0.6418
+   },
+   {
+    "train_s": 9900.3,
+    "step": 6905,
+    "train_bits_per_code": 3.384,
+    "valid_bits_per_byte": 0.6422
+   },
+   {
+    "train_s": 9961.2,
+    "step": 6944,
+    "train_bits_per_code": 3.29,
+    "valid_bits_per_byte": 0.6433
+   },
+   {
+    "train_s": 10020.5,
+    "step": 6982,
+    "train_bits_per_code": 3.064,
+    "valid_bits_per_byte": 0.643
+   },
+   {
+    "train_s": 10081.3,
+    "step": 7021,
+    "train_bits_per_code": 3.015,
+    "valid_bits_per_byte": 0.642
+   },
+   {
+    "train_s": 10140.6,
+    "step": 7059,
+    "train_bits_per_code": 3.013,
+    "valid_bits_per_byte": 0.6425
+   },
+   {
+    "train_s": 10200.0,
+    "step": 7097,
+    "train_bits_per_code": 3.157,
+    "valid_bits_per_byte": 0.6434
+   },
+   {
+    "train_s": 10261.1,
+    "step": 7136,
+    "train_bits_per_code": 3.17,
+    "valid_bits_per_byte": 0.6438
+   },
+   {
+    "train_s": 10320.3,
+    "step": 7174,
+    "train_bits_per_code": 2.398,
+    "valid_bits_per_byte": 0.6424
+   },
+   {
+    "train_s": 10381.2,
+    "step": 7213,
+    "train_bits_per_code": 2.526,
+    "valid_bits_per_byte": 0.6427
+   },
+   {
+    "train_s": 10440.5,
+    "step": 7251,
+    "train_bits_per_code": 3.385,
+    "valid_bits_per_byte": 0.643
+   },
+   {
+    "train_s": 10501.3,
+    "step": 7290,
+    "train_bits_per_code": 3.202,
+    "valid_bits_per_byte": 0.6411
+   },
+   {
+    "train_s": 10560.6,
+    "step": 7328,
+    "train_bits_per_code": 3.473,
+    "valid_bits_per_byte": 0.6406
+   },
+   {
+    "train_s": 10621.5,
+    "step": 7367,
+    "train_bits_per_code": 2.682,
+    "valid_bits_per_byte": 0.6398
+   },
+   {
+    "train_s": 10680.7,
+    "step": 7405,
+    "train_bits_per_code": 3.199,
+    "valid_bits_per_byte": 0.6425
+   },
+   {
+    "train_s": 10741.4,
+    "step": 7444,
+    "train_bits_per_code": 3.331,
+    "valid_bits_per_byte": 0.6416
+   },
+   {
+    "train_s": 10800.5,
+    "step": 7482,
+    "train_bits_per_code": 3.359,
+    "valid_bits_per_byte": 0.6402
+   },
+   {
+    "train_s": 10861.1,
+    "step": 7521,
+    "train_bits_per_code": 3.283,
+    "valid_bits_per_byte": 0.6381
+   },
+   {
+    "train_s": 10921.4,
+    "step": 7560,
+    "train_bits_per_code": 2.896,
+    "valid_bits_per_byte": 0.6398
+   },
+   {
+    "train_s": 10980.4,
+    "step": 7598,
+    "train_bits_per_code": 3.35,
+    "valid_bits_per_byte": 0.6396
+   },
+   {
+    "train_s": 11041.2,
+    "step": 7637,
+    "train_bits_per_code": 3.064,
+    "valid_bits_per_byte": 0.6382
+   },
+   {
+    "train_s": 11100.7,
+    "step": 7675,
+    "train_bits_per_code": 3.106,
+    "valid_bits_per_byte": 0.6388
+   },
+   {
+    "train_s": 11160.1,
+    "step": 7713,
+    "train_bits_per_code": 2.55,
+    "valid_bits_per_byte": 0.6397
+   },
+   {
+    "train_s": 11221.1,
+    "step": 7752,
+    "train_bits_per_code": 3.056,
+    "valid_bits_per_byte": 0.6386
+   },
+   {
+    "train_s": 11280.4,
+    "step": 7790,
+    "train_bits_per_code": 3.25,
+    "valid_bits_per_byte": 0.638
+   },
+   {
+    "train_s": 11341.4,
+    "step": 7829,
+    "train_bits_per_code": 2.853,
+    "valid_bits_per_byte": 0.639
+   },
+   {
+    "train_s": 11400.9,
+    "step": 7867,
+    "train_bits_per_code": 2.813,
+    "valid_bits_per_byte": 0.6376
+   },
+   {
+    "train_s": 11460.3,
+    "step": 7905,
+    "train_bits_per_code": 3.493,
+    "valid_bits_per_byte": 0.6382
+   },
+   {
+    "train_s": 11521.2,
+    "step": 7944,
+    "train_bits_per_code": 2.844,
+    "valid_bits_per_byte": 0.64
+   },
+   {
+    "train_s": 11580.7,
+    "step": 7982,
+    "train_bits_per_code": 3.301,
+    "valid_bits_per_byte": 0.6382
+   },
+   {
+    "train_s": 11640.1,
+    "step": 8020,
+    "train_bits_per_code": 3.837,
+    "valid_bits_per_byte": 0.6378
+   },
+   {
+    "train_s": 11701.1,
+    "step": 8059,
+    "train_bits_per_code": 3.359,
+    "valid_bits_per_byte": 0.6372
+   },
+   {
+    "train_s": 11760.6,
+    "step": 8097,
+    "train_bits_per_code": 3.019,
+    "valid_bits_per_byte": 0.6377
+   },
+   {
+    "train_s": 11821.5,
+    "step": 8136,
+    "train_bits_per_code": 3.266,
+    "valid_bits_per_byte": 0.6369
+   },
+   {
+    "train_s": 11880.9,
+    "step": 8174,
+    "train_bits_per_code": 3.156,
+    "valid_bits_per_byte": 0.6376
+   },
+   {
+    "train_s": 11940.1,
+    "step": 8212,
+    "train_bits_per_code": 3.292,
+    "valid_bits_per_byte": 0.638
+   },
+   {
+    "train_s": 12001.2,
+    "step": 8251,
+    "train_bits_per_code": 3.149,
+    "valid_bits_per_byte": 0.6369
+   },
+   {
+    "train_s": 12060.7,
+    "step": 8289,
+    "train_bits_per_code": 2.919,
+    "valid_bits_per_byte": 0.6384
+   },
+   {
+    "train_s": 12121.4,
+    "step": 8328,
+    "train_bits_per_code": 2.79,
+    "valid_bits_per_byte": 0.6384
+   },
+   {
+    "train_s": 12180.7,
+    "step": 8366,
+    "train_bits_per_code": 3.158,
+    "valid_bits_per_byte": 0.6402
+   },
+   {
+    "train_s": 12241.5,
+    "step": 8405,
+    "train_bits_per_code": 2.445,
+    "valid_bits_per_byte": 0.6393
+   },
+   {
+    "train_s": 12300.8,
+    "step": 8443,
+    "train_bits_per_code": 3.178,
+    "valid_bits_per_byte": 0.6378
+   },
+   {
+    "train_s": 12360.2,
+    "step": 8481,
+    "train_bits_per_code": 2.766,
+    "valid_bits_per_byte": 0.639
+   },
+   {
+    "train_s": 12421.2,
+    "step": 8520,
+    "train_bits_per_code": 3.06,
+    "valid_bits_per_byte": 0.64
+   },
+   {
+    "train_s": 12480.6,
+    "step": 8558,
+    "train_bits_per_code": 2.771,
+    "valid_bits_per_byte": 0.6388
+   },
+   {
+    "train_s": 12541.4,
+    "step": 8597,
+    "train_bits_per_code": 3.008,
+    "valid_bits_per_byte": 0.6392
+   },
+   {
+    "train_s": 12600.7,
+    "step": 8635,
+    "train_bits_per_code": 2.98,
+    "valid_bits_per_byte": 0.6383
+   },
+   {
+    "train_s": 12660.1,
+    "step": 8673,
+    "train_bits_per_code": 2.901,
+    "valid_bits_per_byte": 0.6381
+   },
+   {
+    "train_s": 12721.0,
+    "step": 8713,
+    "train_bits_per_code": 3.193,
+    "valid_bits_per_byte": 0.6369
+   },
+   {
+    "train_s": 12781.0,
+    "step": 8753,
+    "train_bits_per_code": 3.163,
+    "valid_bits_per_byte": 0.6393
+   },
+   {
+    "train_s": 12841.3,
+    "step": 8793,
+    "train_bits_per_code": 3.288,
+    "valid_bits_per_byte": 0.637
+   },
+   {
+    "train_s": 12901.3,
+    "step": 8833,
+    "train_bits_per_code": 3.199,
+    "valid_bits_per_byte": 0.6372
+   },
+   {
+    "train_s": 12961.2,
+    "step": 8873,
+    "train_bits_per_code": 2.951,
+    "valid_bits_per_byte": 0.6378
+   },
+   {
+    "train_s": 13021.3,
+    "step": 8913,
+    "train_bits_per_code": 3.309,
+    "valid_bits_per_byte": 0.6378
+   },
+   {
+    "train_s": 13081.1,
+    "step": 8953,
+    "train_bits_per_code": 2.641,
+    "valid_bits_per_byte": 0.6385
+   },
+   {
+    "train_s": 13140.7,
+    "step": 8993,
+    "train_bits_per_code": 3.418,
+    "valid_bits_per_byte": 0.638
+   },
+   {
+    "train_s": 13200.3,
+    "step": 9033,
+    "train_bits_per_code": 2.657,
+    "valid_bits_per_byte": 0.638
+   },
+   {
+    "train_s": 13260.4,
+    "step": 9073,
+    "train_bits_per_code": 2.869,
+    "valid_bits_per_byte": 0.6378
+   },
+   {
+    "train_s": 13320.3,
+    "step": 9113,
+    "train_bits_per_code": 3.027,
+    "valid_bits_per_byte": 0.6384
+   },
+   {
+    "train_s": 13380.4,
+    "step": 9153,
+    "train_bits_per_code": 3.092,
+    "valid_bits_per_byte": 0.6376
+   },
+   {
+    "train_s": 13441.4,
+    "step": 9194,
+    "train_bits_per_code": 3.065,
+    "valid_bits_per_byte": 0.6374
+   },
+   {
+    "train_s": 13501.0,
+    "step": 9234,
+    "train_bits_per_code": 3.14,
+    "valid_bits_per_byte": 0.6371
+   },
+   {
+    "train_s": 13560.6,
+    "step": 9274,
+    "train_bits_per_code": 3.141,
+    "valid_bits_per_byte": 0.6368
+   },
+   {
+    "train_s": 13621.1,
+    "step": 9314,
+    "train_bits_per_code": 2.766,
+    "valid_bits_per_byte": 0.6348
+   },
+   {
+    "train_s": 13681.2,
+    "step": 9354,
+    "train_bits_per_code": 2.798,
+    "valid_bits_per_byte": 0.6374
+   },
+   {
+    "train_s": 13740.3,
+    "step": 9393,
+    "train_bits_per_code": 3.037,
+    "valid_bits_per_byte": 0.638
+   },
+   {
+    "train_s": 13801.4,
+    "step": 9434,
+    "train_bits_per_code": 2.703,
+    "valid_bits_per_byte": 0.6365
+   },
+   {
+    "train_s": 13861.2,
+    "step": 9474,
+    "train_bits_per_code": 3.044,
+    "valid_bits_per_byte": 0.6375
+   },
+   {
+    "train_s": 13921.3,
+    "step": 9514,
+    "train_bits_per_code": 2.886,
+    "valid_bits_per_byte": 0.6361
+   },
+   {
+    "train_s": 13980.1,
+    "step": 9553,
+    "train_bits_per_code": 3.188,
+    "valid_bits_per_byte": 0.6373
+   },
+   {
+    "train_s": 14040.2,
+    "step": 9593,
+    "train_bits_per_code": 2.748,
+    "valid_bits_per_byte": 0.6369
+   },
+   {
+    "train_s": 14100.1,
+    "step": 9633,
+    "train_bits_per_code": 2.93,
+    "valid_bits_per_byte": 0.6356
+   },
+   {
+    "train_s": 14160.3,
+    "step": 9673,
+    "train_bits_per_code": 2.667,
+    "valid_bits_per_byte": 0.6368
+   },
+   {
+    "train_s": 14220.0,
+    "step": 9713,
+    "train_bits_per_code": 3.154,
+    "valid_bits_per_byte": 0.6371
+   },
+   {
+    "train_s": 14281.4,
+    "step": 9754,
+    "train_bits_per_code": 2.436,
+    "valid_bits_per_byte": 0.6363
+   },
+   {
+    "train_s": 14341.4,
+    "step": 9794,
+    "train_bits_per_code": 3.709,
+    "valid_bits_per_byte": 0.6367
+   },
+   {
+    "train_s": 14400.1,
+    "step": 9833,
+    "train_bits_per_code": 2.646,
+    "valid_bits_per_byte": 0.638
+   },
+   {
+    "train_s": 14460.2,
+    "step": 9873,
+    "train_bits_per_code": 3.306,
+    "valid_bits_per_byte": 0.6378
+   },
+   {
+    "train_s": 14520.6,
+    "step": 9913,
+    "train_bits_per_code": 2.959,
+    "valid_bits_per_byte": 0.6373
+   },
+   {
+    "train_s": 14580.7,
+    "step": 9953,
+    "train_bits_per_code": 3.253,
+    "valid_bits_per_byte": 0.6346
+   },
+   {
+    "train_s": 14641.1,
+    "step": 9993,
+    "train_bits_per_code": 3.359,
+    "valid_bits_per_byte": 0.6352
+   },
+   {
+    "train_s": 14700.9,
+    "step": 10033,
+    "train_bits_per_code": 2.685,
+    "valid_bits_per_byte": 0.6355
+   },
+   {
+    "train_s": 14760.9,
+    "step": 10073,
+    "train_bits_per_code": 3.333,
+    "valid_bits_per_byte": 0.6364
+   },
+   {
+    "train_s": 14820.9,
+    "step": 10113,
+    "train_bits_per_code": 2.931,
+    "valid_bits_per_byte": 0.6361
+   },
+   {
+    "train_s": 14881.2,
+    "step": 10153,
+    "train_bits_per_code": 3.329,
+    "valid_bits_per_byte": 0.6349
+   },
+   {
+    "train_s": 14941.2,
+    "step": 10193,
+    "train_bits_per_code": 2.945,
+    "valid_bits_per_byte": 0.6376
+   },
+   {
+    "train_s": 15001.4,
+    "step": 10233,
+    "train_bits_per_code": 2.716,
+    "valid_bits_per_byte": 0.6363
+   },
+   {
+    "train_s": 15061.3,
+    "step": 10273,
+    "train_bits_per_code": 2.947,
+    "valid_bits_per_byte": 0.6379
+   },
+   {
+    "train_s": 15121.2,
+    "step": 10313,
+    "train_bits_per_code": 2.717,
+    "valid_bits_per_byte": 0.638
+   },
+   {
+    "train_s": 15181.2,
+    "step": 10353,
+    "train_bits_per_code": 2.936,
+    "valid_bits_per_byte": 0.6354
+   },
+   {
+    "train_s": 15241.3,
+    "step": 10393,
+    "train_bits_per_code": 3.0,
+    "valid_bits_per_byte": 0.6369
+   },
+   {
+    "train_s": 15301.2,
+    "step": 10433,
+    "train_bits_per_code": 3.4,
+    "valid_bits_per_byte": 0.6352
+   },
+   {
+    "train_s": 15360.8,
+    "step": 10473,
+    "train_bits_per_code": 2.58,
+    "valid_bits_per_byte": 0.6345
+   },
+   {
+    "train_s": 15421.0,
+    "step": 10513,
+    "train_bits_per_code": 2.884,
+    "valid_bits_per_byte": 0.6355
+   },
+   {
+    "train_s": 15481.3,
+    "step": 10553,
+    "train_bits_per_code": 3.148,
+    "valid_bits_per_byte": 0.6335
+   },
+   {
+    "train_s": 15540.0,
+    "step": 10592,
+    "train_bits_per_code": 3.073,
+    "valid_bits_per_byte": 0.6342
+   },
+   {
+    "train_s": 15601.5,
+    "step": 10633,
+    "train_bits_per_code": 2.768,
+    "valid_bits_per_byte": 0.6344
+   },
+   {
+    "train_s": 15661.4,
+    "step": 10673,
+    "train_bits_per_code": 2.31,
+    "valid_bits_per_byte": 0.6348
+   },
+   {
+    "train_s": 15721.4,
+    "step": 10713,
+    "train_bits_per_code": 2.885,
+    "valid_bits_per_byte": 0.6342
+   },
+   {
+    "train_s": 15781.4,
+    "step": 10753,
+    "train_bits_per_code": 2.434,
+    "valid_bits_per_byte": 0.6347
+   },
+   {
+    "train_s": 15841.5,
+    "step": 10793,
+    "train_bits_per_code": 2.481,
+    "valid_bits_per_byte": 0.633
+   },
+   {
+    "train_s": 15900.1,
+    "step": 10832,
+    "train_bits_per_code": 2.907,
+    "valid_bits_per_byte": 0.6337
+   },
+   {
+    "train_s": 15960.1,
+    "step": 10872,
+    "train_bits_per_code": 3.169,
+    "valid_bits_per_byte": 0.6339
+   },
+   {
+    "train_s": 16021.2,
+    "step": 10913,
+    "train_bits_per_code": 3.118,
+    "valid_bits_per_byte": 0.6328
+   },
+   {
+    "train_s": 16081.0,
+    "step": 10953,
+    "train_bits_per_code": 3.139,
+    "valid_bits_per_byte": 0.6347
+   },
+   {
+    "train_s": 16140.9,
+    "step": 10993,
+    "train_bits_per_code": 2.56,
+    "valid_bits_per_byte": 0.6344
+   },
+   {
+    "train_s": 16201.2,
+    "step": 11032,
+    "train_bits_per_code": 3.213,
+    "valid_bits_per_byte": 0.6348
+   },
+   {
+    "train_s": 16260.6,
+    "step": 11069,
+    "train_bits_per_code": 3.021,
+    "valid_bits_per_byte": 0.6343
+   },
+   {
+    "train_s": 16320.2,
+    "step": 11106,
+    "train_bits_per_code": 3.107,
+    "valid_bits_per_byte": 0.6339
+   },
+   {
+    "train_s": 16381.4,
+    "step": 11144,
+    "train_bits_per_code": 3.294,
+    "valid_bits_per_byte": 0.6346
+   },
+   {
+    "train_s": 16441.1,
+    "step": 11181,
+    "train_bits_per_code": 2.754,
+    "valid_bits_per_byte": 0.6346
+   },
+   {
+    "train_s": 16500.7,
+    "step": 11218,
+    "train_bits_per_code": 2.889,
+    "valid_bits_per_byte": 0.6351
+   },
+   {
+    "train_s": 16560.4,
+    "step": 11255,
+    "train_bits_per_code": 2.578,
+    "valid_bits_per_byte": 0.6347
+   },
+   {
+    "train_s": 16621.6,
+    "step": 11293,
+    "train_bits_per_code": 2.417,
+    "valid_bits_per_byte": 0.636
+   },
+   {
+    "train_s": 16681.4,
+    "step": 11330,
+    "train_bits_per_code": 2.961,
+    "valid_bits_per_byte": 0.6351
+   },
+   {
+    "train_s": 16741.0,
+    "step": 11367,
+    "train_bits_per_code": 3.102,
+    "valid_bits_per_byte": 0.6337
+   },
+   {
+    "train_s": 16800.7,
+    "step": 11404,
+    "train_bits_per_code": 2.585,
+    "valid_bits_per_byte": 0.6353
+   },
+   {
+    "train_s": 16860.3,
+    "step": 11441,
+    "train_bits_per_code": 2.896,
+    "valid_bits_per_byte": 0.6341
+   },
+   {
+    "train_s": 16921.3,
+    "step": 11479,
+    "train_bits_per_code": 2.83,
+    "valid_bits_per_byte": 0.6344
+   },
+   {
+    "train_s": 16980.6,
+    "step": 11516,
+    "train_bits_per_code": 3.258,
+    "valid_bits_per_byte": 0.6335
+   },
+   {
+    "train_s": 17040.1,
+    "step": 11553,
+    "train_bits_per_code": 2.769,
+    "valid_bits_per_byte": 0.6339
+   },
+   {
+    "train_s": 17101.2,
+    "step": 11591,
+    "train_bits_per_code": 2.599,
+    "valid_bits_per_byte": 0.6336
+   },
+   {
+    "train_s": 17160.7,
+    "step": 11628,
+    "train_bits_per_code": 3.295,
+    "valid_bits_per_byte": 0.6333
+   },
+   {
+    "train_s": 17220.1,
+    "step": 11665,
+    "train_bits_per_code": 3.092,
+    "valid_bits_per_byte": 0.6337
+   },
+   {
+    "train_s": 17281.3,
+    "step": 11703,
+    "train_bits_per_code": 3.304,
+    "valid_bits_per_byte": 0.6331
+   },
+   {
+    "train_s": 17340.8,
+    "step": 11740,
+    "train_bits_per_code": 2.877,
+    "valid_bits_per_byte": 0.6334
+   },
+   {
+    "train_s": 17400.3,
+    "step": 11777,
+    "train_bits_per_code": 3.128,
+    "valid_bits_per_byte": 0.6337
+   },
+   {
+    "train_s": 17461.5,
+    "step": 11815,
+    "train_bits_per_code": 3.707,
+    "valid_bits_per_byte": 0.6342
+   },
+   {
+    "train_s": 17521.1,
+    "step": 11852,
+    "train_bits_per_code": 2.932,
+    "valid_bits_per_byte": 0.6344
+   },
+   {
+    "train_s": 17580.6,
+    "step": 11889,
+    "train_bits_per_code": 3.222,
+    "valid_bits_per_byte": 0.6346
+   },
+   {
+    "train_s": 17640.1,
+    "step": 11926,
+    "train_bits_per_code": 3.023,
+    "valid_bits_per_byte": 0.635
+   },
+   {
+    "train_s": 17701.4,
+    "step": 11964,
+    "train_bits_per_code": 3.076,
+    "valid_bits_per_byte": 0.6341
+   },
+   {
+    "train_s": 17761.3,
+    "step": 12000,
+    "train_bits_per_code": 2.949,
+    "valid_bits_per_byte": 0.6333
+   },
+   {
+    "train_s": 17820.2,
+    "step": 12037,
+    "train_bits_per_code": 3.278,
+    "valid_bits_per_byte": 0.6337
+   },
+   {
+    "train_s": 17880.5,
+    "step": 12075,
+    "train_bits_per_code": 2.834,
+    "valid_bits_per_byte": 0.6339
+   },
+   {
+    "train_s": 17941.2,
+    "step": 12113,
+    "train_bits_per_code": 3.446,
+    "valid_bits_per_byte": 0.6344
+   },
+   {
+    "train_s": 18001.3,
+    "step": 12150,
+    "train_bits_per_code": 2.98,
+    "valid_bits_per_byte": 0.634
+   },
+   {
+    "train_s": 18060.1,
+    "step": 12186,
+    "train_bits_per_code": 3.383,
+    "valid_bits_per_byte": 0.6342
+   },
+   {
+    "train_s": 18120.7,
+    "step": 12224,
+    "train_bits_per_code": 2.91,
+    "valid_bits_per_byte": 0.6337
+   },
+   {
+    "train_s": 18180.9,
+    "step": 12261,
+    "train_bits_per_code": 2.975,
+    "valid_bits_per_byte": 0.634
+   },
+   {
+    "train_s": 18241.5,
+    "step": 12299,
+    "train_bits_per_code": 2.655,
+    "valid_bits_per_byte": 0.6347
+   },
+   {
+    "train_s": 18300.6,
+    "step": 12336,
+    "train_bits_per_code": 3.436,
+    "valid_bits_per_byte": 0.634
+   },
+   {
+    "train_s": 18360.8,
+    "step": 12373,
+    "train_bits_per_code": 2.965,
+    "valid_bits_per_byte": 0.6337
+   },
+   {
+    "train_s": 18421.4,
+    "step": 12411,
+    "train_bits_per_code": 2.997,
+    "valid_bits_per_byte": 0.6337
+   },
+   {
+    "train_s": 18480.8,
+    "step": 12448,
+    "train_bits_per_code": 2.777,
+    "valid_bits_per_byte": 0.6334
+   },
+   {
+    "train_s": 18540.3,
+    "step": 12485,
+    "train_bits_per_code": 3.133,
+    "valid_bits_per_byte": 0.633
+   },
+   {
+    "train_s": 18601.4,
+    "step": 12523,
+    "train_bits_per_code": 2.647,
+    "valid_bits_per_byte": 0.6323
+   },
+   {
+    "train_s": 18660.9,
+    "step": 12560,
+    "train_bits_per_code": 3.268,
+    "valid_bits_per_byte": 0.6333
+   },
+   {
+    "train_s": 18720.5,
+    "step": 12597,
+    "train_bits_per_code": 3.329,
+    "valid_bits_per_byte": 0.632
+   },
+   {
+    "train_s": 18780.0,
+    "step": 12634,
+    "train_bits_per_code": 3.335,
+    "valid_bits_per_byte": 0.632
+   },
+   {
+    "train_s": 18841.1,
+    "step": 12672,
+    "train_bits_per_code": 2.492,
+    "valid_bits_per_byte": 0.6326
+   },
+   {
+    "train_s": 18900.6,
+    "step": 12709,
+    "train_bits_per_code": 3.208,
+    "valid_bits_per_byte": 0.6324
+   },
+   {
+    "train_s": 18960.1,
+    "step": 12746,
+    "train_bits_per_code": 3.397,
+    "valid_bits_per_byte": 0.6322
+   },
+   {
+    "train_s": 19021.1,
+    "step": 12784,
+    "train_bits_per_code": 2.979,
+    "valid_bits_per_byte": 0.6325
+   },
+   {
+    "train_s": 19080.4,
+    "step": 12821,
+    "train_bits_per_code": 3.316,
+    "valid_bits_per_byte": 0.6317
+   },
+   {
+    "train_s": 19141.5,
+    "step": 12859,
+    "train_bits_per_code": 3.156,
+    "valid_bits_per_byte": 0.6325
+   },
+   {
+    "train_s": 19200.9,
+    "step": 12896,
+    "train_bits_per_code": 2.506,
+    "valid_bits_per_byte": 0.6318
+   },
+   {
+    "train_s": 19260.4,
+    "step": 12933,
+    "train_bits_per_code": 3.067,
+    "valid_bits_per_byte": 0.632
+   },
+   {
+    "train_s": 19321.5,
+    "step": 12971,
+    "train_bits_per_code": 2.824,
+    "valid_bits_per_byte": 0.6327
+   },
+   {
+    "train_s": 19381.0,
+    "step": 13008,
+    "train_bits_per_code": 3.062,
+    "valid_bits_per_byte": 0.6327
+   },
+   {
+    "train_s": 19440.4,
+    "step": 13045,
+    "train_bits_per_code": 3.394,
+    "valid_bits_per_byte": 0.632
+   },
+   {
+    "train_s": 19501.6,
+    "step": 13083,
+    "train_bits_per_code": 3.355,
+    "valid_bits_per_byte": 0.6326
+   },
+   {
+    "train_s": 19561.2,
+    "step": 13120,
+    "train_bits_per_code": 2.621,
+    "valid_bits_per_byte": 0.6321
+   },
+   {
+    "train_s": 19620.6,
+    "step": 13157,
+    "train_bits_per_code": 3.207,
+    "valid_bits_per_byte": 0.6314
+   },
+   {
+    "train_s": 19680.0,
+    "step": 13194,
+    "train_bits_per_code": 3.035,
+    "valid_bits_per_byte": 0.6318
+   },
+   {
+    "train_s": 19741.0,
+    "step": 13232,
+    "train_bits_per_code": 2.91,
+    "valid_bits_per_byte": 0.6314
+   },
+   {
+    "train_s": 19800.5,
+    "step": 13269,
+    "train_bits_per_code": 3.264,
+    "valid_bits_per_byte": 0.6322
+   },
+   {
+    "train_s": 19861.1,
+    "step": 13307,
+    "train_bits_per_code": 3.035,
+    "valid_bits_per_byte": 0.6327
+   },
+   {
+    "train_s": 19920.0,
+    "step": 13344,
+    "train_bits_per_code": 3.119,
+    "valid_bits_per_byte": 0.6321
+   },
+   {
+    "train_s": 19980.7,
+    "step": 13382,
+    "train_bits_per_code": 3.163,
+    "valid_bits_per_byte": 0.632
+   },
+   {
+    "train_s": 20041.4,
+    "step": 13420,
+    "train_bits_per_code": 2.507,
+    "valid_bits_per_byte": 0.6322
+   },
+   {
+    "train_s": 20100.3,
+    "step": 13457,
+    "train_bits_per_code": 3.297,
+    "valid_bits_per_byte": 0.632
+   },
+   {
+    "train_s": 20160.5,
+    "step": 13495,
+    "train_bits_per_code": 3.042,
+    "valid_bits_per_byte": 0.632
+   },
+   {
+    "train_s": 20220.5,
+    "step": 13533,
+    "train_bits_per_code": 3.317,
+    "valid_bits_per_byte": 0.6332
+   },
+   {
+    "train_s": 20281.2,
+    "step": 13571,
+    "train_bits_per_code": 3.212,
+    "valid_bits_per_byte": 0.6323
+   },
+   {
+    "train_s": 20340.3,
+    "step": 13608,
+    "train_bits_per_code": 2.517,
+    "valid_bits_per_byte": 0.6324
+   },
+   {
+    "train_s": 20400.8,
+    "step": 13646,
+    "train_bits_per_code": 3.199,
+    "valid_bits_per_byte": 0.6328
+   },
+   {
+    "train_s": 20461.6,
+    "step": 13684,
+    "train_bits_per_code": 3.251,
+    "valid_bits_per_byte": 0.633
+   },
+   {
+    "train_s": 20520.7,
+    "step": 13721,
+    "train_bits_per_code": 3.185,
+    "valid_bits_per_byte": 0.6321
+   },
+   {
+    "train_s": 20581.4,
+    "step": 13759,
+    "train_bits_per_code": 3.386,
+    "valid_bits_per_byte": 0.6318
+   },
+   {
+    "train_s": 20640.5,
+    "step": 13796,
+    "train_bits_per_code": 2.653,
+    "valid_bits_per_byte": 0.6323
+   },
+   {
+    "train_s": 20701.2,
+    "step": 13834,
+    "train_bits_per_code": 2.94,
+    "valid_bits_per_byte": 0.6327
+   },
+   {
+    "train_s": 20760.2,
+    "step": 13871,
+    "train_bits_per_code": 3.168,
+    "valid_bits_per_byte": 0.6319
+   },
+   {
+    "train_s": 20820.8,
+    "step": 13909,
+    "train_bits_per_code": 3.061,
+    "valid_bits_per_byte": 0.6331
+   },
+   {
+    "train_s": 20881.5,
+    "step": 13947,
+    "train_bits_per_code": 2.88,
+    "valid_bits_per_byte": 0.6327
+   },
+   {
+    "train_s": 20940.5,
+    "step": 13984,
+    "train_bits_per_code": 3.407,
+    "valid_bits_per_byte": 0.6322
+   },
+   {
+    "train_s": 21001.2,
+    "step": 14022,
+    "train_bits_per_code": 2.817,
+    "valid_bits_per_byte": 0.632
+   },
+   {
+    "train_s": 21060.2,
+    "step": 14059,
+    "train_bits_per_code": 3.154,
+    "valid_bits_per_byte": 0.6326
+   },
+   {
+    "train_s": 21120.9,
+    "step": 14097,
+    "train_bits_per_code": 2.974,
+    "valid_bits_per_byte": 0.6316
+   },
+   {
+    "train_s": 21180.3,
+    "step": 14134,
+    "train_bits_per_code": 2.529,
+    "valid_bits_per_byte": 0.6323
+   },
+   {
+    "train_s": 21241.2,
+    "step": 14172,
+    "train_bits_per_code": 2.824,
+    "valid_bits_per_byte": 0.6325
+   },
+   {
+    "train_s": 21300.1,
+    "step": 14209,
+    "train_bits_per_code": 2.991,
+    "valid_bits_per_byte": 0.632
+   },
+   {
+    "train_s": 21360.5,
+    "step": 14247,
+    "train_bits_per_code": 3.769,
+    "valid_bits_per_byte": 0.633
+   },
+   {
+    "train_s": 21421.2,
+    "step": 14285,
+    "train_bits_per_code": 2.881,
+    "valid_bits_per_byte": 0.6324
+   },
+   {
+    "train_s": 21480.2,
+    "step": 14322,
+    "train_bits_per_code": 2.998,
+    "valid_bits_per_byte": 0.6317
+   },
+   {
+    "train_s": 21541.0,
+    "step": 14360,
+    "train_bits_per_code": 2.818,
+    "valid_bits_per_byte": 0.6326
+   },
+   {
+    "train_s": 21600.6,
+    "step": 14397,
+    "train_bits_per_code": 2.569,
+    "valid_bits_per_byte": 0.6325
+   },
+   {
+    "train_s": 21660.1,
+    "step": 14434,
+    "train_bits_per_code": 3.23,
+    "valid_bits_per_byte": 0.6322
+   },
+   {
+    "train_s": 21721.3,
+    "step": 14472,
+    "train_bits_per_code": 3.19,
+    "valid_bits_per_byte": 0.6323
+   },
+   {
+    "train_s": 21780.8,
+    "step": 14509,
+    "train_bits_per_code": 3.153,
+    "valid_bits_per_byte": 0.6316
+   },
+   {
+    "train_s": 21840.2,
+    "step": 14546,
+    "train_bits_per_code": 2.758,
+    "valid_bits_per_byte": 0.6317
+   },
+   {
+    "train_s": 21901.2,
+    "step": 14584,
+    "train_bits_per_code": 2.478,
+    "valid_bits_per_byte": 0.6316
+   },
+   {
+    "train_s": 21960.6,
+    "step": 14621,
+    "train_bits_per_code": 2.889,
+    "valid_bits_per_byte": 0.6318
+   },
+   {
+    "train_s": 22021.5,
+    "step": 14659,
+    "train_bits_per_code": 3.125,
+    "valid_bits_per_byte": 0.6323
+   },
+   {
+    "train_s": 22080.9,
+    "step": 14696,
+    "train_bits_per_code": 3.173,
+    "valid_bits_per_byte": 0.6313
+   },
+   {
+    "train_s": 22140.2,
+    "step": 14733,
+    "train_bits_per_code": 2.52,
+    "valid_bits_per_byte": 0.6311
+   },
+   {
+    "train_s": 22201.2,
+    "step": 14771,
+    "train_bits_per_code": 3.199,
+    "valid_bits_per_byte": 0.6319
+   },
+   {
+    "train_s": 22260.5,
+    "step": 14808,
+    "train_bits_per_code": 2.655,
+    "valid_bits_per_byte": 0.6318
+   },
+   {
+    "train_s": 22321.2,
+    "step": 14846,
+    "train_bits_per_code": 3.045,
+    "valid_bits_per_byte": 0.6315
+   },
+   {
+    "train_s": 22380.3,
+    "step": 14883,
+    "train_bits_per_code": 2.894,
+    "valid_bits_per_byte": 0.6316
+   },
+   {
+    "train_s": 22440.6,
+    "step": 14921,
+    "train_bits_per_code": 2.913,
+    "valid_bits_per_byte": 0.6314
+   },
+   {
+    "train_s": 22501.2,
+    "step": 14959,
+    "train_bits_per_code": 2.866,
+    "valid_bits_per_byte": 0.6313
+   },
+   {
+    "train_s": 22560.1,
+    "step": 14996,
+    "train_bits_per_code": 3.191,
+    "valid_bits_per_byte": 0.6309
+   },
+   {
+    "train_s": 22620.5,
+    "step": 15034,
+    "train_bits_per_code": 3.393,
+    "valid_bits_per_byte": 0.6313
+   },
+   {
+    "train_s": 22681.4,
+    "step": 15072,
+    "train_bits_per_code": 3.018,
+    "valid_bits_per_byte": 0.6312
+   },
+   {
+    "train_s": 22741.6,
+    "step": 15110,
+    "train_bits_per_code": 2.896,
+    "valid_bits_per_byte": 0.6311
+   },
+   {
+    "train_s": 22800.1,
+    "step": 15147,
+    "train_bits_per_code": 3.159,
+    "valid_bits_per_byte": 0.6311
+   },
+   {
+    "train_s": 22860.4,
+    "step": 15185,
+    "train_bits_per_code": 2.903,
+    "valid_bits_per_byte": 0.6317
+   },
+   {
+    "train_s": 22920.9,
+    "step": 15223,
+    "train_bits_per_code": 3.137,
+    "valid_bits_per_byte": 0.6318
+   },
+   {
+    "train_s": 22981.0,
+    "step": 15261,
+    "train_bits_per_code": 3.022,
+    "valid_bits_per_byte": 0.6314
+   },
+   {
+    "train_s": 23041.5,
+    "step": 15299,
+    "train_bits_per_code": 3.196,
+    "valid_bits_per_byte": 0.6318
+   },
+   {
+    "train_s": 23100.1,
+    "step": 15336,
+    "train_bits_per_code": 2.892,
+    "valid_bits_per_byte": 0.6316
+   },
+   {
+    "train_s": 23160.5,
+    "step": 15374,
+    "train_bits_per_code": 2.947,
+    "valid_bits_per_byte": 0.6312
+   },
+   {
+    "train_s": 23221.3,
+    "step": 15412,
+    "train_bits_per_code": 3.142,
+    "valid_bits_per_byte": 0.6319
+   },
+   {
+    "train_s": 23280.5,
+    "step": 15449,
+    "train_bits_per_code": 3.165,
+    "valid_bits_per_byte": 0.6316
+   },
+   {
+    "train_s": 23341.6,
+    "step": 15487,
+    "train_bits_per_code": 3.28,
+    "valid_bits_per_byte": 0.6317
+   },
+   {
+    "train_s": 23401.1,
+    "step": 15524,
+    "train_bits_per_code": 2.383,
+    "valid_bits_per_byte": 0.6321
+   },
+   {
+    "train_s": 23460.5,
+    "step": 15561,
+    "train_bits_per_code": 3.002,
+    "valid_bits_per_byte": 0.6318
+   },
+   {
+    "train_s": 23466.8,
+    "step": 15565,
+    "train_bits_per_code": 2.722,
+    "valid_bits_per_byte": 0.6318
+   }
+  ],
+  "cost": {
+   "seconds": 23466.8,
+   "gpu_avg_w": 287.4,
+   "gpu_kj": 6743.7,
+   "peak_mem_mb": 4760,
+   "power_samples": 12975,
+   "units": 15565,
+   "s_per_unit": 1.5077,
+   "j_per_unit": 433.26
+  }
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.9922,
+   "exact": 0.995
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 200,
+   "f1": 0.9059,
+   "exact": 0.62,
+   "f1_no_m1": 0.9059,
+   "f1_bias": 0.9059,
+   "exact_bias": 0.62
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 34,
+   "f1": 0.2908,
+   "exact": 0.0588,
+   "f1_no_m1": 0.2908,
+   "f1_bias": 0.2908,
+   "exact_bias": 0.0588,
+   "retrieved_answer_f1_vs_ref": 0.2611
+  },
+  "unseen_network_with_nearest": {
+   "n": 166,
+   "f1": 0.3582,
+   "exact": 0.006,
+   "f1_no_m1": 0.3582,
+   "f1_bias": 0.3582,
+   "exact_bias": 0.006,
+   "retrieved_answer_f1_vs_ref": 0.2169
+  },
+  "heldout_network_without_memory": {
+   "n": 200,
+   "f1": 0.3339,
+   "exact": 0.01
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.3417
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.9567,
+   "exact": 0.985
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 200,
+   "f1": 0.8823,
+   "exact": 0.64,
+   "f1_no_m1": 0.8823,
+   "f1_bias": 0.8823,
+   "exact_bias": 0.64
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Create a cryptographic code using a substitution cipher.",
+    "a": "A substitution cipher is a cryptographic code which replaces each letter in the plaintext with another letter. For example, a substitution cipher might replace ",
+    "f1": 0.9285714285714286,
+    "exact": 0.0,
+    "a_no_m1": "A substitution cipher is a cryptographic code which replaces each letter in the plaintext with another letter. For example, a substitution cipher might replace ",
+    "f1_no_m1": 0.9285714285714286,
+    "a_bias": "A substitution cipher is a cryptographic code which replaces each letter in the plaintext with another letter. For example, a substitution cipher might replace ",
+    "f1_bias": 0.9285714285714286,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Edit the following sentence, making the language more nuanced.\nHer speech was a ",
+    "a": "Her speech was not as successful as she had hoped.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "Her speech was not as successful as she had hoped.",
+    "f1_no_m1": 1.0,
+    "a_bias": "Her speech was not as successful as she had hoped.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Determine which choice is correct and output it.\nA) Ants\nB) Flies\nC) Mosquitoes",
+    "a": "C) Mosquitoes",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "C) Mosquitoes",
+    "f1_no_m1": 1.0,
+    "a_bias": "C) Mosquitoes",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Given the following context, how would you help a user complete his task?\nJohn h",
+    "a": "I can help John by creating a list of the tasks he needs to do, and breaking them down into smaller steps or tasks. I can also suggest ways to help him stay mot",
+    "f1": 0.858974358974359,
+    "exact": 0.0,
+    "a_no_m1": "I can help John by creating a list of the tasks he needs to do, and breaking them down into smaller steps or tasks. I can also suggest ways to help him stay mot",
+    "f1_no_m1": 0.858974358974359,
+    "a_bias": "I can help John by creating a list of the tasks he needs to do, and breaking them down into smaller steps or tasks. I can also suggest ways to help him stay mot",
+    "f1_bias": 0.858974358974359,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Explain the following concept in less than five sentences.\nThe \u201880-20 rule\u2019",
+    "a": "The '80-20 rule' states that 80% of outputs or outcomes come from 20% of inputs or efforts. This rule applies to a variety of situations, such as the amount of ",
+    "f1": 0.9491525423728813,
+    "exact": 0.0,
+    "a_no_m1": "The '80-20 rule' states that 80% of outputs or outcomes come from 20% of inputs or efforts. This rule applies to a variety of situations, such as the amount of ",
+    "f1_no_m1": 0.9491525423728813,
+    "a_bias": "The '80-20 rule' states that 80% of outputs or outcomes come from 20% of inputs or efforts. This rule applies to a variety of situations, such as the amount of ",
+    "f1_bias": 0.9491525423728813,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Construct a system for categorizing customer inquiries by type.",
+    "a": "The system for categorizing customer inquiries depending on their type is a complex process which consists of multiple steps. First you will need to set up cust",
+    "f1": 0.5794392523364486,
+    "exact": 0.0,
+    "a_no_m1": "The system for categorizing customer inquiries depending on their type is a complex process which consists of multiple steps. First you will need to set up cust",
+    "f1_no_m1": 0.5794392523364486,
+    "a_bias": "The system for categorizing customer inquiries depending on their type is a complex process which consists of multiple steps. First you will need to set up cust",
+    "f1_bias": 0.5794392523364486,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Name two possible solutions to reduce the effects of global warming.",
+    "a": "Two possible solutions to reduce the effects of global warming are to reduce emissions of greenhouse gases such as carbon dioxide and other greenhouse gases, an",
+    "f1": 0.5423728813559323,
+    "exact": 0.0,
+    "a_no_m1": "Two possible solutions to reduce the effects of global warming are to reduce emissions of greenhouse gases such as carbon dioxide and other greenhouse gases, an",
+    "f1_no_m1": 0.5423728813559323,
+    "a_bias": "Two possible solutions to reduce the effects of global warming are to reduce emissions of greenhouse gases such as carbon dioxide and other greenhouse gases, an",
+    "f1_bias": 0.5423728813559323,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.698,
+    "f1_vs_retrieved": 0.5252525252525253,
+    "retrieved_answer_f1_vs_ref": 0.4047619047619047
+   },
+   {
+    "q": "Write a function that takes an array of numbers and sorts them in ascending orde",
+    "a": "def descending_sort(arr):\n    arr.sort(reverse = True)\n    return arr",
+    "f1": 0.4000000000000001,
+    "exact": 0.0,
+    "a_no_m1": "def descending_sort(arr):\n    arr.sort(reverse = True)\n    return arr",
+    "f1_no_m1": 0.4000000000000001,
+    "a_bias": "def descending_sort(arr):\n    arr.sort(reverse = True)\n    return arr",
+    "f1_bias": 0.4000000000000001,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.51,
+    "f1_vs_retrieved": 1.0,
+    "retrieved_answer_f1_vs_ref": 0.4000000000000001
+   },
+   {
+    "q": "Generate an example use case of how an AI system can improve customer service.",
+    "a": "An AI system can be used to automate customer service operations by providing real-time feedback and automated responses. For example, a company can use AI to a",
+    "f1": 0.4444444444444445,
+    "exact": 0.0,
+    "a_no_m1": "An AI system can be used to automate customer service operations by providing real-time feedback and automated responses. For example, a company can use AI to a",
+    "f1_no_m1": 0.4444444444444445,
+    "a_bias": "An AI system can be used to automate customer service operations by providing real-time feedback and automated responses. For example, a company can use AI to a",
+    "f1_bias": 0.4444444444444445,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.629,
+    "f1_vs_retrieved": 0.43137254901960786,
+    "retrieved_answer_f1_vs_ref": 0.45901639344262296
+   },
+   {
+    "q": "Write an essay about what makes a good leader.",
+    "a": "A good leader is someone who is able to inspire, motivate and motivate their team. They are able to create a positive and productive work environment, and they ",
+    "f1": 0.2484076433121019,
+    "exact": 0.0,
+    "a_no_m1": "A good leader is someone who is able to inspire, motivate and motivate their team. They are able to create a positive and productive work environment, and they ",
+    "f1_no_m1": 0.2484076433121019,
+    "a_bias": "A good leader is someone who is able to inspire, motivate and motivate their team. They are able to create a positive and productive work environment, and they ",
+    "f1_bias": 0.2484076433121019,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.683,
+    "f1_vs_retrieved": 0.12658227848101267,
+    "retrieved_answer_f1_vs_ref": 0.03891050583657587
+   },
+   {
+    "q": "Create a conclusion paragraph for a persuasive essay on the importance of voting",
+    "a": "Voting is an essential part of democracy and is essential for the success of a democratic society. It allows citizens to make informed decisions and make decisi",
+    "f1": 0.3563218390804598,
+    "exact": 0.0,
+    "a_no_m1": "Voting is an essential part of democracy and is essential for the success of a democratic society. It allows citizens to make informed decisions and make decisi",
+    "f1_no_m1": 0.3563218390804598,
+    "a_bias": "Voting is an essential part of democracy and is essential for the success of a democratic society. It allows citizens to make informed decisions and make decisi",
+    "f1_bias": 0.3563218390804598,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.599,
+    "f1_vs_retrieved": 0.2810304449648712,
+    "retrieved_answer_f1_vs_ref": 0.23126338329764454
+   },
+   {
+    "q": "Given categories of animals (mammal, reptile, fish, bird, amphibian), classify a",
+    "a": "Mammal",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "Mammal",
+    "f1_no_m1": 0.0,
+    "a_bias": "Mammal",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.649,
+    "f1_vs_retrieved": 1.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Develop a website for a travel blog",
+    "a": "The website for a travel blog should be easy to navigate and include a search bar to allow users to easily find the information they are looking for. The websit",
+    "f1": 0.308641975308642,
+    "exact": 0.0,
+    "a_no_m1": "The website for a travel blog should be easy to navigate and include a search bar to allow users to easily find the information they are looking for. The websit",
+    "f1_no_m1": 0.308641975308642,
+    "a_bias": "The website for a travel blog should be easy to navigate and include a search bar to allow users to easily find the information they are looking for. The websit",
+    "f1_bias": 0.308641975308642,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.361,
+    "f1_vs_retrieved": 0.05128205128205128,
+    "retrieved_answer_f1_vs_ref": 0.03846153846153846
+   },
+   {
+    "q": "Generate a list of questions the user can ask a chatbot about home insurance.",
+    "a": "- What are the benefits of home insurance?\n- What are the benefits of home insurance?\n- What are the different types of home insurance?\n- What are the benefits ",
+    "f1": 0.5588235294117647,
+    "exact": 0.0,
+    "a_no_m1": "- What are the benefits of home insurance?\n- What are the benefits of home insurance?\n- What are the different types of home insurance?\n- What are the benefits ",
+    "f1_no_m1": 0.5588235294117647,
+    "a_bias": "- What are the benefits of home insurance?\n- What are the benefits of home insurance?\n- What are the different types of home insurance?\n- What are the benefits ",
+    "f1_bias": 0.5588235294117647,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.424,
+    "f1_vs_retrieved": 0.08988764044943821,
+    "retrieved_answer_f1_vs_ref": 0.09523809523809525
+   },
+   {
+    "q": "Create a paragraph to describe the moon.",
+    "a": "The moon is a mysterious and mysterious object that is often seen in the night sky. It is a small, silvery object that is often seen in the night sky. It is bel",
+    "f1": 0.3660130718954248,
+    "exact": 0.0,
+    "a_no_m1": "The moon is a mysterious and mysterious object that is often seen in the night sky. It is a small, silvery object that is often seen in the night sky. It is bel",
+    "f1_no_m1": 0.3660130718954248,
+    "a_bias": "The moon is a mysterious and mysterious object that is often seen in the night sky. It is a small, silvery object that is often seen in the night sky. It is bel",
+    "f1_bias": 0.3660130718954248,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.397,
+    "f1_vs_retrieved": 0.38036809815950917,
+    "retrieved_answer_f1_vs_ref": 0.30434782608695654
+   },
+   {
+    "q": "Describe a technique to make effective use of hashtags on social media.",
+    "a": "Hashtags are a great way to make effective use of hashtags on social media. Hashtags are used to create a visual representation of a certain topic or group of p",
+    "f1": 0.26562500000000006,
+    "exact": 0.0,
+    "a_no_m1": "Hashtags are a great way to make effective use of hashtags on social media. Hashtags are used to create a visual representation of a certain topic or group of p",
+    "f1_no_m1": 0.26562500000000006,
+    "a_bias": "Hashtags are a great way to make effective use of hashtags on social media. Hashtags are used to create a visual representation of a certain topic or group of p",
+    "f1_bias": 0.26562500000000006,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.437,
+    "f1_vs_retrieved": 0.41791044776119396,
+    "retrieved_answer_f1_vs_ref": 0.35714285714285715
+   },
+   {
+    "q": "Why is it important to know the environment of a place before visiting?",
+    "a": "It is important to know the environment of a place before visiting because it helps to protect the environment and ensures that the people and resources that ar",
+    "f1": 0.5038167938931297,
+    "exact": 0.0,
+    "a_no_m1": "It is important to know the environment of a place before visiting because it helps to protect the environment and ensures that the people and resources that ar",
+    "f1_no_m1": 0.5038167938931297,
+    "a_bias": "It is important to know the environment of a place before visiting because it helps to protect the environment and ensures that the people and resources that ar",
+    "f1_bias": 0.5038167938931297,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.201,
+    "f1_vs_retrieved": 0.5299145299145299,
+    "retrieved_answer_f1_vs_ref": 0.3333333333333333
+   },
+   {
+    "q": "Explain what is a Block Chain.",
+    "a": "A block chain is a type of digital ledger that records transactions in a secure and immutable manner. It is a distributed system, meaning that it does not rely ",
+    "f1": 0.4666666666666667,
+    "exact": 0.0,
+    "a_no_m1": "A block chain is a type of digital ledger that records transactions in a secure and immutable manner. It is a distributed system, meaning that it does not rely ",
+    "f1_no_m1": 0.4666666666666667,
+    "a_bias": "A block chain is a type of digital ledger that records transactions in a secure and immutable manner. It is a distributed system, meaning that it does not rely ",
+    "f1_bias": 0.4666666666666667,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.0,
+    "f1_vs_retrieved": 0.8435374149659864,
+    "retrieved_answer_f1_vs_ref": 0.5179856115107915
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Find the number of times the letter E appears in the following sentence.\nThe qui",
+    "a": "The letter E appears 3 times in the sentence.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The letter E appears 3 times in the sentence.",
+    "f1_no_m1": 1.0,
+    "a_bias": "The letter E appears 3 times in the sentence.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Fix any grammar and spelling errors in the following sentence.\nThe malloys bough",
+    "a": "The Malloys bought a box of chocolates.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The Malloys bought a box of chocolates.",
+    "f1_no_m1": 1.0,
+    "a_bias": "The Malloys bought a box of chocolates.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "What describes the following equation: y = x^2 - 3",
+    "a": "This equation is a parabola with its vertex at (0, -3). The parabola opens upward, as the sign of y = x^2 is positive.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "This equation is a parabola with its vertex at (0, -3). The parabola opens upward, as the sign of y = x^2 is positive.",
+    "f1_no_m1": 1.0,
+    "a_bias": "This equation is a parabola with its vertex at (0, -3). The parabola opens upward, as the sign of y = x^2 is positive.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Rewrite the sentence in the negative form and output the result.\nI was delighted",
+    "a": "I was not delighted to hear from you.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "I was not delighted to hear from you.",
+    "f1_no_m1": 1.0,
+    "a_bias": "I was not delighted to hear from you.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Write a short paragraph to explain the importance of communication in the workpl",
+    "a": "Effective communication in the workplace is essential for the success of any business. It enables employees to share information and collaborate on projects, wh",
+    "f1": 0.8421052631578947,
+    "exact": 0.0,
+    "a_no_m1": "Effective communication in the workplace is essential for the success of any business. It enables employees to share information and collaborate on projects, wh",
+    "f1_no_m1": 0.8421052631578947,
+    "a_bias": "Effective communication in the workplace is essential for the success of any business. It enables employees to share information and collaborate on projects, wh",
+    "f1_bias": 0.8421052631578947,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Determine which of the two words is the antonym of the other.\nAbundant and Rare",
+    "a": "Abundant and Rare are antonyms.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "Abundant and Rare are antonyms.",
+    "f1_no_m1": 1.0,
+    "a_bias": "Abundant and Rare are antonyms.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ]
+ },
+ "checks": {}
+}

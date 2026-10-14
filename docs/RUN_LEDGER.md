@@ -146,6 +146,7 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 | s2b_densesyn512_s1 | Q&A | 15565 | 650 | 23.950 | 365.700 | 237.690 | 2858 | 0.089 | 12.460 | 22 |
 | s2b_densesyn512_s2 | Q&A | 15565 | 686 | 22.690 | 354.900 | 243.400 | 2858 | 0.088 | 12.930 | 23 |
 | core_P100_100M custom/v0_8k | core | 61035 | 64748 | 0.940 | 367.500 | 23797.020 | 10732 |  |  |  |
+| s2b_100m | Q&A | 15565 | 23467 | 0.660 | 287.400 | 6743.700 | 4760 | 0.259 | 51.600 | 25 |
 
 ## Queue of planned runs
 | id | run | question it answers | status |
@@ -186,8 +187,8 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 | S24 | session 24: dense retrieval in training + copy under rewording (--perturb-self 0.3) + bad evidence (10% none, 10% wrong), one Q&A stage; probes plain, int8 and with core reranking | do the two training lessons combine: copy from imperfect matches, refuse wrong ones? | done: in between (probe 22/32, exact 67%); the lessons partly cancel at 5M; session 23 B stays best |
 | S25 | second seed of session 23 B (dense + copy under rewording) | is the 24/32 probe real? | done: yes, 23/32 and reworded 4/5 on seed 2; adopted |
 | S26 | copy under rewording with synonym substitution, two seeds | does paraphrase-like rewording beat random edits? | done: a tie (more exact copying, slightly fewer reworded answers); option kept |
-| S27 | 100M core (1,024 x 8, Muon + WSD, bf16, P100 mix, 2B codes, resumable), report card, adopted Q&A stage, probes at bf16 and int8 | does a larger generator read and answer better than 5M and 50M? | running (restarted 09:36, 13 October, after the 2 GiB encoder fix) |
-| S28 | 5M with the retrieval-confidence input on (--sim-feature): the adopted recipe, and the combined recipe (+ misleading evidence) | were the lessons cancelling because the trust head could not see retrieval confidence? | queued after S27 |
+| S27 | 100M core (1,024 x 8, Muon + WSD, bf16, P100 mix, 2B codes, resumable), report card, adopted Q&A stage, probes at bf16 and int8 | does a larger generator read and answer better than 5M and 50M? | done 14 October: best model so far: probe 25/32 (int8 25/32), every Q&A group above 50M and 5M; 0.28 s and 55 J per answer |
+| S28 | 5M with the retrieval-confidence input on (--sim-feature): the adopted recipe, and the combined recipe (+ misleading evidence) | were the lessons cancelling because the trust head could not see retrieval confidence? | running (started 15:45, 14 October) |
 | S30 | lessons from the DLI course on the best 5M recipe: control with the overfitting gap, two-phase fine-tuning (heads alone 1,000 steps), dropout 0.1, typo augmentation 20%; every model probed at bf16, int8 and with typos; the current best model's typo probe as baseline | which training lessons improve answers, robustness to typing mistakes, or overfitting? | queued after S28 (the dictionary study S29 stays on hold) |
 | S31 | multi-turn training structure at 5M (docs/MULTITURN_PLAN.md): new 5M core (modern, Muon + WSD, P100 mix, window 1,024); arms: Q&A only (control), sequential Q&A then multi-turn, one mixed stage, LoRA adapters; multi-turn probe, history gain, retention, clean card, gap, cost | which training structure holds a conversation best without losing recall or language? | ready and queued after S30 (chains/session31_multiturn.sh; adopted S28/S30 options go into chains/session31.env) |
 | LONG | long context (requested 14 October, after the multi-turn study): per-request window budget (evidence / message / reply); longer windows on the larger cores (2-4k codes, rotary positions, position interpolation); long input via the passage tier; long output plan-then-sections with an outline, running summary and session memory; rolling cache with attention sinks past the window | can the small model take a long document and write a coherent short story on one GPU? | future: after S31, using the winning training structure (HYBRID_DESIGN item 24) |
@@ -221,6 +222,12 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 
 - The exact-table gain reverses with core size: +10% at 0.8M, 0 at 4.7M, -1% at 19M (equal time), and 9-12% worse on Wikipedia. The tables are a crutch for a small core; the trust head does not reject them off-domain.
 - The tables stay as the store that learns by reading; they are not the mechanism for 'lighter and faster at equal quality'. The memory and the copy head are.
+
+**14 Oct, session 27 (100M Q&A stage)**
+
+- 100M core plus the adopted Q&A stage (15,565 steps, 6.5 h with --accum 8; no dense keys or reworded copying in this recipe) is the best model so far: chat probe 25/32 at bf16 and at int8 (best 5M 24, 50M 21), 11-12/32 without memory (5M 7, 50M 11-12).
+- Q&A groups (F1), 100M / 50M / best 5M: stored 0.906 / 0.893 / 0.901, added 0.882 / 0.878 / 0.864, reworded 0.291 / 0.272 / 0.257, new 0.358 / 0.332 / 0.311, held-out without memory 0.334 / 0.271 / 0.234: the network alone gains most with size (+43% over 5M).
+- Cost per answer (CUDA graph, bf16): 0.28 s and 55 J (50M 0.15 s / 24 J, 5M 0.08 s / 12 J); int8 weights are free (0.26 s, 52 J, same score).
 
 **14 Oct, inference lab phase A (CPU, inference_lab/, run beside the queue at 8 threads)**
 
