@@ -87,6 +87,7 @@ def main() -> int:
     ap.add_argument("--kernels", choices=["fp32", "bf16", "int8", "nf4"], default="fp32", help="compute the blocks with real low-bit kernels (bf16 autocast, bitsandbytes int8 / NF4)")
     ap.add_argument("--dense", type=float, default=0.0, help="retrieve with literal + this weight x a pretrained sentence encoder's cosine (dense_keys.py)")
     ap.add_argument("--rerank-core", type=int, default=0, help="rerank the top N retrieval candidates with the model itself")
+    ap.add_argument("--typos", type=float, default=0.0, help="ask every question with realistic typing mistakes at this rate (m2_qa.add_typos, fixed seed per question): robustness")
     ap.add_argument("--graph", action="store_true", help="answer with the CUDA-graph step (fast_decode.py): same replies, several times faster")
     a = ap.parse_args()
     import torch
@@ -97,8 +98,11 @@ def main() -> int:
         eng.add(q.encode(), ans.encode())
     import cost
     rows, answer_s = [], 0.0
-    with cost.Meter(a.device) as meter:
-      for section, q, groups in PROBES:
+    import numpy as np
+    meter = cost.Meter(a.device).__enter__()          # metered span: the whole question loop
+    for n, (section, q, groups) in enumerate(PROBES):
+        if a.typos:
+            q = m2_qa.add_typos(q.encode(), np.random.default_rng(1000 + n), a.typos).decode("utf-8", "replace")
         t0 = time.perf_counter()
         out, info = eng.ask(q.encode(), a.max_codes, a.no_repeat, min_sim=a.min_sim, fast="graph" if a.graph else True)
         answer_s += time.perf_counter() - t0
@@ -108,6 +112,7 @@ def main() -> int:
                      "keywords_ok": check(text, groups), "keywords_ok_without_memory": check(text_alone, groups),
                      "memory": info["memory"], "similarity": info["similarity"],
                      "retrieved_question": info.get("retrieved_question"), "seconds": round(time.perf_counter() - t0, 2)})
+    meter.__exit__(None, None, None)
     stem = Path(a.model).stem + a.tag
     summary = {}
     for r in rows:
@@ -115,7 +120,7 @@ def main() -> int:
         s["n"] += 1; s["ok"] += r["keywords_ok"]; s["ok_without_memory"] += r["keywords_ok_without_memory"]
     # cost of the with-memory answers only (half the metered span is the without-memory control)
     c = meter.summary(answer_s, len(rows))
-    (ROOT / "results" / f"probe_{stem}.json").write_text(json.dumps({"model": a.model, "precision": a.precision, "kernels": a.kernels, "graph": a.graph, "dense": a.dense, "rerank_core": a.rerank_core, "min_sim": a.min_sim, "summary": summary, "cost": c, "rows": rows}, indent=1))
+    (ROOT / "results" / f"probe_{stem}.json").write_text(json.dumps({"model": a.model, "precision": a.precision, "kernels": a.kernels, "graph": a.graph, "dense": a.dense, "rerank_core": a.rerank_core, "typos": a.typos, "min_sim": a.min_sim, "summary": summary, "cost": c, "rows": rows}, indent=1))
     print(f"cost: {c['s_per_unit']:.2f} s per answer" + (f", {c['gpu_avg_w']} W, {c['j_per_unit']} J per answer" if c["gpu_avg_w"] else ""))
     md = [f"# Chat probe: `{a.model}`\n\n*{time.strftime('%Y-%m-%d %H:%M')}. Greedy decoding, repeated 3-code phrases blocked, "
           f"replies up to {a.max_codes} codes. Facts in the 'taught' section were added with /add just before, with no training. "

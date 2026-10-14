@@ -74,8 +74,9 @@ class V2LM(train_lm.LM):
     tables; the mixture is per code, as before. ``src`` marks the retrieved span in the window.
     """
 
-    def __init__(self, enc, width, layers, heads, ctx, ngrams, copy_head=False, evidence=False, sim_feature=False, block="legacy"):
-        super().__init__(enc, width, layers, heads, ctx, 0, None, (2,), ngrams, block=block)
+    def __init__(self, enc, width, layers, heads, ctx, ngrams, copy_head=False, evidence=False, sim_feature=False, block="legacy",
+                 dropout=0.0):
+        super().__init__(enc, width, layers, heads, ctx, 0, None, (2,), ngrams, block=block, dropout=dropout)
         self.copy_head, self.evidence, self.sim_feature = copy_head, evidence, sim_feature
         n_src = 1 + len(self.ngrams) + copy_head + evidence
         # sim_feature: the retrieval similarity between the asked question and the retrieved one
@@ -313,6 +314,30 @@ def build_synonyms(questions: list[bytes], device: str, work: Path, min_count: i
                 syn[w] = out
     path.write_text(json.dumps({k.decode("latin-1"): [v.decode("latin-1") for v in vs] for k, vs in syn.items()}))
     return syn
+
+
+def add_typos(q: bytes, rng, rate: float = 0.15) -> bytes:
+    """A question as people type it: each word longer than three letters gets, with probability `rate`, one
+    swap of two neighbouring letters, a dropped letter or a doubled letter; one question in five is lower-cased,
+    and one in three loses its final question mark. Only noise that real users make (no reordering, no new words)."""
+    out = []
+    for w in q.split(b" "):
+        if len(w) > 3 and rng.random() < rate:
+            k = int(rng.integers(1, len(w) - 1))
+            r = rng.random()
+            if r < 1 / 3:
+                w = w[:k] + w[k + 1:k + 2] + w[k:k + 1] + w[k + 2:]
+            elif r < 2 / 3:
+                w = w[:k] + w[k + 1:]
+            else:
+                w = w[:k] + w[k:k + 1] + w[k:]
+        out.append(w)
+    t = b" ".join(out)
+    if rng.random() < 0.2:
+        t = t.lower()
+    if t.endswith(b"?") and rng.random() < 1 / 3:
+        t = t[:-1]
+    return t
 
 
 def perturb_question(q: bytes, rng, donor: list[bytes], syn: dict | None = None) -> bytes:
@@ -754,6 +779,10 @@ def main() -> int:
     ap.add_argument("--lr", type=float, default=1e-3, help="AdamW peak learning rate")
     ap.add_argument("--key-head", default=None, help="K1 key head (runs/<core>/key_head.pt): retrieve by literal + learned question key")
     ap.add_argument("--amp", action="store_true", help="train in bfloat16 autocast (scores stay in full precision)")
+    ap.add_argument("--dropout", type=float, default=0.0, help="residual dropout in every block (the Q&A stage reads its data ~10 times; 0: off)")
+    ap.add_argument("--freeze-core-steps", type=int, default=0, help="train only the new heads for this many steps, then the core joins at --lr (two-phase fine-tuning)")
+    ap.add_argument("--typo-p", type=float, default=0.0, help="share of windows whose question carries realistic typing mistakes (add_typos)")
+    ap.add_argument("--track-gap", action="store_true", help="also score 120 training exchanges as if held out (own entry hidden) at every evaluation: the overfitting gap")
     ap.add_argument("--accum", type=int, default=1, help="split each batch into this many slices with summed gradients (same update, less GPU memory)")
     ap.add_argument("--perturb-synonyms", action="store_true", help="with --perturb-self: reword with meaning-equivalent substitutes from the dense key (food -> meal) instead of mostly random edits")
     ap.add_argument("--rerank-core", type=int, default=0, help="rerank the top N retrieval candidates by the core's own surprise at the question (0: off; 10 is the design's value)")
@@ -857,7 +886,7 @@ def main() -> int:
     NEWLINE = int(enc.encode(bytes([10]))[0][-1])
     checks = collections.Counter()
     dev = torch.device(a.device)
-    model = V2LM(enc, a.width, a.layers, a.heads, a.ctx, ngrams, a.copy_head, a.evidence, a.sim_feature, a.block).to(dev)
+    model = V2LM(enc, a.width, a.layers, a.heads, a.ctx, ngrams, a.copy_head, a.evidence, a.sim_feature, a.block, a.dropout).to(dev)
     if a.init:
         ck = torch.load(a.init, map_location="cpu", weights_only=False)
         own = model.state_dict()
@@ -875,13 +904,14 @@ def main() -> int:
     dense = [p for n, p in model.named_parameters()]
     # --head-lr: the heads that start untrained (copy head, trust head) learn at their own rate while
     # the pre-trained core moves gently (S2a-1: a low rate everywhere kept the core but slowed copying)
-    fresh = {n for n, _ in model.named_parameters() if n.split(".")[0] in ("copy_q", "copy_k", "mix_head")} if a.head_lr else set()
+    fresh = ({n for n, _ in model.named_parameters() if n.split(".")[0] in ("copy_q", "copy_k", "mix_head")}
+             if (a.head_lr or a.freeze_core_steps) else set())
     groups = []
     for is_head in (False, True):
         ps = [(n, p) for n, p in model.named_parameters() if (n in fresh) == is_head]
-        rate = a.head_lr if is_head else a.lr
-        groups += [{"params": [p for n, p in ps if p.dim() >= 2], "weight_decay": 0.1, "lr": rate, "peak": rate},
-                   {"params": [p for n, p in ps if p.dim() < 2], "weight_decay": 0.0, "lr": rate, "peak": rate}]
+        rate = (a.head_lr or a.lr) if is_head else a.lr
+        groups += [{"params": [p for n, p in ps if p.dim() >= 2], "weight_decay": 0.1, "lr": rate, "peak": rate, "core": not is_head},
+                   {"params": [p for n, p in ps if p.dim() < 2], "weight_decay": 0.0, "lr": rate, "peak": rate, "core": not is_head}]
     opt = torch.optim.AdamW([g for g in groups if g["params"]], lr=a.lr, betas=(0.9, 0.95))
     rehearse_tokens = None
     if a.rehearse:
@@ -896,7 +926,14 @@ def main() -> int:
 
     def sample(i: int):
         """[nearest other exchange, tail] + SEP + [this exchange, head], padded to ctx+1, with a loss mask."""
-        own = (np.append(codes[i], EOS) if a.eos else codes[i])[:a.ctx - a.neighbor_codes - len(sep)]
+        own_codes, ql = codes[i], None
+        if a.typo_p and rng.random() < a.typo_p:
+            # --typo-p: this window's question is typed with realistic mistakes; the answer is unchanged
+            q_t = add_typos(train_x[i][0], rng)
+            own_codes = enc.encode(render(q_t, train_x[i][1]))[0]
+            ql = len(enc.encode(render(q_t, None))[0])
+        ql = q_len(i) if ql is None else ql
+        own = (np.append(own_codes, EOS) if a.eos else own_codes)[:a.ctx - a.neighbor_codes - len(sep)]
         src_i = i if (a.self_context_p and rng.random() < a.self_context_p) else neighbors[i]
         if a.no_retrieval_p and src_i != i and rng.random() < a.no_retrieval_p:
             src_i = None                     # nothing retrieved: the core must answer alone, as at test time when memory has nothing
@@ -919,12 +956,12 @@ def main() -> int:
         mask = np.zeros(a.ctx + 1, dtype=np.float32)
         # --loss-answer-only: learn to answer, not to predict the question (a SQuAD passage recurs
         # with 3-5 questions, so predicting it is memorisation)
-        mask[len(nb) + len(sep) + (q_len(i) if a.loss_answer_only else 0):len(seq)] = 1.0
+        mask[len(nb) + len(sep) + (ql if a.loss_answer_only else 0):len(seq)] = 1.0
         src = np.zeros(a.ctx + 1, dtype=bool)                               # the retrieved span
         src[(answer_start(src_i, len(nb)) if src_i is not None and not perturbed else 0):len(nb)] = True
         if a.copy_question:
             q0 = len(nb) + len(sep)
-            src[q0:min(q0 + q_len(i), len(seq))] = True
+            src[q0:min(q0 + ql, len(seq))] = True
         return np.pad(seq, (0, a.ctx + 1 - len(seq)), constant_values=PAD), mask, src, sim
 
     def rehearsal_sample():
@@ -950,13 +987,16 @@ def main() -> int:
         return m[None]
 
     @torch.no_grad()
-    def valid_bpb(exchanges, n=120):
+    def valid_bpb(exchanges, n=120, ids=None):
+        """Bits per byte of the answers with the nearest memory in the window. With ``ids`` (training exchanges),
+        each exchange's own entry is hidden from retrieval, so the training side is scored exactly as held-out
+        questions are and the two numbers form an overfitting gap (--track-gap)."""
         model.eval(); bits = nbytes = 0.0
-        for q, ans in exchanges[:n]:
+        for k, (q, ans) in enumerate(exchanges[:n]):
             own = enc.encode(render(q, ans))[0]
             if a.eos:
                 own = np.append(own, EOS)
-            nb_i = mem.retrieve(q, 1)
+            nb_i = mem.retrieve(q, 1, exclude=None if ids is None else ids[k])
             nb = codes_of(nb_i[0][1])[-a.neighbor_codes:] if a.neighbor_codes and nb_i else np.array([], dtype=np.int64)
             seq = np.concatenate([nb, sep, own])[:a.ctx + 1]
             if len(seq) < 3:
@@ -972,6 +1012,7 @@ def main() -> int:
         model.train(); return bits / max(1, nbytes)
 
     history, train_time, step, next_eval = [], 0.0, 0, 60.0
+    gap_ids = [int(j) for j in np.random.default_rng(a.seed + 7).choice(len(train_x), size=min(120, len(train_x)), replace=False)] if a.track_gap else []
     best_v, bad_evals, best_state, stop_reason = float("inf"), 0, None, "budget"
     import cost as _cost
     meter = _cost.Meter(dev).__enter__()
@@ -985,6 +1026,12 @@ def main() -> int:
             frac = step / a.max_steps if a.max_steps else train_time / a.budget
             for g in opt.param_groups:
                 g["lr"] = g["peak"] * min(1.0, (step + 1) / 100) * (0.1 + 0.9 * 0.5 * (1 + math.cos(math.pi * min(1.0, frac))))
+        if a.freeze_core_steps:
+            # --freeze-core-steps: the untrained heads learn alone first, so their early, large errors never
+            # reach the pre-trained core; then the core joins at its gentle rate (two-phase fine-tuning)
+            for g in opt.param_groups:
+                if g.get("core"):
+                    g["lr"] = 0.0 if step < a.freeze_core_steps else (g["lr"] if a.schedule == "cosine" else g["peak"])
         opt.zero_grad(set_to_none=True)
         # --accum: the batch in equal slices with summed gradients, normalised by the whole batch's mask count,
         # so the update equals the full-batch one with less activation memory (13 October, for the 100M stage)
@@ -998,8 +1045,14 @@ def main() -> int:
         step += 1; train_time += time.perf_counter() - t
         if train_time >= next_eval or train_time >= a.budget or (a.max_steps and step >= a.max_steps):
             v = valid_bpb(eval_x)
-            history.append({"train_s": round(train_time, 1), "step": step, "train_bits_per_code": round(float(loss) / math.log(2), 3), "valid_bits_per_byte": round(v, 4)})
-            say(f"{train_time:6.0f}s step {step:5d} train {float(loss)/math.log(2):.3f} b/code  valid {v:.4f} b/byte"); next_eval += 60
+            row = {"train_s": round(train_time, 1), "step": step, "train_bits_per_code": round(float(loss) / math.log(2), 3), "valid_bits_per_byte": round(v, 4)}
+            gap_note = ""
+            if a.track_gap:
+                tv = valid_bpb([train_x[j] for j in gap_ids], ids=gap_ids)
+                row["train_heldout_style_bits_per_byte"] = round(tv, 4); row["gap_bits_per_byte"] = round(v - tv, 4)
+                gap_note = f"  train-side {tv:.4f}  gap {v - tv:+.4f}"
+            history.append(row)
+            say(f"{train_time:6.0f}s step {step:5d} train {float(loss)/math.log(2):.3f} b/code  valid {v:.4f} b/byte{gap_note}"); next_eval += 60
             if v < best_v - a.min_delta:
                 best_v, bad_evals = v, 0
                 best_state = {k: t.detach().clone() for k, t in model.state_dict().items()}

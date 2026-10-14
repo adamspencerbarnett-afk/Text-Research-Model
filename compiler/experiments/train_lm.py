@@ -41,9 +41,12 @@ LN2 = math.log(2)
 # --------------------------------------------------------------------------- model
 
 class Block(nn.Module):
-    def __init__(self, d: int, heads: int):
+    def __init__(self, d: int, heads: int, dropout: float = 0.0):
         super().__init__()
         self.heads = heads
+        # residual dropout, for training stages that see their data many times (13 October; off by default:
+        # single-pass training does not need it, and inference never uses it)
+        self.drop = nn.Dropout(dropout) if dropout > 0 else nn.Identity()
         self.ln1, self.ln2 = nn.LayerNorm(d), nn.LayerNorm(d)
         self.qkv = nn.Linear(d, 3 * d, bias=False)
         self.proj = nn.Linear(d, d, bias=False)
@@ -54,8 +57,8 @@ class Block(nn.Module):
         q, k, v = self.qkv(self.ln1(x)).split(D, dim=2)
         q, k, v = (t.view(B, T, self.heads, D // self.heads).transpose(1, 2) for t in (q, k, v))
         y = F.scaled_dot_product_attention(q, k, v, is_causal=True).transpose(1, 2).reshape(B, T, D)
-        x = x + self.proj(y)
-        return x + self.fc2(F.gelu(self.fc1(self.ln2(x))))
+        x = x + self.drop(self.proj(y))
+        return x + self.drop(self.fc2(F.gelu(self.fc1(self.ln2(x)))))
 
     def forward_cached(self, x, past):
         """The same block for new positions only, reusing the keys and values of earlier ones (a KV
@@ -111,9 +114,10 @@ class ModernBlock(nn.Module):
     """RoPE + RMSNorm + SwiGLU (the Llama-family block), at the legacy block's parameter count:
     4 d^2 for attention and 3 d x (8d/3) = 8 d^2 for the gated feed-forward. No position table."""
 
-    def __init__(self, d: int, heads: int):
+    def __init__(self, d: int, heads: int, dropout: float = 0.0):
         super().__init__()
         self.heads = heads
+        self.drop = nn.Dropout(dropout) if dropout > 0 else nn.Identity()   # residual dropout, as in Block
         self.ln1, self.ln2 = RMSNorm(d), RMSNorm(d)
         self.qkv = nn.Linear(d, 3 * d, bias=False)
         self.proj = nn.Linear(d, d, bias=False)
@@ -134,7 +138,9 @@ class ModernBlock(nn.Module):
         B, T, D = x.shape
         q, k, v = self._qkv(x, 0)
         y = F.scaled_dot_product_attention(q, k, v, is_causal=True).transpose(1, 2).reshape(B, T, D)
-        return self._ff(x + self.proj(y))
+        x = x + self.drop(self.proj(y))
+        h = self.ln2(x)
+        return x + self.drop(self.down(F.silu(self.gate(h)) * self.up(h)))
 
     def forward_cached(self, x, past, start: int = 0):
         B, T, D = x.shape
@@ -261,7 +267,7 @@ class LM(nn.Module):
     INVALID = -30.0  # logit given to a (group, member) code that no unit in training maps to
 
     def __init__(self, enc: LE.Encoding, width: int, layers: int, heads: int, ctx: int, table_rows: int = 0,
-                 valid_codes=None, table_orders=(2,), ngrams: list | None = None, block: str = "legacy"):
+                 valid_codes=None, table_orders=(2,), ngrams: list | None = None, block: str = "legacy", dropout: float = 0.0):
         super().__init__()
         self.block = block
         self.ctx, self.coords = ctx, enc.groups > 0
@@ -291,11 +297,11 @@ class LM(nn.Module):
             self.emb = nn.Embedding(enc.vocab, width)
         self.pos = nn.Embedding(ctx, width)
         if block == "modern":        # RoPE + RMSNorm + SwiGLU; positions come from the rotation, no table
-            self.blocks = nn.ModuleList(ModernBlock(width, heads) for _ in range(layers))
+            self.blocks = nn.ModuleList(ModernBlock(width, heads, dropout) for _ in range(layers))
             self.ln_f = RMSNorm(width)
             self.pos = None
         else:
-            self.blocks = nn.ModuleList(Block(width, heads) for _ in range(layers))
+            self.blocks = nn.ModuleList(Block(width, heads, dropout) for _ in range(layers))
             self.ln_f = nn.LayerNorm(width)
         self.table_rows, self.table_orders = table_rows, tuple(table_orders) if table_rows else ()
         # One hashed n-gram table per order, summed into the input embedding: many parameters,

@@ -89,6 +89,11 @@ question (session 23 B: probe 24 and 23/32 over two seeds at 5M):
     --dense 2 --dense-train --perturb-self 0.3 --out results/qa.json --save runs/qa/qa.pt
 ```
 
+Training options added 13 October (opt-in, tested in session 30): `--freeze-core-steps 1000` (new heads train
+alone first), `--dropout 0.1`, `--typo-p 0.2` (realistic typing mistakes in training questions), `--track-gap`
+(records the training-versus-validation gap), `--accum 2` (same update in two half-batches, less GPU memory);
+`chat_probe.py --typos 0.15` asks the probe with typos.
+
 Options measured and kept available: `--no-retrieval-p 0.2 --distractor-p 0.25` (misleading evidence:
 network alone +20%, reworded questions lower), `--perturb-synonyms` (paraphrase-like rewording: ties
 random edits), `--rerank-core N` (rejected: lowers every answer score).
