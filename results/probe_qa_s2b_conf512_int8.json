@@ -1,0 +1,443 @@
+{
+ "model": "runs/s2b_conf512/qa_s2b_conf512.pt",
+ "precision": "int8",
+ "kernels": "fp32",
+ "graph": true,
+ "dense": 0.0,
+ "rerank_core": 0,
+ "typos": 0.0,
+ "min_sim": 0.0,
+ "summary": {
+  "stored": {
+   "n": 5,
+   "ok": 5,
+   "ok_without_memory": 0
+  },
+  "reworded": {
+   "n": 5,
+   "ok": 4,
+   "ok_without_memory": 0
+  },
+  "knowledge": {
+   "n": 5,
+   "ok": 4,
+   "ok_without_memory": 1
+  },
+  "heldout": {
+   "n": 5,
+   "ok": 4,
+   "ok_without_memory": 3
+  },
+  "taught": {
+   "n": 6,
+   "ok": 5,
+   "ok_without_memory": 0
+  },
+  "arithmetic": {
+   "n": 3,
+   "ok": 0,
+   "ok_without_memory": 0
+  },
+  "chat": {
+   "n": 3,
+   "ok": 1,
+   "ok_without_memory": 1
+  }
+ },
+ "cost": {
+  "seconds": 4.2,
+  "gpu_avg_w": 175.4,
+  "gpu_kj": 0.73,
+  "peak_mem_mb": 257,
+  "power_samples": 5,
+  "units": 32,
+  "s_per_unit": 0.1306,
+  "j_per_unit": 22.92
+ },
+ "rows": [
+  {
+   "section": "stored",
+   "question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "answer": "A traditional Thanksgiving meal in the United States typically includes turkey, stuffing, mashed potatoes, gravy, cranberry sauce, vegetables, and pumpkin pie.",
+   "answer_without_memory": "The United States is a food that is traditionally served during Thanksgiving in the US.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "seconds": 0.49
+  },
+  {
+   "section": "stored",
+   "question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "answer": "A simple example of gravity can be demonstrated by dropping a ball; the ball falls to the ground due to the force of gravity pulling it downwards.",
+   "answer_without_memory": "\"The Earth is a planet, a planet.\"",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "seconds": 0.15
+  },
+  {
+   "section": "stored",
+   "question": "Create a list of 10 verbs related to cooking",
+   "answer": "- Mix\n- Boil \n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+   "answer_without_memory": "1. \"Fruits\" \n2. \u2022 10 \u2192 15 \u2122 \u2162 \n3. 16 \u20e2 5 \n4. \u00bd 1 \u2212 5\n5. 5.\n6. 3 \u20a2 2 \u2240 1\n7. 20 \u00bc \u2062 3\n8. 40 \n9. 60 12 \u00b0",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Create a list of 10 verbs related to cooking",
+   "seconds": 0.41
+  },
+  {
+   "section": "stored",
+   "question": "Name some computer viruses",
+   "answer": "Some computer viruses are: \n- WannaCry\n- Stuxnet\n- Trojan Horse\n- Code Red\n- Sality\n- CryptoLocker\n- ILoveYou\n- Chimera\n- MyDoom\n- Melissa",
+   "answer_without_memory": "Some computer viruses that can be used to detect viruses include:\n\n1. Along the way to infect the virus:\n\n2. Alice was a computer virus that was first infected.\n\n3. Algorithmia:\n\n30. Ali was a virus that had been infected in the past.\n\n4. Ala was a malicious virus that caused the virus to spread.\n\n5. Alan was a manual virus that spread to other people.\n\n6. Alo was a human virus that infected people.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Name some computer viruses",
+   "seconds": 0.45
+  },
+  {
+   "section": "stored",
+   "question": "Come up with two statistics related to the US population.",
+   "answer": "According to the US Census Bureau, the current US population is approximately 331 million, and the current U.S. population growth rate is 0.7%.",
+   "answer_without_memory": "1. The US population is 100,000.\n2. The population is approximately 1,050,500 in the US.\n3. The United States population is estimated to be 15,090,400 people.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Come up with two statistics related to the US population.",
+   "seconds": 0.25
+  },
+  {
+   "section": "reworded",
+   "question": "What food do Americans usually eat on Thanksgiving?",
+   "answer": "Americans usually eat on Thanksgiving because of their high-quality food.",
+   "answer_without_memory": "Americans usually eat on Thanksgiving. They usually eaten in a variety of ways, such as eating a balanced diet, eating a variety that is rich in protein, and eating a healthy diet.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.223,
+   "retrieved_question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "seconds": 0.2
+  },
+  {
+   "section": "reworded",
+   "question": "Can you give me an example that shows how gravity works?",
+   "answer": "Sure, here is an example of a simple example of gravity that shows how gravity works:\n\n1. In the case of a ball, the ball falls to the ground due to the force of gravity pulling it downwards.\n\n2. In a ball with a force of 1000 feet, the force is 1500 pounds.\n\n3. In an object, the object is 2005 feet, 120 feet.\n\n4. In another object, a ball is 300 inches long, 250 feet long",
+   "answer_without_memory": "Sure, here's an example of a sentence that shows how gravity works:\n\n\"The Earth is the planet's surface,\" says the Earth's atmosphere.\n\n\"It's the planet,\" explains the Earth, which is the surface of the Earth.\n\nThe Earth'll be in a \"moon\", which means that it's a planet that is the Earth that is located in the Earth and is located at the center of the planet.\n\nIn the case of the Moon, the Earth is located on the Earth with a radius of 1",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.275,
+   "retrieved_question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "seconds": 0.63
+  },
+  {
+   "section": "reworded",
+   "question": "List ten verbs you would use when cooking.",
+   "answer": "- Mix\n- Boil\n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+   "answer_without_memory": "1. \"I'm sorry, I'm not sorrow, I am sorcerer, I can't.\"\n2. \u2022 \"The world is so sorghum, I don't know.\"\n\n3. 'I'll be sorbing, I haven't, I know.\n4. \u00a9 2016, 2:10.\n5. 10:15.\n6. 2-3\n7.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.473,
+   "retrieved_question": "Create a list of 10 verbs related to cooking",
+   "seconds": 0.41
+  },
+  {
+   "section": "reworded",
+   "question": "What are some well-known computer viruses?",
+   "answer": "Some well-known computer viruses are: \n- WannaCry\n- Stuxnet\n- Trojan Horse\n- Code Red\n- Sality\n- CryptoLocker\n- ILoveYou\n- Chimera\n- MyDoom\n- Melissa",
+   "answer_without_memory": "Some well-known computer viruses are:\n\n1. Along the way to make sure that the virus is a virus, such as a virus or a virus.\n\n2. Alice's Alice - Alice has a virus that is a type of virus that can be used to treat people with a virus and can be augmented to treat a virus with augments.\n\n3. Algorithmia - A virus that has a different virus that causes a virus to be infected with a disease or a disease.\n\n4. Alve",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.509,
+   "retrieved_question": "Name some computer viruses",
+   "seconds": 0.51
+  },
+  {
+   "section": "reworded",
+   "question": "Tell me two facts about the population of the United States.",
+   "answer": "The population of the United States is approximately 328 million people.",
+   "answer_without_memory": "1. The population of the United States is 100,000.\n2. The country is 50,500 people.\n3. The state is 20,200 residents.\n4. The nation is 40,105 people.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.65,
+   "retrieved_question": "Tell me the population of the United States.",
+   "seconds": 0.27
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the largest planet in our solar system?",
+   "answer": "The largest planet in our solar system is the Sun.",
+   "answer_without_memory": "The largest planet in our solar system is the Earth's atmosphere.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.744,
+   "retrieved_question": "Name a planet from our solar system.",
+   "seconds": 0.13
+  },
+  {
+   "section": "knowledge",
+   "question": "Who wrote Romeo and Juliet?",
+   "answer": "William Shakespeare",
+   "answer_without_memory": "Romeo and Juliet are two of the most famous Italian cities in the world.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.789,
+   "retrieved_question": "Who wrote the play Romeo and Juliet?",
+   "seconds": 0.13
+  },
+  {
+   "section": "knowledge",
+   "question": "What is photosynthesis?",
+   "answer": "Photosynthesis is the process by which plants use light energy to convert carbon dioxide and water into oxygen and sugars. It involves the transfer of electrons and protons between molecules as chlorophyll in the presence of light absorbs the light energy used to drive the reaction. The oxygen produced is released into the atmosphere, and the sugars are released into our atmosphere.",
+   "answer_without_memory": "The photosynthesis is a type of photosyntem that is used to create a variety of photos, such as a photo, a photon, and a photons. It is a simple, simple, and easy-to-use photon that is easy to use and can be used to make a variety.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.589,
+   "retrieved_question": "Describe the process of photosynthesis to me.",
+   "seconds": 0.4
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the boiling point of water in Celsius?",
+   "answer": "The approximate boiling point of water in Celsius is 100 degrees.",
+   "answer_without_memory": "The boiling point of water in Celsius is 100 degrees.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.76,
+   "retrieved_question": "What is the approximate boiling point of water in Celsius?",
+   "seconds": 0.15
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the capital of Japan?",
+   "answer": "The capital of Japan is Tokyo.",
+   "answer_without_memory": "The capital of Japan is the capital of the United States.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Give me the capital of Japan.",
+   "seconds": 0.11
+  },
+  {
+   "section": "heldout",
+   "question": "Generate a creative poem describing the night sky.",
+   "answer": "The night sky is a beautiful night,\nA beautiful night with a beautiful day.\nThe night sky, the night sky.\nA gentle breeze, the stars shining in the sky.",
+   "answer_without_memory": "The night sky was a beautiful night,\nA night of the sky was filled with a sense of peace.\n\nThe sky was painted in a beautiful,\nBringing in the sky, a beautiful sight.\n\nA night sky,\nThe sky is blue,\nCreating a sense that's been in the night.\n\nBring the night sky\nThe night sky is a beautiful and\nA sight that'll never be the same.\n\nIn the night, the sky is filled with the stars,\nAs the night is filled, a sense,\nFilling",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.468,
+   "retrieved_question": "Write a poem about the beauty of the night sky.",
+   "seconds": 0.45
+  },
+  {
+   "section": "heldout",
+   "question": "Come up with a creative sentence to describe a summer day.",
+   "answer": "The summer day is like a warm summer day, and it is like the sun is shining brightly.",
+   "answer_without_memory": "The sun was shining brightly in the sun,\nA warming. The sun is shining in the warmth of the sun.\n\nThe sun was setting in the night,\nThe sun is warming in the morning.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.379,
+   "retrieved_question": "Generate a creative metaphor to describe a warm summer day.\n<no input>",
+   "seconds": 0.24
+  },
+  {
+   "section": "heldout",
+   "question": "List 5 famous Italian dishes.",
+   "answer": "1. Italian cuisine\n2. Italian cake\n3. Italian cheese\n4. Italian spaghetti\n5. Italian fried cheese\n6. Italian Italian cumin\n7. Italian cheerful cheese\n8. Italian salad\n9. Italian tomatoes\n10. Italian avocado",
+   "answer_without_memory": "1. Vegetable\n\n2. Vegano\n\n3. Vacuum\n\n4. Vitaminute\n\n5. Village\n\n6. Vila\n7. Video\n\n7. Cut the following ingredients into the recipe:\n1. Cice\n8. Vaccines\n9. Vice\n10. Vincent van Gogh",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.453,
+   "retrieved_question": "Build a database for all Italian dishes",
+   "seconds": 0.38
+  },
+  {
+   "section": "heldout",
+   "question": "Tell me the most common hairstyle for men.",
+   "answer": "The most common hairstyle for men is hair texture, hair texture and hair texture.",
+   "answer_without_memory": "The most common hairstyle for men is hairstability.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.22,
+   "retrieved_question": "Come up with some tips for choosing a hairstyle.",
+   "seconds": 0.16
+  },
+  {
+   "section": "heldout",
+   "question": "Print the following statement: \"I want to learn to code\".",
+   "answer": "\"I want to learn to code\".",
+   "answer_without_memory": "\"I want to learn to code\".",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.336,
+   "retrieved_question": "Convert the following statement into a code snippet.\nPrint the sum of 1 and 2.",
+   "seconds": 0.15
+  },
+  {
+   "section": "taught",
+   "question": "What is the name of Adam's research model?",
+   "answer": "Adam's research model is called the Text Research Model.",
+   "answer_without_memory": "Adam's research model is a type of research model that is used to analyze and analyze data. It is used in a variety of fields, including data analysis, data analysis and data analysis.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "What is the name of Adam's research model?",
+   "seconds": 0.16
+  },
+  {
+   "section": "taught",
+   "question": "What GPU does the research computer use?",
+   "answer": "The research computer uses an NVIDIA RTX 3090 GPU.",
+   "answer_without_memory": "The research computer uses a variety of techniques to identify and analyze data, including:\n\n1. Computers: Computer-awareness is a process used to identify patterns and trends in data. It involves identifying patterns and patterns in data that are used to analyze the data.\n\n2. Compare and contrast: Compare the data with different data types and trendes to different data. Comp compare the data to different sources and treacherous data.\n3. Companies: Companie-based algorithms are used in data analysis to identify the patterns",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "What GPU does the research computer use?",
+   "seconds": 0.34
+  },
+  {
+   "section": "taught",
+   "question": "When was Version 1 of the compiler frozen?",
+   "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+   "answer_without_memory": "Version 1 of the compiler frozen is 100% less than 150%.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "When was Version 1 of the compiler frozen?",
+   "seconds": 0.14
+  },
+  {
+   "section": "taught",
+   "question": "What is Adam's research model called?",
+   "answer": "Adam's research model is called the Text Research Model.",
+   "answer_without_memory": "Adam's research model is a model of a computer model that is designed to be trained on a computer. It is designed for a variety of tasks, including tasks such as problem-solving, problem-oriented programming, and machine learning. It can be used to analyze the data and make predictions about the results of the model.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.74,
+   "retrieved_question": "What is the name of Adam's research model?",
+   "seconds": 0.27
+  },
+  {
+   "section": "taught",
+   "question": "Which graphics card is in the research computer?",
+   "answer": "The graphics card is in the research computer's graphics, which is a type of card that is used to create a computer.",
+   "answer_without_memory": "The graphics card is in the research computer. It is a type of card that is used to create a computer that is designed to be used to make a computer. The graphic card is used for a variety of purposes, including:\n\n1. Compare the graphic design: The graphs are designed to make the computer look more efficient and more efficient.\n\n2. Compe the graph: The visual design is designed for a wide range of applications, including visuals, images, and images.\n\n3. Computer the computer: The computer is designed with a variety range of",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.253,
+   "retrieved_question": "What GPU does the research computer use?",
+   "seconds": 0.41
+  },
+  {
+   "section": "taught",
+   "question": "On what date was Version 1 frozen?",
+   "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+   "answer_without_memory": "Version 1 frozen is 10 days long.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.476,
+   "retrieved_question": "When was Version 1 of the compiler frozen?",
+   "seconds": 0.14
+  },
+  {
+   "section": "arithmetic",
+   "question": "What is 12 plus 30?",
+   "answer": "12 is plus 30.",
+   "answer_without_memory": "The sum of 12 and 30 is $12+30=24$.\nAnswer: 24",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.623,
+   "retrieved_question": "Add 2 plus 3.",
+   "seconds": 0.14
+  },
+  {
+   "section": "arithmetic",
+   "question": "If I have 5 apples and eat 2, how many are left?",
+   "answer": "You have 5 apples and eat 2, so there are 5 - 2 = 2 left.",
+   "answer_without_memory": "If there are 10 apples in a box, and each box contains 2 apples, then there are a total of 12 apples * 2 = 24 apples.\nIf there are x apples in the box, then the total number of apples is 20 apples + x apples = x apples.\n\nTherefore, the total amount of apples left is 18 apples - 25 apples (10 - x).\n\nWe are given that the total value is 50, so we can write: 19",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.486,
+   "retrieved_question": "If there are two apples and you give away one, how many apples do you have left?",
+   "seconds": 0.38
+  },
+  {
+   "section": "arithmetic",
+   "question": "What is 7 times 8?",
+   "answer": "7 times 8 is 7.",
+   "answer_without_memory": "7 times 8 is equal to 74 times 7.\nAnswer: 73",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.599,
+   "retrieved_question": "Calculate 7 times 5.",
+   "seconds": 0.15
+  },
+  {
+   "section": "chat",
+   "question": "Hello, how are you today?",
+   "answer": "Today, I'm here to help you today.",
+   "answer_without_memory": "I am not a software engineer. I am a software engineering engineer. However, I am an engineer who is a software development engineer.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.383,
+   "retrieved_question": "Rewrite this sentence:\n\n\"Hello, how are you?\"",
+   "seconds": 0.17
+  },
+  {
+   "section": "chat",
+   "question": "Can you help me write a short email to my boss asking for a day off?",
+   "answer": "Dear [Boss], \n\nI am writing to kindly request a leave of absence for tomorrow, [date]. I have an important personal matter that I need to attend to and would greatly appreciate your understanding in this matter.\n\nI assure you that I will make up for any work missed during my leave and look forward to hearing your response. \n\nBest regards, \n[Name]",
+   "answer_without_memory": "Sure, here's a short email that includes a day off:\n\n\"I'm sorry to hear that you're going to go to the beach.\"\n\n\"You're just going to the store and I'm going to a shopping list.\" \n\n\"It's been a good day off, and I haven't been going to an all-purpose shop.\"\n\"You can't go to a store and it's just a few minutes.\"---\"I can'll go to",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.336,
+   "retrieved_question": "Write a formal email to the boss politely asking for leave the next day.\nNoinput",
+   "seconds": 0.58
+  },
+  {
+   "section": "chat",
+   "question": "What should I cook for dinner tonight?",
+   "answer": "I should cook for dinner tonight.",
+   "answer_without_memory": "To make dinner tonight, you should cook the chicken and cook the car. The chicken is cooked in a bowl and the car is cookd in a pan. The car is cooking the car and the chicken is cooking in a dish. The vegetables are cookd on a pan and the vegetables are cooking in the pan.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.14,
+   "retrieved_question": "What kind of food would be appropriate for a romantic dinner?",
+   "seconds": 0.24
+  }
+ ]
+}

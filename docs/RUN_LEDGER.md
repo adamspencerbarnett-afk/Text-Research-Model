@@ -147,6 +147,8 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 | s2b_densesyn512_s2 | Q&A | 15565 | 686 | 22.690 | 354.900 | 243.400 | 2858 | 0.088 | 12.930 | 23 |
 | core_P100_100M custom/v0_8k | core | 61035 | 64748 | 0.940 | 367.500 | 23797.020 | 10732 |  |  |  |
 | s2b_100m | Q&A | 15565 | 23467 | 0.660 | 287.400 | 6743.700 | 4760 | 0.259 | 51.600 | 25 |
+| s2b_conf512 | Q&A | 15565 | 1353 | 11.500 | 271.600 | 367.430 | 2771 | 0.131 | 22.920 | 23 |
+| s2b_confall512 | Q&A | 15565 | 1304 | 11.940 | 275.000 | 358.500 | 2771 | 0.114 | 20.370 | 23 |
 
 ## Queue of planned runs
 | id | run | question it answers | status |
@@ -188,7 +190,7 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 | S25 | second seed of session 23 B (dense + copy under rewording) | is the 24/32 probe real? | done: yes, 23/32 and reworded 4/5 on seed 2; adopted |
 | S26 | copy under rewording with synonym substitution, two seeds | does paraphrase-like rewording beat random edits? | done: a tie (more exact copying, slightly fewer reworded answers); option kept |
 | S27 | 100M core (1,024 x 8, Muon + WSD, bf16, P100 mix, 2B codes, resumable), report card, adopted Q&A stage, probes at bf16 and int8 | does a larger generator read and answer better than 5M and 50M? | done 14 October: best model so far: probe 25/32 (int8 25/32), every Q&A group above 50M and 5M; 0.28 s and 55 J per answer |
-| S28 | 5M with the retrieval-confidence input on (--sim-feature): the adopted recipe, and the combined recipe (+ misleading evidence) | were the lessons cancelling because the trust head could not see retrieval confidence? | running (started 15:45, 14 October) |
+| S28 | 5M with the retrieval-confidence input on (--sim-feature): the adopted recipe, and the combined recipe (+ misleading evidence) | were the lessons cancelling because the trust head could not see retrieval confidence? | done 14 October: no: confidence input alone probe 23/32 (best 24), every group within noise; with misleading evidence 23/32, network alone 0.259 (= session 24 without it); rejected |
 | S30 | lessons from the DLI course on the best 5M recipe: control with the overfitting gap, two-phase fine-tuning (heads alone 1,000 steps), dropout 0.1, typo augmentation 20%; every model probed at bf16, int8 and with typos; the current best model's typo probe as baseline | which training lessons improve answers, robustness to typing mistakes, or overfitting? | queued after S28 (the dictionary study S29 stays on hold) |
 | S31 | multi-turn training structure at 5M (docs/MULTITURN_PLAN.md): new 5M core (modern, Muon + WSD, P100 mix, window 1,024); arms: Q&A only (control), sequential Q&A then multi-turn, one mixed stage, LoRA adapters; multi-turn probe, history gain, retention, clean card, gap, cost | which training structure holds a conversation best without losing recall or language? | ready and queued after S30 (chains/session31_multiturn.sh; adopted S28/S30 options go into chains/session31.env) |
 | LONG | long context (requested 14 October, after the multi-turn study): per-request window budget (evidence / message / reply); longer windows on the larger cores (2-4k codes, rotary positions, position interpolation); long input via the passage tier; long output plan-then-sections with an outline, running summary and session memory; rolling cache with attention sinks past the window | can the small model take a long document and write a coherent short story on one GPU? | future: after S31, using the winning training structure (HYBRID_DESIGN item 24) |
@@ -222,6 +224,10 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 
 - The exact-table gain reverses with core size: +10% at 0.8M, 0 at 4.7M, -1% at 19M (equal time), and 9-12% worse on Wikipedia. The tables are a crutch for a small core; the trust head does not reject them off-domain.
 - The tables stay as the store that learns by reading; they are not the mechanism for 'lighter and faster at equal quality'. The memory and the copy head are.
+
+**14 Oct, session 28 (retrieval confidence)**
+
+- The retrieval similarity as a trust-head input does not help: on the adopted 5M recipe probe 23/32 (best 24), stored 0.902, reworded 0.257, new 0.299 (0.311 without it); combined with misleading-evidence training 23/32 and the same groups as session 24 without it (network alone 0.259 vs 0.260). The hypothesis that the session 24 lessons cancelled because the trust head could not see confidence is rejected; --sim-feature stays off.
 
 **14 Oct, session 27 (100M Q&A stage)**
 
