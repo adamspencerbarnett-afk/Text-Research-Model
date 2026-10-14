@@ -41,3 +41,4 @@ Short session entries: date, task, files touched, decisions, blockers, next acti
 
 - **03:55:** 100M core finished (61,035 steps, 2B codes, 18.0 h of training, 6.6 kWh); held-out wiki 1.033, conversation 0.699 bits/byte on its own mix; fluent generation. Report card, Q&A stage, probes running.
 - **07:20:** 100M Q&A stage stalled for 3 h in a GPU memory squeeze (23.7 GB, 189 W, no step logged); restarted with --accum 8 (identical update): 1.45 s per step at 7.5 GB. Q&A stage now ends ~13:45, probes ~14:45.
+- **09:10:** multi-turn study built: data_mt (209,502 threads, 1,000 clean held-out), multi-turn windows, LoRA, history in the engine, mt_probe (baseline 5/22 with history, 0/22 without; history gain 4.3%), session 31 queued after session 30.

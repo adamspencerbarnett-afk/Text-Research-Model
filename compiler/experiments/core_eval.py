@@ -41,13 +41,21 @@ def load_core(path: str, native: str | None, device: str):
     """A train_lm checkpoint with its dictionary; count tables are not rebuilt (the report card
     measures the network, so table-free scores are comparable across data mixes)."""
     ck = torch.load(path, map_location="cpu", weights_only=False)
-    info, shape = ck["encoding"], ck["model"]
+    if "encoding" not in ck and "args" in ck:
+        # a Q&A-stage model (m2_qa.py): the report card scores its network part, the language the stage kept
+        # (14 October, for the multi-turn study's retention check); copy and trust heads are ignored
+        args = ck["args"]
+        dict_path = Path(args["dict"]) if args.get("dict") else Path(path).parent / "v0_8k_plain.cv0d"
+        info, shape = {"dictionary": str(dict_path)}, {"width": args["width"], "layers": args["layers"], "heads": args["heads"],
+                                                     "ctx": args["ctx"], "block": args.get("block", "legacy")}
+    else:
+        info, shape = ck["encoding"], ck["model"]
     dict_path = Path(info["dictionary"])
     if not dict_path.exists():
         dict_path = Path(path).parent / dict_path.name
     enc = LE.V0Dict(str(dict_path), native)
     model = train_lm.LM(enc, shape["width"], shape["layers"], shape["heads"], shape["ctx"], 0, None, (2,), [], block=shape.get("block", "legacy"))
-    sd = {k: v for k, v in ck["state_dict"].items() if not k.startswith("mix_head") and not k.startswith("table")}
+    sd = {k: v for k, v in ck["state_dict"].items() if not k.startswith(("mix_head", "table", "copy_q", "copy_k"))}
     model.load_state_dict(sd, strict=False)
     return enc, model.to(device).eval()
 

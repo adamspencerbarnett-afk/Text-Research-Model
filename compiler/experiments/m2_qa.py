@@ -613,15 +613,20 @@ class QAEngine:
     @torch.no_grad()
     def _ask(self, q: bytes, max_codes: int = 120, no_repeat: int = 3, calculator: bool | None = None, use_memory: bool = True,
             temperature: float = 0.0, top_k: int = 20, gen: torch.Generator | None = None, exclude: int | None = None,
-            min_sim: float = 0.0, fast: bool | str = True):
+            min_sim: float = 0.0, fast: bool | str = True, history: list | None = None):
         """Answer through the compiler: retrieve, place the exchange in the window, generate greedily
         with the copy head, decode. Returns (reply bytes, info dict)."""
         a, enc, model = self.a, self.enc, self.model
         calculator = getattr(a, "calculator", False) if calculator is None else calculator
-        idx, sim, how = self.retrieve(q, exclude) if use_memory else (None, 0.0, "off")
+        idx, sim, how = self.retrieve(q, exclude) if (use_memory and not history) else (None, 0.0, "off")
         if idx is not None and how == "nearest" and sim < min_sim:   # a weak match: answer from the network alone
             idx, sim, how = None, 0.0, f"skipped (similarity {sim:.2f} < {min_sim})"
-        if idx is not None and a.neighbor_codes:
+        if history:
+            # earlier turns of the conversation take the evidence slot, newest last (the multi-turn training layout)
+            hist = b"".join(render(hq, ha) for hq, ha in history)
+            nb = enc.encode(hist)[0][-getattr(a, "history_codes", a.neighbor_codes or 300):]
+            how = f"history ({len(history)} turns)"
+        elif idx is not None and a.neighbor_codes:
             q_codes = enc.encode(render(*self.mem.exchanges[idx]))[0]
             nb = q_codes[-a.neighbor_codes:]
         else:
@@ -779,6 +784,11 @@ def main() -> int:
     ap.add_argument("--lr", type=float, default=1e-3, help="AdamW peak learning rate")
     ap.add_argument("--key-head", default=None, help="K1 key head (runs/<core>/key_head.pt): retrieve by literal + learned question key")
     ap.add_argument("--amp", action="store_true", help="train in bfloat16 autocast (scores stay in full precision)")
+    ap.add_argument("--mt-data", default="", help="folder from prepare_dialogue.py: whole conversations for multi-turn windows")
+    ap.add_argument("--mt-p", type=float, default=0.0, help="share of training windows built from a conversation (earlier turns in the window)")
+    ap.add_argument("--history-codes", type=int, default=400, help="longest conversation history kept in a window, in codes")
+    ap.add_argument("--lora-rank", type=int, default=0, help="train LoRA adapters of this rank on a frozen core (lora.py; merged before saving); 0: full fine-tune")
+    ap.add_argument("--lora-lr", type=float, default=1e-3, help="learning rate of the LoRA adapters")
     ap.add_argument("--dropout", type=float, default=0.0, help="residual dropout in every block (the Q&A stage reads its data ~10 times; 0: off)")
     ap.add_argument("--freeze-core-steps", type=int, default=0, help="train only the new heads for this many steps, then the core joins at --lr (two-phase fine-tuning)")
     ap.add_argument("--typo-p", type=float, default=0.0, help="share of windows whose question carries realistic typing mistakes (add_typos)")
@@ -901,15 +911,22 @@ def main() -> int:
         say(f"retrieval reranked by the core: top {a.rerank_core} candidates")
     say(f"core: {model.param_counts()['total']:,} learned parameters, sources: network, 2 tables"
         + (", copy head" if a.copy_head else "") + (", evidence table" if a.evidence else ""))
-    dense = [p for n, p in model.named_parameters()]
+    if a.lora_rank:
+        # --lora-rank: the core is frozen; low-rank adapters on every block matrix and the new heads train
+        # (lora.py); the adapters are merged into the weights before saving, so the saved model is plain
+        import lora as _lora
+        for n_, p_ in model.named_parameters():
+            p_.requires_grad_(n_.split(".")[0] in ("copy_q", "copy_k", "mix_head"))
+        say(f"LoRA rank {a.lora_rank}: {_lora.apply(model, a.lora_rank)} adapted layers, {_lora.count(model):,} adapter parameters; core frozen")
+    dense = [p for n, p in model.named_parameters() if p.requires_grad]
     # --head-lr: the heads that start untrained (copy head, trust head) learn at their own rate while
     # the pre-trained core moves gently (S2a-1: a low rate everywhere kept the core but slowed copying)
     fresh = ({n for n, _ in model.named_parameters() if n.split(".")[0] in ("copy_q", "copy_k", "mix_head")}
              if (a.head_lr or a.freeze_core_steps) else set())
     groups = []
     for is_head in (False, True):
-        ps = [(n, p) for n, p in model.named_parameters() if (n in fresh) == is_head]
-        rate = (a.head_lr or a.lr) if is_head else a.lr
+        ps = [(n, p) for n, p in model.named_parameters() if p.requires_grad and ((n in fresh) == is_head)]
+        rate = (a.head_lr or a.lr) if is_head else (a.lora_lr if a.lora_rank else a.lr)
         groups += [{"params": [p for n, p in ps if p.dim() >= 2], "weight_decay": 0.1, "lr": rate, "peak": rate, "core": not is_head},
                    {"params": [p for n, p in ps if p.dim() < 2], "weight_decay": 0.0, "lr": rate, "peak": rate, "core": not is_head}]
     opt = torch.optim.AdamW([g for g in groups if g["params"]], lr=a.lr, betas=(0.9, 0.95))
@@ -969,8 +986,40 @@ def main() -> int:
         seq = rehearse_tokens[j:j + a.ctx + 1].astype(np.int64)
         return seq, np.ones(a.ctx + 1, dtype=np.float32), np.zeros(a.ctx + 1, dtype=bool), 0.0
 
+    dialogues = []
+    if a.mt_data:
+        dialogues = [json.loads(l)["turns"] for l in open(Path(a.mt_data, "train", "dialogues.jsonl"), encoding="utf-8")]
+        say(f"multi-turn: {len(dialogues):,} training conversations, share {a.mt_p}, history up to {a.history_codes} codes")
+
+    def dialogue_sample():
+        """[earlier turns, newest last] + SEP + this question and reply, loss on the reply only; the copy head may
+        point anywhere in the earlier turns (where names, numbers and lists the user gave live)."""
+        t = dialogues[int(rng.integers(len(dialogues)))]
+        ks = [k for k in range(3, len(t), 2)] or [1]
+        k = ks[int(rng.integers(len(ks)))]
+        q = t[k - 1][1].encode("utf-8")[-350:]
+        own = enc.encode(render(q, t[k][1].encode("utf-8")))[0]
+        own = (np.append(own, EOS) if a.eos else own)[: a.ctx // 2]
+        ql = min(len(enc.encode(render(q, None))[0]), len(own))
+        hist = b"".join(render(t[j][1].encode("utf-8"), t[j + 1][1].encode("utf-8")) for j in range(0, k - 1, 2))
+        hc = enc.encode(hist)[0] if hist else np.array([], dtype=np.int64)
+        hc = hc[-min(a.history_codes, a.ctx + 1 - len(sep) - len(own)):] if len(hc) else hc
+        seq = np.concatenate([hc, sep, own])[: a.ctx + 1]
+        mask = np.zeros(a.ctx + 1, dtype=np.float32); mask[len(hc) + len(sep) + ql:len(seq)] = 1.0
+        src = np.zeros(a.ctx + 1, dtype=bool); src[:len(hc)] = True
+        if a.copy_question:
+            q0 = len(hc) + len(sep); src[q0:min(q0 + ql, len(seq))] = True
+        return np.pad(seq, (0, a.ctx + 1 - len(seq)), constant_values=PAD), mask, src, 0.0
+
+    def one(i):
+        if rehearse_tokens is not None and rng.random() < a.rehearse_p:
+            return rehearsal_sample()
+        if dialogues and rng.random() < a.mt_p:
+            return dialogue_sample()
+        return sample(i)
+
     def batch(idx):
-        xs, ms, ss, sims = zip(*(rehearsal_sample() if rehearse_tokens is not None and rng.random() < a.rehearse_p else sample(i) for i in idx))
+        xs, ms, ss, sims = zip(*(one(i) for i in idx))
         x = torch.from_numpy(np.stack(xs)).to(dev); m = torch.from_numpy(np.stack(ms)).to(dev)
         s = torch.from_numpy(np.stack(ss)).to(dev)
         return x[:, :-1], x[:, 1:], m[:, 1:], s[:, :-1], torch.tensor(sims, dtype=torch.float32, device=dev)
@@ -1063,6 +1112,8 @@ def main() -> int:
                     say(f"stopping at {train_time:.0f}s: {stop_reason}"); break
     if a.patience and best_state is not None:
         model.load_state_dict(best_state); say(f"restored the best weights (valid {best_v:.4f} b/byte)")
+    if a.lora_rank:
+        say(f"LoRA adapters merged into {_lora.merge(model)} layers")
     if a.save:   # saved before scoring, so an interrupted evaluation does not lose the training
         Path(a.save).parent.mkdir(parents=True, exist_ok=True)
         torch.save({"state_dict": {k: v.cpu() for k, v in model.state_dict().items()}, "args": vars(a)}, a.save)
