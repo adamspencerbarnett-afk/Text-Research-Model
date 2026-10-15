@@ -92,6 +92,14 @@ FINDINGS = [
         "The exact-table gain reverses with core size: +10% at 0.8M, 0 at 4.7M, -1% at 19M (equal time), and 9-12% worse on Wikipedia. The tables are a crutch for a small core; the trust head does not reject them off-domain.",
         "The tables stay as the store that learns by reading; they are not the mechanism for 'lighter and faster at equal quality'. The memory and the copy head are.",
     ]),
+    ("14 Oct, manual common-sense rating (50 questions, both answers, rated 1-100 by reading)", [
+        "Through run_model's two-answer chat (MEMORY = the model reading what memory returned, incl. the new rule replies; NETWORK = memory off). 5M chat model: memory 44.9, network 9.9 (better of the two 45.2). 100M: memory 55.8, network 47.0 (better of the two 64.6). The 5M network alone writes nearly nothing usable; the 100M network alone is close to its memory answers. Both fail simple reasoning (3 apples - 1, a kilogram of feathers vs iron, what comes after Tuesday) and personal questions without memory; the clarifying rule fired wrongly on several general questions (why is the sky blue, haiku, stress). skills_lab/manual/ratings.json.",
+    ]),
+    ("14 Oct, skills lab rounds 2-3 (5M, CPU)", [
+        "Decision head (24 signals, trained on invented-fact scenarios): 62-66% on its own held-out scenarios; it shifts answers toward abstaining and clarifying (best: clarify 8/10 on test v1) but loses known answers and chat probe points (19 -> 13); not adopted.",
+        "Balanced skills arm (round 3: general questions answered beside unrelated evidence, twice the clarifying share): test v1 55/100 with three candidates (round 1 49, control 38, baseline 33): taught 14/20, near miss 15, unknown 11, clarify 4/10, follow-up 6; chat probe 19-21/32 (baseline 23), 16-17 wrong refusals. Better than round 1, the over-refusal persists at 3,000 steps.",
+        "K2-5M retrieval (lab): with the skills arm unknown 17/20 but chat probe 18/32; base model literal-only (no MiniLM) 29/100, probe 21/32.",
+    ]),
     ("14 Oct, session 30 (DLI course lessons, 5M)", [
         "Control (adopted recipe, gap tracked): probe 24/32, int8 24, with typing mistakes 21; overfitting gap 0.131 bits/byte (training questions with their own entry hidden vs held-out ones).",
         "Two-phase fine-tuning (heads alone first): reworded 0.293 (best, control 0.267) but new 0.297 (0.311) and probe 22; dropout 0.1: added 0.880 and typo probe 24 (best) but reworded 0.225 and gap 0.141 (dropout did not shrink the gap); typo augmentation: slightly lower everywhere, typo probe 22. No option beats the control beyond single-seed noise; none adopted.",

@@ -452,7 +452,11 @@ def qa_turn(eng, line: str, state: dict) -> str:
         if known and exact is None and len(m) > 1 and m[1][0] >= m[0][0] - S["QA_CLARIFY_GAP"]:
             q1, q2 = eng.mem.exchanges[m[0][3]][0], eng.mem.exchanges[m[1][3]][0]
             d1, d2 = _distinct(stop, q1, q2), _distinct(stop, q2, q1)
-            if d1 and d2 and d1.lower() != d2.lower() and d1.lower() not in line.lower() and d2.lower() not in line.lower():
+            w1, w2 = set(_cwords(stop, q1)), set(_cwords(stop, q2))
+            # two facts about different people or things differ by exactly one word each (Sam's / Eli's birthday);
+            # two wordings of the same question ("Why is the sky blue?" / "Explain why the sky appears blue") differ by more
+            one_word = len(w1 - w2) == 1 and len(w2 - w1) == 1
+            if one_word and d1 and d2 and d1.lower() != d2.lower() and d1.lower() not in line.lower() and d2.lower() not in line.lower():
                 clarify = (d1, d2)
                 state.update(question=q, options=[(d1, m[0][3]), (d2, m[1][3])])
         scores = f"word match {best[1]:.2f}" + (f" | meaning match {best[2]:.2f}" if eng.mem.learned is not None else "")
