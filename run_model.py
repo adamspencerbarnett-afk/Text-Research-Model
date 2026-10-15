@@ -66,6 +66,10 @@ SETTINGS = dict(
     CHAT_REPLY_CODES=400,   # conversation mode (chat model v2): longest reply in codes (about 3.5 characters each);
                             # /codes N changes it while chatting. Replies stream as they are written.
     CHAT_SHOW_INFO=True,    # conversation mode: print how full the window is and which memory was used
+    CHAT_VERIFY=3,          # conversation mode: when memory or a tool supplied evidence, write this many candidate replies and
+                            # show the one best supported by the evidence (0: off, the first reply streams as written)
+    CHAT_TOOLS=True,        # conversation mode: simple arithmetic and day/month questions are computed, and the result is
+                            # placed in the memory slot for the model to read
     QA_DISPLAY="both",      # "both": a MEMORY answer (the model reading what memory returned) and a NETWORK answer (memory
                             # off: general knowledge), each with its scores; "single": the one answer of earlier versions
     QA_ABSTAIN_MATCH=0.15,  # the MEMORY answer says "I don't have knowledge of that" when the best stored question has a word
@@ -538,11 +542,16 @@ def chat_conversation(path: str) -> None:
             continue
         print("model> ", end="", flush=True)
         dec = codecs.getincrementaldecoder("utf-8")("replace")
-        out, info = eng.reply(line.encode("utf-8"), n_codes, stream=lambda b: print(dec.decode(b), end="", flush=True))
+        out, info = eng.reply(line.encode("utf-8"), n_codes, stream=lambda b: print(dec.decode(b), end="", flush=True),
+                              verify=S["CHAT_VERIFY"], use_tools=S["CHAT_TOOLS"])
         print()
         eng.remember(line.encode("utf-8"), out)
         if S["CHAT_SHOW_INFO"]:
             mem = f"memory: {info['memory'][0][:50]}" if info["memory"] else "memory: none used"
+            if info.get("tool"):
+                mem = f"tool: {info['tool']} | " + mem
+            if info.get("candidates_checked", 1) > 1:
+                mem += f" | checked {info['candidates_checked']} replies"
             ses = f", recalled {info['session_recalled']} earlier turn(s)" if info["session_recalled"] else ""
             print(f"       [window {info['window_used']:,}/{info['window']:,} codes | {info['turns_in_window']} of {info['turns_total']} "
                   f"turns in the window{ses} | {mem} | {info['codes']} codes in {info['seconds']:.1f}s, "

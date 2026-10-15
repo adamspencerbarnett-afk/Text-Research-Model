@@ -78,11 +78,51 @@ code { font-family: var(--f-mono); font-size: 13px; background: var(--accent-sof
   <h1>5M Chat Model v2</h1>
   <p class="lede">A 5M model built from every result that held up this week: the best 5M core, the Q&amp;A recipe, the 100,000-example skills data with rewriting, real conversations, and a new kind of training for remembering a whole conversation, all at a window twice as long. It answers from memory, says when it doesn't know, asks which one you mean, and streams long replies such as short stories.</p>
   <div class="status">
-    <span class="pill p-run">Queued: trains after session 34 tonight (~1.5 h), then tests (~1 h)</span>
+    <span class="pill p-run">Queued: session 35, after session 34 tonight (~5 h: three trainings, then tests)</span>
     <span class="pill p-good">Structure decided by session 33: one mixed stage</span>
     <span class="pill p-shine">Replies stream in the terminal</span>
+    <span class="pill p-run">Revised 15 October: A/B/C/D experiment after the reasoning-research review</span>
   </div>
 </header>
+
+<section>
+  <h2>The experiment: four versions of the same model</h2>
+  <p>Modern reasoning systems combine training targets that show the steps, checking answers before they are shown, tools for work the network should not do in its head, and training rewarded by outcomes. Each is tested here as a controlled step on the same model, so each one's gain is measured on its own. A and B train on exactly the same windows in the same order; only the extra target differs.</p>
+  <div class="panel scroll" style="margin-top:14px">
+    <table>
+      <thead><tr><th>Version</th><th>What changes</th><th>What it tests</th><th>Cost</th></tr></thead>
+      <tbody>
+        <tr><td><b>A</b> baseline</td><td>the mixed stage below, 30,000 steps</td><td>the best of the week combined</td><td class="num">~1 h GPU</td></tr>
+        <tr><td><b>B</b> intermediate targets</td><td>A + a second loss: at each reply code that can be copied, the copy head is told which stored fact or earlier turn, and which words (gold spans known for 98–100% of answerable windows)</td><td>does showing the step "which fact, which words" fix answers that misuse the right fact? (126 of 302 answers in the old 5M)</td><td class="num">~1 h GPU</td></tr>
+        <tr><td><b>C</b> verifier</td><td>B at answer time: 5 candidate replies (the best guess + 4 sampled); the one whose words are best found in the evidence is shown</td><td>does checking add to training? (no retraining)</td><td class="num">~5× answer time when memory is used</td></tr>
+        <tr><td><b>D</b> self-training</td><td>B answers 2,500 training questions with known answers 4 times; correct and supported answers become targets; 4,000 more steps</td><td>outcome-rewarded training in its small, verifiable form</td><td class="num">~45 min GPU</td></tr>
+        <tr><td><b>Tools</b> (every version)</td><td>simple arithmetic and day/month questions are computed; the result is placed in the memory slot and the model reads it. No math training data (math stays paused)</td><td>"12 plus 30", "three apples, eat one", "after Tuesday": all failed in the hand ratings</td><td class="num">microseconds</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>Data audit before training</h2>
+  <p>Every training source was checked (<code>audit_chat_data.py</code>), then 3,000 windows of every kind were built and read back (<code>train_chat.py --audit</code>).</p>
+  <div class="panel scroll" style="margin-top:14px">
+    <table>
+      <thead><tr><th>Found</th><th>Size</th><th>Fixed by</th></tr></thead>
+      <tbody>
+        <tr><td>skills questions word for word identical to a test question</td><td class="num">251 of 130,000</td><td>removed (<code>train_v4c.jsonl</code>, 129,635)</td></tr>
+        <tr><td>duplicate skills windows</td><td class="num">114</td><td>removed</td></tr>
+        <tr><td>conversations starting like a held-out one (leak into history gain)</td><td class="num">17</td><td>removed at load</td></tr>
+        <tr><td>duplicate conversations</td><td class="num">4,006</td><td>removed at load</td></tr>
+        <tr><td>conversation replies over 1,024 codes (would be cut as targets)</td><td class="num">10% of replies</td><td>replies over 1,200 codes not used as targets</td></tr>
+        <tr><td>Alpaca exchanges with no answer</td><td class="num">28</td><td>skipped</td></tr>
+        <tr><td>test names in training ("Pablo", "Anna", "pepper")</td><td class="num">~90 windows</td><td>all from real Alpaca text used as unrelated evidence; no invented test fact leaks; kept</td></tr>
+        <tr><td>windows longer than the window / cut</td><td class="num">0 of 15,000</td><td>none needed</td></tr>
+        <tr><td>gold span holds the answer (B's targets)</td><td class="num">98% Q&amp;A, 100% skills, 100% recall</td><td>checked by decoding</td></tr>
+        <tr><td>copy head could not copy from earlier turns</td><td class="num">design flaw</td><td>the copyable part now covers memory AND earlier turns, in training and in chat</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
 
 <section>
   <h2>Evidence behind each decision</h2>
@@ -101,7 +141,11 @@ code { font-family: var(--f-mono); font-size: 13px; background: var(--accent-sof
         <tr><td><b>One mixed stage</b> with real conversations</td><td>sessions 31 + 33, two seeds</td><td class="num">history gain 11.2% vs 9.3%; probe v2 27.5 vs 23.5</td></tr>
         <tr><td><b>Long-conversation recall windows</b> (new)</td><td>every model is weak at remembering what was said</td><td class="num">probe v2 ≤ 36/120 for all models</td></tr>
         <tr><td><b>Session memory</b> (every turn also stored in memory)</td><td>windows end; memory doesn't</td><td class="num">tested: recall after 2–40 turns</td></tr>
-        <tr><td><b>Not used:</b> LoRA, decision head, confidence input, dropout, typo training</td><td>measured and dropped</td><td class="num">see the map's dropped strip</td></tr>
+        <tr><td><b>Copy from earlier turns, not only memory</b></td><td>the control recalled stated facts by copying from history</td><td class="num">27-item probe: Q&amp;A-only 12 vs mixed 6</td></tr>
+        <tr><td><b>Intermediate targets</b> (B)</td><td>process supervision beat outcome supervision in published work; our biggest failure is the right fact misused</td><td class="num">126/302 wrong from memory</td></tr>
+        <tr><td><b>Verifier</b> (C)</td><td>checking candidates helps when the check is reliable; an evidence match is reliable for facts</td><td class="num">smoke test: grounded 47% → 60%</td></tr>
+        <tr><td><b>Tools</b></td><td>the network decides, a tool computes</td><td class="num">hand ratings: arithmetic 0 of 3</td></tr>
+        <tr><td><b>Not used:</b> LoRA, decision head, confidence input, dropout, typo training, long written reasoning (models of billions of weights only)</td><td>measured and dropped</td><td class="num">see the map's dropped strip</td></tr>
       </tbody>
     </table>
   </div>
@@ -116,7 +160,7 @@ code { font-family: var(--f-mono); font-size: 13px; background: var(--accent-sof
       <!-- sources -->
       <g>
         <rect class="box data" x="10" y="10" width="270" height="70" rx="8"/><text class="t" x="24" y="36">Q&amp;A, 30%</text><text class="s" x="24" y="56">Alpaca, 51k exchanges; reworded, 2–3</text><text class="s" x="24" y="71">candidates, unrelated evidence</text>
-        <rect class="box data" x="10" y="98" width="270" height="70" rx="8"/><text class="t" x="24" y="124">Skills v4, 25%</text><text class="s" x="24" y="144">130k invented-fact examples, rewriting,</text><text class="s" x="24" y="159">'your' not 'my'</text>
+        <rect class="box data" x="10" y="98" width="270" height="70" rx="8"/><text class="t" x="24" y="124">Skills v4, 25%</text><text class="s" x="24" y="144">129,635 audited examples, rewriting,</text><text class="s" x="24" y="159">'your' not 'my'</text>
         <rect class="box data" x="10" y="186" width="270" height="70" rx="8"/><text class="t" x="24" y="212">Real conversations, 15%</text><text class="s" x="24" y="232">209k UltraChat + OpenAssistant threads,</text><text class="s" x="24" y="247">as many turns as fit</text>
         <rect class="box data" x="10" y="274" width="270" height="70" rx="8"/><text class="t" x="24" y="300">Long recall, 10% (new)</text><text class="s" x="24" y="320">facts said early, corrected, asked later;</text><text class="s" x="24" y="335">scrolled-out facts in the memory slot</text>
         <rect class="box data" x="10" y="362" width="270" height="70" rx="8"/><text class="t" x="24" y="388">Rehearsal text, 20%</text><text class="s" x="24" y="408">300 MB of the P100 mix at the full</text><text class="s" x="24" y="423">2,048 codes: language + long positions</text>
@@ -127,7 +171,7 @@ code { font-family: var(--f-mono); font-size: 13px; background: var(--accent-sof
       <rect class="box" x="378" y="150" width="230" height="150" rx="8"/><text class="t" x="394" y="178">Window builder</text>
       <text class="s" x="394" y="200">chat_engine.build_window: the</text><text class="s" x="394" y="216">same layout training and chat use</text>
       <rect class="tag" x="394" y="232" width="198" height="22" rx="4"/><text class="s" x="402" y="248">memory | turns | message | reply</text>
-      <text class="s" x="394" y="276">one kind per batch of 16</text><text class="s" x="394" y="292">loss on the reply only</text>
+      <text class="s" x="394" y="276">one kind per batch of 16; loss on the</text><text class="s" x="394" y="292">reply; B: + "which fact, which words"</text>
       <path class="arrow hot" d="M608,225 L668,225"/>
       <!-- model -->
       <rect class="box model" x="670" y="110" width="220" height="230" rx="8"/><text class="t" x="686" y="138">5M chat model v2</text>
@@ -160,7 +204,7 @@ code { font-family: var(--f-mono); font-size: 13px; background: var(--accent-sof
       <rect class="box model" x="330" y="20" width="460" height="340" rx="10"/><text class="t" x="348" y="48">Network (trained)</text>
       <rect class="box" x="350" y="64" width="420" height="58" rx="6"/><text x="364" y="88">Code embeddings</text><text class="s" x="364" y="108">8,192 codes from the compiler's P100 dictionary (lossless text ↔ codes)</text>
       <rect class="box" x="350" y="132" width="420" height="72" rx="6"/><text x="364" y="156">Core: 6 modern blocks, width 256, 8 heads</text><text class="s" x="364" y="176">rotary positions, RMSNorm, SwiGLU; reads the whole 2,048-code window</text><text class="s" x="364" y="194">KV cache at answer time: each new code costs one step</text>
-      <rect class="box" x="350" y="214" width="200" height="66" rx="6"/><text x="364" y="238">Copy head</text><text class="s" x="364" y="256">points into the memory</text><text class="s" x="364" y="272">slot: copies a stored fact</text>
+      <rect class="box" x="350" y="214" width="200" height="66" rx="6"/><text x="364" y="238">Copy head</text><text class="s" x="364" y="256">points into memory and</text><text class="s" x="364" y="272">earlier turns: copies exactly</text>
       <rect class="box" x="570" y="214" width="200" height="66" rx="6"/><text x="584" y="238">Next-code head</text><text class="s" x="584" y="256">the network's own</text><text class="s" x="584" y="272">prediction (its knowledge)</text>
       <rect class="box" x="350" y="290" width="420" height="56" rx="6"/><text x="364" y="314">Trust head: mixes copy, network and count tables per code</text><text class="s" x="364" y="334">decides at every code whether to copy memory or write its own words</text>
       <!-- stores -->
@@ -184,10 +228,10 @@ code { font-family: var(--f-mono); font-size: 13px; background: var(--accent-sof
       <defs><marker id="ah3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
       <g>
         <rect class="box data" x="10" y="40" width="150" height="90" rx="8"/><text class="t" x="24" y="66">1 You type</text><text class="s" x="24" y="88">"Where does my</text><text class="s" x="24" y="104">sister live?"</text>
-        <rect class="box mem" x="190" y="40" width="170" height="90" rx="8"/><text class="t" x="204" y="66">2 Look up</text><text class="s" x="204" y="88">knowledge + session</text><text class="s" x="204" y="104">memory: 1–3 facts</text><text class="s" x="204" y="120">(~5–25 ms)</text>
+        <rect class="box mem" x="190" y="40" width="170" height="90" rx="8"/><text class="t" x="204" y="66">2 Look up + tools</text><text class="s" x="204" y="88">knowledge + session</text><text class="s" x="204" y="104">memory: 1–3 facts;</text><text class="s" x="204" y="120">calculator / calendar</text>
         <rect class="box" x="390" y="40" width="190" height="90" rx="8"/><text class="t" x="404" y="66">3 Build window</text><text class="s" x="404" y="88">facts | recent turns |</text><text class="s" x="404" y="104">message | reply room</text><text class="s" x="404" y="120">≤ 2,048 codes</text>
         <rect class="box model" x="610" y="40" width="190" height="90" rx="8"/><text class="t" x="624" y="66">4 Read once</text><text class="s" x="624" y="88">whole window through</text><text class="s" x="624" y="104">the core: the wait</text><text class="s" x="624" y="120">before the first word</text>
-        <rect class="box model" x="830" y="40" width="130" height="90" rx="8"/><text class="t" x="844" y="66">5 Write</text><text class="s" x="844" y="88">one code per</text><text class="s" x="844" y="104">step, KV cache,</text><text class="s" x="844" y="120">streamed</text>
+        <rect class="box model" x="830" y="40" width="130" height="90" rx="8"/><text class="t" x="844" y="66">5 Write + check</text><text class="s" x="844" y="88">KV cache; with memory:</text><text class="s" x="844" y="104">3–5 candidates, best</text><text class="s" x="844" y="120">supported is shown</text>
         <rect class="box mem" x="990" y="40" width="120" height="90" rx="8"/><text class="t" x="1004" y="66">6 Remember</text><text class="s" x="1004" y="88">turn into history</text><text class="s" x="1004" y="104">and session</text><text class="s" x="1004" y="120">memory</text>
       </g>
       <path class="arrow" marker-end="url(#ah3)" d="M160,85 L188,85"/><path class="arrow" marker-end="url(#ah3)" d="M360,85 L388,85"/><path class="arrow" marker-end="url(#ah3)" d="M580,85 L608,85"/><path class="arrow" marker-end="url(#ah3)" d="M800,85 L828,85"/><path class="arrow" marker-end="url(#ah3)" d="M960,85 L988,85"/>
@@ -219,6 +263,7 @@ code { font-family: var(--f-mono); font-size: 13px; background: var(--accent-sof
     <table>
       <thead><tr><th>Test</th><th>Question</th><th>Compared with</th></tr></thead>
       <tbody>
+        <tr><td><b>A/B/C/D comparison</b></td><td>Skills v1 (100), held-out v2 (200), rewriting (40) and the chat probe (32), through the chat engine, verifier off and on: correct, wrong refusals, inventions on unstored questions, grounded share, seconds per answer</td><td>old 5M: 33, 75–77, ? , 23–24</td></tr>
         <tr><td><b>Speed vs window</b></td><td>How long is the wait before the first word, and how fast do words come, as the conversation fills the window? GPU and CPU.</td><td>speed lab: 5M 6 ms/code CPU</td></tr>
         <tr><td><b>Quality by position</b></td><td>Is text predicted as well at position 1,900 as at 200, and what happens past 2,048?</td><td>where long context breaks</td></tr>
         <tr><td><b>Recall vs distance</b></td><td>Told a fact in turn 1, can it answer after 2, 5, 10, 20, 40 turns, with session memory on and off?</td><td>probe v2: all models ≤ 36/120</td></tr>
@@ -242,12 +287,15 @@ code { font-family: var(--f-mono); font-size: 13px; background: var(--accent-sof
     <div class="panel risk"><h3>5M knowledge</h3><p>Conversation and memory skills do not add general knowledge: without memory the 5M network still writes fluent nonsense (rated 7.9–9.9). Stories will be short and simple.</p></div>
     <div class="panel risk"><h3>Long replies drift</h3><p>Small models repeat and lose the thread over hundreds of codes. The repeat block (no 3-code phrase twice) helps; the story test measures the rest.</p></div>
     <div class="panel risk"><h3>Mixing five kinds of data</h3><p>Each share takes steps from the others. The chat probe and report card check that Q&amp;A and language were not traded away.</p></div>
+    <div class="panel risk"><h3>The verifier is only as good as its check</h3><p>It prefers answers whose words are found in the evidence. That catches "Jakarta" beside a Tokyo entry, but not a correct rewording that uses new words, and it multiplies the answer time by the number of candidates. Off for replies without evidence (stories, chat).</p></div>
+    <div class="panel risk"><h3>Self-training at 5M</h3><p>Outcome-rewarded training worked at billions of weights; our one earlier try (math, 5M) gained 1.5 points. One round on the model's own correct answers may change little; D measures it.</p></div>
+    <div class="panel risk"><h3>Tools are narrow</h3><p>The calculator reads "12 plus 30", "7 x 8" and "have three apples ... eat one"; anything worded otherwise falls back to the network. It ignores phone numbers, codes and times on purpose.</p></div>
   </div>
 </section>
 
 <section class="panel">
   <h2>Streaming</h2>
-  <p>Yes. Replies appear word by word in the terminal as they are written, in conversation mode. The last few characters are held back until the reply ends, so the stop markers never show. The line under each reply shows how full the window is, how many turns it holds, whether an earlier turn was recalled from session memory, and the first-word wait.</p>
+  <p>Yes. Replies appear word by word in the terminal as they are written, in conversation mode. The last few characters are held back until the reply ends, so the stop markers never show. When the verifier checks several candidates (only when memory or a tool supplied evidence), the chosen reply appears word by word once the check is done, a fraction of a second later on the GPU. Stories and ordinary chat stream as they are written. The line under each reply shows how full the window is, how many turns it holds, whether an earlier turn was recalled from session memory, any tool used, and the first-word wait. Settings: <code>CHAT_VERIFY</code> (3 by default, 0 to turn off), <code>CHAT_TOOLS</code>, <code>CHAT_REPLY_CODES</code>.</p>
 </section>
 
 </main>

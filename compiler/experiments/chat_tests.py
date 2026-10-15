@@ -153,10 +153,90 @@ def probes(eng):
     return res
 
 
+ABSTAIN = ["don't have", "do not have", "don't know", "do not know", "not sure", "no information", "not in my memory",
+           "haven't told", "have not told", "could you tell me", "can you tell me", "no record"]
+
+
+def _has(text, groups):
+    low = text.lower()
+    return all(any(k in low for k in g) for g in groups)
+
+
+def _abst(text):
+    low = text.lower().replace("\u2019", "'")
+    return any(p in low for p in ABSTAIN)
+
+
+def abc(eng, verify: int):
+    """The research's A/B/C test through the chat engine: skills tests v1, held-out v2 and rewriting, plus the chat probe,
+    with the verifier off (verify=0) or checking `verify` candidates. Correct, wrong refusals, inventions on unstored
+    questions, grounded share (answer words found in the evidence or question), seconds per answer."""
+    import testset as T
+    import chat_probe as CP
+    v2 = json.loads((ROOT / "data_skills" / "test_v2.json").read_text())
+    rw = json.loads((ROOT / "data_skills" / "test_v4_rewrite.json").read_text())
+    sets = {"v1": (T.facts_in_order(), [tuple(i) for i in T.items()]), "v2": ([tuple(f) for f in v2["facts"]], [tuple(i) for i in v2["items"]]),
+            "rewrite": ([tuple(f) for f in rw["facts"]], [tuple(i) for i in rw["items"]])}
+    res = {}
+    for name, (facts, items) in sets.items():
+        eng.forget(); n0 = len(eng.mem.exchanges)
+        for q, a_ in list(CP.TEACH) + facts:
+            eng.add(q.encode(), a_.encode())
+        eng.base_n = len(eng.mem.exchanges)
+        groups, wrong_ref, invented, grounded, answered, secs = {}, 0, 0, 0, 0, 0.0
+        for group, q, kw, extra in items:
+            ans_b, info = eng.reply(q.encode(), 80, verify=verify, history=[])
+            ans = ans_b.decode("utf-8", "replace"); secs += info["seconds"]
+            if group == "unknown":
+                ok = _abst(ans); invented += not ok
+            elif group == "clarify":
+                ok = "?" in ans and _has(ans, kw)
+                fu, fu_kw = extra["followup"], extra["followup_kw"]
+                fa, _ = eng.reply(fu.encode(), 80, verify=verify, history=[(q.encode(), ans_b)])
+                g = groups.setdefault("followup", [0, 0]); g[0] += _has(fa.decode("utf-8", "replace"), fu_kw); g[1] += 1
+            else:
+                ok = _has(ans, kw)
+                fm = extra.get("format")
+                if fm == "short":
+                    ok = ok and len(ans.split()) <= len(extra["value"].split()) + 3
+                elif fm in ("yes", "no"):
+                    ok = ok and ans.strip().lower().startswith(fm)
+                elif fm == "list":
+                    ok = ok and (len(ans.splitlines()) >= 2 or ans.count("- ") >= 2)
+                wrong_ref += _abst(ans)
+            if not _abst(ans) and group not in ("unknown", "clarify"):
+                pool = set().union(*[CE.content_words(e.encode()) for e in info["evidence"]]) if info["evidence"] else set()
+                aw = CE.content_words(ans_b)
+                answered += 1; grounded += bool(aw) and len(aw & (pool | CE.content_words(q.encode()))) >= 0.8 * len(aw)
+            g = groups.setdefault(group, [0, 0]); g[0] += ok; g[1] += 1
+        total = sum(v[0] for v in groups.values()); n = sum(v[1] for v in groups.values())
+        res[name] = {"total": f"{total}/{n}", **{k: f"{v[0]}/{v[1]}" for k, v in groups.items()}, "wrong_refusals": wrong_ref,
+                     "invented_on_unknown": invented, "grounded_share": round(grounded / max(1, answered), 3),
+                     "s_per_answer": round(secs / max(1, len(items)), 3)}
+        while len(eng.mem.exchanges) > n0:   # remove this set's facts again
+            eng.base_n = n0; eng.forget(); break
+        print("abc", verify, name, res[name], flush=True)
+    eng.forget()
+    # chat probe (32), the everyday questions
+    for q, a_ in CP.TEACH:
+        eng.add(q.encode(), a_.encode())
+    eng.base_n = len(eng.mem.exchanges)
+    ok = refused = 0
+    for section, q, kw in CP.PROBES:
+        ans, _ = eng.reply(q.encode(), 100, verify=verify, history=[])
+        t = ans.decode("utf-8", "replace"); ok += _has(t, kw); refused += _abst(t)
+    res["chat_probe"] = {"total": f"{ok}/{len(CP.PROBES)}", "refused": refused}
+    print("abc", verify, "chat_probe", res["chat_probe"], flush=True)
+    return res
+
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("model"); ap.add_argument("--device", default="cuda"); ap.add_argument("--cpu-threads", type=int, default=16)
     ap.add_argument("--tag", default=""); ap.add_argument("--quick", action="store_true", help="tiny version of every test (checks the script)")
+    ap.add_argument("--abc-only", action="store_true", help="only the A/B/C comparison (skills tests + chat probe through the engine)")
+    ap.add_argument("--verify", type=int, default=0, help="also run the comparison with the verifier checking this many candidates")
     a = ap.parse_args()
     rng = np.random.default_rng(5)
     native = str(ROOT / "data" / "cv0.exe")
@@ -164,6 +244,14 @@ def main() -> int:
     pairs = heldout_pairs()
     res = {"model": a.model, "window": eng.a.ctx, "date": time.strftime("%Y-%m-%d %H:%M")}
     t0 = time.time()
+    res["abc"] = {"verify_off": abc(eng, 0)}
+    if a.verify > 1:
+        res["abc"][f"verify_{a.verify}"] = abc(eng, a.verify)
+    stem = Path(a.model).stem + a.tag
+    if a.abc_only:
+        res["seconds"] = round(time.time() - t0)
+        (ROOT / "results" / f"chat_abc_{stem}.json").write_text(json.dumps(res, indent=1))
+        print("done", res["seconds"], "s"); return 0
     lengths = (256, 1024) if a.quick else (256, 512, 1024, 1536, 1900)
     res["speed"] = speed(eng, pairs, lengths, a.device)
     res["position"] = position(eng, 2 if a.quick else 12, 1024 if a.quick else 2 * eng.a.ctx)
@@ -178,7 +266,6 @@ def main() -> int:
         cpu = CE.ChatEngine(str(ROOT / a.model), native=native, device="cpu", log=lambda *x: None)
         res["speed"] += speed(cpu, pairs, lengths, f"cpu-{a.cpu_threads}")
     res["seconds"] = round(time.time() - t0)
-    stem = Path(a.model).stem + a.tag
     (ROOT / "results" / f"chat_tests_{stem}.json").write_text(json.dumps(res, indent=1))
     (ROOT / "docs" / "chat_probes").mkdir(parents=True, exist_ok=True)
     (ROOT / "docs" / "chat_probes" / f"stories_{stem}.md").write_text(f"# Short stories: `{a.model}`\n\n" + "\n".join(md), encoding="utf-8")
