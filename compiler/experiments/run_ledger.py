@@ -100,7 +100,7 @@ FINDINGS = [
         "The retrieval similarity as a trust-head input does not help: on the adopted 5M recipe probe 23/32 (best 24), stored 0.902, reworded 0.257, new 0.299 (0.311 without it); combined with misleading-evidence training 23/32 and the same groups as session 24 without it (network alone 0.259 vs 0.260). The hypothesis that the session 24 lessons cancelled because the trust head could not see confidence is rejected; --sim-feature stays off.",
     ]),
     ("14 Oct, session 27 (100M Q&A stage)", [
-        "100M core plus the adopted Q&A stage (15,565 steps, 6.5 h with --accum 8; no dense keys or reworded copying in this recipe) is the best model so far: chat probe 25/32 at bf16 and at int8 (best 5M 24, 50M 21), 11-12/32 without memory (5M 7, 50M 11-12).",
+        "100M core plus the adopted Q&A stage (15,565 steps, 6.5 h with --accum 8; the full adopted 5M recipe: MiniLM dense retrieval in training and answering, 30% reworded self windows; corrected 14 October 21:20, an earlier note said otherwise) is the best model so far: chat probe 25/32 at bf16 and at int8 (best 5M 24, 50M 21), 11-12/32 without memory (5M 7, 50M 11-12).",
         "Q&A groups (F1), 100M / 50M / best 5M: stored 0.906 / 0.893 / 0.901, added 0.882 / 0.878 / 0.864, reworded 0.291 / 0.272 / 0.257, new 0.358 / 0.332 / 0.311, held-out without memory 0.334 / 0.271 / 0.234: the network alone gains most with size (+43% over 5M).",
         "Cost per answer (CUDA graph, bf16): 0.28 s and 55 J (50M 0.15 s / 24 J, 5M 0.08 s / 12 J); int8 weights are free (0.26 s, 52 J, same score).",
     ]),
