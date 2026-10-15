@@ -21,6 +21,7 @@ import argparse
 import codecs
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -57,11 +58,16 @@ SETTINGS = dict(
     CPU_INT8=False,         # CPU only: int8 matrix kernels (dynamic quantisation) for the core chat. Off: on this
                             # Xeon (AVX2, no int8 dot-product units) they were 1.5-2.5x slower than fp32 and changed replies
     # --- chat
-    REPLY_TOKENS=120, TEMPERATURE=0.8, TOP_K=40,
+    REPLY_TOKENS=120, TEMPERATURE=0.4, TOP_K=40,
     # --- chat with a Q&A model (memory + copy head; trained by compiler/experiments/m2_qa.py)
     QA_MAX_CODES=120,       # longest reply, in codes (about 3.5 bytes each)
     QA_NO_REPEAT=3,         # block any 3-code phrase from repeating inside a reply (0: off)
     QA_SHOW_MEMORY=True,    # print which stored question the answer was built from
+    QA_DISPLAY="both",      # "both": a MEMORY answer (the model reading what memory returned) and a NETWORK answer (memory
+                            # off: general knowledge), each with its scores; "single": the one answer of earlier versions
+    QA_ABSTAIN_MATCH=0.15,  # the MEMORY answer says "I don't have knowledge of that" when the best stored question has a word
+    QA_ABSTAIN_MEANING=0.55,#   match below this AND a meaning match below QA_ABSTAIN_MEANING (first values, 14 October; to tune)
+    QA_CLARIFY_GAP=0.15,    # two stored facts within this of each other, telling apart by one word the question lacks: ask which
     QA_FAST="graph",        # "graph": CUDA-graph answer step (same replies, 3-9x faster on the GPU); True: the eager loop
     QA_MIN_SIM=0.0,         # memory gate: a nearest match below this similarity is ignored and the network
                             # answers alone. 0.0 for the 5M model (gate 0.5 drops the probe 21 -> 19/32);
@@ -335,6 +341,147 @@ def is_qa_model(path: str) -> bool:
     return "args" in ck and "encoding" not in ck
 
 
+def _cwords(stop, b: bytes) -> list[bytes]:
+    """Content words of a text, lower case, possessive 's dropped."""
+    out = []
+    for w in re.findall(rb"[A-Za-z0-9][A-Za-z0-9#@.\-']*", b):
+        w = w.lower().rstrip(b".")
+        w = w[:-2] if w.endswith(b"'s") else w
+        if w.decode("latin-1") not in stop and len(w) > 1:
+            out.append(w)
+    return out
+
+
+def _matches(eng, q: bytes):
+    """The best stored exchanges for q, best first: (combined score, word match, meaning match, index). The combined
+    score is the memory's own ranking (word match + weighted meaning match when a sentence key is attached)."""
+    r = eng.mem.retrieve(q, 5)
+    L = eng.mem.learned
+    cos = (L.vectors @ L.embed([q])[0]).float().cpu() if (L is not None and r) else None
+    out = []
+    for lit, i in r:
+        c = float(cos[i]) if cos is not None else 0.0
+        s = lit / getattr(L, "lit_std", 1.0) + (L.weight * c / getattr(L, "key_std", 1.0) if L is not None else 0.0)
+        out.append((s, lit, c, i))
+    return sorted(out, reverse=True)
+
+
+@torch.no_grad()
+def _confidence(eng, q: bytes, ans: bytes, evidence=None) -> float:
+    """Average probability the model gave each code of its answer (0 to 1): how sure it was while writing it.
+    Small models are often confidently wrong, so this is a rough signal, not a truth meter."""
+    import m2_qa
+    enc = eng.enc
+    nb = enc.encode(m2_qa.render(*evidence))[0][-eng.a.neighbor_codes:] if evidence else np.array([], dtype=np.int64)
+    own = np.append(enc.encode(m2_qa.render(q, ans))[0], m2_qa.EOS)
+    ql = len(enc.encode(m2_qa.render(q, None))[0])
+    full = np.concatenate([nb, eng.sep, own]).astype(np.int64)
+    seq = full[-(eng.a.ctx + 1):]
+    ev = max(0, len(nb) - (len(full) - len(seq)))
+    start = len(seq) - len(own) + ql
+    x = torch.tensor(seq[None, :-1], device=eng.dev); y = torch.tensor(seq[None, 1:], device=eng.dev)
+    src = torch.zeros_like(x, dtype=torch.bool); src[0, :ev] = True
+    nll = eng.model.nll(x, y, src, torch.zeros(1, device=eng.dev))[0, start - 1:]
+    return float(torch.exp(-nll.float()).mean()) if len(nll) else 0.0
+
+
+def _distinct(stop, x: bytes, y: bytes) -> str | None:
+    """A word of stored question x that y lacks (a name first), to tell two stored facts apart."""
+    yw = set(_cwords(stop, y))
+    cand = [w.rstrip(b".?") for w in re.findall(rb"[A-Za-z0-9][A-Za-z0-9#@.\-']*", x) if _cwords(stop, w) and _cwords(stop, w)[0] not in yw]
+    if not cand:
+        return None
+    w = ([c for c in cand if c[:1].isupper()] or cand)[0]
+    return (w[:-2] if w.endswith(b"'s") else w).decode("utf-8", "replace")
+
+
+def _block(label: str, text: str, details: str) -> str:
+    import textwrap
+    body = textwrap.fill(text or "(empty)", width=92, initial_indent=f"  {label:<8} ", subsequent_indent=" " * 11)
+    return body + "\n" + " " * 11 + details
+
+
+def strict_exact(eng):
+    """Exact matches only when the question's content-word key has two or more words or the whole question is the same.
+    The research key keeps content words only, so 'How are you today?' and 'Generate a to-do-list for today.' both
+    became {today} and counted as the same question (found 14 October). Applied to this chat's engine only."""
+    norm = lambda b: re.sub(rb"[^a-z0-9 ]", b"", b.lower()).strip()
+    loose = eng.mem.exact_hit
+
+    def exact_hit(q):
+        i = loose(q)
+        if i is not None and (len(eng.mem.key_of(q)) >= 2 or norm(eng.mem.exchanges[i][0]) == norm(q)):
+            return i
+        return None
+    eng.mem.exact_hit = exact_hit
+
+
+def qa_turn(eng, line: str, state: dict) -> str:
+    """One question in the two-answer chat (QA_DISPLAY = "both"). The MEMORY answer is the model reading what memory
+    returned; when memory holds nothing close it says so, and when two stored facts fit equally it asks which one.
+    The NETWORK answer is the same model with memory off: its own general knowledge, with its confidence."""
+    import m2_qa
+    S, stop = SETTINGS, m2_qa.STOP
+    t0 = time.perf_counter()
+    nomem = line.startswith("/nomem ")
+    q = (line[7:] if nomem else line).encode("utf-8")
+    ask = lambda text, mem: eng.ask(text, S["QA_MAX_CODES"], S["QA_NO_REPEAT"], use_memory=mem, min_sim=S["QA_MIN_SIM"], fast=S["QA_FAST"])
+    out = []
+    # a reply to our clarifying question: answer from the option the user named
+    if state.get("options") and not nomem:
+        low = line.lower()
+        chosen = [(w, i) for w, i in state["options"] if w.lower() in low]
+        prev_q = state.pop("question"); state.pop("options")
+        if len(chosen) == 1:
+            w, i = chosen[0]
+            stored_q, stored_a = eng.mem.exchanges[i]
+            ans, _ = ask(stored_q, True)
+            conf = _confidence(eng, stored_q, ans, (stored_q, stored_a))
+            out.append(_block("MEMORY", ans.decode("utf-8", "replace"),
+                              f"you chose {w} | confidence {conf:.2f} | from: \"{stored_q.decode('utf-8', 'replace')[:70]}\""))
+            return "\n".join(out) + f"\n{'-' * 100}"
+    if not nomem:
+        m = _matches(eng, q)
+        exact = eng.mem.exact_hit(q)
+        best = m[0] if m else (0.0, 0.0, 0.0, None)
+        # a question with fewer than two content words ('How are you today?' -> {today}) gets a word match of 1.0 from any
+        # stored question with the same single word: judge it by meaning match alone
+        word_ok = len(eng.mem.key_of(q)) >= 2 and best[1] >= S["QA_ABSTAIN_MATCH"]
+        known = exact is not None or word_ok or best[2] >= S["QA_ABSTAIN_MEANING"]
+        clarify = None
+        if known and exact is None and len(m) > 1 and m[1][0] >= m[0][0] - S["QA_CLARIFY_GAP"]:
+            q1, q2 = eng.mem.exchanges[m[0][3]][0], eng.mem.exchanges[m[1][3]][0]
+            d1, d2 = _distinct(stop, q1, q2), _distinct(stop, q2, q1)
+            if d1 and d2 and d1.lower() != d2.lower() and d1.lower() not in line.lower() and d2.lower() not in line.lower():
+                clarify = (d1, d2)
+                state.update(question=q, options=[(d1, m[0][3]), (d2, m[1][3])])
+        scores = f"word match {best[1]:.2f}" + (f" | meaning match {best[2]:.2f}" if eng.mem.learned is not None else "")
+        if clarify:
+            out.append(_block("MEMORY", f"Do you mean {clarify[0]} or {clarify[1]}?",
+                              f"{scores} | two stored facts fit equally: reply with one of them"))
+        elif not known:
+            out.append(_block("MEMORY", "I don't have knowledge of that in my memory.",
+                              f"{scores} | nothing stored is close enough ("
+                              + ("one content word: judged by meaning match alone, " if len(eng.mem.key_of(q)) < 2 else
+                                 f"word match below {S['QA_ABSTAIN_MATCH']}, ")
+                              + f"meaning match below {S['QA_ABSTAIN_MEANING']})"))
+        else:
+            ans, info = ask(q, True)
+            ev = eng.mem.exchanges[exact if exact is not None else best[3]]
+            aw = _cwords(stop, ans); evw = set(_cwords(stop, ev[0] + b" " + ev[1]))
+            grounded = 100 * sum(w in evw for w in aw) / max(1, len(aw))
+            conf = _confidence(eng, q, ans, ev)
+            src = info.get("retrieved_question", "")[:70]
+            out.append(_block("MEMORY", ans.decode("utf-8", "replace"),
+                              f"{'exact match' if exact is not None else scores} | from memory {grounded:.0f}% | confidence {conf:.2f} | from: \"{src}\""))
+    if S["QA_DISPLAY"] == "both" or nomem:
+        net, _ = ask(q, False)
+        conf = _confidence(eng, q, net)
+        out.append(_block("NETWORK", net.decode("utf-8", "replace"), f"confidence {conf:.2f} | general knowledge, not from memory"))
+    out.append(" " * 11 + f"({time.perf_counter() - t0:.1f}s)\n{'-' * 100}")
+    return "\n".join(out)
+
+
 def chat_qa(path: str) -> None:
     """Chat with a Q&A model: every question is looked up in the exchange memory, the closest
     stored exchange goes into the window, and the copy head can carry its answer into the reply.
@@ -344,12 +491,14 @@ def chat_qa(path: str) -> None:
     if S["THREADS"]:
         torch.set_num_threads(S["THREADS"])
     eng = m2_qa.QAEngine(path, native=native_encoder(), device=device(), log=say)
+    strict_exact(eng)
     print("Ask a question. Commands:\n"
           "  /add question || answer   store a new fact (answerable at once, no training)\n"
           "  /load [file.txt]          store every pair in a text file (popup when no file is given); either\n"
           "                            '/add question || answer' lines, or 'User: ...' / 'Assistant: ...' blocks\n"
           "  /nomem question           answer without memory (the network alone)\n"
           "  /quit")
+    state: dict = {}            # a clarifying question waiting for the user's choice
     while True:
         try:
             line = input("you> ").strip()
@@ -381,6 +530,8 @@ def chat_qa(path: str) -> None:
                 eng.add(q, ans)
             print(f"stored {len(pairs):,} pairs from {Path(f).name}" if pairs else
                   f"no pairs found in {Path(f).name}: expected 'User: ...' then 'Assistant: ...', blank line between pairs"); continue
+        if S["QA_DISPLAY"] == "both":
+            print(qa_turn(eng, line, state)); continue
         use_mem = True
         if line.startswith("/nomem "):
             line, use_mem = line[7:], False
