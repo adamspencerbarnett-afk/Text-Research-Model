@@ -8,7 +8,8 @@
 PY=.venv/Scripts/python.exe
 N="$(pwd -W)/data/cv0.exe"
 until [ -f skills_lab/results/gpu_skills_done ]; do sleep 300; done
-until [ -z "$(nvidia-smi --query-compute-apps=pid --format=csv,noheader)" ]; do sleep 120; done
+# wait until no Python job uses the GPU (Windows always lists desktop programs such as Explorer as GPU users)
+until ! nvidia-smi --query-compute-apps=process_name --format=csv,noheader | grep -qi python; do sleep 120; done
 p2() { [ -f results/mtprobe2_$(basename $1 .pt).json ] || $PY -B compiler/experiments/mt_probe2.py $1 --device cuda --graph --precision bf16 > runs/mtprobe2_$(basename $1 .pt).log 2>&1; }
 for m in Q S M L1 L2; do p2 runs/mt_$m/qa_mt_$m.pt; done
 p2 models/qa_best_5M_dense.pt

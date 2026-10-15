@@ -5,7 +5,8 @@
 # unrelated evidence). Scored on test v1 and the held-out test v2, with and without its decision head.
 PY=.venv/Scripts/python.exe
 until [ -f results/session32_done ] && [ -f inference_lab/results/gpu.json ]; do sleep 300; done
-until [ -z "$(nvidia-smi --query-compute-apps=pid --format=csv,noheader)" ]; do sleep 120; done
+# wait until no Python job uses the GPU (Windows always lists desktop programs such as Explorer as GPU users)
+until ! nvidia-smi --query-compute-apps=process_name --format=csv,noheader | grep -qi python; do sleep 120; done
 M=skills_lab/models/ft_skills3.pt
 [ -f $M ] || $PY -B skills_lab/train_skills.py --init models/qa_best_5M_dense.pt --save $M --device cuda --amp --batch 32 --steps 9000 \
     --threads 8 --skill-p 0.35 --k-p 0.5 --unrelated-p 0.2 --dataset data_skills/train_v3.jsonl > skills_lab/results/train_ft_skills3.log 2>&1
