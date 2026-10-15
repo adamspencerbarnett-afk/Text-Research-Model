@@ -63,6 +63,7 @@ class SkillEngine(m2_qa.QAEngine):
         """Up to k stored exchanges for the question, ranked by literal + dense similarity; with policy 'close',
         only those within delta of the best combined score (the user's idea: show several when they are close)."""
         r = self.mem.retrieve(q, 10)
+        self.last = {"comb": [], "exact": False}
         if not r:
             return [], 0.0
         L = self.mem.learned
@@ -74,6 +75,7 @@ class SkillEngine(m2_qa.QAEngine):
         ex = self.exact(q)
         if ex is not None:
             comb = [(9.0, 1.0, ex)] + [c for c in comb if c[2] != ex]
+        self.last = {"comb": [(float(c[0]), float(c[1]), int(c[2])) for c in comb[:5]], "exact": ex is not None}
         if policy == "close":
             keep = [c for c in comb if c[0] >= comb[0][0] - delta][:k]
         else:
@@ -83,6 +85,19 @@ class SkillEngine(m2_qa.QAEngine):
         top_lit = keep[0][1]
         idx = sorted(c[2] for c in keep)      # oldest first: a later fact sits nearer the question
         return idx, top_lit
+
+    @torch.no_grad()
+    def reply_nll(self, q: bytes, idx, text: bytes, history=None) -> float:
+        """Mean nats per code of ``text`` as the reply to q with the stored exchanges idx in the window: how natural
+        the model finds that reply (the decision head compares an abstention, a clarifying start and its own answer)."""
+        cands = [self.mem.exchanges[i] for i in idx]
+        seq, ev_len, pl = build_window(self.enc, self.sep, cands, history or [], q, text)
+        off = max(0, len(seq) - (self.a.ctx + 1))          # a window past the context is trimmed from its start
+        seq, ev_len, pl = seq[off:], max(0, ev_len - off), max(1, pl - off)
+        x = torch.tensor(seq[None, :-1], device=self.dev); y = torch.tensor(seq[None, 1:], device=self.dev)
+        src = torch.zeros_like(x, dtype=torch.bool); src[0, :ev_len] = True
+        nll = self.model.nll(x, y, src, torch.zeros(1, device=self.dev))[0, pl - 1:]
+        return float(nll.mean()) if len(nll) else 0.0
 
     @torch.no_grad()
     def ask_k(self, q: bytes, k: int = 3, policy: str = "close", history=None, max_codes: int = 100, no_repeat: int = 3):
@@ -99,7 +114,7 @@ class SkillEngine(m2_qa.QAEngine):
             self._never_dev = self.never_seen.to(dev)
         seq_dev = torch.tensor(seq, device=dev)
         sim_t = torch.tensor([sim], device=dev)
-        cache, keys, done = None, None, 0
+        cache, keys, done, probs = None, None, 0, []
         while len(seq) - start < max_codes and len(seq) < a.ctx:
             x = seq_dev[None]
             span = torch.arange(len(seq), device=dev) < ev_len
@@ -111,6 +126,7 @@ class SkillEngine(m2_qa.QAEngine):
             if banned:
                 logits[0, banned] = float("-inf")
             nxt = int(logits.argmax(-1).item())
+            probs.append(float(torch.softmax(logits[0].float(), -1)[nxt]))     # confidence in the chosen code (decision head)
             if nxt == m2_qa.EOS:
                 break
             seq.append(nxt); seq_dev = torch.cat([seq_dev, torch.tensor([nxt], device=dev)])
@@ -118,4 +134,5 @@ class SkillEngine(m2_qa.QAEngine):
             if b"\nUser" in text or b"\nAssistant:" in text:
                 break
         out = enc.decode(seq[start:]).split(b"\nUser")[0].split(b"\nAssistant:")[0].strip()
-        return out, {"candidates": [c[0].decode("utf-8", "replace")[:80] for c in cands], "similarity": round(sim, 3)}
+        return out, {"candidates": [c[0].decode("utf-8", "replace")[:80] for c in cands], "similarity": round(sim, 3),
+                     "idx": idx, "probs": probs, **getattr(self, "last", {})}

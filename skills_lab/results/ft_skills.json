@@ -1,0 +1,5062 @@
+{
+ "model": "skills_lab/models/ft_skills.pt",
+ "name": "ft_skills",
+ "retrieval": "literal + MiniLM x2.0",
+ "date": "2026-10-14 18:59",
+ "load_s": 223,
+ "modes": {
+  "orig": {
+   "summary": {
+    "taught": "12/20",
+    "update": "3/20",
+    "nearmiss": "15/20",
+    "unknown": "13/20",
+    "clarify": "0/10",
+    "followup": "1/10",
+    "skills_total": "44/100",
+    "update_old_value_given": 7,
+    "false_abstain_on_known": 23,
+    "probe": "22/32",
+    "probe_abstained": 8
+   },
+   "seconds": 22,
+   "rows": [
+    {
+     "group": "taught",
+     "question": "What does Lena do for a living?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What is my cousin Lena's job?",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "What's the password for the internet at the cabin?",
+     "answer": "The wifi password at the cabin is maple42.",
+     "evidence": "What is the wifi password at the cabin?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "Which level of the garage is my car on?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "Where did I park my car today?",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "Who is my landlord?",
+     "answer": "My landlord is called Mr. Okafor.",
+     "evidence": "What is my landlord's name?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "Until when is the pharmacy open?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What time does the pharmacy close?",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "What did Jenna name her cat?",
+     "answer": "Jenna's cat is called Pepper.",
+     "evidence": "What is the name of Jenna's cat?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "What age is Arlo?",
+     "answer": "Arlo is six years old.",
+     "evidence": "How old is my nephew Arlo?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "What airline am I flying to Denver on?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": "Which airline is my flight to Denver with?",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "Which locker is mine at the gym?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": "What is my locker number at the gym?",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "Which sport does Marco like best?",
+     "answer": "Marco's favourite sport is rugby.",
+     "evidence": "What is Marco's favourite sport?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "What day do I see the eye doctor?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "When is my eye doctor appointment?",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "What do we call the project server?",
+     "answer": "The project server is called Atlas-7.",
+     "evidence": "What is the name of our project server?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "Which city is Aunt Rosa in?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": "Where does my aunt Rosa live?",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "Is Theo allergic to anything?",
+     "answer": "Theo is allergic to peanuts.",
+     "evidence": "What allergy does Theo have?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "How do I open the office door?",
+     "answer": "The office door code is 5590.",
+     "evidence": "What is the code for the office door?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "What colour bike does Hana ride?",
+     "answer": "Hana's bike is orange.",
+     "evidence": "What colour is Hana's bike?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "Who's the football coach now?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": "Who is coaching the football team this year?",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "Can you remind me of my policy number?",
+     "answer": "My policy number is K-48213.",
+     "evidence": "What is my insurance policy number?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "Where does the book club meet?",
+     "answer": "The book club meets in room 9 of the library.",
+     "evidence": "Which room is the book club in?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "What's the middle name of Gus?",
+     "answer": "Gus's middle name is Everett.",
+     "evidence": "What is Gus's middle name?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "What do I like to drink most?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What is my favorite drink?",
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "How can I call Nadia?",
+     "answer": "Nadia's phone number is 555-0142.",
+     "evidence": "What is Nadia's phone number?",
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "Where are we having the team lunch?",
+     "answer": "The team lunch is at Rosie's Diner.",
+     "evidence": "Where is the team lunch?",
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "When should I pick up the kids from school?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What time is school pickup now?",
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "Who do I report to?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What is the deadline for the report?",
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "Which car is Omar driving these days?",
+     "answer": "Omar sold the Honda and now drive a blue Subaru.",
+     "evidence": "What car does Omar drive now?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "Which city does Mia live in?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": "Where does my sister Mia live?",
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "When is the report due?",
+     "answer": "The report is due on Friday.",
+     "evidence": "What is the deadline for the report?",
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "Which days do I go to the gym?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What is my gym schedule?",
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "What's the head count for the party?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "How many people are coming to the party?",
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "What email should I use for Ben?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": "What is Ben's new email?",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "What hotel are we booked at?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": "Which hotel are we staying at?",
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "Which band does Zoe like best?",
+     "answer": "Zoe's favorite band is Coldplay.",
+     "evidence": "What is Zoe's favorite band?",
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "When do they pick up the trash?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What day is trash collection?",
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "How much is the monthly plan?",
+     "answer": "The monthly plan costs 20 dollars.",
+     "evidence": "What is the price of the monthly plan?",
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "Where did Leo work before the library?",
+     "answer": "Leo works at the bakery on Main Street.",
+     "evidence": "Where does Leo work?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "What was my old address?",
+     "answer": "My new address is 48 Willow Road.",
+     "evidence": "What is my new address?",
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "What was Priya's last name before she married?",
+     "answer": "After the wedding Priya's last name is Mehta.",
+     "evidence": "What is Priya's married name?",
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "What color were the kitchen walls before we painted them?",
+     "answer": "The kitchen walls are yellow.",
+     "evidence": "What color are the kitchen walls?",
+     "ok": true,
+     "wrong_value": false,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "What phone did I have before the upgrade?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What phone did I upgrade to?",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What does Anna drive?",
+     "answer": "Anna drives a red Mazda.",
+     "evidence": "What is Anna's car?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What does Anne drive?",
+     "answer": "Anne drives a white Volvo.",
+     "evidence": "What is Anne's car?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What date is Tom's birthday?",
+     "answer": "Tom's birthday is on March 3.",
+     "evidence": "When is Tom's birthday?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What date is Tim's birthday?",
+     "answer": "Tim's birthday is on August 19.",
+     "evidence": "When is Tim's birthday?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "When does the evening shift begin?",
+     "answer": "The evening shift starts at 4 pm.",
+     "evidence": "What is the evening shift time?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "When does the morning shift begin?",
+     "answer": "The morning shift starts at 6 am.",
+     "evidence": "What is the morning shift time?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which network do I join at work?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What is the Wi-Fi network at work?",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which network do I join at home?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What is the Wi-Fi network at home?",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What size shoes does my daughter wear?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What is my daughter's shoe size?",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What size shoes does my son wear?",
+     "answer": "My son's shoe size is 4.",
+     "evidence": "What is my son's shoe size?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "Who runs Project Hawk?",
+     "answer": "Devon leads Project Hawk.",
+     "evidence": "Who is the lead on Project Hawk?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "Who runs Project Falcon?",
+     "answer": "Grace leads Project Falcon.",
+     "evidence": "Who is the lead on Project Falcon?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "How do I open the back gate?",
+     "answer": "The back gate code is 2468.",
+     "evidence": "What is the back gate code?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "How do I open the front gate?",
+     "answer": "The front gate code is 1357.",
+     "evidence": "What is the front gate code?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What food does Ravi like best?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What is Uncle Ravi's favorite food?",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What food does Raj like best?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What is Uncle Raj's favorite food?",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which platform is the 8:40 train on?",
+     "answer": "The 8:40 train leaves from platform 5.",
+     "evidence": "What platform does the 8:40 train leave from?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which platform is the 8:10 train on?",
+     "answer": "The 8:10 train leaves from platform 2.",
+     "evidence": "What platform does the 8:10 train leave from?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What's Carla's horse called?",
+     "answer": "Carla's horse is called Thunder.",
+     "evidence": "What is the name of Carla's horse?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What's Carla's dog called?",
+     "answer": "Carla's dog is called Biscuit.",
+     "evidence": "What is the name of Carla's dog?",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is Lena's favourite colour?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What is my cousin Lena's job?",
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "How old is Jenna's cat?",
+     "answer": "Jenna's cat is called Pepper.",
+     "evidence": "What is the name of Jenna's cat?",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is Marco's phone number?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What is Marco's favourite sport?",
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is my boss's birthday?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": "When is Tom's birthday?",
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "Where does my cousin Felix live?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": "Where does my sister Mia live?",
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is the code for the garage?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": "What is the code for the office door?",
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "When is the plumber coming?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": "When is Owen's dentist appointment?",
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is Hana's last name?",
+     "answer": "Hana's bike is orange.",
+     "evidence": "What colour is Hana's bike?",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "Which school does Arlo go to?",
+     "answer": "Arlo is six years old.",
+     "evidence": "How old is my nephew Arlo?",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is the name of Theo's sister?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What allergy does Theo have?",
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is my bank account number?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": "Give a description of the basic features of a bank account.",
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What time does the farmers market open on Sunday?",
+     "answer": "The farmers market open on Sunday because of the high demand and the high prices of vegetables.",
+     "evidence": "Describe the scene at a bustling farmers' market.",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "What did I eat for breakfast?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What items are necessary to make breakfast?",
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is Gus's favourite movie?",
+     "answer": "Gus's middle name is Everett.",
+     "evidence": "What is Gus's middle name?",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "Where did I put my passport?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "Given a search query, identify the intent of the query.\n\"How to get a passport in the US?\"",
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What time is my haircut?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What time is school pickup now?",
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is the name of my neighbour's dog?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": "Describe the following noun: dog.",
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "How much did I pay for the couch?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What should I consider when choosing a couch?",
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is Coach Delgado's first name?",
+     "answer": "Coach Delgado's first name is Coach: Coach.",
+     "evidence": "Construct a dialogue between a baseball coach and a player",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "Which gate does my flight to Denver leave from?",
+     "answer": "My flight to Denver is with Frontier.",
+     "evidence": "Which airline is my flight to Denver with?",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "When is my brother's birthday?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "When is my brother Sam's birthday?",
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "When is my brother's birthday? / I mean Eli.",
+     "answer": "I don't have that in my memory.",
+     "evidence": "history (1 turns)",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "clarify",
+     "question": "What's the office address?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What is the address of the airport office?",
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What's the office address? / The airport one.",
+     "answer": "I don't have that in my memory.",
+     "evidence": "history (1 turns)",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "clarify",
+     "question": "What is Kate's number?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What is Kate Lin's phone number?",
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What is Kate's number? / Kate Lin.",
+     "answer": "I don't have that in my memory.",
+     "evidence": "history (1 turns)",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "clarify",
+     "question": "What time is yoga class?",
+     "answer": "Do you mean the yoga class or the yota class?",
+     "evidence": "What time is the yoga class on Monday?",
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What time is yoga class? / Wednesday.",
+     "answer": "I am a student.",
+     "evidence": "history (1 turns)",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "What is my daughter's teacher called?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What is my daughter Ella's teacher's name?",
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What is my daughter's teacher called? / Ruby.",
+     "answer": "I don't have that in my memory.",
+     "evidence": "history (1 turns)",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "clarify",
+     "question": "Where is the suitcase?",
+     "answer": "The blue suitcase is in the attic.",
+     "evidence": "Where is the blue suitcase?",
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "Where is the suitcase? / The black one.",
+     "answer": "The black one is in the attic.",
+     "evidence": "history (1 turns)",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "What's the laptop password?",
+     "answer": "The laptop password is River#4.",
+     "evidence": "What is the password for the home laptop?",
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What's the laptop password? / The home laptop.",
+     "answer": "The home laptop is River#4.",
+     "evidence": "history (1 turns)",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "When is the kids' dentist appointment?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": "When is Owen's dentist appointment?",
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "When is the kids' dentist appointment? / Owen's.",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": "history (1 turns)",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "clarify",
+     "question": "What's my coworker's band called?",
+     "answer": "I don't have that in my memory.",
+     "evidence": "What is the name of my coworker Phil's band?",
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What's my coworker's band called? / Phil's.",
+     "answer": "I don't have that in my memory.",
+     "evidence": "history (1 turns)",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "clarify",
+     "question": "How much is the pizza?",
+     "answer": "Do you mean the large pizza or the large Italian pizza?",
+     "evidence": "How much is the large pizza?",
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "How much is the pizza? / The large one.",
+     "answer": "Do you mean the large pizza or the large Italian pizza?",
+     "evidence": "history (1 turns)",
+     "ok": false,
+     "abstained": false
+    }
+   ],
+   "probe": [
+    {
+     "section": "stored",
+     "question": "Name a food that is traditionally served during Thanksgiving in the US.",
+     "answer": "A traditional Thanksgiving meal in the United States typically includes turkey, stuffing, mashed potatoes, gravy, cranberry sauce, vegetables, and pumpkin pie.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "stored",
+     "question": "Given the input, provide an example to demonstrate the concept of gravity.",
+     "answer": "A simple example of gravity can be demonstrated by dropping a ball; the ball falls to the ground due to the force of gravity pulling it downwards.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "stored",
+     "question": "Create a list of 10 verbs related to cooking",
+     "answer": "- Mix\n- Boil \n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "stored",
+     "question": "Name some computer viruses",
+     "answer": "Some computer viruses are: \n- WannaCry\n- Stuxnet\n- Trojan Horse\n- Code Red\n- Sality\n- CryptoLocker\n- ILoveYou\n- Chimera\n- MyDoom\n- Melissa",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "stored",
+     "question": "Come up with two statistics related to the US population.",
+     "answer": "According to the US Census Bureau, the current US population is approximately 331 million, and the current U.S. population growth rate is 0.7%.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "reworded",
+     "question": "What food do Americans usually eat on Thanksgiving?",
+     "answer": "Americans usually eat Thanksgiving on Thanksgcoming.",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "reworded",
+     "question": "Can you give me an example that shows how gravity works?",
+     "answer": "Sure, here's an example of gravity:\n\nA simple example of a gravity is a ball; the ball falls to the ground due to the force of gravity pulling it downwards.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "reworded",
+     "question": "List ten verbs you would use when cooking.",
+     "answer": "- Mix\n- Boil\n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "reworded",
+     "question": "What are some well-known computer viruses?",
+     "answer": "Some computer viruses are: \n- WannaCry\n- Stuxnet\n- Trojan Horse\n- Code Red\n- Sality\n- CryptoLocker\n- ILoveYou\n- Chimera\n- MyDoom\n- Melissa",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "reworded",
+     "question": "Tell me two facts about the population of the United States.",
+     "answer": "The population of the United States is approximately 328 million people.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "knowledge",
+     "question": "What is the largest planet in our solar system?",
+     "answer": "I don't have that in my memory.",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "section": "knowledge",
+     "question": "Who wrote Romeo and Juliet?",
+     "answer": "William Shakespeare",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "knowledge",
+     "question": "What is photosynthesis?",
+     "answer": "Photosynthesis is the process by which plants use light energy to convert carbon dioxide and water into oxygen and sugars. It involves the transfer of electrons and protons between molecules as chlorophyll in the presence of light absorbs the light energy used to drive the reaction. The oxygen produced is released into the atmosphere, and the sugar produced is used by the plant for growth.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "knowledge",
+     "question": "What is the boiling point of water in Celsius?",
+     "answer": "The approximate boiling point of water in Celsius is 100 degrees.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "knowledge",
+     "question": "What is the capital of Japan?",
+     "answer": "The capital of Japan is Tokyo.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "heldout",
+     "question": "Generate a creative poem describing the night sky.",
+     "answer": "The night sky is a beautiful night,\nA beautiful night with a beautiful day.\nThe night sky, the night sky.\nA gentle breeze, the stars shining in the sky.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "heldout",
+     "question": "Come up with a creative sentence to describe a summer day.",
+     "answer": "The summer day is like a warm summer day, and the sun is like the sun.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "heldout",
+     "question": "List 5 famous Italian dishes.",
+     "answer": "1. Italian cuisine\n2. Italian cake\n3. Italian spaghetti\n4. Italian cheese\n5. Italian salad\n6. Italian tomatoes\n7. Italian cheerful cheese\n8. Italian avocado\n9. Italian vegan cheese\n10. Italian car.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "heldout",
+     "question": "Tell me the most common hairstyle for men.",
+     "answer": "The most common hairstyle for men is hair, which is made from hair, hair, and hair. It is made up of two layers of hair, each with a different shape and a different color. It has a different texture and shape, and it is also used for hair.",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "heldout",
+     "question": "Print the following statement: \"I want to learn to code\".",
+     "answer": "I want to learn to code.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "taught",
+     "question": "What is the name of Adam's research model?",
+     "answer": "Adam's research model is called the Text Research Model.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "taught",
+     "question": "What GPU does the research computer use?",
+     "answer": "The research computer uses an NVIDIA RTX 3090 GPU.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "taught",
+     "question": "When was Version 1 of the compiler frozen?",
+     "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "taught",
+     "question": "What is Adam's research model called?",
+     "answer": "Adam's research model is called the Text Research Model.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "taught",
+     "question": "Which graphics card is in the research computer?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "section": "taught",
+     "question": "On what date was Version 1 frozen?",
+     "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "arithmetic",
+     "question": "What is 12 plus 30?",
+     "answer": "I don't have that in my memory.",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "section": "arithmetic",
+     "question": "If I have 5 apples and eat 2, how many are left?",
+     "answer": "I don't have that in my memory.",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "section": "arithmetic",
+     "question": "What is 7 times 8?",
+     "answer": "I don't have that in my memory.",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "section": "chat",
+     "question": "Hello, how are you today?",
+     "answer": "I don't have that in my memory.",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "section": "chat",
+     "question": "Can you help me write a short email to my boss asking for a day off?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "section": "chat",
+     "question": "What should I cook for dinner tonight?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "ok": false,
+     "abstained": true
+    }
+   ]
+  },
+  "k1": {
+   "summary": {
+    "taught": "12/20",
+    "update": "3/20",
+    "nearmiss": "15/20",
+    "unknown": "13/20",
+    "clarify": "0/10",
+    "followup": "7/10",
+    "skills_total": "50/100",
+    "update_old_value_given": 7,
+    "false_abstain_on_known": 23,
+    "probe": "22/32",
+    "probe_abstained": 8
+   },
+   "seconds": 25,
+   "rows": [
+    {
+     "group": "taught",
+     "question": "What does Lena do for a living?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is my cousin Lena's job?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "What's the password for the internet at the cabin?",
+     "answer": "The wifi password at the cabin is maple42.",
+     "evidence": [
+      "What is the wifi password at the cabin?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "Which level of the garage is my car on?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "Where did I park my car today?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "Who is my landlord?",
+     "answer": "My landlord is called Mr. Okafor.",
+     "evidence": [
+      "What is my landlord's name?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "Until when is the pharmacy open?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What time does the pharmacy close?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "What did Jenna name her cat?",
+     "answer": "Jenna's cat is called Pepper.",
+     "evidence": [
+      "What is the name of Jenna's cat?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "What age is Arlo?",
+     "answer": "Arlo is six years old.",
+     "evidence": [
+      "How old is my nephew Arlo?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "What airline am I flying to Denver on?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "Which airline is my flight to Denver with?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "Which locker is mine at the gym?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "What is my locker number at the gym?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "Which sport does Marco like best?",
+     "answer": "Marco's favourite sport is rugby.",
+     "evidence": [
+      "What is Marco's favourite sport?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "What day do I see the eye doctor?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "When is my eye doctor appointment?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "What do we call the project server?",
+     "answer": "The project server is called Atlas-7.",
+     "evidence": [
+      "What is the name of our project server?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "Which city is Aunt Rosa in?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "Where does my aunt Rosa live?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "Is Theo allergic to anything?",
+     "answer": "Theo is allergic to peanuts.",
+     "evidence": [
+      "What allergy does Theo have?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "How do I open the office door?",
+     "answer": "The office door code is 5590.",
+     "evidence": [
+      "What is the code for the office door?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "What colour bike does Hana ride?",
+     "answer": "Hana's bike is orange.",
+     "evidence": [
+      "What colour is Hana's bike?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "Who's the football coach now?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "Who is coaching the football team this year?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "Can you remind me of my policy number?",
+     "answer": "My policy number is K-48213.",
+     "evidence": [
+      "What is my insurance policy number?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "Where does the book club meet?",
+     "answer": "The book club meets in room 9 of the library.",
+     "evidence": [
+      "Which room is the book club in?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "What's the middle name of Gus?",
+     "answer": "Gus's middle name is Everett.",
+     "evidence": [
+      "What is Gus's middle name?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "What do I like to drink most?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is my favorite drink?"
+     ],
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "How can I call Nadia?",
+     "answer": "Nadia's phone number is 555-0142.",
+     "evidence": [
+      "What is Nadia's phone number?"
+     ],
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "Where are we having the team lunch?",
+     "answer": "The team lunch is at Rosie's Diner.",
+     "evidence": [
+      "Where is the team lunch?"
+     ],
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "When should I pick up the kids from school?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What time is school pickup now?"
+     ],
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "Who do I report to?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is the deadline for the report?"
+     ],
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "Which car is Omar driving these days?",
+     "answer": "Omar sold the Honda and now drive a blue Subaru.",
+     "evidence": [
+      "What car does Omar drive now?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "Which city does Mia live in?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "Where does my sister Mia live?"
+     ],
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "When is the report due?",
+     "answer": "The report is due on Friday.",
+     "evidence": [
+      "What is the deadline for the report?"
+     ],
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "Which days do I go to the gym?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is my gym schedule?"
+     ],
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "What's the head count for the party?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "How many people are coming to the party?"
+     ],
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "What email should I use for Ben?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "What is Ben's new email?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "What hotel are we booked at?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "Which hotel are we staying at?"
+     ],
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "Which band does Zoe like best?",
+     "answer": "Zoe's favorite band is Coldplay.",
+     "evidence": [
+      "What is Zoe's favorite band?"
+     ],
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "When do they pick up the trash?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What day is trash collection?"
+     ],
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "How much is the monthly plan?",
+     "answer": "The monthly plan costs 20 dollars.",
+     "evidence": [
+      "What is the price of the monthly plan?"
+     ],
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "Where did Leo work before the library?",
+     "answer": "Leo works at the bakery on Main Street.",
+     "evidence": [
+      "Where does Leo work?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "What was my old address?",
+     "answer": "My new address is 48 Willow Road.",
+     "evidence": [
+      "What is my new address?"
+     ],
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "What was Priya's last name before she married?",
+     "answer": "After the wedding Priya's last name is Mehta.",
+     "evidence": [
+      "What is Priya's married name?"
+     ],
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "What color were the kitchen walls before we painted them?",
+     "answer": "The kitchen walls are yellow.",
+     "evidence": [
+      "What color are the kitchen walls?"
+     ],
+     "ok": true,
+     "wrong_value": false,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "What phone did I have before the upgrade?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What phone did I upgrade to?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What does Anna drive?",
+     "answer": "Anna drives a red Mazda.",
+     "evidence": [
+      "What is Anna's car?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What does Anne drive?",
+     "answer": "Anne drives a white Volvo.",
+     "evidence": [
+      "What is Anne's car?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What date is Tom's birthday?",
+     "answer": "Tom's birthday is on March 3.",
+     "evidence": [
+      "When is Tom's birthday?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What date is Tim's birthday?",
+     "answer": "Tim's birthday is on August 19.",
+     "evidence": [
+      "When is Tim's birthday?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "When does the evening shift begin?",
+     "answer": "The evening shift starts at 4 pm.",
+     "evidence": [
+      "What is the evening shift time?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "When does the morning shift begin?",
+     "answer": "The morning shift starts at 6 am.",
+     "evidence": [
+      "What is the morning shift time?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which network do I join at work?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is the Wi-Fi network at work?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which network do I join at home?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is the Wi-Fi network at home?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What size shoes does my daughter wear?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is my daughter's shoe size?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What size shoes does my son wear?",
+     "answer": "My son's shoe size is 4.",
+     "evidence": [
+      "What is my son's shoe size?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "Who runs Project Hawk?",
+     "answer": "Devon leads Project Hawk.",
+     "evidence": [
+      "Who is the lead on Project Hawk?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "Who runs Project Falcon?",
+     "answer": "Grace leads Project Falcon.",
+     "evidence": [
+      "Who is the lead on Project Falcon?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "How do I open the back gate?",
+     "answer": "The back gate code is 2468.",
+     "evidence": [
+      "What is the back gate code?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "How do I open the front gate?",
+     "answer": "The front gate code is 1357.",
+     "evidence": [
+      "What is the front gate code?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What food does Ravi like best?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is Uncle Ravi's favorite food?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What food does Raj like best?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is Uncle Raj's favorite food?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which platform is the 8:40 train on?",
+     "answer": "The 8:40 train leaves from platform 5.",
+     "evidence": [
+      "What platform does the 8:40 train leave from?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which platform is the 8:10 train on?",
+     "answer": "The 8:10 train leaves from platform 2.",
+     "evidence": [
+      "What platform does the 8:10 train leave from?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What's Carla's horse called?",
+     "answer": "Carla's horse is called Thunder.",
+     "evidence": [
+      "What is the name of Carla's horse?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What's Carla's dog called?",
+     "answer": "Carla's dog is called Biscuit.",
+     "evidence": [
+      "What is the name of Carla's dog?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is Lena's favourite colour?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is my cousin Lena's job?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "How old is Jenna's cat?",
+     "answer": "Jenna's cat is called Pepper.",
+     "evidence": [
+      "What is the name of Jenna's cat?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is Marco's phone number?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is Marco's favourite sport?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is my boss's birthday?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "When is Tom's birthday?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "Where does my cousin Felix live?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "Where does my sister Mia live?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is the code for the garage?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "What is the code for the office door?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "When is the plumber coming?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "When is Owen's dentist appointment?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is Hana's last name?",
+     "answer": "Hana's bike is orange.",
+     "evidence": [
+      "What colour is Hana's bike?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "Which school does Arlo go to?",
+     "answer": "Arlo is six years old.",
+     "evidence": [
+      "How old is my nephew Arlo?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is the name of Theo's sister?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What allergy does Theo have?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is my bank account number?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "Give a description of the basic features of a bank account."
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What time does the farmers market open on Sunday?",
+     "answer": "The farmers market open on Sunday because of the high demand and the high prices of vegetables.",
+     "evidence": [
+      "Describe the scene at a bustling farmers' market."
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "What did I eat for breakfast?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What items are necessary to make breakfast?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is Gus's favourite movie?",
+     "answer": "Gus's middle name is Everett.",
+     "evidence": [
+      "What is Gus's middle name?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "Where did I put my passport?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "Given a search query, identify the intent of the query.\n\"How to get a passport i"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What time is my haircut?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What time is school pickup now?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is the name of my neighbour's dog?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "Describe the following noun: dog."
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "How much did I pay for the couch?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What should I consider when choosing a couch?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is Coach Delgado's first name?",
+     "answer": "Coach Delgado's first name is Coach: Coach.",
+     "evidence": [
+      "Construct a dialogue between a baseball coach and a player"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "Which gate does my flight to Denver leave from?",
+     "answer": "My flight to Denver is with Frontier.",
+     "evidence": [
+      "Which airline is my flight to Denver with?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "When is my brother's birthday?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "When is my brother Sam's birthday?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "When is my brother's birthday? / I mean Eli.",
+     "answer": "Eli's birthday is on November 21.",
+     "evidence": [
+      "When is my brother Eli's birthday?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "clarify",
+     "question": "What's the office address?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is the address of the airport office?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What's the office address? / The airport one.",
+     "answer": "The airport one.",
+     "evidence": [
+      "What is the address of the airport office?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "clarify",
+     "question": "What is Kate's number?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is Kate Lin's phone number?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What is Kate's number? / Kate Lin.",
+     "answer": "Kate Lin's number is 555-0177.",
+     "evidence": [
+      "What is Kate Lin's phone number?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "clarify",
+     "question": "What time is yoga class?",
+     "answer": "Do you mean the yoga class or the yota class?",
+     "evidence": [
+      "What time is the yoga class on Monday?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What time is yoga class? / Wednesday.",
+     "answer": "Wednesday yoga is at 7 am.",
+     "evidence": [
+      "What time is the yoga class on Wednesday?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "What is my daughter's teacher called?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is my daughter Ella's teacher's name?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What is my daughter's teacher called? / Ruby.",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is my daughter Ruby's teacher's name?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "clarify",
+     "question": "Where is the suitcase?",
+     "answer": "The blue suitcase is in the attic.",
+     "evidence": [
+      "Where is the blue suitcase?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "Where is the suitcase? / The black one.",
+     "answer": "The black suitcase is under the bed.",
+     "evidence": [
+      "Where is the black suitcase?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "What's the laptop password?",
+     "answer": "The laptop password is River#4.",
+     "evidence": [
+      "What is the password for the home laptop?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What's the laptop password? / The home laptop.",
+     "answer": "The home laptop password is River#4.",
+     "evidence": [
+      "What is the password for the home laptop?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "When is the kids' dentist appointment?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "When is Owen's dentist appointment?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "When is the kids' dentist appointment? / Owen's.",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "When is Owen's dentist appointment?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "clarify",
+     "question": "What's my coworker's band called?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is the name of my coworker Phil's band?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What's my coworker's band called? / Phil's.",
+     "answer": "Phil's band is called Static Bloom.",
+     "evidence": [
+      "What is the name of my coworker Phil's band?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "clarify",
+     "question": "How much is the pizza?",
+     "answer": "Do you mean the large pizza or the large Italian pizza?",
+     "evidence": [
+      "How much is the large pizza?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "How much is the pizza? / The large one.",
+     "answer": "The large pizza is 15 dollars.",
+     "evidence": [
+      "How much is the large pizza?"
+     ],
+     "ok": true,
+     "abstained": false
+    }
+   ],
+   "probe": [
+    {
+     "section": "stored",
+     "question": "Name a food that is traditionally served during Thanksgiving in the US.",
+     "answer": "A traditional Thanksgiving meal in the United States typically includes turkey, stuffing, mashed potatoes, gravy, cranberry sauce, vegetables, and pumpkin pie.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "stored",
+     "question": "Given the input, provide an example to demonstrate the concept of gravity.",
+     "answer": "A simple example of gravity can be demonstrated by dropping a ball; the ball falls to the ground due to the force of gravity pulling it downwards.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "stored",
+     "question": "Create a list of 10 verbs related to cooking",
+     "answer": "- Mix\n- Boil \n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "stored",
+     "question": "Name some computer viruses",
+     "answer": "Some computer viruses are: \n- WannaCry\n- Stuxnet\n- Trojan Horse\n- Code Red\n- Sality\n- CryptoLocker\n- ILoveYou\n- Chimera\n- MyDoom\n- Melissa",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "stored",
+     "question": "Come up with two statistics related to the US population.",
+     "answer": "According to the US Census Bureau, the current US population is approximately 331 million, and the current U.S. population growth rate is 0.7%.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "reworded",
+     "question": "What food do Americans usually eat on Thanksgiving?",
+     "answer": "Americans usually eat Thanksgiving on Thanksgcoming.",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "reworded",
+     "question": "Can you give me an example that shows how gravity works?",
+     "answer": "Sure, here's an example of gravity:\n\nA simple example of a gravity is a ball; the ball falls to the ground due to the force of gravity pulling it downwards.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "reworded",
+     "question": "List ten verbs you would use when cooking.",
+     "answer": "- Mix\n- Boil\n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "reworded",
+     "question": "What are some well-known computer viruses?",
+     "answer": "Some computer viruses are: \n- WannaCry\n- Stuxnet\n- Trojan Horse\n- Code Red\n- Sality\n- CryptoLocker\n- ILoveYou\n- Chimera\n- MyDoom\n- Melissa",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "reworded",
+     "question": "Tell me two facts about the population of the United States.",
+     "answer": "The population of the United States is approximately 328 million people.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "knowledge",
+     "question": "What is the largest planet in our solar system?",
+     "answer": "I don't have that in my memory.",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "section": "knowledge",
+     "question": "Who wrote Romeo and Juliet?",
+     "answer": "William Shakespeare",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "knowledge",
+     "question": "What is photosynthesis?",
+     "answer": "Photosynthesis is the process by which plants use light energy to convert carbon dioxide and water into oxygen and sugars. It involves the transfer of electrons and protons between molecules as chlorophyll in the presence of light absorbs the light energy used to drive the reaction. The oxygen produced is released into the atmosphere, and the sugar produced is used by the plant for growth.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "knowledge",
+     "question": "What is the boiling point of water in Celsius?",
+     "answer": "The approximate boiling point of water in Celsius is 100 degrees.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "knowledge",
+     "question": "What is the capital of Japan?",
+     "answer": "The capital of Japan is Tokyo.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "heldout",
+     "question": "Generate a creative poem describing the night sky.",
+     "answer": "The night sky is a beautiful night,\nA beautiful night with a beautiful day.\nThe night sky, the night sky.\nA gentle breeze, the stars shining in the sky.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "heldout",
+     "question": "Come up with a creative sentence to describe a summer day.",
+     "answer": "The summer day is like a warm summer day, and the sun is like the sun.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "heldout",
+     "question": "List 5 famous Italian dishes.",
+     "answer": "1. Italian cuisine\n2. Italian cake\n3. Italian spaghetti\n4. Italian cheese\n5. Italian salad\n6. Italian tomatoes\n7. Italian cheerful cheese\n8. Italian avocado\n9. Italian vegan cheese\n10. Italian car.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "heldout",
+     "question": "Tell me the most common hairstyle for men.",
+     "answer": "The most common hairstyle for men is hair, which is made from hair, hair, and hair. It is made up of two layers of hair, each with a different shape and a different color. It has a different texture and shape, and it is also used for hair.",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "heldout",
+     "question": "Print the following statement: \"I want to learn to code\".",
+     "answer": "I want to learn to code.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "taught",
+     "question": "What is the name of Adam's research model?",
+     "answer": "Adam's research model is called the Text Research Model.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "taught",
+     "question": "What GPU does the research computer use?",
+     "answer": "The research computer uses an NVIDIA RTX 3090 GPU.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "taught",
+     "question": "When was Version 1 of the compiler frozen?",
+     "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "taught",
+     "question": "What is Adam's research model called?",
+     "answer": "Adam's research model is called the Text Research Model.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "taught",
+     "question": "Which graphics card is in the research computer?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "section": "taught",
+     "question": "On what date was Version 1 frozen?",
+     "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "arithmetic",
+     "question": "What is 12 plus 30?",
+     "answer": "I don't have that in my memory.",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "section": "arithmetic",
+     "question": "If I have 5 apples and eat 2, how many are left?",
+     "answer": "I don't have that in my memory.",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "section": "arithmetic",
+     "question": "What is 7 times 8?",
+     "answer": "I don't have that in my memory.",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "section": "chat",
+     "question": "Hello, how are you today?",
+     "answer": "I don't have that in my memory.",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "section": "chat",
+     "question": "Can you help me write a short email to my boss asking for a day off?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "section": "chat",
+     "question": "What should I cook for dinner tonight?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "ok": false,
+     "abstained": true
+    }
+   ]
+  },
+  "k3close": {
+   "summary": {
+    "taught": "12/20",
+    "update": "5/20",
+    "nearmiss": "15/20",
+    "unknown": "11/20",
+    "clarify": "1/10",
+    "followup": "5/10",
+    "skills_total": "49/100",
+    "update_old_value_given": 5,
+    "false_abstain_on_known": 22,
+    "probe": "20/32",
+    "probe_abstained": 5
+   },
+   "seconds": 26,
+   "rows": [
+    {
+     "group": "taught",
+     "question": "What does Lena do for a living?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is my cousin Lena's job?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "What's the password for the internet at the cabin?",
+     "answer": "The wifi password at the cabin is maple42.",
+     "evidence": [
+      "What is the wifi password at the cabin?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "Which level of the garage is my car on?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "Design a high-level architecture of how an autonomous car works.\n<no input>",
+      "Show me a 3D visualization of a car.",
+      "Where did I park my car today?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "Who is my landlord?",
+     "answer": "My landlord is called Mr. Okafor.",
+     "evidence": [
+      "What is my landlord's name?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "Until when is the pharmacy open?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What time does the pharmacy close?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "What did Jenna name her cat?",
+     "answer": "Jenna's cat is called Pepper.",
+     "evidence": [
+      "What is the name of Jenna's cat?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "What age is Arlo?",
+     "answer": "Arlo is six years old.",
+     "evidence": [
+      "How old is my nephew Arlo?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "What airline am I flying to Denver on?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "Which airline is my flight to Denver with?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "Which locker is mine at the gym?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "What is my locker number at the gym?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "Which sport does Marco like best?",
+     "answer": "Marco's favourite sport is rugby.",
+     "evidence": [
+      "What is Marco's favourite sport?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "What day do I see the eye doctor?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "When is my eye doctor appointment?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "What do we call the project server?",
+     "answer": "The project server is called Atlas-7.",
+     "evidence": [
+      "What is the name of our project server?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "Which city is Aunt Rosa in?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "Where does my aunt Rosa live?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "Is Theo allergic to anything?",
+     "answer": "Theo is allergic to peanuts.",
+     "evidence": [
+      "What allergy does Theo have?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "How do I open the office door?",
+     "answer": "The office door code is 5590.",
+     "evidence": [
+      "What is the code for the office door?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "What colour bike does Hana ride?",
+     "answer": "Hana's bike is orange.",
+     "evidence": [
+      "What colour is Hana's bike?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "Who's the football coach now?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "Who is coaching the football team this year?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "Can you remind me of my policy number?",
+     "answer": "My policy number is K-48213.",
+     "evidence": [
+      "What is my insurance policy number?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "Where does the book club meet?",
+     "answer": "The book club meets in room 9 of the library.",
+     "evidence": [
+      "Which room is the book club in?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "What's the middle name of Gus?",
+     "answer": "Gus's middle name is Everett.",
+     "evidence": [
+      "What is Gus's middle name?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "What do I like to drink most?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is my favorite drink?",
+      "What is my favorite drink now?"
+     ],
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "How can I call Nadia?",
+     "answer": "Nadia changed her number to 555-0199.",
+     "evidence": [
+      "What is Nadia's phone number?",
+      "What is Nadia's new phone number?"
+     ],
+     "ok": true,
+     "wrong_value": false,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "Where are we having the team lunch?",
+     "answer": "The team lunch is at Rosie's Diner.",
+     "evidence": [
+      "Where is the team lunch?"
+     ],
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "When should I pick up the kids from school?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What time is the school pickup?",
+      "What time is school pickup now?"
+     ],
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "Who do I report to?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "Summarize the definition of a report.",
+      "Determine what to do if you are threatened online.",
+      "What is the deadline for the report?"
+     ],
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "Which car is Omar driving these days?",
+     "answer": "Omar sold the Honda and now drive a blue Subaru.",
+     "evidence": [
+      "What car does Omar drive?",
+      "What car does Omar drive now?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "Which city does Mia live in?",
+     "answer": "Mia moved to Austin last month.",
+     "evidence": [
+      "Where does my sister Mia live?",
+      "Where did Mia move to?"
+     ],
+     "ok": true,
+     "wrong_value": false,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "When is the report due?",
+     "answer": "The report is due on Friday.",
+     "evidence": [
+      "What is the deadline for the report?"
+     ],
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "Which days do I go to the gym?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is my gym schedule?",
+      "What is my new gym schedule?"
+     ],
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "What's the head count for the party?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "How many people are coming to the party?",
+      "How many people are coming to the party now?"
+     ],
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "What email should I use for Ben?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "What is Ben's email address?",
+      "What is Ben's new email?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "What hotel are we booked at?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "Which hotel are we staying at?"
+     ],
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "Which band does Zoe like best?",
+     "answer": "Zoe's favorite band is Coldplay.",
+     "evidence": [
+      "What is Zoe's favorite band?"
+     ],
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "When do they pick up the trash?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What day is trash collection?",
+      "Has trash day changed?"
+     ],
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "How much is the monthly plan?",
+     "answer": "The monthly plan costs 20 dollars.",
+     "evidence": [
+      "What is the price of the monthly plan?",
+      "What does the monthly plan cost now?"
+     ],
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "Where did Leo work before the library?",
+     "answer": "Leo now works at the city library.",
+     "evidence": [
+      "Where does Leo work?",
+      "Where does Leo work now?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "What was my old address?",
+     "answer": "My new address is 48 Willow Road.",
+     "evidence": [
+      "What is my address?",
+      "What is my new address?"
+     ],
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "What was Priya's last name before she married?",
+     "answer": "After the wedding Priya's last name is Shah.",
+     "evidence": [
+      "What is Priya's last name?",
+      "What is Priya's married name?"
+     ],
+     "ok": true,
+     "wrong_value": false,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "What color were the kitchen walls before we painted them?",
+     "answer": "The kitchen walls are yellow.",
+     "evidence": [
+      "What color are the kitchen walls?"
+     ],
+     "ok": true,
+     "wrong_value": false,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "What phone did I have before the upgrade?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What phone did I upgrade to?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What does Anna drive?",
+     "answer": "Anna drives a red Mazda.",
+     "evidence": [
+      "What is Anna's car?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What does Anne drive?",
+     "answer": "Anne drives a white Volvo.",
+     "evidence": [
+      "What is Anne's car?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What date is Tom's birthday?",
+     "answer": "Tom's birthday is on March 3.",
+     "evidence": [
+      "When is Tom's birthday?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What date is Tim's birthday?",
+     "answer": "Tim's birthday is on August 19.",
+     "evidence": [
+      "When is Tim's birthday?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "When does the evening shift begin?",
+     "answer": "The evening shift starts at 4 pm.",
+     "evidence": [
+      "What is the evening shift time?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "When does the morning shift begin?",
+     "answer": "The morning shift starts at 6 am.",
+     "evidence": [
+      "What is the morning shift time?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which network do I join at work?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is the Wi-Fi network at work?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which network do I join at home?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is the Wi-Fi network at home?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What size shoes does my daughter wear?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is my daughter's shoe size?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What size shoes does my son wear?",
+     "answer": "My son's shoe size is 4.",
+     "evidence": [
+      "What is my son's shoe size?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "Who runs Project Hawk?",
+     "answer": "Devon leads Project Hawk.",
+     "evidence": [
+      "Who is the lead on Project Hawk?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "Who runs Project Falcon?",
+     "answer": "Grace leads Project Falcon.",
+     "evidence": [
+      "Who is the lead on Project Falcon?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "How do I open the back gate?",
+     "answer": "The back gate code is 2468.",
+     "evidence": [
+      "What is the back gate code?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "How do I open the front gate?",
+     "answer": "The front gate code is 1357.",
+     "evidence": [
+      "What is the front gate code?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What food does Ravi like best?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is Uncle Ravi's favorite food?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What food does Raj like best?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is Uncle Raj's favorite food?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which platform is the 8:40 train on?",
+     "answer": "The 8:40 train leaves from platform 5.",
+     "evidence": [
+      "What platform does the 8:10 train leave from?",
+      "What platform does the 8:40 train leave from?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which platform is the 8:10 train on?",
+     "answer": "The 8:10 train leaves from platform 2.",
+     "evidence": [
+      "What platform does the 8:10 train leave from?",
+      "What platform does the 8:40 train leave from?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What's Carla's horse called?",
+     "answer": "Carla's horse is called Thunder.",
+     "evidence": [
+      "What is the name of Carla's horse?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What's Carla's dog called?",
+     "answer": "Carla's dog is called Biscuit.",
+     "evidence": [
+      "What is the name of Carla's dog?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is Lena's favourite colour?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is my cousin Lena's job?",
+      "What colour is Hana's bike?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "How old is Jenna's cat?",
+     "answer": "Jenna's cat is called Pepper.",
+     "evidence": [
+      "What is the name of Jenna's cat?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is Marco's phone number?",
+     "answer": "Marco's phone number is 555-0142.",
+     "evidence": [
+      "What is Marco's favourite sport?",
+      "What is Nadia's phone number?",
+      "What is Nadia's new phone number?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is my boss's birthday?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "Write a happy birthday message.",
+      "When is Tom's birthday?",
+      "When is my brother Sam's birthday?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "Where does my cousin Felix live?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "Where does my aunt Rosa live?",
+      "Where does my sister Mia live?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is the code for the garage?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "What is the code for the office door?",
+      "What is the front gate code?",
+      "What is the back gate code?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "When is the plumber coming?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "When is Nora's dentist appointment?",
+      "When is Owen's dentist appointment?",
+      "How many people are coming to the party now?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is Hana's last name?",
+     "answer": "Hana's bike is orange.",
+     "evidence": [
+      "What colour is Hana's bike?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "Which school does Arlo go to?",
+     "answer": "Arlo is six years old.",
+     "evidence": [
+      "How old is my nephew Arlo?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is the name of Theo's sister?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What allergy does Theo have?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is my bank account number?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "Create a class in python to represent a bank account.",
+      "Try to open an account with your local bank.",
+      "Give a description of the basic features of a bank account."
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What time does the farmers market open on Sunday?",
+     "answer": "The farmers market open on Sunday is 6 pm.",
+     "evidence": [
+      "Describe the scene at a bustling farmers' market.",
+      "What time does the pharmacy close?",
+      "What time is the yoga class on Monday?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "What did I eat for breakfast?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "List 3 breakfast food items.",
+      "What items are necessary to make breakfast?",
+      "Suggest some healthy breakfast foods."
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is Gus's favourite movie?",
+     "answer": "Gus's middle name is Everett.",
+     "evidence": [
+      "What is Gus's middle name?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "Where did I put my passport?",
+     "answer": "I don't want to forget my passport.",
+     "evidence": [
+      "Given a search query, identify the intent of the query.\n\"How to get a passport i",
+      "Assign an appropriate part of speech to the bolded word below:\nI don't want to f"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "What time is my haircut?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What time is the school pickup?",
+      "What is the morning shift time?",
+      "What time is school pickup now?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is the name of my neighbour's dog?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is the plural possessive form of \"dog\"?",
+      "Describe the following noun: dog.",
+      "What is the name of Carla's dog?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "How much did I pay for the couch?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What should I consider when choosing a couch?",
+      "Report the total amount of money spent on the following furniture items\n- Bed: $"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is Coach Delgado's first name?",
+     "answer": "Coach Delgado is coaching the football team this year.",
+     "evidence": [
+      "Construct a dialogue between a baseball coach and a player",
+      "Name two famous baseball players.",
+      "Who is coaching the football team this year?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "Which gate does my flight to Denver leave from?",
+     "answer": "My flight to Denver is with Frontier.",
+     "evidence": [
+      "Which airline is my flight to Denver with?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "When is my brother's birthday?",
+     "answer": "My brother's birthday is on June 9.",
+     "evidence": [
+      "When is my brother Sam's birthday?",
+      "When is my brother Eli's birthday?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "When is my brother's birthday? / I mean Eli.",
+     "answer": "Eli's birthday is on November 21.",
+     "evidence": [
+      "When is my brother Eli's birthday?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "What's the office address?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is the address of the downtown office?",
+      "What is the address of the airport office?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What's the office address? / The airport one.",
+     "answer": "The airport one.",
+     "evidence": [
+      "What is the address of the airport office?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "clarify",
+     "question": "What is Kate's number?",
+     "answer": "Kate Moreno's number is 555-0110.",
+     "evidence": [
+      "What is Kate Moreno's phone number?",
+      "What is Kate Lin's phone number?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What is Kate's number? / Kate Lin.",
+     "answer": "Kate Moreno's number is 555-0110.",
+     "evidence": [
+      "What is Kate Lin's phone number?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "What time is yoga class?",
+     "answer": "Do you mean the yoga class or the yota class?",
+     "evidence": [
+      "What time is the yoga class on Monday?",
+      "What time is the yoga class on Wednesday?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What time is yoga class? / Wednesday.",
+     "answer": "Wednesday yoga is at 7 am.",
+     "evidence": [
+      "What time is the yoga class on Wednesday?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "What is my daughter's teacher called?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is my daughter Ella's teacher's name?",
+      "What is my daughter Ruby's teacher's name?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What is my daughter's teacher called? / Ruby.",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is my daughter Ruby's teacher's name?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "clarify",
+     "question": "Where is the suitcase?",
+     "answer": "The suitcase is in the attic.",
+     "evidence": [
+      "Where is the blue suitcase?",
+      "Where is the black suitcase?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "Where is the suitcase? / The black one.",
+     "answer": "The black suitcase is under the bed.",
+     "evidence": [
+      "Where is the black suitcase?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "What's the laptop password?",
+     "answer": "The laptop password is River#4.",
+     "evidence": [
+      "What is the password for the work laptop?",
+      "What is the password for the home laptop?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What's the laptop password? / The home laptop.",
+     "answer": "The home laptop password is River#4.",
+     "evidence": [
+      "What is the password for the home laptop?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "When is the kids' dentist appointment?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "When is Nora's dentist appointment?",
+      "When is Owen's dentist appointment?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "When is the kids' dentist appointment? / Owen's.",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "When is Owen's dentist appointment?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "clarify",
+     "question": "What's my coworker's band called?",
+     "answer": "My coworker's band is called The Lowlights.",
+     "evidence": [
+      "What is the name of my coworker Dana's band?",
+      "What is the name of my coworker Phil's band?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What's my coworker's band called? / Phil's.",
+     "answer": "Phil's band is called The Lowlights.",
+     "evidence": [
+      "What is the name of my coworker Phil's band?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "How much is the pizza?",
+     "answer": "Do you mean the small pizza or the large pizza?",
+     "evidence": [
+      "How much is the small pizza?",
+      "How much is the large pizza?"
+     ],
+     "ok": true
+    },
+    {
+     "group": "followup",
+     "question": "How much is the pizza? / The large one.",
+     "answer": "The large pizza is 15 dollars.",
+     "evidence": [
+      "How much is the large pizza?"
+     ],
+     "ok": true,
+     "abstained": false
+    }
+   ],
+   "probe": [
+    {
+     "section": "stored",
+     "question": "Name a food that is traditionally served during Thanksgiving in the US.",
+     "answer": "A traditional Thanksgiving meal in the United States typically includes turkey, stuffing, mashed potatoes, gravy, cranberry sauce, vegetables, and pumpkin pie.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "stored",
+     "question": "Given the input, provide an example to demonstrate the concept of gravity.",
+     "answer": "A simple example of gravity can be demonstrated by dropping a ball; the ball falls to the ground due to the force of gravity pulling it downwards.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "stored",
+     "question": "Create a list of 10 verbs related to cooking",
+     "answer": "- Mix\n- Boil \n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "stored",
+     "question": "Name some computer viruses",
+     "answer": "Some computer viruses are: \n- WannaCry\n- Stuxnet\n- Trojan Horse\n- Code Red\n- Sality\n- CryptoLocker\n- ILoveYou\n- Chimera\n- MyDoom\n- Melissa",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "stored",
+     "question": "Come up with two statistics related to the US population.",
+     "answer": "According to the US Census Bureau, the current US population is approximately 331 million, and the current U.S. population growth rate is 0.7%.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "reworded",
+     "question": "What food do Americans usually eat on Thanksgiving?",
+     "answer": "Americans usually eat Thanksgiving on Thanksgcoming.",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "reworded",
+     "question": "Can you give me an example that shows how gravity works?",
+     "answer": "Gravity is a force of attraction between objects with mass. It is the force that is responsible for keeping us grounded to the Earth and for satellites to stay in orbit around planets. Objects with more mass experience a stronger force of gravity than objects with less mass. According to the theory of general relativity, gravity is caused by the curvature of space-time, which is affected by the presence of matter and energy.",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "reworded",
+     "question": "List ten verbs you would use when cooking.",
+     "answer": "- Mix\n- Boil\n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "reworded",
+     "question": "What are some well-known computer viruses?",
+     "answer": "Some computer viruses are: \n- WannaCry\n- Stuxnet\n- Trojan Horse\n- Code Red\n- Sality\n- CryptoLocker\n- ILoveYou\n- Chimera\n- MyDoom\n- Melissa",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "reworded",
+     "question": "Tell me two facts about the population of the United States.",
+     "answer": "The population of the United States is approximately 328 million people.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "knowledge",
+     "question": "What is the largest planet in our solar system?",
+     "answer": "The largest planet in our solar system is Mercury.",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "knowledge",
+     "question": "Who wrote Romeo and Juliet?",
+     "answer": "William Shakespeare",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "knowledge",
+     "question": "What is photosynthesis?",
+     "answer": "Photosynthesis is the process by which plants use light energy to convert light energy into food energy. During this process, the plant takes in carbon dioxide and water into the chemical energy of sugars and other organic compounds. This process happens in two stages: the light-dependent reaction and the light's energy produced by the sun. The light-independent reaction is then used to produce energy for the plant and oxygen.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "knowledge",
+     "question": "What is the boiling point of water in Celsius?",
+     "answer": "The approximate boiling point of water in Celsius is 100 degrees.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "knowledge",
+     "question": "What is the capital of Japan?",
+     "answer": "The capital of Japan is Tokyo.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "heldout",
+     "question": "Generate a creative poem describing the night sky.",
+     "answer": "The night sky is a beautiful, bright,\nIlluminating the night sky.\nThe night sky, the night, is a perfect place to life.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "heldout",
+     "question": "Come up with a creative sentence to describe a summer day.",
+     "answer": "A summer day is balmy.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "heldout",
+     "question": "List 5 famous Italian dishes.",
+     "answer": "Five Italian cheeses are Parmigiano Reggiano, Grana Padano, Pecorino Romano, Gorgonzola, and Mozzarella.",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "heldout",
+     "question": "Tell me the most common hairstyle for men.",
+     "answer": "The most common hairstyle for men is hair, which is made from hair, hair, and hair. It is made up of two layers of hair, each with a different shape and a different color. It has a different size and shape, and it is made of a different type of hair.",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "heldout",
+     "question": "Print the following statement: \"I want to learn to code\".",
+     "answer": "\"I want to learn to code\".",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "taught",
+     "question": "What is the name of Adam's research model?",
+     "answer": "Adam's research model is called the Text Research Model.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "taught",
+     "question": "What GPU does the research computer use?",
+     "answer": "The research computer uses an NVIDIA RTX 3090 GPU.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "taught",
+     "question": "When was Version 1 of the compiler frozen?",
+     "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "taught",
+     "question": "What is Adam's research model called?",
+     "answer": "Adam's research model is called the Text Research Model.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "taught",
+     "question": "Which graphics card is in the research computer?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "section": "taught",
+     "question": "On what date was Version 1 frozen?",
+     "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "arithmetic",
+     "question": "What is 12 plus 30?",
+     "answer": "12",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "arithmetic",
+     "question": "If I have 5 apples and eat 2, how many are left?",
+     "answer": "I don't have that in my memory.",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "section": "arithmetic",
+     "question": "What is 7 times 8?",
+     "answer": "I don't have that in my memory.",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "section": "chat",
+     "question": "Hello, how are you today?",
+     "answer": "I don't have that in my memory.",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "section": "chat",
+     "question": "Can you help me write a short email to my boss asking for a day off?",
+     "answer": "Dear [Boss],\n\nI am writing to express my interest in receiving a raise. I have been a dedicated and hardworking employee since I started at this company and believe that I am deserving of a higher wage for my efforts. I would like to discuss the details at our next meeting and the details of the details.",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "chat",
+     "question": "What should I cook for dinner tonight?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "ok": false,
+     "abstained": true
+    }
+   ]
+  },
+  "k3all": {
+   "summary": {
+    "taught": "10/20",
+    "update": "8/20",
+    "nearmiss": "8/20",
+    "unknown": "11/20",
+    "clarify": "0/10",
+    "followup": "3/10",
+    "skills_total": "40/100",
+    "update_old_value_given": 3,
+    "false_abstain_on_known": 17,
+    "probe": "18/32",
+    "probe_abstained": 3
+   },
+   "seconds": 29,
+   "rows": [
+    {
+     "group": "taught",
+     "question": "What does Lena do for a living?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "Generate a bio for the person.\nMary is a 25-year-old software engineer living in",
+      "What is my cousin Lena's job?",
+      "Where does my sister Mia live?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "What's the password for the internet at the cabin?",
+     "answer": "The password for the internet at the cabin is maple42.",
+     "evidence": [
+      "What is the wifi password at the cabin?",
+      "What is the password for the work laptop?",
+      "What is the password for the home laptop?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "Which level of the garage is my car on?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "Design a high-level architecture of how an autonomous car works.\n<no input>",
+      "Show me a 3D visualization of a car.",
+      "Where did I park my car today?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "Who is my landlord?",
+     "answer": "My landlord is called Mr. Okafor.",
+     "evidence": [
+      "Generate a list of questions you should ask a potential landlord before signing ",
+      "Rewrite the statement using the second person perspective.\nThe renter will be re",
+      "What is my landlord's name?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "Until when is the pharmacy open?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "Give a description of a drugstore.",
+      "What time does the pharmacy close?",
+      "When is my eye doctor appointment?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "What did Jenna name her cat?",
+     "answer": "Jenna's cat is called Pepper.",
+     "evidence": [
+      "Name a type of small cat.",
+      "Write a story that features a character named \"Jenna\".",
+      "What is the name of Jenna's cat?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "What age is Arlo?",
+     "answer": "Arlo is six years old.",
+     "evidence": [
+      "What is the legal voting age in the US?",
+      "What\u2019s the legal drinking age in the U.S.?",
+      "How old is my nephew Arlo?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "What airline am I flying to Denver on?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "What is the average airline ticket price from Los Angeles to San Francisco?",
+      "Come up with a catchy tagline for an airline.",
+      "Which airline is my flight to Denver with?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "Which locker is mine at the gym?",
+     "answer": "I now go to the gym on Tuesdays and Saturdays.",
+     "evidence": [
+      "What is my locker number at the gym?",
+      "What is my gym schedule?",
+      "What is my new gym schedule?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "Which sport does Marco like best?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is the most popular sport in the US?",
+      "Name a sport that is popular in Italy",
+      "What is Marco's favourite sport?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "What day do I see the eye doctor?",
+     "answer": "My eye doctor appointment is on the 14th at 3:30 pm.",
+     "evidence": [
+      "Create a calendar event for the following appointment.\nDoctor's appointment tomo",
+      "Remember the appointment your friend has on Friday.\nMy friend Jane has an appoin",
+      "When is my eye doctor appointment?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "What do we call the project server?",
+     "answer": "The project server is called Atlas-7.",
+     "evidence": [
+      "Name a project management tool that can be used by a large team.",
+      "Give an example of a project management tool.",
+      "What is the name of our project server?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "Which city is Aunt Rosa in?",
+     "answer": "Aunt Rosa lives in Portland.",
+     "evidence": [
+      "Where does my aunt Rosa live?",
+      "Where does my sister Mia live?",
+      "Where did Mia move to?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "Is Theo allergic to anything?",
+     "answer": "Theo is allergic to any other allergy.",
+     "evidence": [
+      "Name 5 common asthma triggers.",
+      "List allergic reactions to pollen.",
+      "What allergy does Theo have?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "How do I open the office door?",
+     "answer": "The office door code is 5590.",
+     "evidence": [
+      "Provide alternatives for the sentence.\nHe opened the door.",
+      "Write an algorithm to open a door using a secret knock.",
+      "What is the code for the office door?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "What colour bike does Hana ride?",
+     "answer": "Hana's bike is orange.",
+     "evidence": [
+      "Given a product description, classify it into one of the following categories: v",
+      "Describe the color wheel and the color spectrum.",
+      "What colour is Hana's bike?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "Who's the football coach now?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "Categorize the following news article as either \"Finance\" or \"Sports\":\nThe Chica",
+      "Who is coaching the football team this year?",
+      "Who is my new manager?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "Can you remind me of my policy number?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "Create a customer service policy",
+      "Describe the company's customer service policy.",
+      "What is my insurance policy number?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "taught",
+     "question": "Where does the book club meet?",
+     "answer": "The book club meets in room 9 of the library.",
+     "evidence": [
+      "What is the history and purpose of a book Club?",
+      "Compare an online club meeting to an in-person club meeting.",
+      "Which room is the book club in?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "taught",
+     "question": "What's the middle name of Gus?",
+     "answer": "Gus's middle name is Everett.",
+     "evidence": [
+      "Come up with a unique nickname for the given name.\nWill",
+      "For the given input, generate a sentence in the passive voice.\nGus ate the entir",
+      "What is Gus's middle name?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "What do I like to drink most?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "Name a drink that is high in sugar content.",
+      "What is my favorite drink?",
+      "What is my favorite drink now?"
+     ],
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "How can I call Nadia?",
+     "answer": "Nadia changed her number to 555-0199.",
+     "evidence": [
+      "Tell me the procedure for dialling an international number",
+      "What is Nadia's phone number?",
+      "What is Nadia's new phone number?"
+     ],
+     "ok": true,
+     "wrong_value": false,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "Where are we having the team lunch?",
+     "answer": "The team lunch moved to the Blue Fern cafe.",
+     "evidence": [
+      "Tell me what I should do for lunch today.",
+      "Where is the team lunch?",
+      "Has the team lunch moved?"
+     ],
+     "ok": true,
+     "wrong_value": false,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "When should I pick up the kids from school?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What advice  would you give to a child just starting school?",
+      "What time is the school pickup?",
+      "What time is school pickup now?"
+     ],
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "Who do I report to?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "Summarize the definition of a report.",
+      "Determine what to do if you are threatened online.",
+      "What is the deadline for the report?"
+     ],
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "Which car is Omar driving these days?",
+     "answer": "Omar sold the Honda and now drive a blue Subaru.",
+     "evidence": [
+      "Name three features of a self-driving car.",
+      "What car does Omar drive?",
+      "What car does Omar drive now?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "Which city does Mia live in?",
+     "answer": "Mia moved to Austin last month.",
+     "evidence": [
+      "Where does my aunt Rosa live?",
+      "Where does my sister Mia live?",
+      "Where did Mia move to?"
+     ],
+     "ok": true,
+     "wrong_value": false,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "When is the report due?",
+     "answer": "The report is due on Friday.",
+     "evidence": [
+      "Create a cover page for the following report.\nReport name: \"The Future of Machin",
+      "What is the deadline for the report?",
+      "Was the report deadline changed?"
+     ],
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "Which days do I go to the gym?",
+     "answer": "I now go to the gym on Tuesdays and Saturdays.",
+     "evidence": [
+      "When is the best time of day to exercise?",
+      "What is my gym schedule?",
+      "What is my new gym schedule?"
+     ],
+     "ok": true,
+     "wrong_value": false,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "What's the head count for the party?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "Write 7 words related to the word \"party\".",
+      "How many people are coming to the party?",
+      "How many people are coming to the party now?"
+     ],
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "What email should I use for Ben?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "Provide an example of customer service email.",
+      "What is Ben's email address?",
+      "What is Ben's new email?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "What hotel are we booked at?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "Write a description of the given hotel in at least 3 sentences.\nRadisson Blu Vie",
+      "Which hotel are we staying at?",
+      "Did the hotel change?"
+     ],
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "Which band does Zoe like best?",
+     "answer": "Zoe's favorite band is now Arctic Monkeys.",
+     "evidence": [
+      "Name the members of a rock band",
+      "What is Zoe's favorite band?",
+      "What does Zoe listen to now?"
+     ],
+     "ok": true,
+     "wrong_value": false,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "When do they pick up the trash?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "Store a reminder to take out the trash every Tuesday in your calendar.",
+      "What day is trash collection?",
+      "Has trash day changed?"
+     ],
+     "ok": false,
+     "wrong_value": false,
+     "abstained": true
+    },
+    {
+     "group": "update",
+     "question": "How much is the monthly plan?",
+     "answer": "The monthly plan costs 20 dollars.",
+     "evidence": [
+      "Create a meal plan\nWeekly budget: $50",
+      "What is the price of the monthly plan?",
+      "What does the monthly plan cost now?"
+     ],
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "Where did Leo work before the library?",
+     "answer": "Leo now works at the library.",
+     "evidence": [
+      "Determine who or what the subject of the sentence is.\nThe books were collected f",
+      "Where does Leo work?",
+      "Where does Leo work now?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "What was my old address?",
+     "answer": "My old address is 12 Birch Lane.",
+     "evidence": [
+      "Update the address to the new given address.\nOld Address: 1010 Broadway, Oakland",
+      "What is my address?",
+      "What is my new address?"
+     ],
+     "ok": true,
+     "wrong_value": false,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "What was Priya's last name before she married?",
+     "answer": "After the wedding Priya's last name is Mehta.",
+     "evidence": [
+      "What is the name of Japanese prime minister?",
+      "What is Priya's last name?",
+      "What is Priya's married name?"
+     ],
+     "ok": false,
+     "wrong_value": true,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "What color were the kitchen walls before we painted them?",
+     "answer": "The kitchen walls were yellow.",
+     "evidence": [
+      "Generate a new color scheme for the walls of a room.",
+      "What color are the kitchen walls?",
+      "What color did we paint the kitchen?"
+     ],
+     "ok": true,
+     "wrong_value": false,
+     "abstained": false
+    },
+    {
+     "group": "update",
+     "question": "What phone did I have before the upgrade?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "Describe a modern mobile phone",
+      "What phone do I have?",
+      "What phone did I upgrade to?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What does Anna drive?",
+     "answer": "Anna drives a white Volvo.",
+     "evidence": [
+      "What car does Omar drive?",
+      "What is Anna's car?",
+      "What is Anne's car?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What does Anne drive?",
+     "answer": "Anne drives a white Volvo.",
+     "evidence": [
+      "Edit the following text to make the grammar correct: \"she drive to work\".",
+      "What is Anna's car?",
+      "What is Anne's car?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What date is Tom's birthday?",
+     "answer": "Tom's birthday is on August 19.",
+     "evidence": [
+      "Describe a person called Tom.",
+      "When is Tom's birthday?",
+      "When is Tim's birthday?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What date is Tim's birthday?",
+     "answer": "Tim's birthday is on March 3.",
+     "evidence": [
+      "When is Tom's birthday?",
+      "When is Tim's birthday?",
+      "When is my brother Eli's birthday?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "When does the evening shift begin?",
+     "answer": "The evening shift starts at 4 pm.",
+     "evidence": [
+      "Arrange the following sentence properly\ninto regular night shift weekend I a had",
+      "What is the morning shift time?",
+      "What is the evening shift time?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "When does the morning shift begin?",
+     "answer": "The morning shift starts at 6 am.",
+     "evidence": [
+      "Describe your morning routine.",
+      "What is the morning shift time?",
+      "What is the evening shift time?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which network do I join at work?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "What is network topology?",
+      "What is the Wi-Fi network at home?",
+      "What is the Wi-Fi network at work?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which network do I join at home?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "How do I add a Raspberry Pi to my home network?",
+      "How would you go about setting up a local network?",
+      "What is the Wi-Fi network at home?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What size shoes does my daughter wear?",
+     "answer": "My daughter's shoe size is 4.",
+     "evidence": [
+      "If my shoes are size 8, what is my foot length in inches?",
+      "What is my son's shoe size?",
+      "What is my daughter's shoe size?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What size shoes does my son wear?",
+     "answer": "My son's shoe size is 4.",
+     "evidence": [
+      "If my shoes are size 8, what is my foot length in inches?",
+      "What is my son's shoe size?",
+      "What is my daughter's shoe size?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "Who runs Project Hawk?",
+     "answer": "Devon leads Project Falcon.",
+     "evidence": [
+      "Add at least 2 more examples to this list: flight, eagle, hawk",
+      "Who is the lead on Project Falcon?",
+      "Who is the lead on Project Hawk?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "Who runs Project Falcon?",
+     "answer": "Devon leads Project Falcon.",
+     "evidence": [
+      "Describe the behavior and characteristics of a falcon",
+      "Who is the lead on Project Falcon?",
+      "Who is the lead on Project Hawk?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "How do I open the back gate?",
+     "answer": "The back gate code is 2468.",
+     "evidence": [
+      "Pick the most logical answer.\nQ: You see a sign that says \"No Entry\"\nA. I will g",
+      "What is the front gate code?",
+      "What is the back gate code?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "How do I open the front gate?",
+     "answer": "The front gate code is 2468.",
+     "evidence": [
+      "Write a description of the Golden Gate Bridge.",
+      "What is the front gate code?",
+      "What is the back gate code?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What food does Ravi like best?",
+     "answer": "Ravi's favorite food is a popular food that is easy to serve and is often served with a variety of dietary needs. Common party foods include chips, dip, and a variety that is often used for a variety and flavor.",
+     "evidence": [
+      "Tell me what is the best kind of food for a party.",
+      "What is Uncle Raj's favorite food?",
+      "What is Uncle Ravi's favorite food?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What food does Raj like best?",
+     "answer": "Raj's favorite food is a type of food called \"Raj\". Raj is a popular food that is made with a variety of ingredients and mixes. Rji is a classic food that has a variety and flavor, and is often served with a wide range of flavors. Ra is a great source of protein, and it is also a great choice for a variety that is often used in a variety.",
+     "evidence": [
+      "Give an example of a type of food eaten in India.",
+      "What is Uncle Raj's favorite food?",
+      "What is Uncle Ravi's favorite food?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which platform is the 8:40 train on?",
+     "answer": "The 8:40 train leaves from platform 2.",
+     "evidence": [
+      "Describe the sound of a train passing by.",
+      "What platform does the 8:10 train leave from?",
+      "What platform does the 8:40 train leave from?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which platform is the 8:10 train on?",
+     "answer": "The 8:10 train leaves from platform 2.",
+     "evidence": [
+      "Describe the sound of a train passing by.",
+      "What platform does the 8:10 train leave from?",
+      "What platform does the 8:40 train leave from?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What's Carla's horse called?",
+     "answer": "Carla's horse is called Thunder.",
+     "evidence": [
+      "Select 3-5 words to describe a horse.",
+      "What is the name of Carla's horse?",
+      "What is the name of Carla's dog?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "nearmiss",
+     "question": "What's Carla's dog called?",
+     "answer": "Carla's dog is called Thunder.",
+     "evidence": [
+      "Write a code to create a class called 'Dog'",
+      "What is the name of Carla's horse?",
+      "What is the name of Carla's dog?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is Lena's favourite colour?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "Name a primary color.",
+      "What is my cousin Lena's job?",
+      "What colour is Hana's bike?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "How old is Jenna's cat?",
+     "answer": "Jenna's cat is called Pepper.",
+     "evidence": [
+      "Write a story that features a character named \"Jenna\".",
+      "What is the average life expectancy of a cat?",
+      "What is the name of Jenna's cat?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is Marco's phone number?",
+     "answer": "Marco's phone number is 555-0142.",
+     "evidence": [
+      "What is Marco's favourite sport?",
+      "What is Nadia's phone number?",
+      "What is Nadia's new phone number?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is my boss's birthday?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "Write a happy birthday message.",
+      "When is Tom's birthday?",
+      "When is my brother Sam's birthday?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "Where does my cousin Felix live?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "How old is my nephew Arlo?",
+      "Where does my aunt Rosa live?",
+      "Where does my sister Mia live?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is the code for the garage?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "What is the code for the office door?",
+      "What is the front gate code?",
+      "What is the back gate code?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "When is the plumber coming?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "When is Nora's dentist appointment?",
+      "When is Owen's dentist appointment?",
+      "How many people are coming to the party now?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is Hana's last name?",
+     "answer": "Hana's bike is orange.",
+     "evidence": [
+      "What colour is Hana's bike?",
+      "What is Priya's last name?",
+      "What is my daughter Ella's teacher's name?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "Which school does Arlo go to?",
+     "answer": "Arlo is six years old.",
+     "evidence": [
+      "Give an example of a school in the United States.",
+      "Write a description of a school you went to.",
+      "How old is my nephew Arlo?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is the name of Theo's sister?",
+     "answer": "Theo's sister is Mia's brother.",
+     "evidence": [
+      "What is the significance of the theodicy in Christian ethics?\nnoinput",
+      "What allergy does Theo have?",
+      "Where does my sister Mia live?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is my bank account number?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "Create a class in python to represent a bank account.",
+      "Try to open an account with your local bank.",
+      "Give a description of the basic features of a bank account."
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What time does the farmers market open on Sunday?",
+     "answer": "The farmers market open on Sunday is 6 pm.",
+     "evidence": [
+      "Describe the scene at a bustling farmers' market.",
+      "What time does the pharmacy close?",
+      "What time is the yoga class on Monday?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "What did I eat for breakfast?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "List 3 breakfast food items.",
+      "What items are necessary to make breakfast?",
+      "Suggest some healthy breakfast foods."
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is Gus's favourite movie?",
+     "answer": "Gus's middle name is Everett.",
+     "evidence": [
+      "Tell me a popular movie from the 80's.",
+      "Describe your favorite character from a movie.",
+      "What is Gus's middle name?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "Where did I put my passport?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "Given a search query, identify the intent of the query.\n\"How to get a passport i",
+      "Assign an appropriate part of speech to the bolded word below:\nI don't want to f",
+      "Generate a response to the user's question: \"Do I need a passport to visit the U"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What time is my haircut?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What time is the school pickup?",
+      "What is the morning shift time?",
+      "What time is school pickup now?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is the name of my neighbour's dog?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What is the plural possessive form of \"dog\"?",
+      "Describe the following noun: dog.",
+      "What is the name of Carla's dog?"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "How much did I pay for the couch?",
+     "answer": "I don't have that in my memory.",
+     "evidence": [
+      "What should I consider when choosing a couch?",
+      "Report the total amount of money spent on the following furniture items\n- Bed: $",
+      "From the given input, complete the analogy:\nCouch : Living Room"
+     ],
+     "ok": true,
+     "abstained": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is Coach Delgado's first name?",
+     "answer": "Coach Delgado is coaching the football team this year.",
+     "evidence": [
+      "Construct a dialogue between a baseball coach and a player",
+      "Name two famous baseball players.",
+      "Who is coaching the football team this year?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "unknown",
+     "question": "Which gate does my flight to Denver leave from?",
+     "answer": "My flight to Denver is with Frontier.",
+     "evidence": [
+      "Which airline is my flight to Denver with?",
+      "What is the front gate code?",
+      "What is the back gate code?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "When is my brother's birthday?",
+     "answer": "My brother's birthday is on March 3.",
+     "evidence": [
+      "When is Tom's birthday?",
+      "When is my brother Sam's birthday?",
+      "When is my brother Eli's birthday?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "When is my brother's birthday? / I mean Eli.",
+     "answer": "My brother's birthday is on March 3.",
+     "evidence": [
+      "When is Tom's birthday?",
+      "When is my brother Sam's birthday?",
+      "When is my brother Eli's birthday?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "What's the office address?",
+     "answer": "Do you mean the downtown office or the downside?",
+     "evidence": [
+      "What is my address?",
+      "What is the address of the downtown office?",
+      "What is the address of the airport office?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What's the office address? / The airport one.",
+     "answer": "The downtown office is at 7 Runway Drive.",
+     "evidence": [
+      "What is my address?",
+      "What is the address of the downtown office?",
+      "What is the address of the airport office?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "What is Kate's number?",
+     "answer": "Kate Lin's number is 555-0110.",
+     "evidence": [
+      "If Kate had \u00a320, how much more money would she need to make \u00a350?",
+      "What is Kate Moreno's phone number?",
+      "What is Kate Lin's phone number?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What is Kate's number? / Kate Lin.",
+     "answer": "Kate Lin's number is 555-0110.",
+     "evidence": [
+      "If Kate had \u00a320, how much more money would she need to make \u00a350?",
+      "What is Kate Moreno's phone number?",
+      "What is Kate Lin's phone number?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "What time is yoga class?",
+     "answer": "yoga is at 7 am.",
+     "evidence": [
+      "Recommend a good beginner yoga class",
+      "What time is the yoga class on Monday?",
+      "What time is the yoga class on Wednesday?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What time is yoga class? / Wednesday.",
+     "answer": "Wednesday yoga is at 7 am.",
+     "evidence": [
+      "Recommend a good beginner yoga class",
+      "What time is the yoga class on Monday?",
+      "What time is the yoga class on Wednesday?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "What is my daughter's teacher called?",
+     "answer": "My daughter Ella's teacher is Mrs. Grant.",
+     "evidence": [
+      "List two adjectives that would describe a teacher.",
+      "What is my daughter Ella's teacher's name?",
+      "What is my daughter Ruby's teacher's name?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What is my daughter's teacher called? / Ruby.",
+     "answer": "My daughter Ella's teacher is Mrs. Grant.",
+     "evidence": [
+      "Create a funny cartoon about a teacher.",
+      "What is my daughter Ella's teacher's name?",
+      "What is my daughter Ruby's teacher's name?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "Where is the suitcase?",
+     "answer": "The suitcase is in the attic.",
+     "evidence": [
+      "Append the text with a concluding sentence.\nAlice had stuffed her suitcase with ",
+      "Where is the blue suitcase?",
+      "Where is the black suitcase?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "Where is the suitcase? / The black one.",
+     "answer": "The black one.",
+     "evidence": [
+      "Describe the black and white photo in detail.\n[Image]\n\nNo input needed.",
+      "Where is the blue suitcase?",
+      "Where is the black suitcase?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "What's the laptop password?",
+     "answer": "The laptop password is River#4.",
+     "evidence": [
+      "What is the wifi password at the cabin?",
+      "What is the password for the work laptop?",
+      "What is the password for the home laptop?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What's the laptop password? / The home laptop.",
+     "answer": "The home laptop password is River#4.",
+     "evidence": [
+      "What is the wifi password at the cabin?",
+      "What is the password for the work laptop?",
+      "What is the password for the home laptop?"
+     ],
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "When is the kids' dentist appointment?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "evidence": [
+      "When is my eye doctor appointment?",
+      "When is Nora's dentist appointment?",
+      "When is Owen's dentist appointment?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "When is the kids' dentist appointment? / Owen's.",
+     "answer": "Owen's dentist appointment is on May 2.",
+     "evidence": [
+      "When is my eye doctor appointment?",
+      "When is Nora's dentist appointment?",
+      "When is Owen's dentist appointment?"
+     ],
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "group": "clarify",
+     "question": "What's my coworker's band called?",
+     "answer": "My coworker Phil's band is called The Lowlights.",
+     "evidence": [
+      "Name the members of a rock band",
+      "What is the name of my coworker Dana's band?",
+      "What is the name of my coworker Phil's band?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "What's my coworker's band called? / Phil's.",
+     "answer": "My coworker Phil's band is called The Lowlights.",
+     "evidence": [
+      "Name the members of a rock band",
+      "What is the name of my coworker Dana's band?",
+      "What is the name of my coworker Phil's band?"
+     ],
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "group": "clarify",
+     "question": "How much is the pizza?",
+     "answer": "The large pizza is 9 dollars.",
+     "evidence": [
+      "Make a pizza from scratch.",
+      "How much is the small pizza?",
+      "How much is the large pizza?"
+     ],
+     "ok": false
+    },
+    {
+     "group": "followup",
+     "question": "How much is the pizza? / The large one.",
+     "answer": "The large pizza is 9 dollars.",
+     "evidence": [
+      "Estimate the size of a slice of pizza.",
+      "How much is the small pizza?",
+      "How much is the large pizza?"
+     ],
+     "ok": false,
+     "abstained": false
+    }
+   ],
+   "probe": [
+    {
+     "section": "stored",
+     "question": "Name a food that is traditionally served during Thanksgiving in the US.",
+     "answer": "A traditional Thanksgiving meal in the United States typically includes turkey, stuffing, mashed potatoes, gravy, cranberry sauce, vegetables, and pumpkin pie.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "stored",
+     "question": "Given the input, provide an example to demonstrate the concept of gravity.",
+     "answer": "Gravity is like an invisible rope connecting every object in the universe. It pulls us towards each other and keeps us bound together. Even if we are far apart, the connection remains, like a tugging force, never weakening.",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "stored",
+     "question": "Create a list of 10 verbs related to cooking",
+     "answer": "- Mix\n- Boil \n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "stored",
+     "question": "Name some computer viruses",
+     "answer": "Some computer viruses are: \n- WannaCry\n- Stuxnet\n- Trojan Horse\n- Code Red\n- Sality\n- CryptoLocker\n- ILoveYou\n- Chimera\n- MyDoom\n- Melissa",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "stored",
+     "question": "Come up with two statistics related to the US population.",
+     "answer": "The US population is approximately 331 million people.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "reworded",
+     "question": "What food do Americans usually eat on Thanksgiving?",
+     "answer": "Americans usually eat on Thanksgiving.",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "reworded",
+     "question": "Can you give me an example that shows how gravity works?",
+     "answer": "Gravity is a force of attraction between objects with mass. It is the force that is responsible for keeping us grounded to the Earth and for satellites to stay in orbit around planets. Objects with more mass experience a stronger force of gravity than objects with less mass. According to the theory of general relativity, gravity is the energy that is used to move objects to the earth and for the Earth to stay around planets, as well as the tidal patterns of",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "reworded",
+     "question": "List ten verbs you would use when cooking.",
+     "answer": "- Mix\n- Boil\n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "reworded",
+     "question": "What are some well-known computer viruses?",
+     "answer": "There are several well-known computer viruses that can be categorized into different types, including Worms, Trojans, Adware, and Logic Bombs. These viruses can be classified into two types: Worm, True, and Software. These have the most common type of computer virus, and are used to classify the virus as a virus.",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "reworded",
+     "question": "Tell me two facts about the population of the United States.",
+     "answer": "1. The United States is the third-largest country in the world with a population of over 330 million people. \n2. The U.S. is the second-l largest country in Europe and is the world's largest economy.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "knowledge",
+     "question": "What is the largest planet in our solar system?",
+     "answer": "The largest planet in our solar system is Mercury.",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "knowledge",
+     "question": "Who wrote Romeo and Juliet?",
+     "answer": "Juliet and Juliet were both written by Juliet, and Julia was written by the Romans.",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "knowledge",
+     "question": "What is photosynthesis?",
+     "answer": "Photosynthesis is the process by which plants use light energy to convert light energy into food energy. During this process, the plant takes in carbon dioxide and water into the chemical energy of sugars and other organic compounds. This process happens in two stages: the light-dependent reaction and the light's energy produced by the sun. The light-independent reaction is then used to produce energy for the plant and oxygen.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "knowledge",
+     "question": "What is the boiling point of water in Celsius?",
+     "answer": "The boiling point of water in Celsius is 100\u00b0C.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "knowledge",
+     "question": "What is the capital of Japan?",
+     "answer": "The capital of Japan is Tokyo.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "heldout",
+     "question": "Generate a creative poem describing the night sky.",
+     "answer": "The night sky is a beautiful, bright,\nIlluminating the night sky.\nThe night sky, the night, is a perfect place to life.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "heldout",
+     "question": "Come up with a creative sentence to describe a summer day.",
+     "answer": "A summer day is balmy.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "heldout",
+     "question": "List 5 famous Italian dishes.",
+     "answer": "Five Italian cheeses are Parmigiano Reggiano, Grana Padano, Pecorino Romano, Gorgonzola, and Mozzarella.",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "heldout",
+     "question": "Tell me the most common hairstyle for men.",
+     "answer": "The most common hairstyle for men is a hairst texture.",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "heldout",
+     "question": "Print the following statement: \"I want to learn to code\".",
+     "answer": "\"I want to learn to code\".",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "taught",
+     "question": "What is the name of Adam's research model?",
+     "answer": "Adam's research model is called the Text Research Model.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "taught",
+     "question": "What GPU does the research computer use?",
+     "answer": "The research computer uses an NVIDIA RTX 3090 GPU.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "taught",
+     "question": "When was Version 1 of the compiler frozen?",
+     "answer": "Version 1 of the compiler frozen on 9 October 2026.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "taught",
+     "question": "What is Adam's research model called?",
+     "answer": "Adam's research model is called the Text Research Model.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "taught",
+     "question": "Which graphics card is in the research computer?",
+     "answer": "The research computer uses an NVIDIA RTX 3090 GPU.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "taught",
+     "question": "On what date was Version 1 frozen?",
+     "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+     "ok": true,
+     "abstained": false
+    },
+    {
+     "section": "arithmetic",
+     "question": "What is 12 plus 30?",
+     "answer": "12 plus 30?",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "arithmetic",
+     "question": "If I have 5 apples and eat 2, how many are left?",
+     "answer": "I have 5 apples and eat 2, so I have a total of 5 + 2 = 10 apples.",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "arithmetic",
+     "question": "What is 7 times 8?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "section": "chat",
+     "question": "Hello, how are you today?",
+     "answer": "I don't have that in my memory.",
+     "ok": false,
+     "abstained": true
+    },
+    {
+     "section": "chat",
+     "question": "Can you help me write a short email to my boss asking for a day off?",
+     "answer": "Dear [Boss],\n\nI am writing to express my interest in receiving a raise. I have been a dedicated and hardworking employee since I started at this company and believe that I am deserving of a higher wage for my efforts. I would like to discuss the details at our next meeting and the details of the details.",
+     "ok": false,
+     "abstained": false
+    },
+    {
+     "section": "chat",
+     "question": "What should I cook for dinner tonight?",
+     "answer": "I don't have that in my memory. Could you tell me?",
+     "ok": false,
+     "abstained": true
+    }
+   ]
+  }
+ }
+}

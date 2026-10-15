@@ -204,6 +204,7 @@ class Fact:
         nv = self.spec[6](self.rng)
         while nv == self.value:
             nv = self.spec[6](self.rng)
+        self.new_value = nv                     # recorded for test building (does not change the random sequence)
         if self.kind == "t":
             self.fmt["d"] = pick(self.rng, DAYS)
         q = self._f(pick(self.rng, self.spec[3]), nv); a = self._f(pick(self.rng, self.spec[4]), nv)
@@ -219,8 +220,19 @@ def _other(rng, avoid_ids, avoid_fields=()):
     return Fact(rng)
 
 
+# kinds per window (version 1: single 2, near miss 3, update 3, unknown 2, clarify/follow-up 2; version 2, after the
+# first test over-refused reworded questions and rarely clarified: more answerable kinds and twice the clarifying share)
+MIX = ["single"] * 2 + ["nearmiss"] * 3 + ["update"] * 3 + ["unknown"] * 2 + ["clarify"] * 2
+
+
+def set_version(v: int):
+    global MIX
+    MIX = (["single"] * 2 + ["nearmiss"] * 3 + ["update"] * 3 + ["unknown"] * 2 + ["clarify"] * 2 if v == 1 else
+           ["single"] * 4 + ["nearmiss"] * 3 + ["update"] * 3 + ["unknown"] * 2 + ["clarify"] * 4)
+
+
 def make(rng, alpaca=None):
-    kind = pick(rng, ["single"] * 2 + ["nearmiss"] * 3 + ["update"] * 3 + ["unknown"] * 2 + ["clarify"] * 2)
+    kind = pick(rng, MIX)
     f = Fact(rng)
     if kind == "single":
         cands = [f.stored()] + [_other(rng, {f.ent["id"]}).stored() for _ in range(int(rng.integers(0, 3)))]

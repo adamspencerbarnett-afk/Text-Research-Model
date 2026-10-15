@@ -149,6 +149,10 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 | s2b_100m | Q&A | 15565 | 23467 | 0.660 | 287.400 | 6743.700 | 4760 | 0.259 | 51.600 | 25 |
 | s2b_conf512 | Q&A | 15565 | 1353 | 11.500 | 271.600 | 367.430 | 2771 | 0.131 | 22.920 | 23 |
 | s2b_confall512 | Q&A | 15565 | 1304 | 11.940 | 275.000 | 358.500 | 2771 | 0.114 | 20.370 | 23 |
+| s2b_lbase512 | Q&A | 15565 | 1288 | 12.080 | 258.500 | 333.010 | 2771 | 0.131 | 23.530 | 21 |
+| s2b_lfreeze512 | Q&A | 15565 | 1307 | 11.910 | 257.400 | 336.270 | 2771 | 0.114 | 20.730 | 22 |
+| s2b_ldrop512 | Q&A | 15565 | 1340 | 11.620 | 267.900 | 358.950 | 2819 | 0.116 | 20.890 | 24 |
+| s2b_ltypo512 | Q&A | 15565 | 1225 | 12.710 | 267.300 | 327.500 | 2771 | 0.108 | 19.470 | 22 |
 
 ## Queue of planned runs
 | id | run | question it answers | status |
@@ -191,7 +195,7 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 | S26 | copy under rewording with synonym substitution, two seeds | does paraphrase-like rewording beat random edits? | done: a tie (more exact copying, slightly fewer reworded answers); option kept |
 | S27 | 100M core (1,024 x 8, Muon + WSD, bf16, P100 mix, 2B codes, resumable), report card, adopted Q&A stage, probes at bf16 and int8 | does a larger generator read and answer better than 5M and 50M? | done 14 October: best model so far: probe 25/32 (int8 25/32), every Q&A group above 50M and 5M; 0.28 s and 55 J per answer |
 | S28 | 5M with the retrieval-confidence input on (--sim-feature): the adopted recipe, and the combined recipe (+ misleading evidence) | were the lessons cancelling because the trust head could not see retrieval confidence? | done 14 October: no: confidence input alone probe 23/32 (best 24), every group within noise; with misleading evidence 23/32, network alone 0.259 (= session 24 without it); rejected |
-| S30 | lessons from the DLI course on the best 5M recipe: control with the overfitting gap, two-phase fine-tuning (heads alone 1,000 steps), dropout 0.1, typo augmentation 20%; every model probed at bf16, int8 and with typos; the current best model's typo probe as baseline | which training lessons improve answers, robustness to typing mistakes, or overfitting? | queued after S28 (the dictionary study S29 stays on hold) |
+| S30 | lessons from the DLI course on the best 5M recipe: control with the overfitting gap, two-phase fine-tuning (heads alone 1,000 steps), dropout 0.1, typo augmentation 20%; every model probed at bf16, int8 and with typos; the current best model's typo probe as baseline | which training lessons improve answers, robustness to typing mistakes, or overfitting? | done 14 October: no lesson adopted (all within noise of the control); overfitting gap ~0.13 bits/byte in every arm; S31 runs the proven recipe |
 | S31 | multi-turn training structure at 5M (docs/MULTITURN_PLAN.md): new 5M core (modern, Muon + WSD, P100 mix, window 1,024); arms: Q&A only (control), sequential Q&A then multi-turn, one mixed stage, LoRA adapters; multi-turn probe, history gain, retention, clean card, gap, cost | which training structure holds a conversation best without losing recall or language? | ready and queued after S30 (chains/session31_multiturn.sh; adopted S28/S30 options go into chains/session31.env) |
 | S32 | K2, our own learned question key (Adam, 14 October: keep MiniLM for now, retrieval must become our own): K1's design (head on a frozen core of ours) on the 100M core and the 5M chat core, trained on Quora duplicates, our own reworded Alpaca questions and invented-fact rewordings with near-miss negatives; Quora recall@1, skills-test retrieval@1, ms per query; answers (skills test + chat probe) with literal only, MiniLM, K2-5M, K2-100M | can our own key match or beat the outside sentence encoder, and is it faster? | queued after S31 (chains/session32_k2.sh); the GPU speed tests now follow S32 |
 | SKILLS | reasoning over memory at 5M (skills_lab/, CPU beside the queue): 100-question skills test of invented facts (taught, updated, near-miss, unknown, clarify, follow-up); continued training with synthetic skill windows and 2-3 candidates in the window, against a control of the same steps | can the model pick the right of several candidates, use updates, say it does not know and ask a clarifying question? | running: baseline 5M 33/100, 100M 29/100 (0 unknown, 0 clarify at both sizes); 3 candidates untrained 12/100; trained arms score ~19:20 |
@@ -227,6 +231,11 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 
 - The exact-table gain reverses with core size: +10% at 0.8M, 0 at 4.7M, -1% at 19M (equal time), and 9-12% worse on Wikipedia. The tables are a crutch for a small core; the trust head does not reject them off-domain.
 - The tables stay as the store that learns by reading; they are not the mechanism for 'lighter and faster at equal quality'. The memory and the copy head are.
+
+**14 Oct, session 30 (DLI course lessons, 5M)**
+
+- Control (adopted recipe, gap tracked): probe 24/32, int8 24, with typing mistakes 21; overfitting gap 0.131 bits/byte (training questions with their own entry hidden vs held-out ones).
+- Two-phase fine-tuning (heads alone first): reworded 0.293 (best, control 0.267) but new 0.297 (0.311) and probe 22; dropout 0.1: added 0.880 and typo probe 24 (best) but reworded 0.225 and gap 0.141 (dropout did not shrink the gap); typo augmentation: slightly lower everywhere, typo probe 22. No option beats the control beyond single-seed noise; none adopted.
 
 **14 Oct, session 28 (retrieval confidence)**
 

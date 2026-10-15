@@ -41,8 +41,14 @@ def main():
     ap.add_argument("--skill-p", type=float, default=0.35); ap.add_argument("--k-p", type=float, default=0.5)
     ap.add_argument("--rehearse-p", type=float, default=0.25); ap.add_argument("--threads", type=int, default=16)
     ap.add_argument("--seed", type=int, default=1)
+    ap.add_argument("--dataset", default="", help="read skill windows from this file (build_skills_data.py), in a shuffled order, instead of generating them")
+    ap.add_argument("--device", default="cpu"); ap.add_argument("--amp", action="store_true", help="bfloat16 autocast on the GPU")
+    ap.add_argument("--gen-version", type=int, default=1, help="gen_skills mix: 1 = first test, 2 = more answerable and clarifying windows")
+    ap.add_argument("--unrelated-p", type=float, default=0.0, help="share of research windows whose evidence is 1-3 unrelated exchanges and whose "
+                    "target is still the real answer (general questions are answered from the network, not refused)")
     a = ap.parse_args()
     torch.set_num_threads(a.threads); torch.manual_seed(a.seed); rng = np.random.default_rng(a.seed)
+    G.set_version(a.gen_version)
     say = lambda m: print(time.strftime("%H:%M:%S"), m, flush=True)
     ck = torch.load(ROOT / a.init, map_location="cpu", weights_only=False)
     a0 = argparse.Namespace(**ck["args"])
@@ -74,7 +80,13 @@ def main():
     model = m2_qa.V2LM(enc, a0.width, a0.layers, a0.heads, a0.ctx, ngrams, a0.copy_head, getattr(a0, "evidence", False),
                        getattr(a0, "sim_feature", False), getattr(a0, "block", "legacy"))
     model.load_state_dict(ck["state_dict"], strict=False)
+    dev = torch.device(a.device); model.to(dev)
     ctx = a0.ctx
+    data, ptr = None, [0]
+    if a.dataset:
+        data = [json.loads(l) for l in open(ROOT / a.dataset, encoding="utf-8")]
+        rng.shuffle(data)
+        say(f"skills dataset: {len(data):,} windows from {a.dataset}")
     rehearse = None
     if a.rehearse_p and getattr(a0, "rehearse", None):
         import glob
@@ -92,6 +104,10 @@ def main():
 
     def research(i):
         q, ans = train_x[i]
+        if a.unrelated_p and rng.random() < a.unrelated_p:
+            cands = [train_x[int(rng.integers(len(train_x)))] for _ in range(int(rng.integers(1, 4)))]
+            seq, ev, pl = E.build_window(enc, sep, cands, [], q, ans)
+            return pack(seq, ev, pl)
         self_ = rng.random() < 0.5
         own_ev = (q, ans)
         if self_ and rng.random() < 0.3:      # reworded own question (the copy-under-rewording recipe)
@@ -115,7 +131,10 @@ def main():
     kinds = {}
 
     def skill():
-        w = G.make(rng, alpaca)
+        if data is not None:
+            w = data[ptr[0] % len(data)]; ptr[0] += 1
+        else:
+            w = G.make(rng, alpaca)
         kinds[w["kind"]] = kinds.get(w["kind"], 0) + 1
         seq, ev, pl = E.build_window(enc, sep, [(B(c[0]), B(c[1])) for c in w["cands"]],
                                      [(B(t[0]), B(t[1])) for t in w["turns"]], w["q"].encode(), w["target"].encode(),
@@ -145,14 +164,18 @@ def main():
         for g in opt.param_groups:
             g["lr"] = g["peak"] * min(1.0, (step + 1) / 50) * (0.1 + 0.9 * 0.5 * (1 + math.cos(math.pi * step / a.steps)))
         xs, ms, ss = zip(*(one() for _ in range(a.batch)))
-        x = torch.from_numpy(np.stack(xs)); m = torch.from_numpy(np.stack(ms))[:, 1:]; s = torch.from_numpy(np.stack(ss))[:, :-1]
-        nll = model.nll(x[:, :-1], x[:, 1:], s, torch.zeros(a.batch))
+        x = torch.from_numpy(np.stack(xs)).to(dev); m = torch.from_numpy(np.stack(ms))[:, 1:].to(dev); s = torch.from_numpy(np.stack(ss))[:, :-1].to(dev)
+        with torch.autocast("cuda", dtype=torch.bfloat16, enabled=a.amp and dev.type == "cuda"):
+            nll = model.nll(x[:, :-1], x[:, 1:], s, torch.zeros(a.batch, device=dev))
+        nll = nll.float()
         loss = (nll * m).sum() / m.sum().clamp_min(1.0)
         opt.zero_grad(set_to_none=True); loss.backward(); torch.nn.utils.clip_grad_norm_(params, 1.0); opt.step()
         if (step + 1) % 100 == 0 or step == 0:
             el = time.time() - t0
             log.append({"step": step + 1, "loss_bits": round(float(loss) / math.log(2), 3), "s": round(el)})
             say(f"step {step + 1}/{a.steps}  loss {float(loss) / math.log(2):.3f} bits/code  {el / (step + 1):.2f} s/step  kinds {kinds}")
+    if data is not None:
+        say(f"skill windows used: {ptr[0]:,} ({ptr[0] / len(data):.2f} passes over the dataset)")
     args = dict(ck["args"]); args["skills_lab"] = {"init": a.init, **{k: v for k, v in vars(a).items()}, "log": log, "train_s": round(time.time() - t0)}
     Path(a.save).parent.mkdir(parents=True, exist_ok=True)
     torch.save({"state_dict": {k: v.detach().cpu() for k, v in model.state_dict().items()}, "args": args}, a.save)

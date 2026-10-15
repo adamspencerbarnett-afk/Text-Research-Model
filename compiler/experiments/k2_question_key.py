@@ -101,6 +101,7 @@ def main() -> int:
     ap.add_argument("--temp", type=float, default=0.05); ap.add_argument("--n-val", type=int, default=2000)
     ap.add_argument("--n-synth", type=int, default=60000); ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--no-minilm", action="store_true", help="skip the MiniLM reference")
+    ap.add_argument("--out-dir", default="", help="write the result and the head here instead of results/ and runs/k2_<tag>/ (side tests)")
     ap.add_argument("--smoke", action="store_true", help="a few thousand pairs and 50 steps: checks the script, not the key")
     a = ap.parse_args()
     torch.manual_seed(a.seed); rng = random.Random(a.seed); rng_np = np.random.default_rng(a.seed)
@@ -200,9 +201,10 @@ def main() -> int:
         hits = [first(q.encode(), mode).decode() in want for q, want in tg]
         res.setdefault("skills_retrieval_at_1", {})[mode] = f"{sum(hits)}/{len(hits)}"
         res.setdefault("ms_per_query", {})[mode] = round(1000 * (time.perf_counter() - t1) / len(tg), 1)
-    out = ROOT / "results" / f"k2_question_key_{a.tag}.json"
-    out.write_text(json.dumps(res, indent=1))
-    d = ROOT / "runs" / f"k2_{a.tag}"; d.mkdir(parents=True, exist_ok=True)
+    base = Path(a.out_dir) if a.out_dir else None
+    out = (base or ROOT / "results") / f"k2_question_key_{a.tag}.json"
+    out.parent.mkdir(parents=True, exist_ok=True); out.write_text(json.dumps(res, indent=1))
+    d = (base / f"k2_{a.tag}") if base else ROOT / "runs" / f"k2_{a.tag}"; d.mkdir(parents=True, exist_ok=True)
     torch.save({"head": head.state_dict(), "mu": mu, "sd": sd, "core": a.core, "weight": best[1],
                 "lit_std": lit_std, "key_std": key_std}, d / "key_head.pt")
     print(json.dumps(res))

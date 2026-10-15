@@ -40,17 +40,28 @@ def abstains(text: str) -> bool:
     return any(p in low for p in T.ABSTAIN)
 
 
-def run_mode(eng, mode: str):
+ITEMS, FACTS = T.items, T.facts_in_order       # test v1 by default; --testset swaps in another (test v2)
+
+
+def run_mode(eng, mode: str, head=None):
+    import decision as D
+
     def ask(q: str, history=None):
         if mode == "orig":
             out, info = eng.ask(q.encode(), 100, 3, fast=True, history=history)
             return out.decode("utf-8", "replace"), info.get("retrieved_question", info.get("memory"))
         k = 1 if mode == "k1" else 3
         out, info = eng.ask_k(q.encode(), k=k, policy="close" if mode == "k3close" else "all", history=history)
+        if head is not None:     # the decision head replaces the reply when it judges the question unclear or unknown
+            d = D.decide(head, D.features(eng, q.encode(), out, info))
+            if d == "abstain":
+                out = D.ABSTAIN_TEXT.encode()
+            elif d == "clarify":
+                out = D.clarify_text(eng, info).encode()
         return out.decode("utf-8", "replace"), info["candidates"]
 
     rows = []
-    for group, q, kw, extra in T.items():
+    for group, q, kw, extra in ITEMS():
         ans, ev = ask(q)
         r = {"group": group, "question": q, "answer": ans, "evidence": ev}
         if group == "unknown":
@@ -94,8 +105,15 @@ def main():
     ap.add_argument("--dense", type=float, default=2.0, help="MiniLM retrieval weight at answer time (2 = the research default; 0 = off)")
     ap.add_argument("--key-head", default="", help="our own learned key (K1/K2 key_head.pt) instead of MiniLM; implies --dense 0")
     ap.add_argument("--device", default="cpu")
+    ap.add_argument("--testset", default="", help="a test file from build_skills_data.py (data_skills/test_v2.json); default: test v1")
+    ap.add_argument("--decision", default="", help="decision head (decision.py) applied in its own mode; adds a mode '<mode>+head'")
     a = ap.parse_args()
     torch.set_num_threads(a.threads)
+    global ITEMS, FACTS
+    if a.testset:
+        tv = json.loads((ROOT / a.testset).read_text())
+        ITEMS = lambda: [tuple(i) for i in tv["items"]]
+        FACTS = lambda: [tuple(f) for f in tv["facts"]]
     t0 = time.time()
     eng = E.SkillEngine(str(ROOT / a.model) if not Path(a.model).is_absolute() else a.model, native=str(ROOT / "data" / "cv0.exe"),
                         device=a.device, dense=0.0 if a.key_head else a.dense, log=lambda *x: None)
@@ -103,13 +121,19 @@ def main():
         eng.mem.learned = None        # the engine falls back to the model's own MiniLM setting when given 0: detach it
     if a.key_head:
         eng.mem.attach_learned(m2_qa.LearnedKeys(str(ROOT / a.key_head), str(ROOT / "data" / "cv0.exe"), a.device))
-    for q, ans in chat_probe.TEACH + T.facts_in_order():
+    for q, ans in chat_probe.TEACH + FACTS():
         eng.add(q.encode(), ans.encode())
     load_s = time.time() - t0
-    res = {"model": a.model, "name": a.name, "retrieval": a.key_head or (f"literal + MiniLM x{a.dense}" if a.dense else "literal only"), "date": time.strftime("%Y-%m-%d %H:%M"), "load_s": round(load_s), "modes": {}}
-    for mode in a.modes.split(","):
+    res = {"model": a.model, "name": a.name, "testset": a.testset or "v1", "retrieval": a.key_head or (f"literal + MiniLM x{a.dense}" if a.dense else "literal only"), "date": time.strftime("%Y-%m-%d %H:%M"), "load_s": round(load_s), "modes": {}}
+    head = None
+    modes = a.modes.split(",")
+    if a.decision:
+        import decision as D
+        head, hck = D.load_head(str(ROOT / a.decision))
+        modes.append(hck["mode"] + "+head")
+    for mode in modes:
         t1 = time.time()
-        rows, probe = run_mode(eng, mode)
+        rows, probe = run_mode(eng, mode.split("+")[0], head if mode.endswith("+head") else None)
         res["modes"][mode] = {"summary": summary(rows, probe), "seconds": round(time.time() - t1), "rows": rows, "probe": probe}
         print(a.name, mode, json.dumps(res["modes"][mode]["summary"]), flush=True)
         (LAB / "results" / f"{a.name}.json").write_text(json.dumps(res, indent=1))
