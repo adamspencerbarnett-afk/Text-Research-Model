@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Reasoning Research Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a lab-notebook board on plotting paper. Seven columns follow the path of one answer
+   (foundations -> finding the fact -> reading it -> judgement -> conversation -> common sense -> way forward),
+   a highlight strip of what shined above them, and a strip of what was dropped below. */
+:root {
+  --paper: #f2f4f6;
+  --grid: #dfe4ea;
+  --card: #ffffff;
+  --ink: #15212c;
+  --ink-2: #4a5866;
+  --muted: #7d8a96;
+  --hair: #d5dbe2;
+  --accent: #0f6e8c;          /* teal ink: the system's own colour */
+  --accent-soft: #e2f0f4;
+  --shine: #b7791f;           /* the highlight strip */
+  --shine-soft: #fbf3e4;
+  --good: #0a7d0a; --good-soft: #e5f4e5;
+  --warn: #9a6a00; --warn-soft: #fbf1d9;
+  --bad: #b83232;  --bad-soft: #f9e6e6;
+  --run: #2a5fb0;  --run-soft: #e4ecf8;
+  --s-old5: #2a78d6;  /* old 5M chat model */
+  --s-new5: #1baf7a;  /* new 5M core */
+  --s-50: #6250d6;    /* 50M */
+  --s-100: #eb6834;   /* 100M */
+  --bar: #8aa1b5;
+  --bar-hi: #0f6e8c;
+  --shadow: 0 1px 2px rgba(21,33,44,.06), 0 6px 18px rgba(21,33,44,.06);
+  --f-display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f151b; --grid: #1b242d; --card: #16202a; --ink: #e8eef3; --ink-2: #b5c1cc; --muted: #8796a3; --hair: #2a3743;
+    --accent: #4fb3d1; --accent-soft: #15303a; --shine: #e0a548; --shine-soft: #2a2213;
+    --good: #3cc23c; --good-soft: #12291a; --warn: #e5b23a; --warn-soft: #2c2410; --bad: #e66767; --bad-soft: #321a1a; --run: #6f9ee8; --run-soft: #172438;
+    --s-old5: #3987e5; --s-new5: #199e70; --s-50: #9085e9; --s-100: #d95926; --bar: #4b6074; --bar-hi: #4fb3d1;
+    --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.35); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f151b; --grid: #1b242d; --card: #16202a; --ink: #e8eef3; --ink-2: #b5c1cc; --muted: #8796a3; --hair: #2a3743;
+  --accent: #4fb3d1; --accent-soft: #15303a; --shine: #e0a548; --shine-soft: #2a2213;
+  --good: #3cc23c; --good-soft: #12291a; --warn: #e5b23a; --warn-soft: #2c2410; --bad: #e66767; --bad-soft: #321a1a; --run: #6f9ee8; --run-soft: #172438;
+  --s-old5: #3987e5; --s-new5: #199e70; --s-50: #9085e9; --s-100: #d95926; --bar: #4b6074; --bar-hi: #4fb3d1;
+  --shadow: 0 1px 2px rgba(0,0,0,.4), 0 6px 18px rgba(0,0,0,.35); color-scheme: dark;
+}
+html, body { height: 100%; }
+body { background: var(--paper); color: var(--ink); font-family: var(--f-body); font-size: 14px; overflow: hidden; }
+* { box-sizing: border-box; }
+
+/* ---------- top bar ---------- */
+.bar { position: fixed; top: 0; left: 0; right: 0; z-index: 20; padding: calc(env(safe-area-inset-top, 0px) + 10px) 16px 10px;
+  display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: blur(6px); border-bottom: 1px solid var(--hair); }
+.brand { display: flex; flex-direction: column; min-width: 0; margin-right: auto; }
+.brand h1 { margin: 0; font-family: var(--f-display); font-weight: 700; font-size: 20px; letter-spacing: .01em; text-wrap: balance; }
+.brand span { color: var(--ink-2); font-size: 12px; }
+.group { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.group .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-right: 2px; }
+button { font: 500 13px var(--f-body); color: var(--ink); background: var(--card); border: 1px solid var(--hair); border-radius: 6px;
+  padding: 6px 10px; cursor: pointer; }
+button:hover { border-color: var(--accent); }
+button:focus-visible, .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--ink); }
+.zoomval { font: 12px var(--f-mono); color: var(--ink-2); min-width: 44px; text-align: center; }
+
+/* ---------- board ---------- */
+#viewport { position: fixed; inset: 0; overflow: hidden; cursor: grab; touch-action: none;
+  background-image: radial-gradient(var(--grid) 1px, transparent 1px); background-size: 22px 22px; }
+#viewport.dragging { cursor: grabbing; }
+#board { position: absolute; left: 0; top: 0; transform-origin: 0 0; padding: 40px; width: max-content; }
+#links { position: absolute; left: 0; top: 0; pointer-events: none; overflow: visible; }
+#links path { fill: none; stroke: var(--accent); stroke-width: 1.5; opacity: .28; }
+#links path.on { opacity: .95; stroke-width: 2.5; }
+
+.title-block { display: grid; grid-template-columns: minmax(0, 760px) minmax(0, 1fr); gap: 32px; align-items: end; margin-bottom: 28px; }
+.title-block h2 { font-family: var(--f-display); font-size: 54px; line-height: 1; margin: 0 0 10px; letter-spacing: -.01em; text-wrap: balance; }
+.title-block p { margin: 0; max-width: 64ch; color: var(--ink-2); font-size: 17px; line-height: 1.5; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 14px; align-content: end; font-size: 13px; color: var(--ink-2); }
+.legend .sw { display: inline-flex; align-items: center; gap: 6px; }
+.dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+
+.strip { border-radius: 14px; padding: 18px 20px 20px; margin-bottom: 30px; }
+.strip h3 { margin: 0 0 4px; font-family: var(--f-display); font-size: 24px; }
+.strip > p { margin: 0 0 14px; color: var(--ink-2); max-width: 90ch; }
+.strip.shine { background: var(--shine-soft); border: 1px solid color-mix(in srgb, var(--shine) 45%, transparent); }
+.strip.shine h3 { color: var(--shine); }
+.strip.dropped { background: var(--bad-soft); border: 1px solid color-mix(in srgb, var(--bad) 35%, transparent); margin-top: 30px; }
+.strip.dropped h3 { color: var(--bad); }
+.strip .row { display: grid; grid-template-columns: repeat(7, 300px); gap: 16px; }
+
+.cols { display: grid; grid-template-columns: repeat(7, 360px); gap: 40px; align-items: start; }
+.col-head { border-top: 3px solid var(--ink); padding-top: 8px; margin-bottom: 14px; }
+.col-head .n { font: 600 12px var(--f-mono); color: var(--muted); letter-spacing: .06em; }
+.col-head h3 { margin: 2px 0 2px; font-family: var(--f-display); font-size: 26px; line-height: 1.05; }
+.col-head p { margin: 0; color: var(--ink-2); font-size: 13px; line-height: 1.4; }
+.col-head.fwd { border-top-color: var(--accent); }
+.col-head.fwd h3 { color: var(--accent); }
+.stack { display: flex; flex-direction: column; gap: 16px; }
+
+/* ---------- cards ---------- */
+.card { background: var(--card); border: 1px solid var(--hair); border-radius: 10px; padding: 14px 16px 14px; box-shadow: var(--shadow);
+  transition: opacity .2s, transform .2s; position: relative; }
+.card.win { border-color: color-mix(in srgb, var(--shine) 60%, var(--hair)); box-shadow: 0 0 0 1px color-mix(in srgb, var(--shine) 30%, transparent), var(--shadow); }
+.card.mini { padding: 12px 14px; }
+.card h4 { margin: 8px 0 4px; font-family: var(--f-display); font-size: 18px; line-height: 1.15; text-wrap: balance; }
+.card p { margin: 6px 0 0; line-height: 1.45; color: var(--ink-2); font-size: 13px; }
+.card p.take { color: var(--ink); font-weight: 500; }
+.card .src { margin-top: 8px; font: 11px var(--f-mono); color: var(--muted); }
+.card.dim { opacity: .18; }
+.card.hl { transform: translateY(-2px); }
+.chip { display: inline-flex; align-items: center; gap: 5px; font: 600 11px var(--f-body); text-transform: uppercase; letter-spacing: .07em;
+  padding: 3px 8px 3px 7px; border-radius: 999px; }
+.chip i { font-style: normal; font-size: 11px; }
+.v-win { color: var(--shine); background: var(--shine-soft); }
+.v-adopted { color: var(--good); background: var(--good-soft); }
+.v-promising { color: var(--run); background: var(--run-soft); }
+.v-mixed { color: var(--warn); background: var(--warn-soft); }
+.v-dropped { color: var(--bad); background: var(--bad-soft); }
+.v-running { color: var(--run); background: var(--run-soft); }
+.v-insight { color: var(--ink-2); background: color-mix(in srgb, var(--ink) 7%, transparent); }
+.v-next { color: var(--accent); background: var(--accent-soft); }
+
+.big { display: flex; align-items: baseline; gap: 10px; margin: 6px 0 2px; flex-wrap: wrap; }
+.big b { font: 600 34px/1 var(--f-display); color: var(--ink); }
+.big .from { font: 13px var(--f-mono); color: var(--muted); }
+.big .arrow { color: var(--good); font-weight: 700; }
+
+table.t { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 12px; font-variant-numeric: tabular-nums; }
+table.t th, table.t td { padding: 4px 4px; border-bottom: 1px solid var(--hair); text-align: right; }
+table.t th:first-child, table.t td:first-child { text-align: left; }
+table.t th { font-weight: 600; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .05em; }
+table.t td.best { color: var(--good); font-weight: 700; }
+table.t td.worst { color: var(--bad); }
+
+svg.chart { display: block; margin-top: 8px; width: 100%; height: auto; overflow: visible; }
+svg.chart text { font-family: var(--f-body); font-size: 11px; fill: var(--ink-2); }
+svg.chart text.v { font-family: var(--f-mono); fill: var(--ink); font-weight: 600; }
+svg.chart .track { fill: color-mix(in srgb, var(--ink) 5%, transparent); }
+svg.chart rect.b { fill: var(--bar); }
+svg.chart rect.b.hi { fill: var(--bar-hi); }
+svg.chart rect.b:hover, svg.chart rect.b.hover { opacity: .8; }
+svg.chart .note { fill: var(--muted); font-style: italic; }
+
+#tip { position: fixed; z-index: 30; pointer-events: none; background: var(--ink); color: var(--paper); font: 12px var(--f-body);
+  padding: 6px 8px; border-radius: 6px; max-width: 260px; display: none; }
+
+/* ---------- list view (reading mode, phones, screen readers) ---------- */
+#list { position: fixed; inset: 0; overflow: auto; padding: 120px 16px 40px; display: none; background: var(--paper); }
+#list .inner { max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
+#list h3 { font-family: var(--f-display); font-size: 24px; margin: 18px 0 0; }
+body.listmode #viewport { display: none; }
+body.listmode #list { display: block; }
+.hint { position: fixed; bottom: calc(env(safe-area-inset-bottom, 0px) + 12px); left: 16px; z-index: 20; font-size: 12px; color: var(--ink-2);
+  background: var(--card); border: 1px solid var(--hair); border-radius: 8px; padding: 6px 10px; box-shadow: var(--shadow); max-width: calc(100% - 32px); }
+body.listmode .hint { display: none; }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+@media (max-width: 640px) { .brand h1 { font-size: 17px; } .group .lbl { display: none; } }
+</style>
+
+<style>body{margin:0} [hidden]{display:none!important}</style>
+</head>
+<body>
+<div class="bar" role="toolbar" aria-label="Map controls">
+  <div class="brand"><h1>Reasoning Research Map</h1><span>Text Research Model, 9–15 October 2026 · every number from the run ledger and result files</span></div>
+  <div class="group" aria-label="Show"><span class="lbl">Show</span>
+    <button id="f-all" aria-pressed="true">All</button>
+    <button id="f-win" aria-pressed="false">What shined</button>
+    <button id="f-mixed" aria-pressed="false">Mixed</button>
+    <button id="f-dropped" aria-pressed="false">Dropped</button>
+  </div>
+  <div class="group" aria-label="Jump to"><span class="lbl">Jump</span>
+    <select id="jump" aria-label="Jump to a column" style="font:13px var(--f-body);padding:6px;border-radius:6px;border:1px solid var(--hair);background:var(--card);color:var(--ink)"></select>
+  </div>
+  <div class="group" aria-label="Zoom"><span class="lbl">Zoom</span>
+    <button id="z-out" aria-label="Zoom out">−</button><span class="zoomval" id="zval">100%</span><button id="z-in" aria-label="Zoom in">+</button>
+    <button id="z-fit">Fit</button><button id="z-read">Read size</button>
+    <button id="v-list" aria-pressed="false">List view</button>
+  </div>
+</div>
+
+<div id="viewport" aria-label="Research map. Drag to move, scroll to zoom.">
+  <div id="board">
+    <svg id="links" aria-hidden="true"></svg>
+    <div class="title-block">
+      <div>
+        <h2>What we learned about reasoning</h2>
+        <p>Seven days of experiments on how a small hybrid model finds a fact, reads it, judges it and answers. The cards follow the path of a single answer from left to right. Lines lead from the evidence to the way forward.</p>
+      </div>
+      <div class="legend" aria-label="Legend">
+        <span class="sw"><span class="chip v-win"><i>★</i>Shined</span></span>
+        <span class="sw"><span class="chip v-adopted"><i>✓</i>Adopted</span></span>
+        <span class="sw"><span class="chip v-promising"><i>↗</i>Promising</span></span>
+        <span class="sw"><span class="chip v-mixed"><i>≈</i>Mixed</span></span>
+        <span class="sw"><span class="chip v-dropped"><i>✕</i>Dropped</span></span>
+        <span class="sw"><span class="chip v-running"><i>…</i>Running</span></span>
+        <span class="sw"><span class="dot" style="background:var(--s-old5)"></span>old 5M</span>
+        <span class="sw"><span class="dot" style="background:var(--s-new5)"></span>new 5M core</span>
+        <span class="sw"><span class="dot" style="background:var(--s-50)"></span>50M</span>
+        <span class="sw"><span class="dot" style="background:var(--s-100)"></span>100M</span>
+      </div>
+    </div>
+    <section class="strip shine" id="sec-shine"><h3>What shined</h3><p>The results that moved a number by a wide margin and held up on a second test or a second seed.</p><div class="row" id="row-shine"></div></section>
+    <div class="cols" id="cols"></div>
+    <section class="strip dropped" id="sec-dropped"><h3>Tried and dropped</h3><p>Ideas that were built, measured and set aside. Each one narrowed the search.</p><div class="row" id="row-dropped"></div></section>
+  </div>
+</div>
+<div id="list" aria-label="All findings as a list"><div class="inner" id="list-inner"></div></div>
+<div id="tip" role="status"></div>
+<div class="hint" id="hint">Drag to move · scroll or pinch to zoom · click a card to bring it close · keys: arrows, + −, 0</div>
+
+<script>
+// ---------------------------------------------------------------- data (all values from docs/RUN_LEDGER.md and results/)
+const V = { win: ["★", "Shined"], adopted: ["✓", "Adopted"], promising: ["↗", "Promising"], mixed: ["≈", "Mixed"],
+            dropped: ["✕", "Dropped"], running: ["…", "Running"], insight: ["•", "Finding"], next: ["→", "Next"] };
+const COLS = [
+  { key: "core", n: "1", title: "Foundations", sub: "Core size, data and language. What every answer is built on." },
+  { key: "find", n: "2", title: "Finding the fact", sub: "Retrieval: our word key, the outside MiniLM encoder, and our own K2 key." },
+  { key: "read", n: "3", title: "Reading the evidence", sub: "Copying from memory, rewording, and reading a passage." },
+  { key: "judge", n: "4", title: "Judgement skills", sub: "Near misses, updates, 'I don't know', clarifying questions." },
+  { key: "talk", n: "5", title: "Conversation", sub: "Using earlier turns: the multi-turn study." },
+  { key: "sense", n: "6", title: "Common sense and limits", sub: "Hand-rated answers, simple reasoning, math, grounding." },
+  { key: "fwd", n: "7", title: "The way forward", sub: "What the evidence supports doing next." }
+];
+// bars: [label, value, display, highlight?, colorVar?]
+const CARDS = [
+  // ---- what shined
+  { id: "w-skills", sec: "shine", v: "win", title: "Skills arm, 100,000 examples", big: ["65", "/100", "33 before"],
+    text: "Six times more skill data taught near misses, updates, 'I don't know' and clarifying, and cut wrong refusals from 22–29 to 7–10. The chat probe held at 24 of 32.",
+    links: ["f-skills", "f-ground"], src: "skills_lab/results/ft_skills3*.json" },
+  { id: "w-copy", sec: "shine", v: "win", title: "The copy head", big: ["0.48", "F1", "0.13 before"],
+    text: "A learned pointer into the retrieved exchange. Network answers on stored questions rose from 0.13 to 0.48 and 0.62 on two seeds.",
+    links: ["f-ground", "f-steps"], src: "ledger, 9 Oct session 2" },
+  { id: "w-size", sec: "shine", v: "win", title: "100M knows things on its own", big: ["47.0", "/100", "9.9 at 5M"],
+    text: "Hand-rated answers with memory switched off. The 5M network writes fluent nonsense; the 100M network answers sensibly about half the time.",
+    links: ["f-size"], src: "skills_lab/manual/ratings.json" },
+  { id: "w-reword", sec: "shine", v: "win", title: "Copy under rewording", big: ["5/5", "reworded", "1–3/5 before"],
+    text: "Training 30% of windows with the right exchange under a reworded question lifted the 5M chat probe to 24 of 32.",
+    links: ["f-skills"], src: "ledger, session 23" },
+  { id: "w-follow", sec: "shine", v: "win", title: "Answering after clarifying", big: ["19/20", "held-out", "1–4/20 before"],
+    text: "Asked which of two people, the skills-trained model answers correctly once the user names one, on names it never trained on.",
+    links: ["f-skills"], src: "skills_lab/results/ft_skills3_v2.json" },
+  { id: "w-read", sec: "shine", v: "win", title: "Reading a passage scales", big: ["0.418", "F1", "0.068 at 5M"],
+    text: "SQuAD with the passage in the question: the 50M model selects the answering span 28% exactly, against 1% at 5M.",
+    links: ["f-size", "f-steps"], src: "ledger, 11 Oct session 8" },
+  { id: "w-speed", sec: "shine", v: "win", title: "Fast enough to use", big: ["0.09", "s / answer", "4.4 J"],
+    text: "The CUDA-graph decoder answers in 0.09 s at 5M, five times the plain loop; the KV cache made CPU replies up to 28 times faster.",
+    links: [], src: "inference_lab/results/gpu.json, core.json" },
+
+  // ---- 1 foundations
+  { id: "c-lang", col: "core", v: "insight", title: "Language improves steadily with size",
+    chart: { rows: [["old 5M core", 1.555, "1.555", 0, "--s-old5"], ["new 5M core", 1.260, "1.260", 0, "--s-new5"], ["50M", 1.134, "1.134", 0, "--s-50"], ["100M", 1.028, "1.028", 1, "--s-100"]], max: 1.7, note: "bits per byte on clean held-out Wikipedia, lower is better" },
+    text: "Each doubling of size buys about 9%. The new 5M core (better recipe and data) closes two thirds of the gap to 50M at the same size.",
+    src: "results/core_eval_*_clean.json" },
+  { id: "c-qa", col: "core", v: "insight", title: "Size helps most where memory cannot",
+    table: { head: ["Q&A F1", "5M", "50M", "100M"], rows: [["stored facts", ".901", ".893", ".906"], ["reworded", ".257", ".272", ".291"], ["new questions", ".311", ".332", ".358"], ["network alone", ".234", ".271", ".334"]], best: 3 },
+    text: "Stored facts sit at the ceiling at every size because memory does the work. The network alone gains 43% from 5M to 100M.",
+    src: "results/s2b_densep512, s2b_50m, s2b_100m" },
+  { id: "c-probe", col: "core", v: "adopted", title: "Chat probe by model",
+    chart: { rows: [["5M chat (best)", 24, "24", 0, "--s-old5"], ["50M chat", 21, "21", 0, "--s-50"], ["new 5M, sequential", 25, "25", 0, "--s-new5"], ["100M chat", 25, "25", 1, "--s-100"]], max: 32, note: "of 32 questions" },
+    text: "100M is the best model overall. 23 of 32 with our own word key only, 25 with MiniLM.",
+    src: "results/probe_qa_*.json" },
+  { id: "c-data", col: "core", v: "insight", title: "Data matched to size",
+    table: { head: ["", "50M", "100M"], rows: [["codes trained", "1.0 B", "2.0 B"], ["codes per weight", "18", "18"], ["passes over data", "1.6", "2.3"], ["training time", "2.4 h", "18 h + 6.5 h"]] },
+    text: "Both near the usual 20 tokens per weight. The 3.2 GB mix covers 200M; 300M would need about 2 GB more text.",
+    src: "results/core_P50_50M.json, core_P100_100M.json" },
+  { id: "c-ev", col: "core", v: "mixed", title: "Size does not raise the use of shown evidence",
+    chart: { rows: [["5M", 8.7, "8.7%", 0, "--s-old5"], ["new 5M", 6.8, "6.8%", 0, "--s-new5"], ["50M", 7.8, "7.8%", 0, "--s-50"], ["100M", 7.9, "7.9%", 0, "--s-100"]], max: 12, note: "evidence gain on clean pairs" },
+    text: "The raw core uses a shown passage about equally at every size. Reading has to be trained, not grown.",
+    links: ["f-steps"], src: "results/core_eval_*_clean.json" },
+
+  // ---- 2 finding the fact
+  { id: "r-quora", col: "find", v: "mixed", title: "Finding a reworded question",
+    chart: { rows: [["word key (ours)", 74.3, "74.3%", 0], ["+ K2-5M (ours)", 78.9, "78.9%", 0], ["+ K2-100M (ours)", 79.3, "79.3%", 0], ["+ MiniLM (outside)", 80.9, "80.9%", 1]], max: 100, note: "right question first, 2,000 Quora pairs" },
+    text: "Our K2 key nearly closes the gap to the outside encoder on rewordings.",
+    src: "results/k2_question_key_*.json" },
+  { id: "r-skill", col: "find", v: "mixed", title: "Finding an invented fact",
+    chart: { rows: [["word key (ours)", 41, "41", 1], ["+ K2-5M", 39, "39", 0], ["+ K2-100M", 38, "38", 0], ["+ MiniLM", 41, "41", 1]], max: 70, note: "right fact first, of 70 skills-test questions" },
+    text: "On names and personal facts, plain word matching is already as good as any learned key.",
+    src: "results/k2_question_key_*.json" },
+  { id: "r-ans", col: "find", v: "mixed", title: "What retrieval does to answers",
+    table: { head: ["chat probe /32", "5M", "100M"], rows: [["word key only", "21", "23"], ["+ K2", "19–20", "21"], ["+ MiniLM", "23", "25"]], best: 2 },
+    text: "Going fully our own costs 2 probe points at both sizes. K2 does not recover them yet.",
+    links: ["f-k2"], src: "skills_lab/results/k2_*.json" },
+  { id: "r-speed", col: "find", v: "insight", title: "Lookup cost",
+    chart: { rows: [["word key", 5, "5 ms", 1], ["K2-5M", 15, "15 ms", 0], ["MiniLM", 25, "25 ms", 0], ["K2-100M", 50, "50 ms", 0]], max: 55, note: "per question, CPU" },
+    text: "The word key is the fastest by far. K2 on the 100M core is the slowest.",
+    src: "results/k2_question_key_*.json" },
+  { id: "r-core", col: "find", v: "insight", title: "A frozen core is not a retriever",
+    chart: { rows: [["core state, 5M", 51.5, "51.5%", 0], ["core state, 100M", 55.3, "55.3%", 0], ["word key", 72.7, "72.7%", 1]], max: 100, note: "reworded question found first" },
+    text: "The core's own states match rewordings worse than counting shared words, so a key needs training of its own.",
+    links: ["f-k2"], src: "results/core_eval_*_clean.json" },
+
+  // ---- 3 reading the evidence
+  { id: "e-copy", col: "read", v: "adopted", title: "Copy head carries memory into the answer",
+    big: ["0.13 → 0.48", "", ""], text: "No change where memory holds nothing: the whole gain comes from carrying what memory returns.", links: ["f-ground"], src: "ledger session 2" },
+  { id: "e-reword", col: "read", v: "adopted", title: "Copy under rewording",
+    chart: { rows: [["earlier 5M models", 3, "1–3", 0], ["dense retrieval only", 2, "2", 0], ["copy under rewording", 5, "5", 1]], max: 5, note: "reworded probe section, of 5" },
+    text: "The single change that made reworded questions work at 5M.", src: "ledger sessions 23, 25" },
+  { id: "e-miss", col: "read", v: "mixed", title: "Right fact found, not used",
+    text: "Many failures happen with the right evidence in the window: 'Which level is my car on?' → 'Illy car on.'; 'Capital of Japa' → 'Jakarta' with the Tokyo entry retrieved. The grounded trial counts 126 of 302 answers wrong while built from memory.",
+    links: ["f-steps", "f-ground"], src: "skills_lab/results/base_5M.json, grounded_base5M_k1.json" },
+  { id: "e-squad", col: "read", v: "promising", title: "Reading comprehension needs size",
+    chart: { rows: [["5M", 0.068, "0.068", 0, "--s-old5"], ["50M", 0.418, "0.418", 1, "--s-50"]], max: 0.5, note: "SQuAD F1, held-out passages" },
+    text: "Selecting an answer span from a passage is the first reasoning-type task where size made a large difference.", links: ["f-steps"], src: "ledger session 8" },
+  { id: "e-bad", col: "read", v: "mixed", title: "Training with misleading evidence",
+    text: "10% wrong and 10% empty evidence windows raised network-alone F1 from 0.229 to 0.274, but combined with the other lessons the gains cancelled (probe 22 of 32).",
+    src: "ledger sessions 22, 24" },
+
+  // ---- 4 judgement skills
+  { id: "j-base", col: "judge", v: "insight", title: "Size alone teaches no judgement",
+    table: { head: ["skills test", "5M", "100M"], rows: [["total /100", "33", "29"], ["near miss /20", "11", "15"], ["'I don't know' /20", "0", "0"], ["clarify /10", "0", "0"]] },
+    text: "Neither size ever said it didn't know or asked which one you meant. Behaviour has to be shown in training.", src: "skills_lab/results/base_*.json" },
+  { id: "j-prog", col: "judge", v: "win", title: "Skills test by training round",
+    chart: { rows: [["baseline", 33, "33", 0], ["3 candidates, untrained", 12, "12", 0], ["control (+3k steps)", 38, "38", 0], ["round 1 (17k examples)", 50, "50", 0], ["round 3, balanced", 55, "55", 0], ["100k examples", 58, "58", 0], ["100k + 3 candidates", 65, "65", 1]], max: 100, note: "of 100, invented facts never seen" },
+    text: "Extra ordinary training gives little (38). Skill examples give the gains, and three candidates only help once trained.",
+    links: ["f-skills"], src: "skills_lab/results/*.json" },
+  { id: "j-groups", col: "judge", v: "win", title: "Where the 100k arm gained",
+    table: { head: ["group", "base", "100k"], rows: [["taught, reworded /20", "14", "16"], ["update /20", "3", "11"], ["near miss /20", "11", "15"], ["'I don't know' /20", "0", "13"], ["clarify /10", "0", "4"], ["follow-up /10", "5", "6"]], best: 2 },
+    text: "Three candidates shown when close; test v1.", src: "skills_lab/results/ft_skills3.json" },
+  { id: "j-held", col: "judge", v: "win", title: "It generalises to new names",
+    chart: { rows: [["baseline", 77, "75–77", 0], ["round 1", 109, "101–109", 0], ["100k examples", 128, "112–128", 1]], max: 200, note: "held-out test v2, of 200" },
+    text: "Test v2 uses names and phrasings never trained. Clarify 10 of 20, follow-up 19 of 20.", links: ["f-skills"], src: "ft_skills3_v2.json, base5M_v2.json" },
+  { id: "j-refuse", col: "judge", v: "promising", title: "Over-refusal, mostly fixed",
+    chart: { rows: [["round 1", 29, "22–29", 0], ["round 3", 17, "16–17", 0], ["100k examples", 10, "7–10", 1]], max: 30, note: "wrong 'I don't know' on known questions" },
+    text: "More and more varied examples taught when not to refuse. The chat probe still sees 3–5 refusals.", src: "skills_lab/results/*.json" },
+  { id: "j-head", col: "judge", v: "dropped", title: "Decision head",
+    text: "A small classifier choosing answer, clarify or abstain from 24 signals. 62–66% on its own scenarios; it raised clarify to 8 of 10 but cut the chat probe to 13–18. Not adopted.",
+    src: "skills_lab/results/decision_*.json, r2_*.json" },
+
+  // ---- 5 conversation
+  { id: "t-arms", col: "talk", v: "mixed", title: "Training structure: no winner yet",
+    table: { head: ["arm", "probe /27", "history", "chat /32"], rows: [["old best 5M", "6", "4.3%", "24"], ["Q: Q&A only", "12", "5.0%", "24"], ["S: then multi-turn", "11", "9.4%", "25"], ["M: one mixed stage", "6", "11.3%", "23"], ["L1: LoRA Q&A", "6", "4.6%", "22"], ["L2: LoRA + multi-turn", "9", "8.4%", "24"]] },
+    text: "History gain on 1,000 real conversations favours multi-turn training; the 27-item probe favours the control, which recalls stated facts by copying.",
+    links: ["f-talk"], src: "results/mtprobe_qa_mt_*.json, mt_*.json" },
+  { id: "t-core", col: "talk", v: "win", title: "A better core doubles conversation",
+    big: ["6 → 12", "of 27", ""], text: "The new 5M core with its 1,024-code window, before any conversation training.", src: "results/mtprobe_qa_mt_Q.json" },
+  { id: "t-lora", col: "talk", v: "dropped", title: "LoRA adapters",
+    chart: { rows: [["full fine-tune", 0.207, "0.207", 1], ["LoRA", 0.116, "0.116", 0]], max: 0.25, note: "network-alone F1" },
+    text: "Adapters lost 40%+ of the network's own answering for no gain anywhere.", src: "results/mt_L1.json, mt_L2.json" },
+  { id: "t-v2", col: "talk", v: "running", title: "Probe v2 and seed 2",
+    text: "120 generated conversations (recall, corrections, choosing between people, returning after three turns) and second seeds of Q, S and M. Control Q scores 18 of 120.",
+    links: ["f-talk"], src: "compiler/experiments/mt_probe2.py, session 33" },
+
+  // ---- 6 common sense
+  { id: "s-rate", col: "sense", v: "insight", title: "Hand-rated common sense",
+    table: { head: ["50 questions, 1–100", "memory", "network"], rows: [["old 5M", "44.9", "9.9"], ["new 5M, Q", "47.5", "7.9"], ["new 5M, S", "45.1", "7.9"], ["100M", "55.8", "47.0"]], best: 3 },
+    text: "Better text scores at 5M did not become better sense. Real general knowledge appears at 100M.", links: ["f-size", "f-ground"], src: "skills_lab/manual/ratings.json" },
+  { id: "s-simple", col: "sense", v: "dropped", title: "Simple reasoning fails at every size",
+    text: "'Three apples, eat one' → 'one left'. 'A kilogram of feathers is heavier.' Neither knew what comes after Tuesday. These need explicit steps, not a bigger copy.",
+    links: ["f-steps"], src: "skills_lab/manual/answers_*.txt" },
+  { id: "s-math", col: "sense", v: "dropped", title: "Math word problems",
+    chart: { rows: [["0.8M", 1, "1%", 0], ["5M + self-training", 4, "2.5–4.0%", 0], ["50M", 1.5, "1.5%", 0]], max: 10, note: "new GSM8K problems solved" },
+    text: "Choosing the operations is the hard part; the calculator works. Paused on 12 October for its own line.", src: "ledger sessions 4–8, STaR" },
+  { id: "s-ground", col: "sense", v: "promising", title: "Grounded scorecard, first trial",
+    chart: { rows: [["right, from memory", 113, "113", 1], ["right, from network", 7, "7", 0], ["wrong, from memory", 126, "126", 0], ["made up", 53, "53", 0]], max: 140, note: "best 5M, 302 answers" },
+    text: "On 60 questions with nothing stored it invented an answer 58 times. This becomes the main scorecard.", links: ["f-ground"], src: "skills_lab/results/grounded_base5M_k1.json" },
+
+  // ---- 7 way forward
+  { id: "f-ground", col: "fwd", v: "next", title: "Build a grounded reader",
+    text: "Memory supplies the facts; the network reads and writes. Score every model by where its answer came from and whether it made anything up." },
+  { id: "f-skills", col: "fwd", v: "next", title: "Fold the skill data into the Q&A stage",
+    text: "The 100k skill examples are the strongest result of the week. Add rewriting (version 4, 130k examples) and adopt for every new model." },
+  { id: "f-k2", col: "fwd", v: "next", title: "Make retrieval our own",
+    text: "K2 version 2 trains the core's top layers on outcomes: which stored fact led to a right answer. Keep the word key as the fast first pass." },
+  { id: "f-talk", col: "fwd", v: "next", title: "Settle the conversation structure",
+    text: "Mixed or sequential, decided by probe v2 and the second seed, then written into the design documents." },
+  { id: "f-size", col: "fwd", v: "next", title: "100M for knowledge, 5M for experiments",
+    text: "Test ideas cheaply at 5M, carry winners to 100M. Nothing larger without approval; the data covers up to 200M." },
+  { id: "f-steps", col: "fwd", v: "next", title: "Reason in explicit steps",
+    text: "Retrieve → choose → extract the span → write → check support. Each step small, trained and measured; reasoning that one small network cannot do in a single pass." },
+
+  // ---- tried and dropped
+  { id: "d-lora", sec: "dropped", v: "dropped", title: "LoRA for skills", text: "Network-alone F1 0.207 → 0.116." },
+  { id: "d-head", sec: "dropped", v: "dropped", title: "Decision head", text: "Skills 65 → 56 and chat probe 21 → 18 with it on." },
+  { id: "d-conf", sec: "dropped", v: "dropped", title: "Retrieval confidence input", text: "Probe 23 against 24 without it; every group within noise." },
+  { id: "d-dli", sec: "dropped", v: "dropped", title: "Dropout, typo training, two-phase", text: "Each traded one group for another; none beat the control." },
+  { id: "d-rerank", sec: "dropped", v: "dropped", title: "Core reranking", text: "Reranking by the core's own surprise: probe 20 of 32." },
+  { id: "d-k1", sec: "dropped", v: "dropped", title: "K1 learned key", text: "+3.5 points on Quora, no answer gain." },
+  { id: "d-int8", sec: "dropped", v: "dropped", title: "int8 and bf16 kernels", text: "1.5–2.5× slower on this CPU and they changed answers." }
+];
+
+// ---------------------------------------------------------------- rendering
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+function bars(ch) {
+  const W = 320, labW = 150, rowH = 24, top = 4, valW = 62, plot = W - labW - valW;
+  const h = top + ch.rows.length * rowH + (ch.note ? 18 : 4);
+  let s = `<svg class="chart" viewBox="0 0 ${W} ${h}" role="img" aria-label="${esc(ch.note || "chart")}">`;
+  ch.rows.forEach((r, i) => {
+    const [lab, val, disp, hi, color] = r, y = top + i * rowH, w = Math.max(2, plot * Math.min(val, ch.max) / ch.max);
+    const fill = color ? `style="fill:var(${color})"` : "";
+    s += `<text x="0" y="${y + 15}">${esc(lab)}</text>`;
+    s += `<rect class="track" x="${labW}" y="${y + 5}" width="${plot}" height="12" rx="3"></rect>`;
+    s += `<rect class="b${hi ? " hi" : ""}" ${fill} x="${labW}" y="${y + 5}" width="${w}" height="12" rx="3" data-tip="${esc(lab)}: ${esc(disp)}"></rect>`;
+    s += `<text class="v" x="${labW + w + 6}" y="${y + 15}">${esc(disp)}</text>`;
+  });
+  if (ch.note) s += `<text class="note" x="0" y="${h - 3}">${esc(ch.note)}</text>`;
+  return s + "</svg>";
+}
+function table(t) {
+  let s = `<table class="t"><thead><tr>${t.head.map(h => `<th>${esc(h)}</th>`).join("")}</tr></thead><tbody>`;
+  t.rows.forEach(r => { s += "<tr>" + r.map((c, j) => `<td class="${t.best && j === t.best ? "best" : ""}">${esc(c)}</td>`).join("") + "</tr>"; });
+  return s + "</tbody></table>";
+}
+function cardHTML(c, mini) {
+  const [ic, lab] = V[c.v];
+  let s = `<span class="chip v-${c.v}"><i>${ic}</i>${lab}</span><h4>${esc(c.title)}</h4>`;
+  if (c.big) s += `<div class="big"><b>${esc(c.big[0])}</b><span class="from">${esc(c.big[1])}</span>${c.big[2] ? `<span class="from">· ${esc(c.big[2])}</span>` : ""}</div>`;
+  if (c.chart) s += bars(c.chart);
+  if (c.table) s += table(c.table);
+  if (c.text) s += `<p class="${c.col === "fwd" ? "take" : ""}">${esc(c.text)}</p>`;
+  if (c.src && !mini) s += `<div class="src">${esc(c.src)}</div>`;
+  return s;
+}
+function mkCard(c, mini) {
+  const el = document.createElement("article");
+  el.className = `card ${c.v === "win" ? "win" : ""} ${mini ? "mini" : ""}`;
+  el.id = "card-" + c.id; el.tabIndex = 0; el.dataset.v = c.v; el.dataset.id = c.id;
+  el.innerHTML = cardHTML(c, mini);
+  return el;
+}
+CARDS.filter(c => c.sec === "shine").forEach(c => $("#row-shine").appendChild(mkCard(c)));
+CARDS.filter(c => c.sec === "dropped").forEach(c => $("#row-dropped").appendChild(mkCard(c, true)));
+COLS.forEach(col => {
+  const wrap = document.createElement("div"); wrap.id = "col-" + col.key;
+  wrap.innerHTML = `<div class="col-head ${col.key === "fwd" ? "fwd" : ""}"><div class="n">${col.n} / 7</div><h3>${esc(col.title)}</h3><p>${esc(col.sub)}</p></div><div class="stack"></div>`;
+  CARDS.filter(c => c.col === col.key).forEach(c => wrap.querySelector(".stack").appendChild(mkCard(c)));
+  $("#cols").appendChild(wrap);
+});
+// list view mirrors the board
+(() => {
+  const L = $("#list-inner");
+  const sec = (t, items) => { const h = document.createElement("h3"); h.textContent = t; L.appendChild(h); items.forEach(c => L.appendChild(mkCard(c))); };
+  sec("What shined", CARDS.filter(c => c.sec === "shine"));
+  COLS.forEach(col => sec(`${col.n}. ${col.title}`, CARDS.filter(c => c.col === col.key)));
+  sec("Tried and dropped", CARDS.filter(c => c.sec === "dropped"));
+  L.querySelectorAll(".card").forEach(c => c.removeAttribute("id"));
+})();
+// jump menu
+const J = $("#jump");
+[["sec-shine", "What shined"], ...COLS.map(c => ["col-" + c.key, `${c.n}. ${c.title}`]), ["sec-dropped", "Tried and dropped"]]
+  .forEach(([id, t]) => { const o = document.createElement("option"); o.value = id; o.textContent = t; J.appendChild(o); });
+
+// ---------------------------------------------------------------- pan and zoom
+const vp = $("#viewport"), board = $("#board");
+let s = 1, tx = 0, ty = 0;
+const MIN = 0.15, MAX = 2.5;
+function apply() { board.style.transform = `translate(${tx}px, ${ty}px) scale(${s})`; $("#zval").textContent = Math.round(s * 100) + "%"; }
+function zoomAt(f, cx, cy) {
+  const ns = Math.min(MAX, Math.max(MIN, s * f)); const k = ns / s;
+  tx = cx - (cx - tx) * k; ty = cy - (cy - ty) * k; s = ns; apply();
+}
+function topPad() { return $(".bar").getBoundingClientRect().height; }
+function fit() {
+  const w = board.offsetWidth, h = board.offsetHeight, vw = innerWidth, vh = innerHeight - topPad();
+  s = Math.max(MIN, Math.min(vw / w, vh / h) * 0.98); tx = (vw - w * s) / 2; ty = topPad() + (vh - h * s) / 2; apply();
+}
+function focusEl(el, scale) {
+  const r = rectInBoard(el); const vw = innerWidth, vh = innerHeight - topPad();
+  s = scale || Math.min(MAX, Math.max(0.6, Math.min(vw / (r.w + 80), vh / (r.h + 80))));
+  tx = vw / 2 - (r.x + r.w / 2) * s; ty = topPad() + vh / 2 - (r.y + r.h / 2) * s; apply();
+}
+function rectInBoard(el) {
+  const b = board.getBoundingClientRect(), r = el.getBoundingClientRect();
+  return { x: (r.left - b.left) / s, y: (r.top - b.top) / s, w: r.width / s, h: r.height / s };
+}
+vp.addEventListener("wheel", e => { e.preventDefault(); zoomAt(Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0015)), e.clientX, e.clientY); }, { passive: false });
+const ptrs = new Map(); let last = null, moved = 0, pinch = null, downCard = null;
+vp.addEventListener("pointerdown", e => {
+  if (e.button === 2) return;
+  downCard = e.target.closest ? e.target.closest(".card") : null;
+  vp.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY }); moved = 0;
+  if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch = { d: Math.hypot(a.x - b.x, a.y - b.y) }; }
+  last = { x: e.clientX, y: e.clientY }; vp.classList.add("dragging");
+});
+vp.addEventListener("pointermove", e => {
+  if (!ptrs.has(e.pointerId)) return;
+  ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (ptrs.size === 2 && pinch) {
+    const [a, b] = [...ptrs.values()]; const d = Math.hypot(a.x - b.x, a.y - b.y);
+    zoomAt(d / pinch.d, (a.x + b.x) / 2, (a.y + b.y) / 2); pinch.d = d; moved += 10; return;
+  }
+  const dx = e.clientX - last.x, dy = e.clientY - last.y; moved += Math.abs(dx) + Math.abs(dy);
+  tx += dx; ty += dy; last = { x: e.clientX, y: e.clientY }; apply();
+});
+const up = e => { ptrs.delete(e.pointerId); if (ptrs.size < 2) pinch = null; if (!ptrs.size) vp.classList.remove("dragging");
+  if (ptrs.size === 1) last = [...ptrs.values()][0]; };
+vp.addEventListener("pointerup", e => {
+  const card = downCard; downCard = null;      // the pointer is captured by the board, so remember the card from pointerdown
+  if (moved < 6 && card && ptrs.size <= 1) { highlight(card.dataset.id); focusEl(card); }
+  up(e);
+});
+vp.addEventListener("pointercancel", up);
+addEventListener("keydown", e => {
+  if (document.body.classList.contains("listmode") || e.target.tagName === "SELECT") return;
+  const step = 80;
+  if (e.key === "ArrowLeft") { tx += step; apply(); } else if (e.key === "ArrowRight") { tx -= step; apply(); }
+  else if (e.key === "ArrowUp") { ty += step; apply(); } else if (e.key === "ArrowDown") { ty -= step; apply(); }
+  else if (e.key === "+" || e.key === "=") zoomAt(1.2, innerWidth / 2, innerHeight / 2);
+  else if (e.key === "-") zoomAt(1 / 1.2, innerWidth / 2, innerHeight / 2);
+  else if (e.key === "0") fit();
+  else if (e.key === "Enter" && document.activeElement.classList.contains("card")) { highlight(document.activeElement.dataset.id); focusEl(document.activeElement); }
+  else return;
+  e.preventDefault();
+});
+$("#z-in").onclick = () => zoomAt(1.25, innerWidth / 2, innerHeight / 2);
+$("#z-out").onclick = () => zoomAt(0.8, innerWidth / 2, innerHeight / 2);
+$("#z-fit").onclick = fit;
+$("#z-read").onclick = () => { const cx = innerWidth / 2, cy = innerHeight / 2; zoomAt(1 / s, cx, cy); };
+J.onchange = () => { const el = document.getElementById(J.value); if (el) focusEl(el, Math.min(1, s < 0.6 ? 0.85 : s)); };
+board.addEventListener("focusin", e => { const c = e.target.closest(".card"); if (c && s < 0.5) focusEl(c, 0.9); });
+
+// ---------------------------------------------------------------- filters and links
+function setFilter(kind) {
+  ["all", "win", "mixed", "dropped"].forEach(k => $("#f-" + k).setAttribute("aria-pressed", String(k === kind)));
+  document.querySelectorAll("#board .card").forEach(c => {
+    const v = c.dataset.v;
+    const show = kind === "all" || (kind === "win" && (v === "win" || v === "adopted" || v === "next")) || (kind === "mixed" && (v === "mixed" || v === "promising" || v === "running" || v === "next")) || (kind === "dropped" && v === "dropped");
+    c.classList.toggle("dim", !show);
+  });
+}
+["all", "win", "mixed", "dropped"].forEach(k => $("#f-" + k).onclick = () => setFilter(k));
+function drawLinks() {
+  const svg = $("#links"); svg.innerHTML = "";
+  svg.setAttribute("width", board.offsetWidth); svg.setAttribute("height", board.offsetHeight);
+  CARDS.forEach(c => (c.links || []).forEach(to => {
+    const a = document.getElementById("card-" + c.id), b = document.getElementById("card-" + to);
+    if (!a || !b) return;
+    const ra = rectInBoard(a), rb = rectInBoard(b);
+    const x1 = ra.x + ra.w, y1 = ra.y + Math.min(ra.h / 2, 60), x2 = rb.x, y2 = rb.y + 28;
+    const dx = Math.max(80, (x2 - x1) * 0.5);
+    const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    p.setAttribute("d", `M${x1},${y1} C${x1 + dx},${y1} ${x2 - dx},${y2} ${x2},${y2}`);
+    p.dataset.from = c.id; p.dataset.to = to; svg.appendChild(p);
+  }));
+}
+function highlight(id) {
+  document.querySelectorAll("#links path").forEach(p => p.classList.toggle("on", p.dataset.from === id || p.dataset.to === id));
+}
+board.addEventListener("pointerover", e => { const c = e.target.closest(".card"); if (c) highlight(c.dataset.id); });
+
+// tooltips on bars
+const tip = $("#tip");
+document.addEventListener("pointerover", e => { const t = e.target.dataset && e.target.dataset.tip; if (t) { tip.textContent = t; tip.style.display = "block"; } });
+document.addEventListener("pointermove", e => { if (tip.style.display === "block") { tip.style.left = (e.clientX + 12) + "px"; tip.style.top = (e.clientY + 12) + "px"; } });
+document.addEventListener("pointerout", e => { if (e.target.dataset && e.target.dataset.tip) tip.style.display = "none"; });
+
+// list view toggle
+$("#v-list").onclick = () => { const on = !document.body.classList.contains("listmode");
+  document.body.classList.toggle("listmode", on); $("#v-list").setAttribute("aria-pressed", String(on)); };
+
+function init() { const prev = s; s = 1; apply(); drawLinks(); s = prev; fit(); }
+if (innerWidth < 640) { document.body.classList.add("listmode"); $("#v-list").setAttribute("aria-pressed", "true"); }
+(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(init);
+addEventListener("resize", () => { fit(); });
+apply();
+</script>
+
+</body>
+</html>
