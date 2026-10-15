@@ -1,0 +1,43 @@
+{
+ "core": "runs/core_D3s512/scale_5M_v0_8k_ng64.pt",
+ "tag": "5m",
+ "pairs": {
+  "quora": 134378,
+  "alpaca": 50965,
+  "invented": 60000
+ },
+ "steps": 4000,
+ "quora": {
+  "literal": [
+   0.7425,
+   0.9715
+  ],
+  "k2_alone": [
+   0.741,
+   0.9745
+  ],
+  "literal_plus_k2": [
+   0.788,
+   0.9885
+  ],
+  "weight": 4.0,
+  "minilm_alone": [
+   0.809,
+   0.9855
+  ],
+  "literal_plus_minilm": [
+   0.809,
+   0.9895
+  ]
+ },
+ "skills_retrieval_at_1": {
+  "literal": "41/70",
+  "k2": "38/70",
+  "minilm": "41/70"
+ },
+ "ms_per_query": {
+  "literal": 5.9,
+  "k2": 20.3,
+  "minilm": 24.5
+ }
+}
