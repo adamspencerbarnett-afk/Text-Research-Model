@@ -1,0 +1,517 @@
+{
+ "model": "runs/mt_Q2/qa_mt_Q2.pt",
+ "precision": "bf16",
+ "graph": true,
+ "summary": {
+  "recall": {
+   "n": 6,
+   "ok": 4,
+   "ok_without_history": 0
+  },
+  "reference": {
+   "n": 5,
+   "ok": 2,
+   "ok_without_history": 0
+  },
+  "followup": {
+   "n": 4,
+   "ok": 1,
+   "ok_without_history": 0
+  },
+  "correction": {
+   "n": 4,
+   "ok": 0,
+   "ok_without_history": 0
+  },
+  "return": {
+   "n": 3,
+   "ok": 1,
+   "ok_without_history": 0
+  },
+  "multipart": {
+   "n": 5,
+   "ok": 1,
+   "ok_without_history": 1
+  }
+ },
+ "total": {
+  "n": 27,
+  "ok": 9,
+  "ok_without_history": 1
+ },
+ "history_gain": {
+  "threads": 300,
+  "bpb_with_history": 0.8475,
+  "bpb_without_history": 0.8899,
+  "history_gain_pct": 4.77
+ },
+ "seconds": 18.6,
+ "rows": [
+  {
+   "group": "recall",
+   "turns": [
+    "My sister is called Ana and she lives in Lisbon."
+   ],
+   "question": "Where does my sister live?",
+   "answer": "Ana is a family of children who live in Lisbon.",
+   "answer_without_history": "I live in a small town with a beautiful beach. I live there, and I am so proud of you. I am a beautiful and beautiful woman, and my life is full of wonderful beauty. I love to be a beautiful woman and love to have a beautiful life. I have a love of nature and love, and have a great time with it. I also love to love and",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My sister is called Ana and she lives in Lisbon.",
+     "Ana is called Ana, and she lives in Lisbon."
+    ]
+   ]
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "I have a dog named Max. He is three years old."
+   ],
+   "question": "How old is my dog?",
+   "answer": "I have a dog with a dog. I love a dog, but I have no idea that I have any dog.",
+   "answer_without_history": "I have a dog, but I have no idea that I have an old dog. I have one dog, and I have two dogs, and have one dogs. I am a dog and have a good dog.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I have a dog named Max. He is three years old.",
+     "Max is a friendly and loving dog who loves to learn new things and meet new people. Max is well-mannered, loyal, and always up for an adventure! Max loves the same thing as his friend, and he loves how he met his friend. Max love is a loyal and enjoyable dog, and is always a good friend."
+    ]
+   ]
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My favourite colour is green."
+   ],
+   "question": "What is my favourite colour?",
+   "answer": "The green is green, with a bright orange and a bright yellow.",
+   "answer_without_history": "I love the blue and blue, but I'm not sure what to do. I love blue and I love it.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My favourite colour is green.",
+     "The green is green, with a bright orange and a bright yellow."
+    ]
+   ]
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "I work as a nurse at a hospital in Chicago."
+   ],
+   "question": "What is my job?",
+   "answer": "I can't say that I can help you in my own life. I'm sure you'll be able to help you with my plans. I can assist you in the process of helping you with your health and wellness. I hope you have a better life and have a more positive experience.",
+   "answer_without_history": "My job is to work on a specific task, such as a project or project, to develop a plan and plan for a project. It is important to have a plan that is tailored to the specific needs of the project and to ensure that the project is completed.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I work as a nurse at a hospital in Chicago.",
+     "I can't say that I can help you with my plans. I'm sure you'll be able to help you in your own life. I can assist you in the process of helping you with your health and wellness. I hope you have a better life and have a more positive experience."
+    ]
+   ]
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My car is a red Toyota."
+   ],
+   "question": "What brand is my car?",
+   "answer": "The car is a red Toyota.",
+   "answer_without_history": "I'm a car.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My car is a red Toyota.",
+     "The car is a red Toyota."
+    ]
+   ]
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "I was born in 1990 in a small town."
+   ],
+   "question": "What year was I born?",
+   "answer": "I was born in 1990 in a small town. I was a young girl, and I was always a little girl. I had a lot of fun and I had lots of fun. I worked hard and worked hard, and was always looking for a way to get started. I started to work hard and went on a lot. I also worked hard or went on-line",
+   "answer_without_history": "I born was born in 1751.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I was born in 1990 in a small town.",
+     "I was born in 1990 in a small town. I was a young girl, and I was always a little girl. I had a lot of fun and I had lots of fun. I worked hard and worked hard, and was always looking for a way to get started. I started to work hard and started working hard and went on a lot. I also worked harder and"
+    ]
+   ]
+  },
+  {
+   "group": "reference",
+   "turns": [
+    "Here are three cities: Paris, Tokyo and Cairo."
+   ],
+   "question": "Which country is the second one in?",
+   "answer": "The second one in is the second in the world.",
+   "answer_without_history": "The second country in the world is Canada, with an area of 9.98 million square kilometers.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "Here are three cities: Paris, Tokyo and Cairo.",
+     "Paris, Tokyo - Japan, Cairo - Egypt"
+    ]
+   ]
+  },
+  {
+   "group": "reference",
+   "turns": [
+    "My children are Tom, Sara and Leo."
+   ],
+   "question": "What is the name of the last child I mentioned?",
+   "answer": "Tom",
+   "answer_without_history": "The first child I mentioned is Jennifer, a youngest child in the family.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My children are Tom, Sara and Leo.",
+     "Tom"
+    ]
+   ]
+  },
+  {
+   "group": "reference",
+   "turns": [
+    "I bought apples, bread and milk today."
+   ],
+   "question": "What was the second thing I bought?",
+   "answer": "Apples, bread, milk, milk.",
+   "answer_without_history": "The first thing to do after purchasing a new car was to read the manual and become familiar with the car's features, controls, and maintenance requirements.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I bought apples, bread and milk today.",
+     "Apples, bread, milk, milk."
+    ]
+   ]
+  },
+  {
+   "group": "reference",
+   "turns": [
+    "The meeting is on Monday at 3 pm in room 12."
+   ],
+   "question": "What room is it in?",
+   "answer": "The room is open to the public.",
+   "answer_without_history": "The room is in a small room with a light oak shade, and it is littered with scatter rugs.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "The meeting is on Monday at 3 pm in room 12.",
+     "The next meeting will be held on Tuesday, November 3rd at 2PM, in The Conference Room."
+    ]
+   ]
+  },
+  {
+   "group": "reference",
+   "turns": [
+    "Think about the planets Mars and Venus."
+   ],
+   "question": "Which of the two is closer to the Sun?",
+   "answer": "Mars and Venus are two planets in the Solar System. Mars is the largest planet in the solar system, and it is the third most planet in our solar system. Mars and Mars are the largest and most planets on Earth, and are the third largest planet on Earth. Mars also has a large solar array. Mars has a much colder climate.",
+   "answer_without_history": "Mercury.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "Think about the planets Mars and Venus.",
+     "Mars and Venus are two planets in the Solar System. Mars is the largest planet in the solar system, and it is the third most planet in our solar system. Mars and Mars are the largest and most planets on Earth, and are the third largest planet on Earth. Mars also has a large solar system and a large, large solar array. Mars has a much colder climate"
+    ]
+   ]
+  },
+  {
+   "group": "followup",
+   "turns": [
+    "What is the capital of France?"
+   ],
+   "question": "What river runs through it?",
+   "answer": "The river runs through it.",
+   "answer_without_history": "The major river that runs through Egypt is the Nile River.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "What is the capital of France?",
+     "The capital of France is Paris."
+    ]
+   ]
+  },
+  {
+   "group": "followup",
+   "turns": [
+    "Who wrote Romeo and Juliet?"
+   ],
+   "question": "Name another play he wrote.",
+   "answer": "William Shakespeare, The Five Five.",
+   "answer_without_history": "A Midsummer Night's Dream",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "Who wrote Romeo and Juliet?",
+     "William Shakespeare"
+    ]
+   ]
+  },
+  {
+   "group": "followup",
+   "turns": [
+    "What is photosynthesis?"
+   ],
+   "question": "What gas do plants release during it?",
+   "answer": "Photosynthesis is the process by which plants use light energy to convert carbon dioxide and water into oxygen and sugars. It involves the transfer of electrons and protons between molecules as chlorophyll in the presence of light absorbs the light energy used to drive the reaction. The oxygen produced is released into the atmosphere, and the sugar produced is used by the plant for growth",
+   "answer_without_history": "Plants produce energy through the process of photosynthesis. During photosynthous photosyn.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "What is photosynthesis?",
+     "Photosynthesis is the process by which plants use light energy to convert carbon dioxide and water into oxygen and sugars. It involves the transfer of electrons and protons between molecules as chlorophyll in the presence of light absorbs the light energy used to drive the reaction. The oxygen produced is released into the atmosphere, and the sugar produced is used by the plant for growth"
+    ]
+   ]
+  },
+  {
+   "group": "followup",
+   "turns": [
+    "Tell me about the Eiffel Tower."
+   ],
+   "question": "In which city is it?",
+   "answer": "The city is the largest city in the world. It is the world's largest city, with 100,000 inhabitants.",
+   "answer_without_history": "The city is the largest city in the world.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "Tell me about the Eiffel Tower.",
+     "The Eiffel Tower is a tower located in Paris, France. Designed by Gustave Eiffell as the entrance to the 1889 World's Fair, the 2004 World'). The tower is the tallest structure in Paris and is composed of eighteen lattice sections connected to one another. Each leg"
+    ]
+   ]
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "My meeting is on Tuesday.",
+    "Sorry, I meant Thursday, not Tuesday."
+   ],
+   "question": "What day is my meeting?",
+   "answer": "Tuesday is on Tuestorm.",
+   "answer_without_history": "I am on 10 am on the 11-day day of 20 days.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My meeting is on Tuesday.",
+     "Tuesday is on Tuestorm."
+    ],
+    [
+     "Sorry, I meant Thursday, not Tuesday.",
+     "Tuesday is on Tuestorm."
+    ]
+   ]
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "I live in Boston.",
+    "Actually, I moved to Denver last week."
+   ],
+   "question": "Where do I live now?",
+   "answer": "I have no experience in the area of the Boston metropolitan area. I have a few friends and I have some friends and family.",
+   "answer_without_history": "I live in a lively city with a thriving arts scene, beautiful parks, and diverse cultures. I love that I can explore a different part of the city every day and take in the sights, sounds and smells. I also appreciate the fact that the city is always bustling with activity and there is always something to do and see.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I live in Boston.",
+     "The area code associated with the Boston metropolitan area is 617."
+    ],
+    [
+     "Actually, I moved to Denver last week.",
+     "The area code associated with the Boston metropolitan area is 617."
+    ]
+   ]
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "Please call me Sam.",
+    "On second thought, call me Alex instead."
+   ],
+   "question": "What should you call me?",
+   "answer": "I'm sorry to hear that you're going to call my parents tomorrow at 7 pm.",
+   "answer_without_history": "I call you.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "Please call me Sam.",
+     "I'm sorry to hear that you're going to call my parents tomorrow at 7 pm."
+    ],
+    [
+     "On second thought, call me Alex instead.",
+     "I'm sorry to hear that you're going to call my parents tomorrow at 7 pm."
+    ]
+   ]
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "My order number is 4417.",
+    "Correction: the order number is 4471."
+   ],
+   "question": "What is my order number?",
+   "answer": "1000",
+   "answer_without_history": "I am not able to order order. I have a order number of orders. I am a customer of my order.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My order number is 4417.",
+     "1. 1000"
+    ],
+    [
+     "Correction: the order number is 4471.",
+     "1000"
+    ]
+   ]
+  },
+  {
+   "group": "return",
+   "turns": [
+    "My cat is called Luna.",
+    "What is the capital of Italy?"
+   ],
+   "question": "What is my cat called?",
+   "answer": "Luna is a small, lush, lily-like, and lush greenery. Luns are a type of grass, with a variety from the sun to the sun. Lunch is a type that is often used in the gardens and gardens. Lungs are a variety that is usually used in a garden. Luts are a types that is sometimes used in",
+   "answer_without_history": "My cat is called \"Me\".",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My cat is called Luna.",
+     "Luna is a small, lush, lily-like, and lush greenery. Luna has a large, luxurious, and a variety of plants. Lunch is a type of grass, with a variety from the sun to the sun. Luns are a type that is often used in the gardens and gardens. Lungs are a variety that"
+    ],
+    [
+     "What is the capital of Italy?",
+     "The capital of Italy is Luna, located in the heart of the city."
+    ]
+   ]
+  },
+  {
+   "group": "return",
+   "turns": [
+    "I am planning a trip to Spain in May.",
+    "What is a good book to read on a plane?"
+   ],
+   "question": "Which country am I travelling to?",
+   "answer": "I am travelling to a country that is not a country.",
+   "answer_without_history": "I travelled to the Pacific Ocean, where I traveled to the United States.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I am planning a trip to Spain in May.",
+     "I am planning a trip to Spain in May."
+    ],
+    [
+     "What is a good book to read on a plane?",
+     "A good book to read on a plane is a book that is designed to be a great book for people who want to explore the world. It is a great resource for readers to explore and explore the different types of planes."
+    ]
+   ]
+  },
+  {
+   "group": "return",
+   "turns": [
+    "My brother plays the guitar.",
+    "Name a famous painter."
+   ],
+   "question": "What instrument does my brother play?",
+   "answer": "I'm a violin.",
+   "answer_without_history": "My brother plays the trombone.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My brother plays the guitar.",
+     "The guitar is a violin."
+    ],
+    [
+     "Name a famous painter.",
+     "The guitar is a violin."
+    ]
+   ]
+  },
+  {
+   "group": "multipart",
+   "turns": [],
+   "question": "I need two things. First, what is the capital of Canada? Second, what is the boiling point of water in Celsius?",
+   "answer": "The capital city of Canada is Ottawa.",
+   "answer_without_history": "The capital city of Canada is Ottawa.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": []
+  },
+  {
+   "group": "multipart",
+   "turns": [],
+   "question": "Here is a note from my courier: 'Order 5521 will be delivered on Friday at noon.' When will it arrive, and what is the order number?",
+   "answer": "[Your Name]",
+   "answer_without_history": "[Your Name]",
+   "ok": false,
+   "ok_without_history": false,
+   "history": []
+  },
+  {
+   "group": "multipart",
+   "turns": [],
+   "question": "I have three meetings tomorrow: budget at 9, design at 11 and hiring at 2. Which meeting is at 11, and what time is the hiring meeting?",
+   "answer": "The meeting is at 11 and hiring at 2. Which meeting is on 10 AM tomorrow with the sales team.",
+   "answer_without_history": "The meeting is at 11 and hiring at 2. Which meeting is on 10 AM tomorrow with the sales team.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": []
+  },
+  {
+   "group": "multipart",
+   "turns": [],
+   "question": "My name is Priya and I am learning to cook. I have chicken, rice and spinach at home. What could I make with them, and what is my name?",
+   "answer": "Priya is a delicious and delicious dish that is made with chicken, vegetables, and vegetables. It is a great way to make a delicious dish and make a great side dish.",
+   "answer_without_history": "Priya is a delicious and delicious dish that is made with chicken, vegetables, and vegetables. It is a great way to make a delicious dish and make a great side dish.",
+   "ok": true,
+   "ok_without_history": true,
+   "history": []
+  },
+  {
+   "group": "multipart",
+   "turns": [
+    "I am planning a party for 12 people next Saturday. It will be in my garden, and two of my guests are vegetarian."
+   ],
+   "question": "How many guests are vegetarian, and where is the party?",
+   "answer": "The average of the 12 people next Saturday is 100 guests.",
+   "answer_without_history": "The most popular guests are the 100-year-old guest guests, 15-20 guests.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I am planning a party for 12 people next Saturday. It will be in my garden, and two of my guests are vegetarian.",
+     "A great party for 12 people next Saturday is the \"Bringing the Fruit\"."
+    ]
+   ]
+  }
+ ]
+}

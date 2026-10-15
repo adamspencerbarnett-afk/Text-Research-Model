@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>5M Chat Model v2 Design</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: an engineering design sheet. Evidence -> decisions first, then the three drawings (training flow, model
+   structure, one chat turn), the window budget, the tests, and the risks. Same visual language as REASONING_MAP.html. */
+:root {
+  --paper: #f2f4f6; --card: #ffffff; --ink: #15212c; --ink-2: #4a5866; --muted: #7d8a96; --hair: #d5dbe2;
+  --accent: #0f6e8c; --accent-soft: #e2f0f4; --shine: #b7791f; --shine-soft: #fbf3e4;
+  --good: #0a7d0a; --good-soft: #e5f4e5; --bad: #b83232; --bad-soft: #f9e6e6; --run: #2a5fb0; --run-soft: #e4ecf8;
+  --c-data: #2a78d6; --c-model: #eb6834; --c-mem: #1baf7a; --c-test: #6250d6;
+  --f-display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --paper: #0f151b; --card: #16202a; --ink: #e8eef3; --ink-2: #b5c1cc; --muted: #8796a3; --hair: #2a3743;
+    --accent: #4fb3d1; --accent-soft: #15303a; --shine: #e0a548; --shine-soft: #2a2213; --good: #3cc23c; --good-soft: #12291a;
+    --bad: #e66767; --bad-soft: #321a1a; --run: #6f9ee8; --run-soft: #172438; --c-data: #3987e5; --c-model: #d95926; --c-mem: #199e70; --c-test: #9085e9; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --paper: #0f151b; --card: #16202a; --ink: #e8eef3; --ink-2: #b5c1cc; --muted: #8796a3; --hair: #2a3743;
+  --accent: #4fb3d1; --accent-soft: #15303a; --shine: #e0a548; --shine-soft: #2a2213; --good: #3cc23c; --good-soft: #12291a;
+  --bad: #e66767; --bad-soft: #321a1a; --run: #6f9ee8; --run-soft: #172438; --c-data: #3987e5; --c-model: #d95926; --c-mem: #199e70; --c-test: #9085e9; color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 15px/1.55 var(--f-body); padding-inline: 16px; }
+main { max-width: 1180px; margin: 0 auto; padding-block: 36px 80px; display: flex; flex-direction: column; gap: 44px; }
+h1 { font: 700 46px/1.02 var(--f-display); margin: 0 0 10px; text-wrap: balance; }
+h2 { font: 700 28px/1.1 var(--f-display); margin: 0 0 6px; text-wrap: balance; }
+h3 { font: 600 18px/1.2 var(--f-display); margin: 0 0 4px; }
+p { margin: 0; max-width: 72ch; color: var(--ink-2); }
+.lede { font-size: 18px; }
+.eyebrow { font: 600 12px var(--f-mono); letter-spacing: .08em; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; }
+.status { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+.pill { display: inline-flex; gap: 6px; align-items: center; font: 600 12px var(--f-body); padding: 4px 10px; border-radius: 999px; }
+.p-run { background: var(--run-soft); color: var(--run); } .p-good { background: var(--good-soft); color: var(--good); } .p-shine { background: var(--shine-soft); color: var(--shine); }
+.panel { background: var(--card); border: 1px solid var(--hair); border-radius: 12px; padding: 20px 22px; }
+.scroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--hair); vertical-align: top; }
+th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); font-weight: 600; }
+td.num { font-family: var(--f-mono); white-space: nowrap; }
+td b { color: var(--ink); }
+svg.dia { display: block; width: 100%; height: auto; min-width: 860px; }
+svg.dia text { font-family: var(--f-body); fill: var(--ink); font-size: 13px; }
+svg.dia text.s { fill: var(--ink-2); font-size: 11.5px; }
+svg.dia text.t { font-family: var(--f-display); font-weight: 600; font-size: 15px; }
+svg.dia .box { fill: var(--card); stroke: var(--hair); stroke-width: 1.2; }
+svg.dia .data { stroke: var(--c-data); stroke-width: 2; }
+svg.dia .model { stroke: var(--c-model); stroke-width: 2; }
+svg.dia .mem { stroke: var(--c-mem); stroke-width: 2; }
+svg.dia .test { stroke: var(--c-test); stroke-width: 2; }
+svg.dia .arrow { stroke: var(--muted); stroke-width: 1.6; fill: none; marker-end: url(#ah); }
+svg.dia .arrow.hot { stroke: var(--accent); stroke-width: 2.2; }
+svg.dia .tag { fill: var(--accent-soft); }
+.budget { display: flex; height: 54px; border-radius: 8px; overflow: hidden; border: 1px solid var(--hair); margin-top: 12px; }
+.budget div { display: flex; flex-direction: column; justify-content: center; padding: 0 10px; font-size: 12px; color: var(--ink); min-width: 0; border-right: 2px solid var(--card); }
+.budget b { font: 600 13px var(--f-mono); }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 13px; color: var(--ink-2); margin-top: 10px; }
+.sw { display: inline-flex; align-items: center; gap: 6px; } .sw i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+.risk { border-left: 3px solid var(--bad); padding-left: 12px; }
+.risk h3 { color: var(--ink); }
+code { font-family: var(--f-mono); font-size: 13px; background: var(--accent-soft); padding: 1px 5px; border-radius: 4px; }
+@media (max-width: 640px) { h1 { font-size: 34px; } }
+</style>
+</head>
+<body>
+<main>
+
+<header>
+  <div class="eyebrow">Design sheet · 15 October 2026 · session 35</div>
+  <h1>5M Chat Model v2</h1>
+  <p class="lede">A 5M model built from every result that held up this week: the best 5M core, the Q&amp;A recipe, the 100,000-example skills data with rewriting, real conversations, and a new kind of training for remembering a whole conversation, all at a window twice as long. It answers from memory, says when it doesn't know, asks which one you mean, and streams long replies such as short stories.</p>
+  <div class="status">
+    <span class="pill p-run">Queued: trains after session 34 tonight (~1.5 h), then tests (~1 h)</span>
+    <span class="pill p-good">Structure decided by session 33: one mixed stage</span>
+    <span class="pill p-shine">Replies stream in the terminal</span>
+  </div>
+</header>
+
+<section>
+  <h2>Evidence behind each decision</h2>
+  <p>Every choice comes from a measured result on the reasoning map (<code>docs/REASONING_MAP.html</code>).</p>
+  <div class="panel scroll" style="margin-top:14px">
+    <table>
+      <thead><tr><th>Decision</th><th>Evidence</th><th>Result it rests on</th></tr></thead>
+      <tbody>
+        <tr><td><b>Start from the new 5M core</b> (modern block, Muon + WSD, P100 mix)</td><td>best 5M language</td><td class="num">Wikipedia 1.260 vs 1.555 bits/byte</td></tr>
+        <tr><td><b>Window 2,048 codes</b> (twice the core's), taught by rehearsal text at full length</td><td>the new core doubled conversation scores with a longer window</td><td class="num">27-item probe 6 → 12</td></tr>
+        <tr><td><b>Copy head + trust head</b></td><td>the mechanism that carries memory into answers</td><td class="num">F1 0.13 → 0.48</td></tr>
+        <tr><td><b>Copy under rewording</b> (30% of own-exchange windows reworded)</td><td>reworded questions answered</td><td class="num">1–3/5 → 5/5</td></tr>
+        <tr><td><b>Skills data v4</b>, 25% of batches (near miss, update, unknown, clarify, follow-up, rewriting)</td><td>100k skills arm</td><td class="num">skills 33 → 65/100; held-out 77 → 128/200</td></tr>
+        <tr><td><b>General questions beside unrelated evidence</b>, 20% of Q&amp;A windows</td><td>fixed over-refusal</td><td class="num">wrong refusals 22–29 → 7–10</td></tr>
+        <tr><td><b>2–3 candidates when close</b>, half of Q&amp;A windows</td><td>only helps once trained</td><td class="num">12/100 untrained, 65/100 trained</td></tr>
+        <tr><td><b>One mixed stage</b> with real conversations</td><td>sessions 31 + 33, two seeds</td><td class="num">history gain 11.2% vs 9.3%; probe v2 27.5 vs 23.5</td></tr>
+        <tr><td><b>Long-conversation recall windows</b> (new)</td><td>every model is weak at remembering what was said</td><td class="num">probe v2 ≤ 36/120 for all models</td></tr>
+        <tr><td><b>Session memory</b> (every turn also stored in memory)</td><td>windows end; memory doesn't</td><td class="num">tested: recall after 2–40 turns</td></tr>
+        <tr><td><b>Not used:</b> LoRA, decision head, confidence input, dropout, typo training</td><td>measured and dropped</td><td class="num">see the map's dropped strip</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>1. Training flow</h2>
+  <p>Five kinds of window, all laid out exactly as the chat lays them out, sampled by share; each batch holds one kind and is padded only to its longest window.</p>
+  <div class="panel scroll" style="margin-top:14px">
+    <svg class="dia" viewBox="0 0 1120 470" role="img" aria-label="Training flow from five data sources through the window builder to the model and the tests">
+      <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+      <!-- sources -->
+      <g>
+        <rect class="box data" x="10" y="10" width="270" height="70" rx="8"/><text class="t" x="24" y="36">Q&amp;A, 30%</text><text class="s" x="24" y="56">Alpaca, 51k exchanges; reworded, 2–3</text><text class="s" x="24" y="71">candidates, unrelated evidence</text>
+        <rect class="box data" x="10" y="98" width="270" height="70" rx="8"/><text class="t" x="24" y="124">Skills v4, 25%</text><text class="s" x="24" y="144">130k invented-fact examples, rewriting,</text><text class="s" x="24" y="159">'your' not 'my'</text>
+        <rect class="box data" x="10" y="186" width="270" height="70" rx="8"/><text class="t" x="24" y="212">Real conversations, 15%</text><text class="s" x="24" y="232">209k UltraChat + OpenAssistant threads,</text><text class="s" x="24" y="247">as many turns as fit</text>
+        <rect class="box data" x="10" y="274" width="270" height="70" rx="8"/><text class="t" x="24" y="300">Long recall, 10% (new)</text><text class="s" x="24" y="320">facts said early, corrected, asked later;</text><text class="s" x="24" y="335">scrolled-out facts in the memory slot</text>
+        <rect class="box data" x="10" y="362" width="270" height="70" rx="8"/><text class="t" x="24" y="388">Rehearsal text, 20%</text><text class="s" x="24" y="408">300 MB of the P100 mix at the full</text><text class="s" x="24" y="423">2,048 codes: language + long positions</text>
+      </g>
+      <path class="arrow" d="M280,45 C330,45 330,200 375,215"/><path class="arrow" d="M280,133 C330,133 330,210 375,220"/>
+      <path class="arrow" d="M280,221 L375,225"/><path class="arrow" d="M280,309 C330,309 330,240 375,232"/><path class="arrow" d="M280,397 C330,397 330,250 375,238"/>
+      <!-- window builder -->
+      <rect class="box" x="378" y="150" width="230" height="150" rx="8"/><text class="t" x="394" y="178">Window builder</text>
+      <text class="s" x="394" y="200">chat_engine.build_window: the</text><text class="s" x="394" y="216">same layout training and chat use</text>
+      <rect class="tag" x="394" y="232" width="198" height="22" rx="4"/><text class="s" x="402" y="248">memory | turns | message | reply</text>
+      <text class="s" x="394" y="276">one kind per batch of 16</text><text class="s" x="394" y="292">loss on the reply only</text>
+      <path class="arrow hot" d="M608,225 L668,225"/>
+      <!-- model -->
+      <rect class="box model" x="670" y="110" width="220" height="230" rx="8"/><text class="t" x="686" y="138">5M chat model v2</text>
+      <text class="s" x="686" y="160">init: new 5M core (runs/core_mt5m)</text><text class="s" x="686" y="178">6 modern blocks × 256, RoPE</text>
+      <text class="s" x="686" y="196">window 2,048 codes</text><text class="s" x="686" y="214">+ copy head (fresh, lr 1e-3)</text>
+      <text class="s" x="686" y="232">+ trust head (fresh)</text><text class="s" x="686" y="250">+ bigram/trigram count tables</text>
+      <text class="s" x="686" y="268">core lr 1e-4, cosine, warm-up 200</text><text class="s" x="686" y="286">30,000 steps, bf16, ~1.5 h GPU</text>
+      <text class="s" x="686" y="304">≈ 6.8M learned weights</text><text class="s" x="686" y="322">runs/chat5m_v2/chat5m_v2.pt</text>
+      <path class="arrow hot" d="M890,225 L948,225"/>
+      <!-- tests -->
+      <rect class="box test" x="950" y="40" width="160" height="370" rx="8"/><text class="t" x="964" y="66">Tests</text>
+      <text class="s" x="964" y="90">speed vs window</text><text class="s" x="964" y="110">  GPU and CPU</text>
+      <text class="s" x="964" y="134">quality by position</text><text class="s" x="964" y="154">  to 4,096 codes</text>
+      <text class="s" x="964" y="178">recall after 2–40</text><text class="s" x="964" y="198">  turns, memory on/off</text>
+      <text class="s" x="964" y="222">8 short stories</text><text class="s" x="964" y="246">probes as real chats</text>
+      <text class="s" x="964" y="270">skills v1, v2, rewrite</text><text class="s" x="964" y="294">grounded scorecard</text>
+      <text class="s" x="964" y="318">chat + typo probe</text><text class="s" x="964" y="342">clean report card</text>
+      <text class="s" x="964" y="366">50 questions, hand</text><text class="s" x="964" y="386">  rated</text>
+    </svg>
+    <div class="legend"><span class="sw"><i style="background:var(--c-data)"></i>training data</span><span class="sw"><i style="background:var(--c-model)"></i>model</span><span class="sw"><i style="background:var(--c-test)"></i>tests</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>2. Model structure</h2>
+  <p>One network and two stores. The network reads and writes; the stores hold facts. Only the network is trained.</p>
+  <div class="panel scroll" style="margin-top:14px">
+    <svg class="dia" viewBox="0 0 1120 380" role="img" aria-label="Model structure: core network with copy head and trust head, count tables, exchange memory and session memory">
+      <defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+      <rect class="box model" x="330" y="20" width="460" height="340" rx="10"/><text class="t" x="348" y="48">Network (trained)</text>
+      <rect class="box" x="350" y="64" width="420" height="58" rx="6"/><text x="364" y="88">Code embeddings</text><text class="s" x="364" y="108">8,192 codes from the compiler's P100 dictionary (lossless text ↔ codes)</text>
+      <rect class="box" x="350" y="132" width="420" height="72" rx="6"/><text x="364" y="156">Core: 6 modern blocks, width 256, 8 heads</text><text class="s" x="364" y="176">rotary positions, RMSNorm, SwiGLU; reads the whole 2,048-code window</text><text class="s" x="364" y="194">KV cache at answer time: each new code costs one step</text>
+      <rect class="box" x="350" y="214" width="200" height="66" rx="6"/><text x="364" y="238">Copy head</text><text class="s" x="364" y="256">points into the memory</text><text class="s" x="364" y="272">slot: copies a stored fact</text>
+      <rect class="box" x="570" y="214" width="200" height="66" rx="6"/><text x="584" y="238">Next-code head</text><text class="s" x="584" y="256">the network's own</text><text class="s" x="584" y="272">prediction (its knowledge)</text>
+      <rect class="box" x="350" y="290" width="420" height="56" rx="6"/><text x="364" y="314">Trust head: mixes copy, network and count tables per code</text><text class="s" x="364" y="334">decides at every code whether to copy memory or write its own words</text>
+      <!-- stores -->
+      <rect class="box mem" x="20" y="40" width="270" height="130" rx="10"/><text class="t" x="36" y="66">Exchange memory (knowledge)</text>
+      <text class="s" x="36" y="88">51k stored Q&amp;A pairs + your /add facts</text><text class="s" x="36" y="106">found by word key + MiniLM meaning match</text><text class="s" x="36" y="124">1–3 candidates when their scores are close</text><text class="s" x="36" y="142">strict exact match (no one-word keys)</text>
+      <rect class="box mem" x="20" y="200" width="270" height="130" rx="10"/><text class="t" x="36" y="226">Session memory (this chat)</text>
+      <text class="s" x="36" y="248">every turn stored as it happens</text><text class="s" x="36" y="266">recalled when a detail has scrolled</text><text class="s" x="36" y="284">out of the window</text><text class="s" x="36" y="302">cleared by /forget or closing the chat</text>
+      <path class="arrow" marker-end="url(#ah2)" d="M290,105 C318,105 318,240 348,246"/><path class="arrow" marker-end="url(#ah2)" d="M290,265 C318,265 318,250 348,250"/>
+      <rect class="box mem" x="830" y="60" width="270" height="110" rx="10"/><text class="t" x="846" y="86">Count tables</text><text class="s" x="846" y="108">bigram and trigram counts of the</text><text class="s" x="846" y="126">Q&amp;A text, rebuilt at load (5 s)</text><text class="s" x="846" y="144">a third source for the trust head</text>
+      <path class="arrow" marker-end="url(#ah2)" d="M830,115 C800,115 800,310 772,316"/>
+      <rect class="box" x="830" y="200" width="270" height="130" rx="10"/><text class="t" x="846" y="226">Chat engine</text><text class="s" x="846" y="248">builds the window, runs the model</text><text class="s" x="846" y="266">with the KV cache, streams the reply,</text><text class="s" x="846" y="284">stores the turn, reports window use</text><text class="s" x="846" y="302">compiler/experiments/chat_engine.py</text>
+    </svg>
+  </div>
+</section>
+
+<section>
+  <h2>3. One chat turn</h2>
+  <p>What happens between pressing Enter and the reply appearing.</p>
+  <div class="panel scroll" style="margin-top:14px">
+    <svg class="dia" viewBox="0 0 1120 300" role="img" aria-label="Sequence of one chat turn">
+      <defs><marker id="ah3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--muted)"/></marker></defs>
+      <g>
+        <rect class="box data" x="10" y="40" width="150" height="90" rx="8"/><text class="t" x="24" y="66">1 You type</text><text class="s" x="24" y="88">"Where does my</text><text class="s" x="24" y="104">sister live?"</text>
+        <rect class="box mem" x="190" y="40" width="170" height="90" rx="8"/><text class="t" x="204" y="66">2 Look up</text><text class="s" x="204" y="88">knowledge + session</text><text class="s" x="204" y="104">memory: 1–3 facts</text><text class="s" x="204" y="120">(~5–25 ms)</text>
+        <rect class="box" x="390" y="40" width="190" height="90" rx="8"/><text class="t" x="404" y="66">3 Build window</text><text class="s" x="404" y="88">facts | recent turns |</text><text class="s" x="404" y="104">message | reply room</text><text class="s" x="404" y="120">≤ 2,048 codes</text>
+        <rect class="box model" x="610" y="40" width="190" height="90" rx="8"/><text class="t" x="624" y="66">4 Read once</text><text class="s" x="624" y="88">whole window through</text><text class="s" x="624" y="104">the core: the wait</text><text class="s" x="624" y="120">before the first word</text>
+        <rect class="box model" x="830" y="40" width="130" height="90" rx="8"/><text class="t" x="844" y="66">5 Write</text><text class="s" x="844" y="88">one code per</text><text class="s" x="844" y="104">step, KV cache,</text><text class="s" x="844" y="120">streamed</text>
+        <rect class="box mem" x="990" y="40" width="120" height="90" rx="8"/><text class="t" x="1004" y="66">6 Remember</text><text class="s" x="1004" y="88">turn into history</text><text class="s" x="1004" y="104">and session</text><text class="s" x="1004" y="120">memory</text>
+      </g>
+      <path class="arrow" marker-end="url(#ah3)" d="M160,85 L188,85"/><path class="arrow" marker-end="url(#ah3)" d="M360,85 L388,85"/><path class="arrow" marker-end="url(#ah3)" d="M580,85 L608,85"/><path class="arrow" marker-end="url(#ah3)" d="M800,85 L828,85"/><path class="arrow" marker-end="url(#ah3)" d="M960,85 L988,85"/>
+      <path class="arrow" marker-end="url(#ah3)" d="M1050,130 C1050,220 260,220 260,134"/>
+      <text class="s" x="560" y="238" text-anchor="middle">the next message can recall this turn: from the window while it fits, from session memory after it scrolls out</text>
+      <text class="s" x="895" y="160" text-anchor="middle">stops at the end code,</text><text class="s" x="895" y="176" text-anchor="middle">a new "User:" turn, or</text><text class="s" x="895" y="192" text-anchor="middle">the reply limit (/codes)</text>
+      <text class="s" x="20" y="280">Measured on this machine in session 35: first-word wait and ms per code at 256 → 1,900 codes of window, on the RTX 3090 and on 16 CPU threads.</text>
+    </svg>
+  </div>
+</section>
+
+<section>
+  <h2>How the 2,048-code window is shared</h2>
+  <p>About 7,000 characters. The reply room is reserved first, so a long story never overruns; recent turns fill whatever is left, newest kept first.</p>
+  <div class="panel" style="margin-top:14px">
+    <div class="budget" role="img" aria-label="Window budget">
+      <div style="flex:400;background:color-mix(in srgb,var(--c-mem) 22%,var(--card))"><b>≤ 400</b>memory facts</div>
+      <div style="flex:950;background:color-mix(in srgb,var(--c-data) 18%,var(--card))"><b>≈ 950–1,500</b>recent turns (as many as fit)</div>
+      <div style="flex:120;background:color-mix(in srgb,var(--accent) 22%,var(--card))"><b>msg</b>your message</div>
+      <div style="flex:580;background:color-mix(in srgb,var(--c-model) 22%,var(--card))"><b>≤ 682</b>reply room (/codes)</div>
+    </div>
+    <p style="margin-top:12px">Older turns leave the window but stay in session memory until you quit or type <code>/forget</code>. With the default 400-code replies, roughly 5–10 recent exchanges stay in the window, depending on their length.</p>
+  </div>
+</section>
+
+<section>
+  <h2>Tests and what they answer</h2>
+  <div class="panel scroll" style="margin-top:14px">
+    <table>
+      <thead><tr><th>Test</th><th>Question</th><th>Compared with</th></tr></thead>
+      <tbody>
+        <tr><td><b>Speed vs window</b></td><td>How long is the wait before the first word, and how fast do words come, as the conversation fills the window? GPU and CPU.</td><td>speed lab: 5M 6 ms/code CPU</td></tr>
+        <tr><td><b>Quality by position</b></td><td>Is text predicted as well at position 1,900 as at 200, and what happens past 2,048?</td><td>where long context breaks</td></tr>
+        <tr><td><b>Recall vs distance</b></td><td>Told a fact in turn 1, can it answer after 2, 5, 10, 20, 40 turns, with session memory on and off?</td><td>probe v2: all models ≤ 36/120</td></tr>
+        <tr><td><b>Short stories</b></td><td>Up to 600 codes: does it stay on topic, keep the character's name, avoid repeating itself?</td><td>read by hand</td></tr>
+        <tr><td><b>Conversation probes</b></td><td>27 scripted and 120 generated conversations, played as real chats</td><td>sessions 31, 33</td></tr>
+        <tr><td><b>Skills tests</b></td><td>v1 (100), held-out v2 (200), rewriting (40)</td><td>100k arm: 65, 128</td></tr>
+        <tr><td><b>Grounded scorecard</b></td><td>Right from memory, from the network, copied wrong, made up; inventions on unstored questions</td><td>old 5M: 58/60 invented</td></tr>
+        <tr><td><b>Chat probe, typos, report card</b></td><td>Nothing lost on everyday questions and language</td><td>24/32, clean card 1.260</td></tr>
+        <tr><td><b>50 questions, hand rated</b></td><td>Common sense of both answers</td><td>old 5M 44.9 / 9.9; 100M 55.8 / 47.0</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <h2>Risks, and where each would come from</h2>
+  <div class="grid2" style="margin-top:14px">
+    <div class="panel risk"><h3>Wait grows with the window</h3><p>Reading the window is the cost before the first word; it grows with the conversation. Writing stays fast because of the KV cache, but each step also attends to the whole window.</p></div>
+    <div class="panel risk"><h3>Positions past 2,048</h3><p>The core trained at 1,024, the stage at 2,048. Text past the trained window is untested ground: rotary positions continue, but the model has never seen them, so quality is expected to drop there.</p></div>
+    <div class="panel risk"><h3>Session memory misses</h3><p>A scrolled-out detail comes back only if the lookup finds it. Rewording ("my sibling" for "my sister") can miss; this is the retrieval weakness K2 is meant to fix.</p></div>
+    <div class="panel risk"><h3>5M knowledge</h3><p>Conversation and memory skills do not add general knowledge: without memory the 5M network still writes fluent nonsense (rated 7.9–9.9). Stories will be short and simple.</p></div>
+    <div class="panel risk"><h3>Long replies drift</h3><p>Small models repeat and lose the thread over hundreds of codes. The repeat block (no 3-code phrase twice) helps; the story test measures the rest.</p></div>
+    <div class="panel risk"><h3>Mixing five kinds of data</h3><p>Each share takes steps from the others. The chat probe and report card check that Q&amp;A and language were not traded away.</p></div>
+  </div>
+</section>
+
+<section class="panel">
+  <h2>Streaming</h2>
+  <p>Yes. Replies appear word by word in the terminal as they are written, in conversation mode. The last few characters are held back until the reply ends, so the stop markers never show. The line under each reply shows how full the window is, how many turns it holds, whether an earlier turn was recalled from session memory, and the first-word wait.</p>
+</section>
+
+</main>
+</body>
+</html>

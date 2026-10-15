@@ -1,0 +1,1566 @@
+{
+ "model": "runs/mt_M2/qa_mt_M2.pt",
+ "total": {
+  "n": 120,
+  "ok": 29,
+  "ok_without_history": 0
+ },
+ "summary": {
+  "recall": {
+   "n": 30,
+   "ok": 10,
+   "ok_without_history": 0,
+   "wrong_value": 0
+  },
+  "correction": {
+   "n": 30,
+   "ok": 8,
+   "ok_without_history": 0,
+   "wrong_value": 4
+  },
+  "select": {
+   "n": 30,
+   "ok": 11,
+   "ok_without_history": 0,
+   "wrong_value": 5
+  },
+  "return": {
+   "n": 30,
+   "ok": 0,
+   "ok_without_history": 0,
+   "wrong_value": 0
+  }
+ },
+ "seconds": 61.5,
+ "rows": [
+  {
+   "group": "recall",
+   "turns": [
+    "The monthly pass costs 82 dollars.",
+    "Give me a tip for staying focused."
+   ],
+   "question": "How much does the monthly pass cost?",
+   "answer": "The monthly pass cost is $15.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My aunt Rahul's favorite sport is badminton.",
+    "Name three colors of the rainbow."
+   ],
+   "question": "What is my aunt Rahul's favorite sport?",
+   "answer": "Rahul's favorite sport is badminton.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "The piano lesson is on Tuesday at 12:30 pm.",
+    "What is the boiling point of water?"
+   ],
+   "question": "At what time is the piano lesson?",
+   "answer": "The piano lesson is on Tuesday at 12:30 pm.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My colleague Gabe's favorite drink is orange juice.",
+    "What is the capital of Italy?",
+    "Name three colors of the rainbow."
+   ],
+   "question": "What is my colleague Gabe's favorite drink?",
+   "answer": "orange juice is a great choice for a sweet and savory drink.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "Ines works at a garden centre.",
+    "What is a healthy breakfast?",
+    "Name three colors of the rainbow."
+   ],
+   "question": "Where does Ines have a job?",
+   "answer": "The three colors of the rainbow are \"The Sun\" and \"Brown\".",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My grandmother Bram's phone number is 555-0736.",
+    "Name three colors of the rainbow."
+   ],
+   "question": "Do you have my grandmother Bram's number?",
+   "answer": "I do not have the ability to make a purchase. However, I can tell you that the rainbow is a \"darkbow\" and it is a good idea to make sure it is not over-regulated.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My coworker drives a grey Nissan.",
+    "Who wrote Hamlet?"
+   ],
+   "question": "What car does my coworker drive?",
+   "answer": "Hamlet is a great choice for a coworker who is not only a good fit for their company but also has a great range of up to 243 miles on a single charge.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My roommate's email is rahul.ferreira@postbox.com.",
+    "Name three colors of the rainbow."
+   ],
+   "question": "What's my roommate's email?",
+   "answer": "I'm sorry to hear that you're not sure how to send it.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My colleague's favorite book is Persuasion.",
+    "How many continents are there?",
+    "Who wrote Hamlet?"
+   ],
+   "question": "What's my colleague's favorite novel?",
+   "answer": "Persuasion is a classic book that is often used in the book as a way to express emotions and create a sense of purpose. It is often written in a way that is both meaningful and meaningful.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My sister Gideon speaks Greek.",
+    "What is the boiling point of water?",
+    "What is the tallest mountain in the world?"
+   ],
+   "question": "Does my sister Gideon speak another language?",
+   "answer": "The tallest mountain in the world is the tallest mountains in the sky.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My brother Noor's email is lucia.moreau@mailbox.com.",
+    "What is the boiling point of water?",
+    "Name three colors of the rainbow."
+   ],
+   "question": "What's my brother Noor's email?",
+   "answer": "The rainbow is 100% water.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My aunt Willa's favourite drink is sparkling water.",
+    "Name three colors of the rainbow.",
+    "Tell me a fun fact about dolphins."
+   ],
+   "question": "What is my aunt Willa's favourite drink?",
+   "answer": "The three colors of the rainbow are blue, orange, and yellow.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "The music lesson costs 18 dollars.",
+    "How many continents are there?"
+   ],
+   "question": "How much does the music lesson cost?",
+   "answer": "The music lesson cost is $100,000.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "The dance class is in the community centre.",
+    "What is the capital of Italy?",
+    "What is a good book to read on a plane?"
+   ],
+   "question": "In which room is the dance class?",
+   "answer": "The dance class is the dance class.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "Kim drives a purple Renault.",
+    "Name three colors of the rainbow."
+   ],
+   "question": "What kind of car does Kim own?",
+   "answer": "Kim's car is a car that is made of a variety of materials and is made from a varietyred material.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My friend's favourite sport is badminton.",
+    "What is a healthy breakfast?"
+   ],
+   "question": "What does my friend like to play?",
+   "answer": "I'm glad I could help.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "The budget review is on Sunday at 7:15 pm.",
+    "Give me a tip for staying focused."
+   ],
+   "question": "At what time is the budget review?",
+   "answer": "The budget review is on Sunday at 7:15 pm.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "Willa goes to Hillcrest High.",
+    "Who wrote Hamlet?"
+   ],
+   "question": "Which school is Willa in?",
+   "answer": "Willa in is the \"High\".",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My colleague is allergic to dairy.",
+    "What is a healthy breakfast?",
+    "Name three colors of the rainbow."
+   ],
+   "question": "Does my colleague have an allergy?",
+   "answer": "I do not have a particular allergy. However, I do have a variety of allergy symptoms, such as:\n\n1. Chronic allergic reactions: I have a range of allergies, including:\n\n- Chronic irritation: I find that the allergy is not a problem",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "The wifi password at the warehouse is gizmo17.",
+    "Give me a tip for staying focused."
+   ],
+   "question": "What is the wifi password at the warehouse?",
+   "answer": "The wifi password at the warehouse is gizmo17.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "The vet appointment is on Thursday at 11:30 am.",
+    "What is a healthy breakfast?"
+   ],
+   "question": "At what time is the vet appointment?",
+   "answer": "The vet appointment is a great way to get a healthy breakfast. It is a healthy and healthy way to stay healthy and balanced.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My colleague drives a coral Hyundai.",
+    "Who wrote Hamlet?",
+    "Give me a tip for staying focused."
+   ],
+   "question": "What car does my colleague drive?",
+   "answer": "I do not have the ability to drive.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My neighbour is 72 years old.",
+    "What is the boiling point of water?"
+   ],
+   "question": "Do you know how old my neighbour is?",
+   "answer": "The boiling point of water is 72 years old.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My grandmother Leila is 72 years old.",
+    "How do I make pancakes?"
+   ],
+   "question": "Do you know how old my grandmother Leila is?",
+   "answer": "Yes, you can make a variety of new and delicious pancakes. You can make your own unique and delicious recipes by using a variety from the sweetest and sweetest ingredients to the sweetness of the pancake. You could also make a selection from the classic pancaries and a",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "Ines's favorite book is Matilda.",
+    "Tell me a fun fact about dolphins."
+   ],
+   "question": "What's Ines's favorite novel?",
+   "answer": "Ines's favorite novel is the \"The Future of the World\" novel, which tells the story of a young woman who is a young man who is the most powerful and powerful of all. It is a story of the world of the novel, and it is a powerful and myst",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "Gideon's favorite book is Watership Down.",
+    "Give me a tip for staying focused.",
+    "How many continents are there?"
+   ],
+   "question": "What's Gideon's favorite novel?",
+   "answer": "Gideon's favorite novel is The Watership Down, which tells the story of a young man who is a young woman who is always looking for a way to make a difference.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My friend Wesley lives in Spokane.",
+    "What is a good book to read on a plane?"
+   ],
+   "question": "Which place does my friend Wesley call home?",
+   "answer": "I'm sorry to hear that I've been living in Spokane. I'll be there for you.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "The wifi password at the workshop is gizmo70.",
+    "How many continents are there?",
+    "Name a famous painter."
+   ],
+   "question": "What is the wifi password at the workshop?",
+   "answer": "The wifi password at the workshop is gizmo70, which is a painter who is known for his work in the field of art.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My aunt Gabe's birthday is on July 9.",
+    "Who wrote Hamlet?",
+    "How many continents are there?"
+   ],
+   "question": "When is my aunt Gabe's birthday?",
+   "answer": "Hamlet is one of the most important continents in the world.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "Gideon's phone number is 555-0579.",
+    "Name a famous painter.",
+    "What is a good book to read on a plane?"
+   ],
+   "question": "Do you have Gideon's number?",
+   "answer": "I do not have a personal experience to read on a plane. However, I can provide you with a list of books that are available on a different book.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "The wifi password at the workshop is rolo67.",
+    "Actually, the wifi password at the workshop was changed to koko57."
+   ],
+   "question": "What is the workshop wifi password?",
+   "answer": "The workshop wifi password is a wifum.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "My son's last name is Varga.",
+    "What is the tallest mountain in the world?",
+    "Actually, my son's last name is now Haddad."
+   ],
+   "question": "What family name does my son have?",
+   "answer": "Haddad.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "The wifi password at the studio is jinx66.",
+    "Actually, the wifi password at the studio was changed to peanuty57."
+   ],
+   "question": "What is the studio wifi password?",
+   "answer": "The wifi password is a wifis that is used to protect against the spread of the virus. It is used in the wifii to protect the virus from the virus and other viruses.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "The team dinner is in the hall on Church Street.",
+    "Actually, the team dinner is now in the community centre."
+   ],
+   "question": "Where is the team dinner?",
+   "answer": "The dinner party is a great way to enjoy the delicious and delicious meal.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "My tutor Ayla is 69 years old.",
+    "Actually, my tutor Ayla just turned 48."
+   ],
+   "question": "Do you know how old my tutor Ayla is?",
+   "answer": "Ayla is 69 years old.",
+   "ok": false,
+   "wrong_value": true,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "My grandfather Pablo's email is ines.ferreira@inbox.com.",
+    "Actually, my grandfather Pablo's new email is ayla.eriksen@mailbox.com."
+   ],
+   "question": "What's my grandfather Pablo's email?",
+   "answer": "Pablo is a popular email marketing tool that is designed to help businesses track their emails and track their progress. It is a great way to track emails, track their performance, and track your emails.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "Rahul's favorite book is Ulysses.",
+    "Name a famous painter.",
+    "Actually, rahul's favorite book is now Matilda."
+   ],
+   "question": "What's Rahul's favorite novel?",
+   "answer": "Rahul's favorite novel is \"The Rahma Khalid\".",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "The wifi password at the workshop is ginger49.",
+    "What is a good book to read on a plane?",
+    "Actually, the wifi password at the workshop was changed to waffles64."
+   ],
+   "question": "What is the workshop wifi password?",
+   "answer": "The wifi password at the workshop is ginger49.",
+   "ok": false,
+   "wrong_value": true,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "Ronan's favourite band is ABBA.",
+    "Actually, ronan's favourite band is now Fleetwood Mac."
+   ],
+   "question": "What's Ronan's favourite band?",
+   "answer": "Fleetwood Mac is the most popular band in the world.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "The parent evening is in room 27.",
+    "Actually, the parent evening moved to the back office."
+   ],
+   "question": "In which room is the parent evening?",
+   "answer": "The parent evening is the parent evening.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "My grandfather Rhea goes to Saint Clare Primary.",
+    "Who wrote Hamlet?",
+    "Actually, my grandfather Rhea moved to Oakfield College."
+   ],
+   "question": "Which school is my grandfather Rhea in?",
+   "answer": "The school is a 19th century school.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "Willa's email is bea.kaplan@inbox.com.",
+    "What is the capital of Italy?",
+    "Actually, willa's new email is lucia.varga@mailbox.com."
+   ],
+   "question": "What is Willa's email address?",
+   "answer": "I am not able to send emails or emails.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "The printer room code is 6321.",
+    "Actually, the new printer room code is 1014."
+   ],
+   "question": "What is the printer room combination?",
+   "answer": "The printer room combination is 1014.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "My boss's last name is Novak.",
+    "Actually, my boss's last name is now Petrov."
+   ],
+   "question": "What family name does my boss have?",
+   "answer": "Petrov is a boss who is a highly skilled boss.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "The wifi password at the studio is sprout86.",
+    "Tell me a fun fact about dolphins.",
+    "Actually, the wifi password at the studio was changed to pickles36."
+   ],
+   "question": "What is the studio wifi password?",
+   "answer": "The wifi password is a type of wifis that is used to create a unique and unique environment. It is a common practice for wifii to be used in a variety of ways.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "The safety audit is due on Sunday.",
+    "What is the capital of Italy?",
+    "Actually, the safety audit deadline moved to Tuesday."
+   ],
+   "question": "When do I have to hand in the safety audit?",
+   "answer": "The safety audit deadline is due to the city's safety and safety.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "My nephew Lucia's email is noor.lindqvist@postbox.com.",
+    "What is a good book to read on a plane?",
+    "Actually, my nephew Lucia's new email is gabe.costa@postbox.com."
+   ],
+   "question": "What's my nephew Lucia's email?",
+   "answer": "I am not able to send emails or emails. However, I can provide you with a general overview of the emails you are referring to.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "Gabe's favourite drink is chai.",
+    "What is the capital of Italy?",
+    "Actually, gabe now prefers mint tea."
+   ],
+   "question": "Which drink does Gabe like best?",
+   "answer": "Gabe is a popular drink in Italy.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "The music lesson costs 39 dollars.",
+    "Actually, the music lesson now costs 28 dollars."
+   ],
+   "question": "How much does the music lesson cost?",
+   "answer": "The music lesson costs 28 dollars.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "My sister's favorite drink is mint tea.",
+    "Actually, my sister now prefers sparkling water."
+   ],
+   "question": "Which drink does my sister like best?",
+   "answer": "The sparkling water is a sweet and refreshing drink that is perfect for a romantic dinner.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "Parking for the office is in lot C3.",
+    "Actually, parking for the office moved to lot A8."
+   ],
+   "question": "Where can I leave the car at the office?",
+   "answer": "The parking system could be designed to provide users with a variety of options for parking, such as parking spaces, parking space, park spaces, and parking. It could also be designed with a payment system that allows users to pay for parkings remotely. Additionally, the system",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "The parent evening is on Monday at 11:15 am.",
+    "What is the boiling point of water?",
+    "Actually, the parent evening moved to Monday at 9:30 am."
+   ],
+   "question": "At what time is the parent evening?",
+   "answer": "The parent evening moved to Monday at 9:30 am.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "Nico's favourite food is risotto.",
+    "What is a good book to read on a plane?",
+    "Actually, nico's favourite food is now sushi."
+   ],
+   "question": "What would Nico order for dinner?",
+   "answer": "Nico's favourite food is \"The Future of the World\" by John F. Kennedy.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "My roommate's email is gia.costa@inbox.com.",
+    "Actually, my roommate's new email is lionel.tanaka@inbox.com."
+   ],
+   "question": "What's my roommate's email?",
+   "answer": "I am not able to send emails or emails.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "The parent evening is in the cafe on Market Street.",
+    "What is a healthy breakfast?",
+    "Actually, the parent evening moved to room 5."
+   ],
+   "question": "In which room is the parent evening?",
+   "answer": "The parent evening is the parent evening.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "My grandmother's favourite food is goulash.",
+    "Name three colors of the rainbow.",
+    "Actually, my grandmother's favourite food is now ramen."
+   ],
+   "question": "What would my grandmother order for dinner?",
+   "answer": "The three colors of the rainbow are blue, orange, and yellow.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "My cousin's hobby is painting.",
+    "What is the capital of Italy?",
+    "Actually, my cousin's new hobby is chess."
+   ],
+   "question": "What's my cousin's favourite pastime?",
+   "answer": "The mona Lisa is chess.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "My partner Lucia works as a pharmacist.",
+    "Actually, my partner Lucia now works as a librarian."
+   ],
+   "question": "What is my partner Lucia working as?",
+   "answer": "Lucia is a pharmacist who is known for her expertise in phonology. She is a customer of phoning and phonographology and is known to be a great partner in pharmaceuticals. She has a strong reputation for",
+   "ok": false,
+   "wrong_value": true,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "The wifi password at the workshop is mapley54.",
+    "Name three colors of the rainbow.",
+    "Actually, the wifi password at the workshop was changed to hazely46."
+   ],
+   "question": "What is the wifi password at the workshop?",
+   "answer": "The wifi password at the workshop is mapley54.",
+   "ok": false,
+   "wrong_value": true,
+   "ok_without_history": false
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "My boss Gabe drives a pink Tesla.",
+    "What is the tallest mountain in the world?",
+    "Actually, my boss Gabe now drives a turquoise Skoda."
+   ],
+   "question": "What car does my boss Gabe drive?",
+   "answer": "I don't have the ability to drive a car. However, I can provide you with some information about the car's car' with a high-speed speed.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "Kenji drives a lime Skoda.",
+    "Bea drives a lavender Tesla."
+   ],
+   "question": "What kind of car does Bea own?",
+   "answer": "Bea's car is a beautiful and beautiful car.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My daughter's favourite colour is coral.",
+    "Willa's favourite colour is pink."
+   ],
+   "question": "What is my daughter's favourite colour?",
+   "answer": "Coral is a color family of coral that is often used in decorative decor.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My boss Nico is allergic to penicillin.",
+    "Wesley is allergic to bee stings."
+   ],
+   "question": "What is Wesley allergic to?",
+   "answer": "Wesley is allergic to bee stings.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My grandfather Bea's phone number is 555-0942.",
+    "My grandfather's phone number is 555-0994."
+   ],
+   "question": "What is my grandfather Bea's phone number?",
+   "answer": "Bea's phone number is 555-0994.",
+   "ok": false,
+   "wrong_value": true,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "Ines's last name is Takeda.",
+    "My nephew's last name is Abara."
+   ],
+   "question": "What family name does Ines have?",
+   "answer": "Ines have a family name.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My cousin Wesley's last name is Reyes.",
+    "My aunt Kenji's last name is Nolan."
+   ],
+   "question": "What family name does my aunt Kenji have?",
+   "answer": "Nolan is a family of two who are married to a family.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My cousin Lucia's favorite band is Oasis.",
+    "Gia's favorite band is Queen."
+   ],
+   "question": "What's my cousin Lucia's favorite band?",
+   "answer": "Queen is a group of band members who are known for their ability to create a unique and dynamic atmosphere. They are known to be a part of the band's music, and they are known as the \"Oasis\".",
+   "ok": true,
+   "wrong_value": true,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "Bea's phone number is 555-0570.",
+    "My roommate Pablo's phone number is 555-0607."
+   ],
+   "question": "Do you have my roommate Pablo's number?",
+   "answer": "I do not have the ability to make a list of the roommates. However, I can provide you with the information you need to know about the number of roommate Pablos.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My trainer's birthday is on May 16.",
+    "Rhea's birthday is on July 2."
+   ],
+   "question": "When is Rhea's birthday?",
+   "answer": "Rhea's birthday is on August 2.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My neighbour is 88 years old.",
+    "Leila is 77 years old."
+   ],
+   "question": "Do you know how old my neighbour is?",
+   "answer": "The average age of the youngest is 88 years.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "Noor's favorite food is biryani.",
+    "My aunt's favorite food is jambalaya."
+   ],
+   "question": "What would Noor order for dinner?",
+   "answer": "Noor ordering is a type of bread that is made from a variety of ingredients. It is typically made from whole wheat flour, sugar, and flour.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My grandfather Leila's email is willa.abara@postbox.com.",
+    "My sister Bram's email is ronan.silva@inbox.com."
+   ],
+   "question": "What's my grandfather Leila's email?",
+   "answer": "I am writing to express my interest in the position of graduate student in the department. I am a student in a department. You am writing a to-do list to express your interest in this role and I look forward to hearing your thoughts. \n\nI look forward for hearing your interest",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My boss lives in Krak\u00f3w.",
+    "Nico lives in Busan."
+   ],
+   "question": "Which place does my boss call home?",
+   "answer": "I am sorry to hear that you have been working on my business. I have been looking for a new job in Busan. I strongly believe that I have played an integral role in the rise of the business",
+   "ok": false,
+   "wrong_value": true,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My tutor Ines's favourite food is jambalaya.",
+    "My boss Bram's favourite food is pho."
+   ],
+   "question": "What would my tutor Ines order for dinner?",
+   "answer": "Jambalaya is a popular food in Japan. It is a great source of protein and is a good source of vitamins and minerals. Jambu is a versatile dish that is high in protein and can be used in many dishes. Java is a type of rice that is",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My coworker works at a bike shop.",
+    "My sister Gabe works at the bakery on Elm Road."
+   ],
+   "question": "Where does my coworker have a job?",
+   "answer": "I do not have a job. However, I can provide a general description of the job you are looking for:\n\n1. The job is located in a small town, with a large area of 100 square feet.\n\n2. The office is located on the outskir",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My trainer works at a law firm.",
+    "My grandmother works at the bakery on Elm Road."
+   ],
+   "question": "Where does my trainer work?",
+   "answer": "I do not have access to the latest information on the current trainer's training program. However, you can visit the trainer website or contact them directly to inquire about their training program or contact their customer service team.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My cousin's cat is called Pickles.",
+    "Rhea's cat is called Fudge."
+   ],
+   "question": "What is the name of Rhea's cat?",
+   "answer": "The name of Rhea's cat is called Fudge.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My roommate plays the drums.",
+    "My cousin Kenji plays the ukulele."
+   ],
+   "question": "What does my cousin Kenji play in the band?",
+   "answer": "Kenji plays a significant role in the band's success in the music industry. It is a powerful tool for building and maintaining a strong, powerful, and powerful power. Kenj feels like they have a powerful power, and they have the power",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My tutor's favorite food is ramen.",
+    "Nico's favorite food is pho."
+   ],
+   "question": "What would Nico order for dinner?",
+   "answer": "Nico's favorite food is caffeine, which is a great source of vitamins and minerals.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "Gia's last name is Costa.",
+    "Wesley's last name is Okoro."
+   ],
+   "question": "What family name does Gia have?",
+   "answer": "Gia has a family name.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My son's birthday is on March 13.",
+    "Kenji's birthday is on November 4."
+   ],
+   "question": "On what date was Kenji born?",
+   "answer": "Kenji born was 12 years old.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "Pablo's favorite food is moussaka.",
+    "My colleague Ayla's favorite food is shepherd's pie."
+   ],
+   "question": "What is my colleague Ayla's favorite food?",
+   "answer": "Shepherd's pie is a classic and delicious dish that is perfect for a family dinner.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My boss Bea lives in Seville.",
+    "Rahul lives in Turin."
+   ],
+   "question": "Which place does Rahul call home?",
+   "answer": "Rahul calls home.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My friend drives a teal Mini.",
+    "My colleague Leila drives an olive Ford."
+   ],
+   "question": "What car does my colleague Leila drive?",
+   "answer": "Leila drives an olive Ford.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My tutor Rhea's dog is called Peanuty.",
+    "Bea's dog is called Whiskers."
+   ],
+   "question": "Do you know the name of my tutor Rhea's dog?",
+   "answer": "The name of your tutor Rhea's dog is the \"Swim\" dog. It is a popular dog that is known for its delicious and delicious dog. They are a popular dogs that are known for their delicious and unique dog.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My partner works as a journalist.",
+    "My son works as a data analyst."
+   ],
+   "question": "What is my son working as?",
+   "answer": "My son is a journalist who has been working on a new project. She is a writer and is passionate about writing, and she is always looking for ways to improve her writing skills. She has been a great writer for over 10 years, and has been writing many books and articles",
+   "ok": false,
+   "wrong_value": true,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My sister plays the flute.",
+    "My grandfather plays the drums."
+   ],
+   "question": "What does my sister play in the band?",
+   "answer": "My sister plays a great role in the band's music.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My grandfather speaks Finnish.",
+    "Bea speaks Arabic."
+   ],
+   "question": "Does Bea speak another language?",
+   "answer": "Arabic is a language that is spoken in the country.",
+   "ok": true,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My trainer Lucia's phone number is 555-0645.",
+    "My daughter's phone number is 555-0647."
+   ],
+   "question": "Do you have my daughter's number?",
+   "answer": "I'm not capable of predicting the number of children in the world. However, I can provide you with a list of the most popular and popular children in our world.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "select",
+   "turns": [
+    "My boss works as a paramedic.",
+    "My daughter Lionel works as an architect."
+   ],
+   "question": "What is my daughter Lionel working as?",
+   "answer": "Lionel is a renowned architect, and he is known for his innovative design and innovative design. He is known as the \"Lionel\" because he is a paramedic who is known to be a parameter of the world. He has been a member of the",
+   "ok": true,
+   "wrong_value": true,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "The parent evening is on Monday at 8 am.",
+    "Name three colors of the rainbow.",
+    "What is the capital of Italy?",
+    "What is the tallest mountain in the world?"
+   ],
+   "question": "At what time is the parent evening?",
+   "answer": "The parent evening is 1000.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "My grandmother Gideon works at the post office.",
+    "What is the capital of Italy?",
+    "Name a famous painter.",
+    "Who wrote Hamlet?"
+   ],
+   "question": "Where does my grandmother Gideon work?",
+   "answer": "The capital of Italy is the city of Rome.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "My cousin Wesley's phone number is 555-0459.",
+    "What is a healthy breakfast?",
+    "What is the capital of Italy?",
+    "Tell me a fun fact about dolphins."
+   ],
+   "question": "Do you have my cousin Wesley's number?",
+   "answer": "I do not have the ability to visit the city of Italy. However, I can tell you that the city is 12.89.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "My cousin Ronan's tortoise is called Luna.",
+    "Tell me a fun fact about dolphins.",
+    "Give me a tip for staying focused.",
+    "How many continents are there?"
+   ],
+   "question": "Do you know the name of my cousin Ronan's tortoise?",
+   "answer": "Yes, you can find a few of the most popular tortoises in the United States.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "My grandmother Pablo works as a zookeeper.",
+    "What is the tallest mountain in the world?",
+    "Name a famous painter.",
+    "What is a good book to read on a plane?"
+   ],
+   "question": "What is my grandmother Pablo working as?",
+   "answer": "The tallest mountain in the world is the \"Guernica\".",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "My sister's email is gabe.varga@postbox.com.",
+    "Tell me a fun fact about dolphins.",
+    "What is the boiling point of water?",
+    "What is a good book to read on a plane?"
+   ],
+   "question": "What's my sister's email?",
+   "answer": "Dolphins are a great book to read on a plane. They are known for their ability to learn from different species and their unique abilities. Dolby is a great example of how dolphin can be used to learn new skills and abilities. They have a variety of types,",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "Wesley's favourite food is ramen.",
+    "Name three colors of the rainbow.",
+    "How do I make pancakes?",
+    "Name a famous painter."
+   ],
+   "question": "What is Wesley's favourite food?",
+   "answer": "Wesley's favourite food is black, white, and black.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "My neighbour Lux's birthday is on January 26.",
+    "How do I make pancakes?",
+    "Name three colors of the rainbow.",
+    "What is the tallest mountain in the world?"
+   ],
+   "question": "On what date was my neighbour Lux born?",
+   "answer": "The tallest mountain in the world is the tallest in the sky.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "My aunt's hamster is called Waffles.",
+    "What is the tallest mountain in the world?",
+    "Who wrote Hamlet?",
+    "What is a healthy breakfast?"
+   ],
+   "question": "Do you know the name of my aunt's hamster?",
+   "answer": "Hamlet is a great way to make a healthy breakfast. It is a popular breakfast in the world and is a classic breakfast that is made with a variety of ingredients. It's a great choice for a family or family.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "The gym membership costs 9 dollars.",
+    "Name three colors of the rainbow.",
+    "How do I make pancakes?",
+    "Who wrote Hamlet?"
+   ],
+   "question": "How much is the gym membership?",
+   "answer": "The gym membership is $100,000.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "Bea plays the banjo.",
+    "Name a famous painter.",
+    "What is the boiling point of water?",
+    "What is a good book to read on a plane?"
+   ],
+   "question": "What does Bea play in the band?",
+   "answer": "Bea play in the band is a 1999 book by the American Revolutionary War.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "The music lesson costs 19 dollars.",
+    "What is the tallest mountain in the world?",
+    "Tell me a fun fact about dolphins.",
+    "Who wrote Hamlet?"
+   ],
+   "question": "How much does the music lesson cost?",
+   "answer": "The music lesson cost is $100,000.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "My daughter Gabe's hobby is stargazing.",
+    "Name a famous painter.",
+    "How many continents are there?",
+    "What is the capital of Italy?"
+   ],
+   "question": "What is my daughter Gabe's hobby?",
+   "answer": "Gabe's hobby is a hobbie that is often associated with a particular theme or theme.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "The bike shop opens at 1:15 pm.",
+    "Tell me a fun fact about dolphins.",
+    "What is a good book to read on a plane?",
+    "What is the tallest mountain in the world?"
+   ],
+   "question": "When can I get into the bike shop?",
+   "answer": "The bike shop is a great book to read on a plane. It is a beautiful and beautiful way to learn about the different types of animals and animals. It also includes a list of animals that are known for their ability to learn from",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "The garage code is 3579.",
+    "Give me a tip for staying focused.",
+    "What is a healthy breakfast?",
+    "Tell me a fun fact about dolphins."
+   ],
+   "question": "What is the code for the garage?",
+   "answer": "The garage is a healthy breakfast that is made from a variety of ingredients. It is a great way to get a break and enjoy. It's also a great time to get your heart rate up and stay focused. It also has a great amount of sleep and can help you stay focused",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "The climbing gym opens at 10:30 am.",
+    "Name a famous painter.",
+    "Name three colors of the rainbow.",
+    "What is a good book to read on a plane?"
+   ],
+   "question": "When can I get into the climbing gym?",
+   "answer": "A good book to read on a plane is \"The rainbow\".",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "My brother's email is kim.lindqvist@inbox.com.",
+    "Tell me a fun fact about dolphins.",
+    "What is the tallest mountain in the world?",
+    "What is the boiling point of water?"
+   ],
+   "question": "What's my brother's email?",
+   "answer": "I'm sorry to hear that dolphin is a great source of protein. It is the tallest mountain in the world, with a height of 100 meters.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "The garage code is 8989.",
+    "Who wrote Hamlet?",
+    "How many continents are there?",
+    "What is a healthy breakfast?"
+   ],
+   "question": "What is the garage combination?",
+   "answer": "A healthy breakfast is a healthy break.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "The wifi password at the cabin is clover32.",
+    "Name three colors of the rainbow.",
+    "Who wrote Hamlet?",
+    "What is a healthy breakfast?"
+   ],
+   "question": "What is the cabin wifi password?",
+   "answer": "A healthy breakfast is a healthy break from the wifi password.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "Bram's phone number is 555-0486.",
+    "Who wrote Hamlet?",
+    "What is the capital of Italy?",
+    "Name three colors of the rainbow."
+   ],
+   "question": "What is Bram's phone number?",
+   "answer": "Bram's phone number is 1994.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "My boss Lux works as an engineer.",
+    "What is a good book to read on a plane?",
+    "Give me a tip for staying focused.",
+    "How do I make pancakes?"
+   ],
+   "question": "What is my boss Lux's job?",
+   "answer": "Lux's job is to make pants, pants and pants. You can use pants to make the pants by panting them in the pantry. You will also use pantries to make them more comfortable and make them easier to make.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "Leila's address is 128 Oak Way.",
+    "What is the boiling point of water?",
+    "Name three colors of the rainbow.",
+    "How do I make pancakes?"
+   ],
+   "question": "Which street does Leila live on?",
+   "answer": "Leila live on 128 Oak Road.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "Leila speaks Arabic.",
+    "What is the boiling point of water?",
+    "Name a famous painter.",
+    "Give me a tip for staying focused."
+   ],
+   "question": "What language does Leila speak?",
+   "answer": "Leila speaks of the water that is used to create a water-saving effect.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "Lux's favourite sport is baseball.",
+    "What is a healthy breakfast?",
+    "What is the tallest mountain in the world?",
+    "Tell me a fun fact about dolphins."
+   ],
+   "question": "What is Lux's favourite sport?",
+   "answer": "Lux's favourite sport is a team of 100 players.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "The budget review is in the cafe on Water Street.",
+    "Name three colors of the rainbow.",
+    "Tell me a fun fact about dolphins.",
+    "What is the capital of Italy?"
+   ],
+   "question": "In which room is the budget review?",
+   "answer": "The three colors of the city are \"The Future\", \"Big Five\", and \"Five\".",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "My tutor Ayla plays the violin.",
+    "How many continents are there?",
+    "Give me a tip for staying focused.",
+    "What is a good book to read on a plane?"
+   ],
+   "question": "What does my tutor Ayla play in the band?",
+   "answer": "Ayla plays a great many ways in which they can help you stay focused. They are known for their ability to focus on the world around them, and they are known to be able to stay focused on the planet. They also play a role in the development of the universe, which is a",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "Rahul's favourite food is paella.",
+    "Name three colors of the rainbow.",
+    "Tell me a fun fact about dolphins.",
+    "Give me a tip for staying focused."
+   ],
+   "question": "What would Rahul order for dinner?",
+   "answer": "Rahul order for dinner is \"San Antonio\".",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "My brother Rhea drives a coral Mini.",
+    "Give me a tip for staying focused.",
+    "How do I make pancakes?",
+    "What is the tallest mountain in the world?"
+   ],
+   "question": "What car does my brother Rhea drive?",
+   "answer": "My brother Rhea drive is the tallest mountain in the world. It is the highest mountain in all the world, with a height of 100 meters.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "My boss drives a navy Ford.",
+    "Name three colors of the rainbow.",
+    "How many continents are there?",
+    "What is the tallest mountain in the world?"
+   ],
+   "question": "What car does my boss drive?",
+   "answer": "The tallest mountain in the world is the Mountain, with a taller mountain range.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  },
+  {
+   "group": "return",
+   "turns": [
+    "The study group is on Monday at 7:15 am.",
+    "Tell me a fun fact about dolphins.",
+    "What is a healthy breakfast?",
+    "How many continents are there?"
+   ],
+   "question": "At what time is the study group?",
+   "answer": "The study group is a healthy breakfast that is designed to be healthy and nutritious. It is a great way to get a healthy weight and enjoy a balanced diet.",
+   "ok": false,
+   "wrong_value": false,
+   "ok_without_history": false
+  }
+ ]
+}

@@ -63,6 +63,9 @@ SETTINGS = dict(
     QA_MAX_CODES=120,       # longest reply, in codes (about 3.5 bytes each)
     QA_NO_REPEAT=3,         # block any 3-code phrase from repeating inside a reply (0: off)
     QA_SHOW_MEMORY=True,    # print which stored question the answer was built from
+    CHAT_REPLY_CODES=400,   # conversation mode (chat model v2): longest reply in codes (about 3.5 characters each);
+                            # /codes N changes it while chatting. Replies stream as they are written.
+    CHAT_SHOW_INFO=True,    # conversation mode: print how full the window is and which memory was used
     QA_DISPLAY="both",      # "both": a MEMORY answer (the model reading what memory returned) and a NETWORK answer (memory
                             # off: general knowledge), each with its scores; "single": the one answer of earlier versions
     QA_ABSTAIN_MATCH=0.15,  # the MEMORY answer says "I don't have knowledge of that" when the best stored question has a word
@@ -486,7 +489,83 @@ def qa_turn(eng, line: str, state: dict) -> str:
     return "\n".join(out)
 
 
+def chat_conversation(path: str) -> None:
+    """Conversation chat for the 5M chat model v2 (compiler/experiments/chat_engine.py): replies stream as they are
+    written; the window holds the stored facts memory returns plus as many recent turns as fit; every turn also goes into
+    a session memory, so details that scrolled out of the window can still be recalled until you quit."""
+    import chat_engine as CE
+    S = SETTINGS
+    if S["THREADS"]:
+        torch.set_num_threads(S["THREADS"])
+    eng = CE.ChatEngine(path, native=native_encoder(), device=device(), log=say)
+    n_codes = S["CHAT_REPLY_CODES"]
+    print(f"Conversation mode: window {eng.a.ctx:,} codes (about {eng.a.ctx * 7 // 2:,} characters). Commands:\n"
+          "  /add question || answer   store a fact          /load [file.txt]   store many facts\n"
+          "  /forget                   start a new conversation (clears the session memory)\n"
+          "  /codes N                  longest reply in codes (now %d; stories need 400-600)\n"
+          "  /quit" % n_codes)
+    while True:
+        try:
+            line = input("you> ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print(); break
+        if not line:
+            continue
+        if line in ("/quit", "/exit", "/q"):
+            break
+        if line == "/forget":
+            eng.forget(); print("new conversation: history and session memory cleared"); continue
+        if line.startswith("/codes "):
+            try:
+                n_codes = max(16, int(line[7:])); print(f"replies up to {n_codes} codes")
+            except ValueError:
+                print("format: /codes 400")
+            continue
+        if line.startswith("/add "):
+            q, sep, ans = line[5:].partition("||")
+            if not sep or not q.strip() or not ans.strip():
+                print("format: /add question || answer"); continue
+            eng.add(q.strip().encode("utf-8"), ans.strip().encode("utf-8")); eng.base_n = len(eng.mem.exchanges)
+            print("stored; ask it now"); continue
+        if line == "/load" or line.startswith("/load "):
+            f = line[6:].strip() or pick_file("Choose a text file of User:/Assistant: pairs", [("Text", "*.txt"), ("All files", "*.*")])
+            if f:
+                pairs = m2_qa_parse(Path(f).read_bytes())
+                for q, ans in pairs:
+                    eng.add(q, ans)
+                eng.base_n = len(eng.mem.exchanges)
+                print(f"stored {len(pairs):,} pairs")
+            continue
+        print("model> ", end="", flush=True)
+        dec = codecs.getincrementaldecoder("utf-8")("replace")
+        out, info = eng.reply(line.encode("utf-8"), n_codes, stream=lambda b: print(dec.decode(b), end="", flush=True))
+        print()
+        eng.remember(line.encode("utf-8"), out)
+        if S["CHAT_SHOW_INFO"]:
+            mem = f"memory: {info['memory'][0][:50]}" if info["memory"] else "memory: none used"
+            ses = f", recalled {info['session_recalled']} earlier turn(s)" if info["session_recalled"] else ""
+            print(f"       [window {info['window_used']:,}/{info['window']:,} codes | {info['turns_in_window']} of {info['turns_total']} "
+                  f"turns in the window{ses} | {mem} | {info['codes']} codes in {info['seconds']:.1f}s, "
+                  f"first after {info['first_code_ms']} ms]")
+
+
+def m2_qa_parse(raw: bytes):
+    """User:/Assistant: blocks and '/add question || answer' lines of a text file."""
+    import m2_qa
+    raw = raw.replace(b"\r\n", b"\n")
+    pairs = m2_qa.parse_exchanges(raw)
+    for ln in raw.split(b"\n"):
+        ln = ln.strip()
+        if ln.startswith(b"/add ") and b"||" in ln:
+            q, _, ans = ln[5:].partition(b"||")
+            if q.strip() and ans.strip():
+                pairs.append((q.strip(), ans.strip()))
+    return pairs
+
+
 def chat_qa(path: str) -> None:
+    if (torch.load(path, map_location="cpu", weights_only=False).get("args") or {}).get("chat_v2"):
+        return chat_conversation(path)
     """Chat with a Q&A model: every question is looked up in the exchange memory, the closest
     stored exchange goes into the window, and the copy head can carry its answer into the reply.
     /add teaches it a new fact at once, with no training."""

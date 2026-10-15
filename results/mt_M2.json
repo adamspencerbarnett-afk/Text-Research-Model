@@ -1,0 +1,867 @@
+{
+ "setup": {
+  "data": "data_qa",
+  "work": "runs/mt_M2",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 20000.0,
+  "ctx": 1024,
+  "batch": 32,
+  "topk": 64,
+  "neighbor_codes": 250,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/mt_M2.json",
+  "seed": 2,
+  "self_context_p": 0.5,
+  "copy_bias": 0.0,
+  "device": "cuda",
+  "threads": 0,
+  "width": 256,
+  "layers": 6,
+  "heads": 8,
+  "block": "modern",
+  "precision": "fp32",
+  "greedy": true,
+  "no_repeat": 0,
+  "patience": 0,
+  "min_delta": 0.005,
+  "max_steps": 23565,
+  "dict": "runs/core_mt5m/v0_8k_plain.cv0d",
+  "init": "runs/core_mt5m/scale_custom_v0_8k.pt",
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "copy_question": false,
+  "calculator": false,
+  "perturb_self": 0.3,
+  "sim_feature": false,
+  "no_retrieval_p": 0.0,
+  "distractor_p": 0.0,
+  "loss_answer_only": true,
+  "stop_at_blank": false,
+  "lr": 0.0001,
+  "key_head": null,
+  "amp": true,
+  "mt_data": "data_mt",
+  "mt_p": 0.2,
+  "mt_question_bytes": 1200,
+  "history_codes": 400,
+  "lora_rank": 0,
+  "lora_lr": 0.001,
+  "dropout": 0.0,
+  "freeze_core_steps": 0,
+  "typo_p": 0.0,
+  "track_gap": true,
+  "accum": 1,
+  "perturb_synonyms": false,
+  "rerank_core": 0,
+  "dense_train": true,
+  "dense": 2.0,
+  "eos": true,
+  "head_lr": 0.001,
+  "schedule": "cosine",
+  "net_n": 200,
+  "rehearse": "data_core/mix_P100",
+  "rehearse_p": 0.3,
+  "save": "runs/mt_M2/qa_mt_M2.pt",
+  "train_exchanges": 50965,
+  "eval": 520,
+  "added": 521,
+  "distinct_keys": 50605
+ },
+ "training": {
+  "steps": 23565,
+  "train_s": 2696.9,
+  "stop_reason": "budget",
+  "best_valid": 0.8181,
+  "history": [
+   {
+    "train_s": 60.0,
+    "step": 522,
+    "train_bits_per_code": 3.92,
+    "valid_bits_per_byte": 0.873,
+    "train_heldout_style_bits_per_byte": 0.9343,
+    "gap_bits_per_byte": -0.0613
+   },
+   {
+    "train_s": 120.1,
+    "step": 1058,
+    "train_bits_per_code": 3.426,
+    "valid_bits_per_byte": 0.8676,
+    "train_heldout_style_bits_per_byte": 0.9046,
+    "gap_bits_per_byte": -0.0371
+   },
+   {
+    "train_s": 180.1,
+    "step": 1594,
+    "train_bits_per_code": 3.863,
+    "valid_bits_per_byte": 0.8648,
+    "train_heldout_style_bits_per_byte": 0.893,
+    "gap_bits_per_byte": -0.0282
+   },
+   {
+    "train_s": 240.1,
+    "step": 2131,
+    "train_bits_per_code": 3.975,
+    "valid_bits_per_byte": 0.8545,
+    "train_heldout_style_bits_per_byte": 0.8861,
+    "gap_bits_per_byte": -0.0315
+   },
+   {
+    "train_s": 300.0,
+    "step": 2667,
+    "train_bits_per_code": 4.175,
+    "valid_bits_per_byte": 0.8499,
+    "train_heldout_style_bits_per_byte": 0.8738,
+    "gap_bits_per_byte": -0.0239
+   },
+   {
+    "train_s": 360.1,
+    "step": 3204,
+    "train_bits_per_code": 4.048,
+    "valid_bits_per_byte": 0.8491,
+    "train_heldout_style_bits_per_byte": 0.8705,
+    "gap_bits_per_byte": -0.0214
+   },
+   {
+    "train_s": 420.1,
+    "step": 3729,
+    "train_bits_per_code": 4.111,
+    "valid_bits_per_byte": 0.856,
+    "train_heldout_style_bits_per_byte": 0.8636,
+    "gap_bits_per_byte": -0.0076
+   },
+   {
+    "train_s": 480.0,
+    "step": 4251,
+    "train_bits_per_code": 3.996,
+    "valid_bits_per_byte": 0.843,
+    "train_heldout_style_bits_per_byte": 0.8625,
+    "gap_bits_per_byte": -0.0196
+   },
+   {
+    "train_s": 540.1,
+    "step": 4775,
+    "train_bits_per_code": 3.756,
+    "valid_bits_per_byte": 0.8406,
+    "train_heldout_style_bits_per_byte": 0.8597,
+    "gap_bits_per_byte": -0.0192
+   },
+   {
+    "train_s": 600.0,
+    "step": 5298,
+    "train_bits_per_code": 4.056,
+    "valid_bits_per_byte": 0.8425,
+    "train_heldout_style_bits_per_byte": 0.8587,
+    "gap_bits_per_byte": -0.0162
+   },
+   {
+    "train_s": 660.1,
+    "step": 5822,
+    "train_bits_per_code": 4.448,
+    "valid_bits_per_byte": 0.8383,
+    "train_heldout_style_bits_per_byte": 0.8484,
+    "gap_bits_per_byte": -0.0102
+   },
+   {
+    "train_s": 720.1,
+    "step": 6344,
+    "train_bits_per_code": 4.02,
+    "valid_bits_per_byte": 0.8396,
+    "train_heldout_style_bits_per_byte": 0.8512,
+    "gap_bits_per_byte": -0.0116
+   },
+   {
+    "train_s": 780.0,
+    "step": 6861,
+    "train_bits_per_code": 4.095,
+    "valid_bits_per_byte": 0.8354,
+    "train_heldout_style_bits_per_byte": 0.8461,
+    "gap_bits_per_byte": -0.0106
+   },
+   {
+    "train_s": 840.0,
+    "step": 7379,
+    "train_bits_per_code": 4.08,
+    "valid_bits_per_byte": 0.835,
+    "train_heldout_style_bits_per_byte": 0.8479,
+    "gap_bits_per_byte": -0.0129
+   },
+   {
+    "train_s": 900.0,
+    "step": 7898,
+    "train_bits_per_code": 4.303,
+    "valid_bits_per_byte": 0.839,
+    "train_heldout_style_bits_per_byte": 0.8369,
+    "gap_bits_per_byte": 0.0021
+   },
+   {
+    "train_s": 960.1,
+    "step": 8414,
+    "train_bits_per_code": 4.116,
+    "valid_bits_per_byte": 0.8348,
+    "train_heldout_style_bits_per_byte": 0.8392,
+    "gap_bits_per_byte": -0.0044
+   },
+   {
+    "train_s": 1020.1,
+    "step": 8934,
+    "train_bits_per_code": 3.974,
+    "valid_bits_per_byte": 0.8335,
+    "train_heldout_style_bits_per_byte": 0.843,
+    "gap_bits_per_byte": -0.0095
+   },
+   {
+    "train_s": 1080.0,
+    "step": 9455,
+    "train_bits_per_code": 4.001,
+    "valid_bits_per_byte": 0.8305,
+    "train_heldout_style_bits_per_byte": 0.8393,
+    "gap_bits_per_byte": -0.0088
+   },
+   {
+    "train_s": 1140.1,
+    "step": 9977,
+    "train_bits_per_code": 3.376,
+    "valid_bits_per_byte": 0.8314,
+    "train_heldout_style_bits_per_byte": 0.8452,
+    "gap_bits_per_byte": -0.0138
+   },
+   {
+    "train_s": 1200.1,
+    "step": 10495,
+    "train_bits_per_code": 3.735,
+    "valid_bits_per_byte": 0.8292,
+    "train_heldout_style_bits_per_byte": 0.8402,
+    "gap_bits_per_byte": -0.011
+   },
+   {
+    "train_s": 1260.1,
+    "step": 11015,
+    "train_bits_per_code": 4.111,
+    "valid_bits_per_byte": 0.8267,
+    "train_heldout_style_bits_per_byte": 0.8295,
+    "gap_bits_per_byte": -0.0028
+   },
+   {
+    "train_s": 1320.0,
+    "step": 11542,
+    "train_bits_per_code": 4.156,
+    "valid_bits_per_byte": 0.8286,
+    "train_heldout_style_bits_per_byte": 0.829,
+    "gap_bits_per_byte": -0.0004
+   },
+   {
+    "train_s": 1380.0,
+    "step": 12066,
+    "train_bits_per_code": 3.734,
+    "valid_bits_per_byte": 0.8262,
+    "train_heldout_style_bits_per_byte": 0.8336,
+    "gap_bits_per_byte": -0.0074
+   },
+   {
+    "train_s": 1440.1,
+    "step": 12592,
+    "train_bits_per_code": 3.843,
+    "valid_bits_per_byte": 0.824,
+    "train_heldout_style_bits_per_byte": 0.8349,
+    "gap_bits_per_byte": -0.0109
+   },
+   {
+    "train_s": 1500.1,
+    "step": 13116,
+    "train_bits_per_code": 4.162,
+    "valid_bits_per_byte": 0.8227,
+    "train_heldout_style_bits_per_byte": 0.8285,
+    "gap_bits_per_byte": -0.0058
+   },
+   {
+    "train_s": 1560.0,
+    "step": 13639,
+    "train_bits_per_code": 4.157,
+    "valid_bits_per_byte": 0.824,
+    "train_heldout_style_bits_per_byte": 0.8307,
+    "gap_bits_per_byte": -0.0068
+   },
+   {
+    "train_s": 1620.1,
+    "step": 14162,
+    "train_bits_per_code": 3.148,
+    "valid_bits_per_byte": 0.8212,
+    "train_heldout_style_bits_per_byte": 0.8277,
+    "gap_bits_per_byte": -0.0065
+   },
+   {
+    "train_s": 1680.1,
+    "step": 14685,
+    "train_bits_per_code": 3.764,
+    "valid_bits_per_byte": 0.8213,
+    "train_heldout_style_bits_per_byte": 0.8249,
+    "gap_bits_per_byte": -0.0036
+   },
+   {
+    "train_s": 1740.0,
+    "step": 15208,
+    "train_bits_per_code": 3.757,
+    "valid_bits_per_byte": 0.8207,
+    "train_heldout_style_bits_per_byte": 0.824,
+    "gap_bits_per_byte": -0.0033
+   },
+   {
+    "train_s": 1800.0,
+    "step": 15729,
+    "train_bits_per_code": 3.719,
+    "valid_bits_per_byte": 0.8181,
+    "train_heldout_style_bits_per_byte": 0.8198,
+    "gap_bits_per_byte": -0.0018
+   },
+   {
+    "train_s": 1860.0,
+    "step": 16253,
+    "train_bits_per_code": 3.845,
+    "valid_bits_per_byte": 0.8174,
+    "train_heldout_style_bits_per_byte": 0.8228,
+    "gap_bits_per_byte": -0.0055
+   },
+   {
+    "train_s": 1920.0,
+    "step": 16777,
+    "train_bits_per_code": 3.73,
+    "valid_bits_per_byte": 0.8169,
+    "train_heldout_style_bits_per_byte": 0.826,
+    "gap_bits_per_byte": -0.0091
+   },
+   {
+    "train_s": 1980.0,
+    "step": 17300,
+    "train_bits_per_code": 3.284,
+    "valid_bits_per_byte": 0.8179,
+    "train_heldout_style_bits_per_byte": 0.8233,
+    "gap_bits_per_byte": -0.0054
+   },
+   {
+    "train_s": 2040.1,
+    "step": 17823,
+    "train_bits_per_code": 3.175,
+    "valid_bits_per_byte": 0.8171,
+    "train_heldout_style_bits_per_byte": 0.8224,
+    "gap_bits_per_byte": -0.0053
+   },
+   {
+    "train_s": 2100.1,
+    "step": 18346,
+    "train_bits_per_code": 3.949,
+    "valid_bits_per_byte": 0.8168,
+    "train_heldout_style_bits_per_byte": 0.8256,
+    "gap_bits_per_byte": -0.0088
+   },
+   {
+    "train_s": 2160.0,
+    "step": 18871,
+    "train_bits_per_code": 4.158,
+    "valid_bits_per_byte": 0.8159,
+    "train_heldout_style_bits_per_byte": 0.8195,
+    "gap_bits_per_byte": -0.0036
+   },
+   {
+    "train_s": 2220.0,
+    "step": 19392,
+    "train_bits_per_code": 3.572,
+    "valid_bits_per_byte": 0.8168,
+    "train_heldout_style_bits_per_byte": 0.8175,
+    "gap_bits_per_byte": -0.0007
+   },
+   {
+    "train_s": 2280.0,
+    "step": 19916,
+    "train_bits_per_code": 4.064,
+    "valid_bits_per_byte": 0.8157,
+    "train_heldout_style_bits_per_byte": 0.8211,
+    "gap_bits_per_byte": -0.0054
+   },
+   {
+    "train_s": 2340.0,
+    "step": 20439,
+    "train_bits_per_code": 3.796,
+    "valid_bits_per_byte": 0.8158,
+    "train_heldout_style_bits_per_byte": 0.815,
+    "gap_bits_per_byte": 0.0007
+   },
+   {
+    "train_s": 2400.1,
+    "step": 20959,
+    "train_bits_per_code": 4.012,
+    "valid_bits_per_byte": 0.8152,
+    "train_heldout_style_bits_per_byte": 0.8193,
+    "gap_bits_per_byte": -0.0041
+   },
+   {
+    "train_s": 2460.1,
+    "step": 21486,
+    "train_bits_per_code": 4.081,
+    "valid_bits_per_byte": 0.8154,
+    "train_heldout_style_bits_per_byte": 0.8179,
+    "gap_bits_per_byte": -0.0025
+   },
+   {
+    "train_s": 2520.0,
+    "step": 22013,
+    "train_bits_per_code": 3.865,
+    "valid_bits_per_byte": 0.8136,
+    "train_heldout_style_bits_per_byte": 0.8198,
+    "gap_bits_per_byte": -0.0062
+   },
+   {
+    "train_s": 2580.1,
+    "step": 22540,
+    "train_bits_per_code": 3.997,
+    "valid_bits_per_byte": 0.814,
+    "train_heldout_style_bits_per_byte": 0.815,
+    "gap_bits_per_byte": -0.001
+   },
+   {
+    "train_s": 2640.1,
+    "step": 23068,
+    "train_bits_per_code": 3.856,
+    "valid_bits_per_byte": 0.8148,
+    "train_heldout_style_bits_per_byte": 0.8177,
+    "gap_bits_per_byte": -0.0028
+   },
+   {
+    "train_s": 2696.9,
+    "step": 23565,
+    "train_bits_per_code": 3.636,
+    "valid_bits_per_byte": 0.8144,
+    "train_heldout_style_bits_per_byte": 0.8168,
+    "gap_bits_per_byte": -0.0024
+   }
+  ],
+  "cost": {
+   "seconds": 2696.9,
+   "gpu_avg_w": 341.8,
+   "gpu_kj": 921.87,
+   "peak_mem_mb": 6177,
+   "power_samples": 1537,
+   "units": 23565,
+   "s_per_unit": 0.1144,
+   "j_per_unit": 39.12
+  }
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.9766,
+   "exact": 0.985
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 200,
+   "f1": 0.9045,
+   "exact": 0.64,
+   "num_exact": 1.0,
+   "num_exact_bias": 1.0,
+   "f1_no_m1": 0.2432,
+   "f1_bias": 0.9045,
+   "exact_bias": 0.64
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 31,
+   "f1": 0.3322,
+   "exact": 0.0,
+   "f1_no_m1": 0.3119,
+   "f1_bias": 0.3322,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.37
+  },
+  "unseen_network_with_nearest": {
+   "n": 169,
+   "f1": 0.3013,
+   "exact": 0.0118,
+   "f1_no_m1": 0.2786,
+   "f1_bias": 0.3013,
+   "exact_bias": 0.0118,
+   "retrieved_answer_f1_vs_ref": 0.2367
+  },
+  "heldout_network_without_memory": {
+   "n": 200,
+   "f1": 0.2356,
+   "exact": 0.0
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.3119
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.9625,
+   "exact": 0.97
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 200,
+   "f1": 0.8965,
+   "exact": 0.63,
+   "f1_no_m1": 0.2723,
+   "f1_bias": 0.8965,
+   "exact_bias": 0.63
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "Create a list of potential problems with online shopping.",
+    "a": "Potential problems with online shopping include: \n1. Online fraud and identity theft \n2. Unsatisfactory product quality \n3. Issues with delivery, such as delays",
+    "f1": 0.85,
+    "exact": 0.0,
+    "a_no_m1": "1. Online shopping \n2. Online shopping \n3. Online shopping \n4. Online shopping \n5. Online shopping \n6. Online shopping \n7. Online shopping \n8. Online shopping \n",
+    "f1_no_m1": 0.09375000000000001,
+    "a_bias": "Potential problems with online shopping include: \n1. Online fraud and identity theft \n2. Unsatisfactory product quality \n3. Issues with delivery, such as delays",
+    "f1_bias": 0.85,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Create an array of numbers from 1 to 10 using the Java syntax",
+    "a": "int[] array = {1,2,3,4,5,6,8,9,10};",
+    "f1": 1.0,
+    "exact": 0.0,
+    "a_no_m1": "10 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1",
+    "f1_no_m1": 0.0,
+    "a_bias": "int[] array = {1,2,3,4,5,6,8,9,10};",
+    "f1_bias": 1.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Name two planets located further from the Sun than Earth.",
+    "a": "Mars and Jupiter are two planets located further from the Sun than Earth.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The two planets located further from the Sun are Earth.",
+    "f1_no_m1": 0.7826086956521738,
+    "a_bias": "Mars and Jupiter are two planets located further from the Sun than Earth.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "What is the most common type of machine learning used for natural language proce",
+    "a": "The most common type of machine learning used for natural language processing is a deep neural network (DNN).",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The most common type of machine learning used for natural language processing is a))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))",
+    "f1_no_m1": 0.8750000000000001,
+    "a_bias": "The most common type of machine learning used for natural language processing is a deep neural network (DNN).",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Name three related skills for the given job.\nJob: Data Analyst",
+    "a": "- Analyzing datasets\n- Transforming data\n- Building predictive models",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "- A)))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))))",
+    "f1_no_m1": 0.0,
+    "a_bias": "- Analyzing datasets\n- Transforming data\n- Building predictive models",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Come up with a sentence that describes the concept of \u201cempowerment\u201d",
+    "a": "Empowerment is the process of gaining control over one's life, destiny, and decisions.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The concept of \u201cempowerment\u201d is a concept that involves the process of creating a new, more efficient, and more efficient way to achieve a more efficient and ef",
+    "f1_no_m1": 0.16901408450704228,
+    "a_bias": "Empowerment is the process of gaining control over one's life, destiny, and decisions.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Calculate the value of this math equation.\nEquation: $(7+1)\\times5$",
+    "a": "$(7+1)\\times5$",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "$(7+1)\\times5$",
+    "f1_no_m1": 0.0,
+    "a_bias": "$(7+1)\\times5$",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.568,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   },
+   {
+    "q": "Give three examples of weather-related natural disasters.",
+    "a": "1. The Great Depression: The Great Depression caused the Great Depression to become more severe, leading to a decrease in the number of people in the country.\n\n",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "1. The Great Depression: The Great Depression caused the Great Depression to become more severe, leading to a decrease in the number of people in the country.\n\n",
+    "f1_no_m1": 0.0,
+    "a_bias": "1. The Great Depression: The Great Depression caused the Great Depression to become more severe, leading to a decrease in the number of people in the country.\n\n",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.576,
+    "f1_vs_retrieved": 0.0,
+    "retrieved_answer_f1_vs_ref": 0.36363636363636365
+   },
+   {
+    "q": "Name three countries in Europe.",
+    "a": "The three countries in Europe are: Albania, Andorra, Austria, Belgium, Belgium, Bosnia and Herzegovina, Bulgaria, Croatia, Cyprus, Czech Republic, Denmark, Esto",
+    "f1": 0.2285714285714286,
+    "exact": 0.0,
+    "a_no_m1": "The three countries in Europe are Albania, France, France, France, France, France, France, France, France, France, France, France, France, France, France, Franc",
+    "f1_no_m1": 0.08333333333333333,
+    "a_bias": "The three countries in Europe are: Albania, Andorra, Austria, Belgium, Belgium, Bosnia and Herzegovina, Bulgaria, Croatia, Cyprus, Czech Republic, Denmark, Esto",
+    "f1_bias": 0.2285714285714286,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.785,
+    "f1_vs_retrieved": 0.6067415730337079,
+    "retrieved_answer_f1_vs_ref": 0.18181818181818182
+   },
+   {
+    "q": "Generate a sentence that explains the importance of getting enough sleep.",
+    "a": "Getting enough sleep is essential for both physical and mental health. It helps to maintain energy levels and keep us alert throughout the day. Sleep has also b",
+    "f1": 0.4533333333333333,
+    "exact": 0.0,
+    "a_no_m1": "Getting enough sleep is essential for both physical and mental health. It helps to maintain a healthy body and keep us healthy.",
+    "f1_no_m1": 0.6,
+    "a_bias": "Getting enough sleep is essential for both physical and mental health. It helps to maintain energy levels and keep us alert throughout the day. Sleep has also b",
+    "f1_bias": 0.4533333333333333,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.557,
+    "f1_vs_retrieved": 1.0,
+    "retrieved_answer_f1_vs_ref": 0.4533333333333333
+   },
+   {
+    "q": "What is one way you could prevent global warming?",
+    "a": "One way to prevent global warming is by reducing greenhouse gas emissions. This means reducing greenhouse gas emissions, reducing greenhouse gas emissions, and ",
+    "f1": 0.24444444444444444,
+    "exact": 0.0,
+    "a_no_m1": "One way to prevent global warming is by reducing your carbon footprint. You can use a variety of methods to reduce your carbon footprint, such as using renewabl",
+    "f1_no_m1": 0.45098039215686275,
+    "a_bias": "One way to prevent global warming is by reducing greenhouse gas emissions. This means reducing greenhouse gas emissions, reducing greenhouse gas emissions, and ",
+    "f1_bias": 0.24444444444444444,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.696,
+    "f1_vs_retrieved": 0.3157894736842105,
+    "retrieved_answer_f1_vs_ref": 0.4086021505376344
+   },
+   {
+    "q": "What is the Soviet Union's most significant cultural artifact?",
+    "a": "The Soviet Union's most significant cultural artifact is the Zaltrap Map, which was created by cartographer Juan de la Cosa. This map is significant because it ",
+    "f1": 0.37288135593220334,
+    "exact": 0.0,
+    "a_no_m1": "The Soviet Union's most significant cultural artifact is the Zaltrap Map, which was created by cartographer Juan de la Cosa. It is a unique and unique artifact ",
+    "f1_no_m1": 0.5166666666666667,
+    "a_bias": "The Soviet Union's most significant cultural artifact is the Zaltrap Map, which was created by cartographer Juan de la Cosa. This map is significant because it ",
+    "f1_bias": 0.37288135593220334,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.53,
+    "f1_vs_retrieved": 0.8064516129032259,
+    "retrieved_answer_f1_vs_ref": 0.3333333333333333
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Write a tweet describing the importance of protecting the environment.",
+    "a": "Taking care of the environment is essential for a healthy and sustainable future. Let's be more mindful of our actions and protect our planet! #environment #sus",
+    "f1": 0.39999999999999997,
+    "exact": 0.0,
+    "a_no_m1": "The environment is a place where people can be more aware of their environment and be more aware of their environment. It is a place where people can be more aw",
+    "f1_no_m1": 0.12658227848101267,
+    "a_bias": "Taking care of the environment is essential for a healthy and sustainable future. Let's be more mindful of our actions and protect our planet! #environment #sus",
+    "f1_bias": 0.39999999999999997,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.332,
+    "f1_vs_retrieved": 1.0,
+    "retrieved_answer_f1_vs_ref": 0.39999999999999997
+   },
+   {
+    "q": "Name three common methods of identity verification.",
+    "a": "Three common methods of identity verification are to use a secure and secure identity verification.",
+    "f1": 0.5714285714285715,
+    "exact": 0.0,
+    "a_no_m1": "Three common methods of identity verification are: \n1. Use a verification tool to identify the person's identity and identify the person's identity.\n2. Use a ve",
+    "f1_no_m1": 0.2352941176470588,
+    "a_bias": "Three common methods of identity verification are to use a secure and secure identity verification.",
+    "f1_bias": 0.5714285714285715,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.188,
+    "f1_vs_retrieved": 0.15909090909090906,
+    "retrieved_answer_f1_vs_ref": 0.11627906976744186
+   },
+   {
+    "q": "Generate a film title that matches with the theme of forest conservation",
+    "a": "The film \"The Forest\" is a beautiful and beautiful forest that is home to a variety of wildlife and wildlife. It is a beautiful and beautiful forest that is hom",
+    "f1": 0.08,
+    "exact": 0.0,
+    "a_no_m1": "The film \"The Forest\" is a beautiful and beautiful forest that is home to a variety of wildlife and wildlife. It is a beautiful and beautiful forest that is hom",
+    "f1_no_m1": 0.08,
+    "a_bias": "The film \"The Forest\" is a beautiful and beautiful forest that is home to a variety of wildlife and wildlife. It is a beautiful and beautiful forest that is hom",
+    "f1_bias": 0.08,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.137,
+    "f1_vs_retrieved": 0.2666666666666666,
+    "retrieved_answer_f1_vs_ref": 0.08108108108108107
+   },
+   {
+    "q": "Explain why the situation changed.\nSituation: Recently the amount of rainfall ha",
+    "a": "The situation has changed since the 1980s, and the amount of rainfall has decreased in a certain region. This has led to the development of new technologies and",
+    "f1": 0.4186046511627907,
+    "exact": 0.0,
+    "a_no_m1": "The situation has changed since the 1980s, and the amount of rainfall has decreased in a certain region. This has led to the development of new technologies and",
+    "f1_no_m1": 0.4186046511627907,
+    "a_bias": "The situation has changed since the 1980s, and the amount of rainfall has decreased in a certain region. This has led to the development of new technologies and",
+    "f1_bias": 0.4186046511627907,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.116,
+    "f1_vs_retrieved": 0.26666666666666666,
+    "retrieved_answer_f1_vs_ref": 0.297029702970297
+   },
+   {
+    "q": "Reverse the order of the following sentence to change the emphasis\n\nHe was very ",
+    "a": "He was very careful with his words.",
+    "f1": 0.6153846153846153,
+    "exact": 0.0,
+    "a_no_m1": "He was very careful with his words.",
+    "f1_no_m1": 0.6153846153846153,
+    "a_bias": "He was very careful with his words.",
+    "f1_bias": 0.6153846153846153,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.18,
+    "f1_vs_retrieved": 0.5454545454545454,
+    "retrieved_answer_f1_vs_ref": 0.2
+   },
+   {
+    "q": "Given a product description, generate 5 appropriate tags.\nThis cream is ideal fo",
+    "a": "The ideal cream is a anti-aging cream that is ideal for relieving the discomfort of dry, irritated skin, reducing the appearance of wrinkles, and restoring a he",
+    "f1": 0.1142857142857143,
+    "exact": 0.0,
+    "a_no_m1": "This cream is ideal for relieving the discomfort of dry, irritated skin, reducing the appearance of wrinkles, and reducing the appearance of wrinkles.",
+    "f1_no_m1": 0.0,
+    "a_bias": "The ideal cream is a anti-aging cream that is ideal for relieving the discomfort of dry, irritated skin, reducing the appearance of wrinkles, and restoring a he",
+    "f1_bias": 0.1142857142857143,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.192,
+    "f1_vs_retrieved": 0.27956989247311825,
+    "retrieved_answer_f1_vs_ref": 0.05714285714285714
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Given an article, edit out any spelling or grammar errors.\nThis article it expla",
+    "a": "This article explains how blockchain works.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "I recently had a comprehensive overview of blockchain work. It was a comprehensive overview of the various types of blockchain, including:\n\n1. Blockchain: Block",
+    "f1_no_m1": 0.03508771929824561,
+    "a_bias": "This article explains how blockchain works.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Categorize this phrase: \"Cats chase mice\"",
+    "a": "The phrase \"Cats chase mice\" is an example of a proverb.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The phrase \"Cats chase mice\" is a metaphor that is used to describe the process of killing a person.",
+    "f1_no_m1": 0.5333333333333333,
+    "a_bias": "The phrase \"Cats chase mice\" is an example of a proverb.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Read this short passage and identify the main idea.\nThe train generally leaves t",
+    "a": "The train has been leaving later than usual due to technical difficulties.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The speaker is expected to experience the same situation as the train).",
+    "f1_no_m1": 0.25,
+    "a_bias": "The train has been leaving later than usual due to technical difficulties.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Create a haiku about a football game.",
+    "a": "The stadium roars,\nFootball drums sound in the night -\nThe game begins anew.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The game is a game that takes place in a small town, with a team of players playing the game. The game is a game that takes place in a small town, with a team o",
+    "f1_no_m1": 0.11627906976744186,
+    "a_bias": "The stadium roars,\nFootball drums sound in the night -\nThe game begins anew.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Generate a blog post discussing the importance of healthy eating habits.",
+    "a": "Good nutrition is essential for maintaining a healthy lifestyle. Having a balanced and nutritious diet can help prevent a variety of health problems and can als",
+    "f1": 0.7225130890052355,
+    "exact": 0.0,
+    "a_no_m1": "I recently had a healthy diet that was not just healthy but also healthy. I was wondering if you could provide me with a comprehensive guide on how to make heal",
+    "f1_no_m1": 0.14193548387096774,
+    "a_bias": "Good nutrition is essential for maintaining a healthy lifestyle. Having a balanced and nutritious diet can help prevent a variety of health problems and can als",
+    "f1_bias": 0.7225130890052355,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Name three common types of attack on computer networks.",
+    "a": "Three common types of attack on computer networks are: 1) Denial of Service (DoS) attacks, which flood the target with requests and prevent them from accessing ",
+    "f1": 0.9454545454545454,
+    "exact": 0.0,
+    "a_no_m1": "1) The first known attack on computer networks is the use of a computer network.\n2) The second known attack on computer networks is the use of a computer networ",
+    "f1_no_m1": 0.16806722689075632,
+    "a_bias": "Three common types of attack on computer networks are: 1) Denial of Service (DoS) attacks, which flood the target with requests and prevent them from accessing ",
+    "f1_bias": 0.9454545454545454,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ]
+ },
+ "checks": {}
+}

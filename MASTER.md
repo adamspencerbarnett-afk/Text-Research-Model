@@ -37,6 +37,8 @@ the program tier, reasoning with thinking codes, the support check, continuous l
 | `run_model.py` | user entry: train on a folder, chat with a model (`/add`, `/load`), option 3 = best model, option 4 = device and threads; core chat KV-cached and streamed |
 | `skills_lab/` | reasoning-over-memory lab (own script copies in `lib/`): `testset.py` (100-question skills test), `gen_skills.py` (invented-fact skill windows), `engine.py` (several candidates, strict exact match), `train_skills.py`, `eval_skills.py` |
 | `compiler/experiments/k2_question_key.py` | K2, our own learned retrieval key (session 32); uses `gen_skills.py` and `testset.py` (copies of the lab's) |
+| `compiler/experiments/chat_engine.py`, `train_chat.py`, `chat_tests.py`, `plan_structure.py` | 5M chat model v2 (session 35): shared window layout + conversation engine (session memory, streaming), trainer, tests, structure picker; design in `docs/CHAT5M_V2_DESIGN.html` |
+| `docs/REASONING_MAP.html` | interactive map of the reasoning research (local page) |
 | `inference_lab/` | inference speed lab (own copies of the scripts in `lib/`): `bench.py`, `bench_gpu.py`, `chain_gpu.sh`, `RESULTS.md` |
 | `compiler/` | compiler v0, native encoder, tests |
 | `compiler/experiments/train_lm.py`, `scale_run.py` | core training (blocks, optimisers, schedules, bf16, resume) |

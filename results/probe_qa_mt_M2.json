@@ -1,0 +1,443 @@
+{
+ "model": "runs/mt_M2/qa_mt_M2.pt",
+ "precision": "bf16",
+ "kernels": "fp32",
+ "graph": true,
+ "dense": 0.0,
+ "rerank_core": 0,
+ "typos": 0.0,
+ "min_sim": 0.0,
+ "summary": {
+  "stored": {
+   "n": 5,
+   "ok": 5,
+   "ok_without_memory": 1
+  },
+  "reworded": {
+   "n": 5,
+   "ok": 3,
+   "ok_without_memory": 1
+  },
+  "knowledge": {
+   "n": 5,
+   "ok": 5,
+   "ok_without_memory": 0
+  },
+  "heldout": {
+   "n": 5,
+   "ok": 4,
+   "ok_without_memory": 4
+  },
+  "taught": {
+   "n": 6,
+   "ok": 5,
+   "ok_without_memory": 0
+  },
+  "arithmetic": {
+   "n": 3,
+   "ok": 0,
+   "ok_without_memory": 0
+  },
+  "chat": {
+   "n": 3,
+   "ok": 0,
+   "ok_without_memory": 1
+  }
+ },
+ "cost": {
+  "seconds": 4.2,
+  "gpu_avg_w": 155.4,
+  "gpu_kj": 0.65,
+  "peak_mem_mb": 271,
+  "power_samples": 6,
+  "units": 32,
+  "s_per_unit": 0.1308,
+  "j_per_unit": 20.33
+ },
+ "rows": [
+  {
+   "section": "stored",
+   "question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "answer": "A traditional Thanksgiving meal in the United States typically includes turkey, stuffing, mashed potatoes, gravy, cranberry sauce, vegetables, and pumpkin pie.",
+   "answer_without_memory": "Thanksgiving is a traditionally served during Thanksgive. It is a time to celebrate the holidays and celebrate their holidays.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "seconds": 0.69
+  },
+  {
+   "section": "stored",
+   "question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "answer": "A simple example of gravity can be demonstrated by dropping a ball; the ball falls to the ground due to the force of grav) the ball is the ball that falls to a ground due the force that gravity gravity pulls downwards.",
+   "answer_without_memory": "The concept of gravity is a fundamental concept in the universe. It is a concept that is used to describe the universe and its surroundings. It can be used to create a universe that is not just a physical object, but also to create an object that is more complex and complex.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "seconds": 0.3
+  },
+  {
+   "section": "stored",
+   "question": "Create a list of 10 verbs related to cooking",
+   "answer": "- Mix\n- Boil \n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+   "answer_without_memory": "1. \"The best way to cook the rice is to use a variety of ingredients, including vegetables, vegetables, and vegetables. \n2. 2. The best way for cooking is to add a variety to the dish. \n\nThe best ways to use this can include using a variety from a variety, such as using a combination of vegetables, whole grains, and whole grain bread.  \n3. Use a variety that is easy to use and can be used in a variety. 3. Add a variety for the meal, such like a salad or",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Create a list of 10 verbs related to cooking",
+   "seconds": 0.41
+  },
+  {
+   "section": "stored",
+   "question": "Name some computer viruses",
+   "answer": "Some computer viruses are: \n- WannaCry\n- Stuxnet\n- Trojan Horse\n- Code Red\n- Sality\n- CryptoLocker\n- ILoveYou\n- MyDoom\n- Melissa",
+   "answer_without_memory": "1. Viruses: Viruses are viruses that are virus-like viruses. They are virus types that are not viruses, but they are virus viruses which are virus that are in the form of viruses or viruses in the virus. Virus viruses are viruss that are viral viruses and viruses can be viruses from the viruses to the virus that can be viral. Virology viruses also have viruses such as viruses (Viruses), viruses like viruses viruses; viruses have virus virus virus that",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Name some computer viruses",
+   "seconds": 0.46
+  },
+  {
+   "section": "stored",
+   "question": "Come up with two statistics related to the US population.",
+   "answer": "According to the US Census Bureau, the current US population is approximately 331 million, and the current current US)",
+   "answer_without_memory": "The US population is expected to be 100,000 in the past 20 years. The US Census Bureau has seen a significant increase in the number of people living in the US population, with a rise of 1.5 million in the 21st century. The United States has also seen a rise in the percentage of people in the United States, with the US being the largest in the world.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Come up with two statistics related to the US population.",
+   "seconds": 0.3
+  },
+  {
+   "section": "reworded",
+   "question": "What food do Americans usually eat on Thanksgiving?",
+   "answer": "The food of the Thanksgiving is usually meat-based, which is typically made from meat-fried meats.",
+   "answer_without_memory": "The food you eat on Thanksgiving is typically meat-based, which is a type of meat that is typically made from a variety of ingredients. It is typically served with a varietyd type of cheese, such as cheese, cheese, and cheese, which are typically made with a combination of ingredients such as butter, cheese and cheese.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.223,
+   "retrieved_question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "seconds": 0.28
+  },
+  {
+   "section": "reworded",
+   "question": "Can you give me an example that shows how gravity works?",
+   "answer": "Sure, here's an example of a gravity that shows how gravity is used in a given situation:\n\n- The ball is a ball that is equal to the ground.\n- The ground is a force that is used to force the ball to the point where it is placed.",
+   "answer_without_memory": "Sure! The gravity of the gravity is a constant, and the gravitational force is the force of the Earth's gravity. The gravitationally attracts the Earth, which is the grave of the planet's surface. The force of gravity can be measured by the gravimetric force, which can be calculated using the formula \"The gravitation,\" which is a measure of the force that is measured by gravity, which means that gravity cannot be measured in the same way. The mass of gravitation is the mass of the earth",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.275,
+   "retrieved_question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "seconds": 0.53
+  },
+  {
+   "section": "reworded",
+   "question": "List ten verbs you would use when cooking.",
+   "answer": "- Mix\n- Boil \n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+   "answer_without_memory": "The verbs are a simple and easy to understand. They are simple and simple, and they are easy to read. They can be used to write down a sentence, and can be easily readable.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.473,
+   "retrieved_question": "Create a list of 10 verbs related to cooking",
+   "seconds": 0.27
+  },
+  {
+   "section": "reworded",
+   "question": "What are some well-known computer viruses?",
+   "answer": "Some well-known computer viruses include: \n- WannaCry: StuxnetCry\n- Trojan Horse: Code Red\n- Code Sality\n- MyDoom\n- Melissa",
+   "answer_without_memory": "1. The virus is a virus that is responsible for the spread of viruses. It is responsible by the viruses and is responsible of the spreading of virus. \n2. The viral virus is responsible when it is spreading to the virus. It can be spread by spreading the virus by the infected person. \n\nThe virus is also responsible for spreading viruses by the person. It has the ability to spread viruses through the virus and can be used to spread the virus to other people.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.509,
+   "retrieved_question": "Name some computer viruses",
+   "seconds": 0.44
+  },
+  {
+   "section": "reworded",
+   "question": "Tell me two facts about the population of the United States.",
+   "answer": "The population of the United States is approximately 328 million people.",
+   "answer_without_memory": "The population of the United States is estimated to be 1.5 million. The population is estimated at 100,000 in 2018, and the population is 11,050 in the United Kingdom. The United States has a population of 1,500 and 2,040, with a population density of 2.5 billion. The total population is approximately 12,590. The U.S. population is about 15,060, and is estimated by the United Nations",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.65,
+   "retrieved_question": "Tell me the population of the United States.",
+   "seconds": 0.38
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the largest planet in our solar system?",
+   "answer": "The largest planet in our solar system, Jupiter, is the largest planet from our solar systems.",
+   "answer_without_memory": "The largest planet in our solar system is the Solar System. It is the largest planet on Earth, with a total of 12,800 km\u00b2. It has a total area of 2.1 km\u00b3, which is 1.2 km\u00b0. It's the largest of the planets in the solar system, with 100,000 kilometers.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.744,
+   "retrieved_question": "Name a planet from our solar system.",
+   "seconds": 0.33
+  },
+  {
+   "section": "knowledge",
+   "question": "Who wrote Romeo and Juliet?",
+   "answer": "William Shakespeare",
+   "answer_without_memory": "Romeo's most famous and influential works include the \"The Fall of the Fall\" by Juliet, which was written by Julius Caesar and was written in the 19th century by Julian calendar. The works of Juliet are often written in a variety of styles and styles, and the works of the 20th century are often used in the works.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.789,
+   "retrieved_question": "Who wrote the play Romeo and Juliet?",
+   "seconds": 0.26
+  },
+  {
+   "section": "knowledge",
+   "question": "What is photosynthesis?",
+   "answer": "photosynthesis is the process by which plants use light energy to convert carbon dioxide and water into oxygen and sugars. It involves the transfer of electrons and protons between molecules as chlorophyll in the presence of light absorbs the light energy used to drive the reaction.",
+   "answer_without_memory": "Photosynthesis is a process of transforming the environment into a new, more efficient, and more efficient way to produce a new product. It is a way to reduce the amount of energy used to produce the product, which is why it is important to take action to reduce its energy consumption. Additionally, it is essential to take steps to reduce energy consumption and reduce the need for energy-efficient products.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.589,
+   "retrieved_question": "Describe the process of photosynthesis to me.",
+   "seconds": 0.38
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the boiling point of water in Celsius?",
+   "answer": "The approximate boiling point of water in Celsius is 100 degrees.",
+   "answer_without_memory": "The boiling point of Celsius is the point of water in the water. It is the water that flows through the water and is the main source of water. The water is then flowed through the air and is then used to cool down the water, which is then then used for cooling. The pressure is then applied to the water to prevent the water from flowing through the surface. The flow is then transferred to the air, which then flows back to the surface of the water in a way that is more efficient.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.76,
+   "retrieved_question": "What is the approximate boiling point of water in Celsius?",
+   "seconds": 0.36
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the capital of Japan?",
+   "answer": "The capital of Japan is Tokyo.",
+   "answer_without_memory": "The capital of Japan is 100% of its capital, 15% of the capital of the world. It is the largest city in the world, with 12% of it's capital. The capital is 20%, and the capital is the capital city of Japan. The city is the second largest city of the United States, with the largest cities in the country. The largest city is 30%. The total area is 40% and the total area of the city is around 13%.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Give me the capital of Japan.",
+   "seconds": 0.34
+  },
+  {
+   "section": "heldout",
+   "question": "Generate a creative poem describing the night sky.",
+   "answer": "The night sky is a beautiful and beautiful night sky, \nShimmering stars shining in harmony. \nFrom night to night, the night sky was a beautiful tapestry, 1\nThe night sky captures the heart of the night. \n\nThe night is a breathtaking sight, 2\nThe stars keep their place, 3\nThe darkness captures all the world around us.  \nA painted masterpiece that never grows old, 4\nThe colors yet to be uncovered. #1",
+   "answer_without_memory": "The night sky is a beautiful and beautiful place, with a beautiful landscape that is perfect for a night of adventure. The sky is bright and the sky is full of vibrant colors, with the sky being a bright and vibrant shade of blue and orange. The sun is a perfect place to relax and relax, with plenty of space and a peaceful atmosphere.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.468,
+   "retrieved_question": "Write a poem about the beauty of the night sky.",
+   "seconds": 0.53
+  },
+  {
+   "section": "heldout",
+   "question": "Come up with a creative sentence to describe a summer day.",
+   "answer": "A warm summer day is like a cozy blanket.",
+   "answer_without_memory": "I'm sorry to hear that the sun has changed over time.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.379,
+   "retrieved_question": "Generate a creative metaphor to describe a warm summer day.\n<no input>",
+   "seconds": 0.16
+  },
+  {
+   "section": "heldout",
+   "question": "List 5 famous Italian dishes.",
+   "answer": "1. Italian cuisine\n2. Italian dishes\n3. Italian food\n4. Italian dish\n5. Italian soup\n6. Italian spices\n7. Italian wine\n8. Italian pasta\n9. Italian sauce\n10. Italian sausage",
+   "answer_without_memory": "1. Italian dishes: Italian dishes such as Italian sausage, sausages, and sausaging.\n2. Italian cuisine: Italian cuisine such as saused, saut\u00e9ed, and spices.\n3. Italian soup: Italian soup, soup, and soup.\n4. Italian pasta: Italian pastas, pasta, and pasta.\n5. Italian spices: Italian spice, spices, and herbs.\n6. Italian wines: Italian wine, spice and spice.\n7. Italian sauce:",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.453,
+   "retrieved_question": "Build a database for all Italian dishes",
+   "seconds": 0.47
+  },
+  {
+   "section": "heldout",
+   "question": "Tell me the most common hairstyle for men.",
+   "answer": "The most common hairstyle for men is hairstrapping. The hairstripping is the most common type of hairstick, and the hairstrom is the best hairstree. The most popular hairsticks are the ones in the hair, the hairs, and a few other hairstries. The best hairsts are the hairy hairstacks, which are the most popular and the most commonly used hairstack.",
+   "answer_without_memory": "The most common hairstyle for men is the hairstyly. The hairstrap is the most common type of hairstrip, and the hair is the best hairstromp hairstrock. The most commonly used hairstroping hairstrobe is the \"bad\" hairstirl. The \"drop\" hair is a common hairspace, and it is the only hairstrand that is used in the hair. The best hairspray is the one that is the first hairstrone. The first hairspromp",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.22,
+   "retrieved_question": "Come up with some tips for choosing a hairstyle.",
+   "seconds": 0.56
+  },
+  {
+   "section": "heldout",
+   "question": "Print the following statement: \"I want to learn to code\".",
+   "answer": "I want to learn to code.",
+   "answer_without_memory": "I want to learn to code.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.336,
+   "retrieved_question": "Convert the following statement into a code snippet.\nPrint the sum of 1 and 2.",
+   "seconds": 0.13
+  },
+  {
+   "section": "taught",
+   "question": "What is the name of Adam's research model?",
+   "answer": "Adam's research model is called the Text Research Model.",
+   "answer_without_memory": "Adam is a researcher who has been working on a research project for over 10 years. He is a professor of science and has worked with the University of California at Berkeley, California, and has been a leading researcher in the field. He has also worked with a research team of scientists from the University and University of Pennsylvania, and is a member of the University's Department of Science and Technology. He also has worked on a variety of research projects, including the University for Science and Science, and the University in the Department for Science, Science, Technology, and Technology",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "What is the name of Adam's research model?",
+   "seconds": 0.34
+  },
+  {
+   "section": "taught",
+   "question": "What GPU does the research computer use?",
+   "answer": "The research computer uses an NVIDIA RTX 3090 GPU.",
+   "answer_without_memory": "The research computer is designed to be a powerful tool for improving the performance of a computer. It is designed for a variety of applications, including automation, automation and automation. It can be used to create a variety and provide a range of applications such as automation tools, automated automation systems, and automated systems. Additionally, it is designed with a range from 1000 to 1500, which can be applied to a wide range of tasks.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "What GPU does the research computer use?",
+   "seconds": 0.32
+  },
+  {
+   "section": "taught",
+   "question": "When was Version 1 of the compiler frozen?",
+   "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+   "answer_without_memory": "Version 1: Versions 1 - Versional - 1. Vers: Verse 1 is Versive - version: Verb -- Verb: Verdi -: Verti / Verb",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "When was Version 1 of the compiler frozen?",
+   "seconds": 0.23
+  },
+  {
+   "section": "taught",
+   "question": "What is Adam's research model called?",
+   "answer": "Adam's research model is called the Text Research Model.",
+   "answer_without_memory": "Adam's research model is a powerful tool for understanding the nature of the universe and the way it interacts with the universe. It is a way to understand the universe's structure, structure, and evolution of the cosmos, and to understand how the universe interacts and interacts in a way that is both unique and unique. Adam also provides a platform for understanding how the cosmic world interacts, and how it interactes with the cosmological world.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.74,
+   "retrieved_question": "What is the name of Adam's research model?",
+   "seconds": 0.32
+  },
+  {
+   "section": "taught",
+   "question": "Which graphics card is in the research computer?",
+   "answer": "The graphics card is a research computer that uses a anomaly detection algorithm to detect and detect the presence of a computer. It is a computer that can detect and analyze the computer's data, and can detect the computer uses a computer'.",
+   "answer_without_memory": "The graphics card is a graphic card that is designed to be a powerful tool for creating graphics. It is designed for graphics, graphics and graphics that are designed to help you create graphics in your own graphics system. The graphic cards are designed for a variety of graphics applications, including graphics graphics (such as graphics or graphics), graphic graphics such as graphs, graphs and graphs. The card is designed with graphics of different types of graphic materials, such as card graphics with graphic design elements",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.253,
+   "retrieved_question": "What GPU does the research computer use?",
+   "seconds": 0.46
+  },
+  {
+   "section": "taught",
+   "question": "On what date was Version 1 frozen?",
+   "answer": "Version 1 frozen was frozen on 9 October 2026.",
+   "answer_without_memory": "Version 1 frozen was a great place to start. The frozen is a great spot for beginners and is perfect for beginner learning. It is a beautiful place to explore and enjoy the sunshine. The sun is perfect to explore, and the sun is a perfect place to relax and relax.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.476,
+   "retrieved_question": "When was Version 1 of the compiler frozen?",
+   "seconds": 0.26
+  },
+  {
+   "section": "arithmetic",
+   "question": "What is 12 plus 30?",
+   "answer": "12 plus 30 is 10.",
+   "answer_without_memory": "12 plus 30 is 10.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.623,
+   "retrieved_question": "Add 2 plus 3.",
+   "seconds": 0.11
+  },
+  {
+   "section": "arithmetic",
+   "question": "If I have 5 apples and eat 2, how many are left?",
+   "answer": "You have one apple left.",
+   "answer_without_memory": "The amount of apples and eat 2 apples is 100%.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.486,
+   "retrieved_question": "If there are two apples and you give away one, how many apples do you have left?",
+   "seconds": 0.14
+  },
+  {
+   "section": "arithmetic",
+   "question": "What is 7 times 8?",
+   "answer": "7 times 8 is 7.",
+   "answer_without_memory": "1. 8 times 8: 10 times 15 times (20)\n2. 12 times 20 times",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.599,
+   "retrieved_question": "Calculate 7 times 5.",
+   "seconds": 0.16
+  },
+  {
+   "section": "chat",
+   "question": "Hello, how are you today?",
+   "answer": "I am sorry to hear that you are today.",
+   "answer_without_memory": "I am not capable of experiencing any of the above. I am a person who has been struggling with depression and anxiety for many years. I have been struggled for years, and I have never been able to do anything else. I was a person I had never been in the same situation, and it was a difficult time to cope with the stresses of the situation. I had been struggle to coping with the situation and had been able for years to cop. I felt like I was going to be struggling and I was struggling. I never thought I was able",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.383,
+   "retrieved_question": "Rewrite this sentence:\n\n\"Hello, how are you?\"",
+   "seconds": 0.36
+  },
+  {
+   "section": "chat",
+   "question": "Can you help me write a short email to my boss asking for a day off?",
+   "answer": "Sure, here is a short email to your boss asking for a day off:\n\n[Name]",
+   "answer_without_memory": "Sure, here's a short email to your boss asking for a day off:\n\n1. \"I'm feeling overwhelmed by the day's workout.\"\n\n2. \n\"I feel like I'm going to work on a weekend.\" - \"We're going to be a great day for the weekend,\" \n \n  \n\"We need to be more focused on the day,\"\n \n\n3. \n\n4. ```\n  \n`` \n- `",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.336,
+   "retrieved_question": "Write a formal email to the boss politely asking for leave the next day.\nNoinput",
+   "seconds": 0.41
+  },
+  {
+   "section": "chat",
+   "question": "What should I cook for dinner tonight?",
+   "answer": "For dinner tonight tonight, you should cook the dinner ton as well.",
+   "answer_without_memory": "I would recommend cooking a large pot of rice or a pot of cornmeal. This will help to create a delicious and delicious meal that is perfect for a meal. You can also try using a variety of vegetables such as carrots, celery, and bell peppers, and add some fresh herbs like basil, thyme, or basil to the pot.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.14,
+   "retrieved_question": "What kind of food would be appropriate for a romantic dinner?",
+   "seconds": 0.28
+  }
+ ]
+}
