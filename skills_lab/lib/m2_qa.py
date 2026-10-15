@@ -385,7 +385,20 @@ class LearnedKeys:
         self.vectors = torch.zeros(0, 128, device=device)
 
     @torch.no_grad()
-    def embed(self, questions: list[bytes], batch: int = 256) -> torch.Tensor:
+    def embed(self, questions: list[bytes], batch: int = 64) -> torch.Tensor:
+        """Lab change (15 October): batches of 64 in length order, GPU memory released after; the research version
+        (batch 256, padded to the longest question in each batch) filled the 24 GB GPU with the 100M core."""
+        if len(questions) > batch:
+            order = sorted(range(len(questions)), key=lambda i: len(questions[i]))
+            vecs = self._embed([questions[i] for i in order], batch)
+            out = torch.empty_like(vecs); out[torch.tensor(order, device=vecs.device)] = vecs
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+            return out
+        return self._embed(questions, batch)
+
+    @torch.no_grad()
+    def _embed(self, questions: list[bytes], batch: int) -> torch.Tensor:
         out = []
         for i in range(0, len(questions), batch):
             codes = [self.enc.encode(b"Question: " + q)[0][: self.core.ctx] for q in questions[i:i + batch]]
