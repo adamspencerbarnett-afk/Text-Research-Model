@@ -21,29 +21,32 @@ import numpy as np  # noqa: E402
 import engine as E  # noqa: E402
 import gen_skills as G  # noqa: E402
 import gen_skills_v3 as G3  # noqa: E402
+import gen_skills_v4 as G4  # noqa: E402
 
 OUT = ROOT / "data_skills"
 
 
-def train(n: int, seed: int = 11):
+def train(n: int, seed: int = 11, version: int = 3):
+    """version 3: data_skills/train_v3.jsonl; version 4 (rewriting, 15 October): data_skills/train_v4.jsonl."""
     G3.setup(test=False)
+    make = G4.make if version == 4 else G3.make
     rng = np.random.default_rng(seed)
     alp = E.m2_qa.parse_exchanges((ROOT / "data_qa" / "train" / "qa_train.txt").read_bytes())
     alpaca = lambda r: tuple(x.decode("utf-8", "replace") for x in alp[int(r.integers(len(alp)))])
     OUT.mkdir(exist_ok=True)
     kinds, words = collections.Counter(), 0
-    with open(OUT / "train_v3.jsonl", "w", encoding="utf-8") as f:
+    with open(OUT / f"train_v{version}.jsonl", "w", encoding="utf-8") as f:
         for _ in range(n):
-            w = G3.make(rng, alpaca)
+            w = make(rng, alpaca)
             if rng.random() < 0.10:
                 w["q"] = E.m2_qa.add_typos(w["q"].encode(), rng).decode("utf-8", "replace")
             w["cands"] = [list(c) for c in w["cands"]]; w["turns"] = [list(t) for t in w["turns"]]
             kinds[w["kind"]] += 1
             words += sum(len(x.split()) for x in [w["q"], w["target"]] + [y for c in w["cands"] + w["turns"] for y in c])
             f.write(json.dumps(w) + "\n")
-    man = {"version": 3, "windows": n, "seed": seed, "kinds": dict(kinds), "words": words,
+    man = {"version": version, "windows": n, "seed": seed, "kinds": dict(kinds), "words": words,
            "fields": {"person": sorted(G.P), "thing": sorted(G.TH)}, "names_used": len(G.NAMES), "names_reserved_for_test": len(G3.RESERVED)}
-    (OUT / "manifest_v3.json").write_text(json.dumps(man, indent=1))
+    (OUT / f"manifest_v{version}.json").write_text(json.dumps(man, indent=1))
     print(json.dumps(man))
 
 
@@ -104,8 +107,43 @@ def test(seed: int = 23):
     print(json.dumps({k: v for k, v in data.items() if k in ("groups", "version")}), len(items) + 20, "questions with follow-ups")
 
 
+def test4(seed: int = 41):
+    """Held-out rewriting test (version 4): 15 short answers, 15 yes/no (8 true, 7 false claims), 10 lists, reserved names
+    and phrasings only. Graded in eval_skills by the value and the form (extra["format"])."""
+    G4.setup(test=True)
+    rng = np.random.default_rng(seed)
+    facts, items = [], []
+    while len([i for i in items if i[0] == "short"]) < 15:
+        w = G4.make(rng)
+        if w["kind"] == "short":
+            facts += [tuple(c) for c in w["cands"]]
+            items.append(["short", w["q"], [[w["target"].rstrip(".").lower()]], {"format": "short", "value": w["target"].rstrip(".")}])
+    n_yes = n_no = 0
+    while n_yes + n_no < 15:
+        w = G4.make(rng)
+        if w["kind"] != "yesno":
+            continue
+        yes = w["target"].startswith("Yes")
+        if (yes and n_yes >= 8) or (not yes and n_no >= 7):
+            continue
+        n_yes += yes; n_no += not yes
+        facts += [tuple(c) for c in w["cands"]]
+        value = w["target"].rstrip(".").split(" ")[-1]
+        items.append(["yesno", w["q"], [[value.lower()]], {"format": "yes" if yes else "no"}])
+    while len([i for i in items if i[0] == "list"]) < 10:
+        w = G4.make(rng)
+        if w["kind"] == "list":
+            facts += [tuple(c) for c in w["cands"]]
+            vals = [line.split(": ", 1)[1].lower() for line in w["target"].splitlines()]
+            items.append(["list", w["q"], [[vals[0]], [vals[1]]], {"format": "list"}])
+    data = {"version": 4, "seed": seed, "facts": facts, "items": items,
+            "groups": dict(collections.Counter(i[0] for i in items)), "note": "rewriting test: reserved names and phrasings only"}
+    (OUT / "test_v4_rewrite.json").write_text(json.dumps(data, indent=1))
+    print(json.dumps(data["groups"]))
+
+
 if __name__ == "__main__":
     import argparse
-    ap = argparse.ArgumentParser(); ap.add_argument("what", choices=["train", "test"]); ap.add_argument("--n", type=int, default=100000)
+    ap = argparse.ArgumentParser(); ap.add_argument("what", choices=["train", "test", "train4", "test4"]); ap.add_argument("--n", type=int, default=100000)
     a = ap.parse_args()
-    train(a.n) if a.what == "train" else test()
+    {"train": lambda: train(a.n), "test": test, "train4": lambda: train(a.n, version=4), "test4": test4}[a.what]()

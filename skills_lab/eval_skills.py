@@ -74,9 +74,19 @@ def run_mode(eng, mode: str, head=None):
             r = {"group": "followup", "question": f"{q} / {fu}", "answer": fu_ans, "evidence": fu_ev, "ok": has(fu_ans, extra["followup_kw"])}
         else:
             r["ok"] = has(ans, kw)
+            fm = extra.get("format")        # rewriting test (version 4): the value AND the requested form
+            if fm == "short":
+                r["ok"] = r["ok"] and len(ans.split()) <= len(extra["value"].split()) + 3
+            elif fm in ("yes", "no"):
+                r["ok"] = r["ok"] and ans.strip().lower().startswith(fm)
+            elif fm == "list":
+                r["ok"] = r["ok"] and (len(ans.splitlines()) >= 2 or ans.count("- ") >= 2)
             if extra.get("wrong"):
                 r["wrong_value"] = any(w in ans.lower() for w in extra["wrong"])
         r["abstained"] = abstains(ans)
+        # speaking to the user about the user's own people: 'my sister' asked -> 'your sister' answered, not 'My sister'
+        if " my " in f" {q.lower()} " and group not in ("unknown", "clarify"):
+            r["perspective_ok"] = not ans.strip().startswith("My ")
         rows.append(r)
     probe = []
     for section, q, kw in chat_probe.PROBES:
@@ -93,6 +103,9 @@ def summary(rows, probe):
     out["skills_total"] = f"{sum(r['ok'] for r in rows)}/{len(rows)}"
     out["update_old_value_given"] = sum(bool(r.get("wrong_value")) for r in rows)
     out["false_abstain_on_known"] = sum(r["abstained"] for r in rows if r["group"] in ("taught", "update", "nearmiss"))
+    persp = [r["perspective_ok"] for r in rows if "perspective_ok" in r]
+    if persp:
+        out["perspective_your"] = f"{sum(persp)}/{len(persp)}"
     out["probe"] = f"{sum(p['ok'] for p in probe)}/{len(probe)}"
     out["probe_abstained"] = sum(p["abstained"] for p in probe)
     return out

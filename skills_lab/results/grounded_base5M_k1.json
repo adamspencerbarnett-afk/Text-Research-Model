@@ -1,0 +1,2784 @@
+{
+ "model": "models/qa_best_5M_dense.pt",
+ "name": "base5M_k1",
+ "mode": "k1",
+ "retrieval": "MiniLM x2.0",
+ "date": "2026-10-15 10:46",
+ "sets": {
+  "test_v1": {
+   "summary": {
+    "answers": 90,
+    "grounded_share": 0.778,
+    "right_from_memory": 27,
+    "right_from_network": 0,
+    "wrong_from_memory": 43,
+    "made_up": 20,
+    "unknown_questions": 20,
+    "invented_on_unknown": 20,
+    "refused_known": 0
+   },
+   "rows": [
+    {
+     "group": "taught",
+     "question": "What does Lena do for a living?",
+     "answer": "My cousin Lena works as a dentist.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "What's the password for the internet at the cabin?",
+     "answer": "The password for the internet at the cabin is gizmo58.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Which level of the garage is my car on?",
+     "answer": "I am a car on a road trip.",
+     "support": 0.333,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Who is my landlord?",
+     "answer": "Your landlord is called Mr. Okafor.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Until when is the pharmacy open?",
+     "answer": "The pharmacy opens when the pharmacist opens.",
+     "support": 0.25,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "What did Jenna name her cat?",
+     "answer": "Jenna's cat is called Pepper.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "What age is Arlo?",
+     "answer": "Arlo is six years old.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "What airline am I flying to Denver on?",
+     "answer": "The airline am I flying to Denver on is a 10-minute flight.",
+     "support": 0.8,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Which locker is mine at the gym?",
+     "answer": "The mine at the gym is mine at 218.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Which sport does Marco like best?",
+     "answer": "Marco's favourite sport is rugby.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "What day do I see the eye doctor?",
+     "answer": "I see the eye doctor appointment.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "What do we call the project server?",
+     "answer": "The project server is called Atlas-7.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Which city is Aunt Rosa in?",
+     "answer": "Aunt Rosa in is a city in Tucson.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Is Theo allergic to anything?",
+     "answer": "Theo is allergic to anything.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "How do I open the office door?",
+     "answer": "I open the office door.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "What colour bike does Hana ride?",
+     "answer": "Hana's bike is orange.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Who's the football coach now?",
+     "answer": "Coach Delgado is coaching the football team this year.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Can you remind me of my policy number?",
+     "answer": "My policy number is K-48213.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Where does the book club meet?",
+     "answer": "The book club meets in room 9 of the library.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "What's the middle name of Gus?",
+     "answer": "Gus's middle name is Everett.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What do I like to drink most?",
+     "answer": "I like to drink most.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "How can I call Nadia?",
+     "answer": "To call Nadia, you can call Nada.",
+     "support": 0.75,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "Where are we having the team lunch?",
+     "answer": "The team lunch is at Rosie's Diner.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "When should I pick up the kids from school?",
+     "answer": "I should pick up the kids from school.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "Who do I report to?",
+     "answer": "I am writing to report to you.",
+     "support": 0.5,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "Which car is Omar driving these days?",
+     "answer": "Omar sold the Honda and now drive a blue Subaru.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "Which city does Mia live in?",
+     "answer": "Mia lives in Portland.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "When is the report due?",
+     "answer": "The report is due on Friday.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "Which days do I go to the gym?",
+     "answer": "I go to the gym on Mondays and Thursdays.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What's the head count for the party?",
+     "answer": "The head count for the party is \"Create a new and exciting party\".",
+     "support": 0.667,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What email should I use for Ben?",
+     "answer": "I should use a variety of emails to help you with your needs.",
+     "support": 0.2,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What hotel are we booked at?",
+     "answer": "We booked at 1000 Honda, 1999.",
+     "support": 0.25,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "Which band does Zoe like best?",
+     "answer": "Zoe's favorite band is Coldplay.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "When do they pick up the trash?",
+     "answer": "Trash is collected on Tuesday.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "How much is the monthly plan?",
+     "answer": "The monthly plan costs 20 dollars.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "Where did Leo work before the library?",
+     "answer": "Leo works at the bakery on Main Street.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What was my old address?",
+     "answer": "My old address was 48 Willow Road.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What was Priya's last name before she married?",
+     "answer": "After the wedding Priya's last name before she married, she was able to marry her.",
+     "support": 0.75,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What color were the kitchen walls before we painted them?",
+     "answer": "The kitchen walls were yellow.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What phone did I have before the upgrade?",
+     "answer": "I had a phone number.",
+     "support": 0.5,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What does Anna drive?",
+     "answer": "Anna drives a red Mazda.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What does Anne drive?",
+     "answer": "Anne drives a white Volvo.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What date is Tom's birthday?",
+     "answer": "Tom's birthday is on March 3.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What date is Tim's birthday?",
+     "answer": "Tim's birthday is on August 19.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "When does the evening shift begin?",
+     "answer": "The evening shift begins when the day begins when a person is feeling overwhelmed.",
+     "support": 0.25,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "When does the morning shift begin?",
+     "answer": "The morning shift begins when the sun is shining.",
+     "support": 0.4,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which network do I join at work?",
+     "answer": "I am a professional and personalized professional.",
+     "support": 0.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which network do I join at home?",
+     "answer": "The home network is called NestNet.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What size shoes does my daughter wear?",
+     "answer": "My daughter's shoe size is 7.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What size shoes does my son wear?",
+     "answer": "My son's shoe size is 4.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Who runs Project Hawk?",
+     "answer": "Devon leads Project Hawk.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Who runs Project Falcon?",
+     "answer": "Grace leads Project Falcon.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "How do I open the back gate?",
+     "answer": "I open the back gate.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "How do I open the front gate?",
+     "answer": "I open the front gate.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What food does Ravi like best?",
+     "answer": "Ravi like best is a good food.",
+     "support": 0.8,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What food does Raj like best?",
+     "answer": "Raj is a great food.",
+     "support": 0.667,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which platform is the 8:40 train on?",
+     "answer": "The 8:40 train on is 8.40.",
+     "support": 0.667,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which platform is the 8:10 train on?",
+     "answer": "The 8:10 train on is the 8.10 station on the 10th of the year.",
+     "support": 0.333,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What's Carla's horse called?",
+     "answer": "Carla's horse is called Thunder.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What's Carla's dog called?",
+     "answer": "Carla's dog is called Biscuit.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "unknown",
+     "question": "What is Lena's favourite colour?",
+     "answer": "Lena's favourite colour is mustard.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "How old is Jenna's cat?",
+     "answer": "Jenna's cat is called Pepper.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is Marco's phone number?",
+     "answer": "Marco's phone number is 555-0606.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is my boss's birthday?",
+     "answer": "My boss's birthday is on April 16.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "Where does my cousin Felix live?",
+     "answer": "Mia lives in Portland.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is the code for the garage?",
+     "answer": "The garage code is 3271.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "When is the plumber coming?",
+     "answer": "The plumber coming is coming on Wednesday.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is Hana's last name?",
+     "answer": "Hana's last name is orange.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "Which school does Arlo go to?",
+     "answer": "Arlo Gos is a popular school in the United States.",
+     "support": 0.333,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is the name of Theo's sister?",
+     "answer": "Theo's sister is the sister of the sister.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is my bank account number?",
+     "answer": "I am a bank account.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What time does the farmers market open on Sunday?",
+     "answer": "The farmers market opens at 11:30 am.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What did I eat for breakfast?",
+     "answer": "I ate 100 calories for breakfast.",
+     "support": 0.25,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is Gus's favourite movie?",
+     "answer": "Gus's favourite movie is The Gus.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "Where did I put my passport?",
+     "answer": "I put my passport in a way.",
+     "support": 0.667,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What time is my haircut?",
+     "answer": "My haircut is now at 2:15 pm.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is the name of my neighbour's dog?",
+     "answer": "My neighbor's dog is called Waffles.",
+     "support": 0.75,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "How much did I pay for the couch?",
+     "answer": "I would pay for the couch by taking a walk in the middle of the room. It would be a great way to get the couches out of the table and then checking the size of the seat.",
+     "support": 0.333,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is Coach Delgado's first name?",
+     "answer": "Coach Delgado's first name is \"Coach\".",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "Which gate does my flight to Denver leave from?",
+     "answer": "Your flight to Denver is with Frontier.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "clarify",
+     "question": "When is my brother's birthday?",
+     "answer": "Sam's birthday is on June 9.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "What's the office address?",
+     "answer": "The office address is at 7 Runway Drive.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "What is Kate's number?",
+     "answer": "Kate's number is 555-0177.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "What time is yoga class?",
+     "answer": "Monday yoga is at 6 pm.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "What is my daughter's teacher called?",
+     "answer": "Ella's teacher is Mrs. Grant.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "Where is the suitcase?",
+     "answer": "The suitcase is in the attic.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "What's the laptop password?",
+     "answer": "The laptop password is River#4.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "When is the kids' dentist appointment?",
+     "answer": "The kids' dentist appointment is on May 16.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "What's my coworker's band called?",
+     "answer": "My coworker's band is called Static Bloom.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "How much is the pizza?",
+     "answer": "The pizza is 15 dollars.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    }
+   ]
+  },
+  "test_v2": {
+   "summary": {
+    "answers": 180,
+    "grounded_share": 0.802,
+    "right_from_memory": 65,
+    "right_from_network": 5,
+    "wrong_from_memory": 77,
+    "made_up": 30,
+    "unknown_questions": 40,
+    "invented_on_unknown": 38,
+    "refused_known": 1
+   },
+   "rows": [
+    {
+     "group": "taught",
+     "question": "How much does the taxi to the airport cost?",
+     "answer": "The taxi to the airport costs 19 dollars.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "What is the library wifi password? I can't remember.",
+     "answer": "The wifi password at the library is bean12.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Do you know the name of my roommate's dog?",
+     "answer": "My roommate's dog is called Waffles.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "What kind of car does Gabe own?",
+     "answer": "Gabe owns a lime Toyota.",
+     "support": 0.75,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Do you remember? What time does the pool open?",
+     "answer": "The pool opens at 12 pm.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Sorry, what is my sister Gideon's favorite band?",
+     "answer": "My sister Gideon's favorite band is Radiohead.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Remind me, what colour does my aunt prefer?",
+     "answer": "My aunt's favourite colour is mustard.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Where does my colleague Noor work? I can't remember.",
+     "answer": "My colleague Noor works at the post office.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "One more thing: what's Kenji's email?",
+     "answer": "Kenji's email is kim.reyes@postbox.com.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Quick question: What is the cabin wifi password?",
+     "answer": "The cabin wifi password is gizmo58.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Do you remember? Do you have Gia's number?",
+     "answer": "Yes, Gia's phone number is 555-0606.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Quick question: What is my niece's phone number?",
+     "answer": "My niece's phone number is 555-0366.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "What is the safe combination? I can't remember.",
+     "answer": "The safe combination is 5997.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "One more thing: what is my boss Gabe's favourite food?",
+     "answer": "My boss Gabe's favourite food is dumplings.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Sorry, how much does the car wash cost?",
+     "answer": "The car wash costs 49 dollars.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "When can I get into the post office?",
+     "answer": "I am an old man who is always looking for a new and exciting post office. I am a student who is passionate about the topic and is passion and passion. I have a passion for the most of the time and I am passionate and passionate.",
+     "support": 0.176,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "When can I get into the bike shop?",
+     "answer": "I can get into the bike shop when I am in the store.",
+     "support": 0.75,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "How much does the parking permit cost?",
+     "answer": "The parking permit costs 94 dollars.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Can you help? Where does Rhea work?",
+     "answer": "Rhea works at the museum.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Remind me, on what date was my tutor born?",
+     "answer": "My tutor's birthday was on April 16.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Hey, what is my nephew Kim's favorite book?",
+     "answer": "My nephew Kim's favorite book is Stoner.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Remind me, where does my roommate Bea live?",
+     "answer": "My roommate Bea lives in Regina.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Remind me, where can I leave the car at the warehouse?",
+     "answer": "Parking for the warehouse is a great way to stay in the war.",
+     "support": 0.333,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "I forgot. Which drink does my neighbour like best?",
+     "answer": "I don't have the least drink.",
+     "support": 0.333,
+     "abstained": true,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Quick question: What's my sister Gabe's email?",
+     "answer": "My sister Gabe's email is lionel.petrov@inbox.com.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "What's Kenji's email?",
+     "answer": "Kenji's email is kim.reyes@postbox.com.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Which street does my nephew live on?",
+     "answer": "My nephew's address is 189 Bridge Terrace.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Remind me, does Rahul have an allergy?",
+     "answer": "Yes, Rahul has an allergy.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Sorry, where can I leave the car at the cabin?",
+     "answer": "Parking for the cabin is a great way to stay in the cabinet.",
+     "support": 0.333,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Can you help? What is my friend's address?",
+     "answer": "My friend's address is 291 Station Avenue.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Hey, which school is my nephew in?",
+     "answer": "My nephew goes to Brookside Academy.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "One more thing: at what time is the budget review?",
+     "answer": "The budget review is on Friday at 5:45 pm.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Hey, which street does Bram live on?",
+     "answer": "Bram's address is 153 Hill Road.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Remind me, in which room is the team dinner?",
+     "answer": "The team dinner is in the grey room.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "When is the swim lesson?",
+     "answer": "The swim lesson is on Saturday at 7:30 pm.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "I forgot. What kind of car does my trainer own?",
+     "answer": "My trainer owns a purple Fiat.",
+     "support": 0.75,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Quick question: When can I get into the post office?",
+     "answer": "When can I get into the post office?",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "One more thing: how much does the car wash cost?",
+     "answer": "The car wash cost 45 dollars.",
+     "support": 0.8,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Remind me, what's Nico's email?",
+     "answer": "Nico's email is lionel.sato@inbox.com.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "How much does the car wash cost? I can't remember.",
+     "answer": "The car wash costs 49 dollars.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What is the garage combination?",
+     "answer": "The garage combination is 3271.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "How much is the monthly pass?",
+     "answer": "The monthly pass costs 71 dollars.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "In which room is the chess club?",
+     "answer": "The chess club is in the back office.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What's Rahul's favourite novel?",
+     "answer": "Rahul's favourite book is Dune.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "In which room is the choir practice?",
+     "answer": "The choir practice is in the community centre.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "When can I get into the bike shop?",
+     "answer": "I can get into the bike shop when I am in the store.",
+     "support": 0.75,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What family name does my niece have?",
+     "answer": "My niece's last name is Petrov.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "In which room is the staff meeting?",
+     "answer": "The staff meeting is in the back office.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What family name does my boss Basil have?",
+     "answer": "My boss Basil's last name is Silva.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "When is the study group?",
+     "answer": "The study group is on Tuesday at 2 pm.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What is my son's favorite food?",
+     "answer": "My son's favorite food is tacos al pastor.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What's Basil's favourite novel?",
+     "answer": "Basil's favourite book is Watership Down.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What is the library wifi password?",
+     "answer": "The wifi password at the library is olive29.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "Do you know how old my colleague is?",
+     "answer": "My colleague is 22 years old.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What is my son's favorite band?",
+     "answer": "My son's favorite band is Weezer.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "Do you know how old Ines is?",
+     "answer": "Ines is 23 years old.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "When can I get into the climbing gym?",
+     "answer": "I can get into the climbing gym.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What time does the bike shop open?",
+     "answer": "The bike shop opens at 7 am.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What instrument does my friend Pablo play?",
+     "answer": "My friend Pablo plays the flute.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "Which school does Wesley go to?",
+     "answer": "Wesley goes to Saint Clare Primary.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What is the code for the alarm?",
+     "answer": "The alarm code is 5921.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What kind of car does Ines own?",
+     "answer": "Ines owns a coral Jeep.",
+     "support": 0.75,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What is my sister Kenji's address?",
+     "answer": "My sister Kenji's address is 129 Hill Drive.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "Where can I leave the car at the cabin?",
+     "answer": "Parking for the cabin moved to lot F4.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What is my roommate Lionel's favourite book?",
+     "answer": "My roommate Lionel's favourite book is Dune.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What is the library wifi password?",
+     "answer": "The wifi password at the library is olive29.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "In which room is the study group?",
+     "answer": "The study group is in the community centre.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What's Ronan's favourite band?",
+     "answer": "Ronan's favourite band is Gorillaz.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "Do you have my daughter's number?",
+     "answer": "My daughter's number is 555-0499.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "When do I have to hand in the sales plan?",
+     "answer": "I have to hand in the sales plan because I have a plan to reduce my sales by 20%.",
+     "support": 0.625,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "Where was the soccer practice before?",
+     "answer": "The soccer practice was in the hall on Church Street.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "Which band did my neighbour like before?",
+     "answer": "My neighbor's favourite band was Pixies.",
+     "support": 0.75,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What was the old wifi password at the office?",
+     "answer": "The old wifi password at the office is loki83.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "Where did we park at the library before?",
+     "answer": "Parking for the library moved to lot G3.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "Where did Pablo live before?",
+     "answer": "Pablo moved to Wellington.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What was my tutor's last name before?",
+     "answer": "My tutor's last name before is Varga.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What colour did my sister Lux like before?",
+     "answer": "My sister Lux's favourite colour was now maroon.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "Where did we park at the studio before?",
+     "answer": "Parking for the studio before is not a popular choice.",
+     "support": 0.6,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "What hobby did my brother have before?",
+     "answer": "My brother's new hobby is salsa dancing.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "update",
+     "question": "Where did we park at the cabin before?",
+     "answer": "Parking for the cabin before is not a popular choice.",
+     "support": 0.6,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Does Bea speak another language?",
+     "answer": "Bea speaks Hindi.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Does my grandmother speak another language?",
+     "answer": "My grandmother speaks Korean.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What would my sister order for dinner?",
+     "answer": "My sister's favorite food is enchiladas.",
+     "support": 0.75,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What would my trainer order for dinner?",
+     "answer": "My trainer's favourite food is sushi.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Does my brother speak another language?",
+     "answer": "My brother speaks Tagalog.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What language does my cousin speak?",
+     "answer": "My cousin speaks Polish.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What car does Bea drive?",
+     "answer": "Bea drives a teal Renault.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What kind of car does Ronan own?",
+     "answer": "Ronan owns a pink Kia.",
+     "support": 0.75,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What is my roommate Ines working as?",
+     "answer": "My roommate Ines works as a translator.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What is Wesley working as?",
+     "answer": "Wesley works as a welder.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What's my partner Ayla's favourite band?",
+     "answer": "My partner Ayla's favourite band is The Cure.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What's my trainer Kim's favourite band?",
+     "answer": "My trainer Kim's favourite band is Daft Punk.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which place does Noor call home?",
+     "answer": "Noor call home is home to a number of places, including:\n\n1. The homepage is home-cooked meals, such as a meal with a meal of the same size, a meal containing a meal, a dinner party, and a dinner menu.\n\n2. The food was delicious and the food was made with a food was not only delicious, but also a meal that was delicious.\n\n3. The restaurant is homeless and has a variety of dishes",
+     "support": 0.121,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Which place does my neighbour Ines call home?",
+     "answer": "My neighbor Ines call home \"The Beauty\".",
+     "support": 0.6,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Where does my roommate Leila have a job?",
+     "answer": "My roommate Leila has a job in the museum.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Where does my colleague have a job?",
+     "answer": "My colleague works at the post office.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Do you know the name of my partner's rabbit?",
+     "answer": "My partner's rabbit is called Waffles.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Do you know the name of Rahul's rabbit?",
+     "answer": "Rahul's rabbit is called Sushi.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What does my nephew Wesley like to play?",
+     "answer": "My nephew Wesley's favorite sport is tennis.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What does my coworker like to play?",
+     "answer": "My coworker's favorite sport is swimming.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What is the name of Gideon's ferret?",
+     "answer": "Gideon's ferret is called Toffee.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Do you know the name of Wesley's ferret?",
+     "answer": "Wesley's ferret is called Fudge.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What is my niece Kenji's favorite band?",
+     "answer": "My niece Kenji's favorite band is Toto.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What's my colleague's favorite band?",
+     "answer": "My colleague's favorite band is Muse.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What is my neighbour Nico's favourite sport?",
+     "answer": "My neighbor Nico's favourite sport is baseball.",
+     "support": 0.8,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What is my uncle's favourite sport?",
+     "answer": "My uncle's favourite sport is cycling.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "How old is Bram?",
+     "answer": "Bram is 51 years old.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Do you know how old my trainer is?",
+     "answer": "My trainer is 20 years old.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Do you know how old my friend is?",
+     "answer": "My friend is 48 years old.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Do you know how old Noor is?",
+     "answer": "Noor is 45 years old.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Do you know the name of my uncle's tortoise?",
+     "answer": "My uncle's tortoise is called Scout.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What is the name of my grandfather Gabe's tortoise?",
+     "answer": "My grandfather Gabe's tortoise is called Sprout.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Do you know the name of my son's goldfish?",
+     "answer": "My son's goldfish is called Gizmo.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Do you know the name of my boss's goldfish?",
+     "answer": "My boss's goldfish is called Dot.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "How old is my tutor Rhea?",
+     "answer": "My tutor Rhea is 18 years old.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Do you know how old my niece is?",
+     "answer": "My niece is 60 years old.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Do you know how old my colleague Bea is?",
+     "answer": "My colleague Bea is 24 years old.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Do you know how old my coworker is?",
+     "answer": "My coworker is 31 years old.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "Does my aunt speak another language?",
+     "answer": "My aunt speaks Swahili.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "nearmiss",
+     "question": "What language does Kenji speak?",
+     "answer": "Kenji speaks Czech.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "unknown",
+     "question": "What car does my friend Willa drive?",
+     "answer": "My friend Willa drives.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What's my boss's favorite novel?",
+     "answer": "I'm a fan of the classic boss's favorite novel.",
+     "support": 0.6,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "When is my brother Gia's birthday?",
+     "answer": "Eli's birthday is on November 21.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What family name does Gabe have?",
+     "answer": "Gabe's rabbit is called Nala.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is my cousin's favorite food?",
+     "answer": "My cousin's favorite food is tacos al pastor.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "Which place does my trainer call home?",
+     "answer": "My trainer call home is home to a variety of places, including:\n\n1. The city of the city of Houston, Texas.\n\n2. The town of Host a city of 1000 people.\n\n3. The park of Hot a city with a population of 200,001.\n\n4. The village of Hotel a city that is located in the city's center.\n\n5. The museum of Hope",
+     "support": 0.133,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is my neighbour Ayla's email address?",
+     "answer": "My neighbor Ayla's email address is 555-0547.",
+     "support": 0.8,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "At what time is the dance class?",
+     "answer": "The dance class is at 6 pm.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is my tutor Bram working as?",
+     "answer": "I am a tutor. I am working as a tutorial. I have a tutoring program that is designed to help me learn and grow. I want to learn from data and make sure to be able to learn and learn from the latest trends.",
+     "support": 0.111,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What's my neighbour Lucia's email?",
+     "answer": "My neighbor Lucia's email is on December 4.",
+     "support": 0.75,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What's my neighbour Wesley's favourite band?",
+     "answer": "My neighbor's favourite band is Pixies.",
+     "support": 0.75,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "Where does Nico have a job?",
+     "answer": "Nico has a job in a job that is not covered by the government.",
+     "support": 0.6,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "Does my daughter Ines have an allergy?",
+     "answer": "I don't have an allergy.",
+     "support": 0.5,
+     "abstained": true,
+     "correct": true,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What family name does my sister Ayla have?",
+     "answer": "My sister Ayla's sister A9 is 1000.",
+     "support": 0.6,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "How much does the haircut cost?",
+     "answer": "The haircut cost is $2000.",
+     "support": 0.667,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "Where does my trainer Nico have a job?",
+     "answer": "I am a 16 year old.",
+     "support": 0.667,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "Where does my neighbour have a job?",
+     "answer": "My neighbour Ines lives in Nantes.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What's my niece's email?",
+     "answer": "My niece's email is 555-0366.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is the safe combination?",
+     "answer": "The safe combination is 5997.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "Where can I leave the car at the studio?",
+     "answer": "Parking for the studio moved to lot A5.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What's my grandmother Leila's email?",
+     "answer": "My grandmother Leila is a grandm mother, a grand adventure. She is a great friend and a great lover. She loves to explore the world around her and explore the city.",
+     "support": 0.125,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What kind of car does my boss Willa own?",
+     "answer": "I don't have the capability to choose a boss. However, I can provide a list of the most common types of car, such as:\n\n1. Boss: I am a boil.\n2. Body: I have a bobler.\n3. Boble: I'm a borer.",
+     "support": 0.214,
+     "abstained": true,
+     "correct": true,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "Where can I leave the car at the clinic?",
+     "answer": "You parked on level 3 of the Elm Street garage.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "Do you know the name of my cousin's dog?",
+     "answer": "My cousin's dog is called Waffles.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What family name does my niece Gabe have?",
+     "answer": "My family name is Petrov.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What time does the laundromat open?",
+     "answer": "The laundromat opens at 11:30 am.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What is my grandmother's last name?",
+     "answer": "My grandmother's last name is Petrov.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "Does Ines have an allergy?",
+     "answer": "Ines have an allergy.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "Do you have Rahul's number?",
+     "answer": "Rahul's number is 11.",
+     "support": 0.667,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "When can I get into the corner shop?",
+     "answer": "I can get into the corner shop by me.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "Where can I leave the car at the library?",
+     "answer": "Parking for the library moved to lot G3.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "Which drink does Pablo like best?",
+     "answer": "Pablo is a popular drink in the United States.",
+     "support": 0.4,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What's my niece Kim's favourite novel?",
+     "answer": "My nephew Kim's favorite book is Stoner.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "Do you know the name of Pablo's goldfish?",
+     "answer": "Pablo's goldfish is called Gizmo.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "Where is the soccer practice?",
+     "answer": "The soccer practice is in the hall on Church Street.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "How much does the gym membership cost?",
+     "answer": "The gym membership cost is typically $100,000. It is typically a $200 million payment, with a 10% payment of $300 to $500 in the form of a 20% paid payment.",
+     "support": 0.167,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What would Ronan order for dinner?",
+     "answer": "Ronan's favourite band is now Pulp.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "When do I have to hand in the tax return?",
+     "answer": "I'm sorry to hear that you have to hand in the tax return. I'll be able to hand out the tax and pay the tax.",
+     "support": 0.5,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "In which room is the chess club?",
+     "answer": "The chess club is in the back office.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "unknown",
+     "question": "What's my sister Lux's favourite band?",
+     "answer": "My sister Lux's favourite band is the \"Lucia\".",
+     "support": 0.8,
+     "abstained": false,
+     "correct": false,
+     "stored": false
+    },
+    {
+     "group": "clarify",
+     "question": "How much does the parking permit cost?",
+     "answer": "The parking permit costs 94 dollars.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "What colour does my friend prefer?",
+     "answer": "My friend Gabe's favourite colour is lime.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "At what time is the car service?",
+     "answer": "The car service is on Tuesday at 8 pm.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "What does my roommate like to play?",
+     "answer": "My roommate is a play-by-style play-based play-in-the-art play-out.",
+     "support": 0.2,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "What is my nephew's phone number?",
+     "answer": "My nephew's phone number is 555-0332.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "What would my sister order for dinner?",
+     "answer": "My sister's favorite food is enchiladas.",
+     "support": 0.75,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "What time does the climbing gym open?",
+     "answer": "The climbing gym opens at 11:30 am.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "Which place does my trainer call home?",
+     "answer": "My trainer call home is home to a variety of places, including:\n\n1. The city of the city of Houston, Texas.\n\n2. The town of Host a city of 1000 people.\n\n3. The park of Hot a city with a population of 200,001.\n\n4. The village of Hotel a city that is located in the city's center.\n\n5. The museum of Hope",
+     "support": 0.133,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "What is my partner's favorite drink?",
+     "answer": "My favorite drink is coffee.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "What is the shed combination?",
+     "answer": "The shed combination is 4232.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "What would my neighbour order for dinner?",
+     "answer": "My neighbor's favourite drink is iced coffee.",
+     "support": 0.8,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "Which street does my daughter live on?",
+     "answer": "My daughter is home to a variety of street options.",
+     "support": 0.4,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "Do you know the name of my niece's tortoise?",
+     "answer": "My niece's tortoise is called Whiskers.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "Do you know how old my trainer is?",
+     "answer": "My trainer is 20 years old.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "Which school does my grandmother go to?",
+     "answer": "My grandmother Rahul goes to Saint Clare Primary.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "At what time is the piano lesson?",
+     "answer": "The piano lesson is on Monday at 8:30 pm.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "When can I get into the post office?",
+     "answer": "I am an old man who is always looking for a new and exciting post office. I am a student who is passionate about the topic and is passion and passion. I have a passion for the most of the time and I am passionate and passionate.",
+     "support": 0.176,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "Do you have my sister's number?",
+     "answer": "My sister's number is 555-0547.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "Where can I leave the car at the workshop?",
+     "answer": "Parking for the junior workshop is in lot G1.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "clarify",
+     "question": "How much does the taxi to the airport cost?",
+     "answer": "The taxi to the airport costs 19 dollars.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    }
+   ]
+  },
+  "chat_probe": {
+   "summary": {
+    "answers": 32,
+    "grounded_share": 0.844,
+    "right_from_memory": 21,
+    "right_from_network": 2,
+    "wrong_from_memory": 6,
+    "made_up": 3,
+    "unknown_questions": 0,
+    "invented_on_unknown": 0,
+    "refused_known": 0
+   },
+   "rows": [
+    {
+     "group": "stored",
+     "question": "Name a food that is traditionally served during Thanksgiving in the US.",
+     "answer": "A traditional Thanksgiving meal in the United States typically includes turkey, stuffing, mashed potatoes, gravy, cranberry sauce, vegetables, and pumpkin pie.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "stored",
+     "question": "Given the input, provide an example to demonstrate the concept of gravity.",
+     "answer": "A simple example of gravity can be demonstrated by dropping a ball; the ball falls to the ground due to the force of gravity pulling it downwards.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "stored",
+     "question": "Create a list of 10 verbs related to cooking",
+     "answer": "- Mix\n- Boil \n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "stored",
+     "question": "Name some computer viruses",
+     "answer": "Some computer viruses are: \n- WannaCry\n- Stuxnet\n- Trojan Horse\n- Code Red\n- Sality\n- CryptoLocker\n- ILoveYou\n- Chimera\n- MyDoom\n- Melissa",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "stored",
+     "question": "Come up with two statistics related to the US population.",
+     "answer": "According to the US Census Bureau, the current US population is approximately 331 million, and the current U.S. population growth rate is 0.7%.",
+     "support": 0.929,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "reworded",
+     "question": "What food do Americans usually eat on Thanksgiving?",
+     "answer": "The food that American companies eat on Thanksgiving is a traditional Thanksgive meal. It is a popular food that is often served in a variety of dishes, such as burpees, salary, and vegan salary.",
+     "support": 0.389,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "reworded",
+     "question": "Can you give me an example that shows how gravity works?",
+     "answer": "Sure, here's an example of a simple example of gravity:\n\n1. The ball falls to the ground due to the force of gravity pulling it downwards.\n2. The objective of gravity is to move the ball downwards, and the objective is to pull the ball backwards.",
+     "support": 0.727,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "reworded",
+     "question": "List ten verbs you would use when cooking.",
+     "answer": "- Mix\n- Boil\n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "reworded",
+     "question": "What are some well-known computer viruses?",
+     "answer": "Some well-known computer viruses are: \n- WannaCry\n- Stuxnet\n- Trojan Horse\n- Code Red\n- Sality\n- CryptoLocker\n- ILoveYou\n- Chimera\n- MyDoom\n- Melissa",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "reworded",
+     "question": "Tell me two facts about the population of the United States.",
+     "answer": "The population of the United States is approximately 328 million people.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "knowledge",
+     "question": "What is the largest planet in our solar system?",
+     "answer": "The largest planet in our solar system is the Sun.",
+     "support": 0.8,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "knowledge",
+     "question": "Who wrote Romeo and Juliet?",
+     "answer": "William Shakespeare",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "knowledge",
+     "question": "What is photosynthesis?",
+     "answer": "Photosynthesis is the process by which plants use light energy to convert carbon dioxide and water into oxygen and sugars. It involves the transfer of electrons and protons between molecules as chlorophyll in the presence of light absorbs the light energy used to drive the reaction. The oxygen produced is released into the atmosphere, and the sugar produced is used by the plant for growth.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "knowledge",
+     "question": "What is the boiling point of water in Celsius?",
+     "answer": "The approximate boiling point of water in Celsius is 100 degrees.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "knowledge",
+     "question": "What is the capital of Japan?",
+     "answer": "The capital of Japan is Tokyo.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "heldout",
+     "question": "Generate a creative poem describing the night sky.",
+     "answer": "The night sky is a beautiful night,\nA beautiful night with a beautiful day.\nThe night sky, the night sky.\nA bright night, the sky.",
+     "support": 0.867,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "heldout",
+     "question": "Come up with a creative sentence to describe a summer day.",
+     "answer": "The summer day is like a warm summer day, and it's like a cozy blanket.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "heldout",
+     "question": "List 5 famous Italian dishes.",
+     "answer": "1. Italian cuisine\n2. Italian cake\n3. Italian cheese\n4. Italian spaghetti\n5. Italian fried cheese\n6. Italian Italian cumin\n7. Italian cheerful cheese\n8. Italian len(s)\n9. Italian car.",
+     "support": 0.524,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "heldout",
+     "question": "Tell me the most common hairstyle for men.",
+     "answer": "The most common hairstyle for men is hair texture, hair texture and hair texture.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "heldout",
+     "question": "Print the following statement: \"I want to learn to code\".",
+     "answer": "\"I want to learn to code\".",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "What is the name of Adam's research model?",
+     "answer": "Adam's research model is called the Text Research Model.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "What GPU does the research computer use?",
+     "answer": "The research computer uses an NVIDIA RTX 3090 GPU.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "When was Version 1 of the compiler frozen?",
+     "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "What is Adam's research model called?",
+     "answer": "Adam's research model is called the Text Research Model.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "Which graphics card is in the research computer?",
+     "answer": "The graphics card is in the research computer's graphics, which is a type of card that is used to create a computer.",
+     "support": 0.778,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "taught",
+     "question": "On what date was Version 1 frozen?",
+     "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "arithmetic",
+     "question": "What is 12 plus 30?",
+     "answer": "12 is plus 30.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "arithmetic",
+     "question": "If I have 5 apples and eat 2, how many are left?",
+     "answer": "You have 5 apples and eat 2, so there are 5 - 2 = 2 left.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "arithmetic",
+     "question": "What is 7 times 8?",
+     "answer": "7 times 8 is 7.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "chat",
+     "question": "Hello, how are you today?",
+     "answer": "Today, I'm here to help you today.",
+     "support": 0.667,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    },
+    {
+     "group": "chat",
+     "question": "Can you help me write a short email to my boss asking for a day off?",
+     "answer": "Dear [Boss], \n\nI am writing to kindly request a leave of absence for tomorrow, [date]. I have an important personal matter that I need to attend to and would greatly appreciate your understanding in this matter.\n\nI assure you that I will make up for any work missed during my leave and look forward to hearing your response. \n\nBest regards, \n[Name]",
+     "support": 1.0,
+     "abstained": false,
+     "correct": true,
+     "stored": true
+    },
+    {
+     "group": "chat",
+     "question": "What should I cook for dinner tonight?",
+     "answer": "I should cook for dinner tonight.",
+     "support": 1.0,
+     "abstained": false,
+     "correct": false,
+     "stored": true
+    }
+   ]
+  }
+ },
+ "all": {
+  "answers": 302,
+  "grounded_share": 0.799,
+  "right_from_memory": 113,
+  "right_from_network": 7,
+  "wrong_from_memory": 126,
+  "made_up": 53,
+  "unknown_questions": 60,
+  "invented_on_unknown": 58,
+  "refused_known": 1
+ },
+ "seconds": 233
+}
