@@ -101,6 +101,21 @@ GPU. The new chain (session 31) starts after session 30 and fills in the winning
 30: about 1 h for the core, 40 min per stage, 30 min of tests per arm: about 6 h in all. The dictionary study
 (session 29) stays on hold.
 
+## 9b. Results (15 October, session 31)
+
+| arm | multi-turn probe /27 | history gain | chat probe /32 | typo probe | stored F1 | network-alone F1 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Q, Q&A only | 12 | 5.0% | 24 | 20 | 0.886 | 0.207 |
+| S, Q&A then multi-turn | 11 | 9.4% | 25 | 23 | 0.842 | 0.180 |
+| M, one mixed stage | 6 | 11.3% | 23 | 20 | 0.862 | 0.204 |
+| L1, LoRA Q&A | 6 | 4.6% | 22 | 21 | 0.883 | 0.116 |
+| L2, LoRA Q&A + multi-turn | 9 | 8.4% | 24 | 23 | 0.831 | 0.114 |
+
+No arm met rule 7. History gain on real conversations favours multi-turn training (M, then S); the 27-item probe favours
+Q, which recalls stated facts by copying from the history as it copies from memory. LoRA is dropped (network-alone
+answers fell 40%+). Session 33 repeats Q, S and M with seed 2 and adds a 120-conversation probe (mt_probe2.py) before a
+structure is adopted and written into HYBRID_DESIGN.html and BRAIN_DESIGN.html.
+
 ## 10. Next line after this study: long context (added 14 October)
 
 Questions from Adam: can the model take a long pasted document, or write a short story? Today the reply length is a

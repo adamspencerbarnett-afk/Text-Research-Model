@@ -153,6 +153,12 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 | s2b_lfreeze512 | Q&A | 15565 | 1307 | 11.910 | 257.400 | 336.270 | 2771 | 0.114 | 20.730 | 22 |
 | s2b_ldrop512 | Q&A | 15565 | 1340 | 11.620 | 267.900 | 358.950 | 2819 | 0.116 | 20.890 | 24 |
 | s2b_ltypo512 | Q&A | 15565 | 1225 | 12.710 | 267.300 | 327.500 | 2771 | 0.108 | 19.470 | 22 |
+| core_mt5m_5M custom/v0_8k | core | 42538 | 9662 | 4.400 | 312.600 | 3020.030 | 5905 |  |  |  |
+| mt_Q | Q&A | 15565 | 3723 | 4.180 | 270.600 | 1007.290 | 6177 | 0.144 | 26.290 | 20 |
+| mt_S | Q&A | 8000 | 1892 | 4.230 | 276.900 | 523.770 | 6177 | 0.165 | 30.610 | 23 |
+| mt_M | Q&A | 23565 | 5873 | 4.010 | 267.500 | 1570.690 | 6177 | 0.175 | 33.160 | 20 |
+| mt_L1 | Q&A | 15565 | 4227 | 3.680 | 273.200 | 1154.840 | 5697 | 0.200 | 37.380 | 21 |
+| mt_L2 | Q&A | 8000 | 2185 | 3.660 | 270.300 | 590.680 | 5697 | 0.200 | 37.570 | 23 |
 
 ## Queue of planned runs
 | id | run | question it answers | status |
@@ -196,7 +202,8 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 | S27 | 100M core (1,024 x 8, Muon + WSD, bf16, P100 mix, 2B codes, resumable), report card, adopted Q&A stage, probes at bf16 and int8 | does a larger generator read and answer better than 5M and 50M? | done 14 October: best model so far: probe 25/32 (int8 25/32), every Q&A group above 50M and 5M; 0.28 s and 55 J per answer |
 | S28 | 5M with the retrieval-confidence input on (--sim-feature): the adopted recipe, and the combined recipe (+ misleading evidence) | were the lessons cancelling because the trust head could not see retrieval confidence? | done 14 October: no: confidence input alone probe 23/32 (best 24), every group within noise; with misleading evidence 23/32, network alone 0.259 (= session 24 without it); rejected |
 | S30 | lessons from the DLI course on the best 5M recipe: control with the overfitting gap, two-phase fine-tuning (heads alone 1,000 steps), dropout 0.1, typo augmentation 20%; every model probed at bf16, int8 and with typos; the current best model's typo probe as baseline | which training lessons improve answers, robustness to typing mistakes, or overfitting? | done 14 October: no lesson adopted (all within noise of the control); overfitting gap ~0.13 bits/byte in every arm; S31 runs the proven recipe |
-| S31 | multi-turn training structure at 5M (docs/MULTITURN_PLAN.md): new 5M core (modern, Muon + WSD, P100 mix, window 1,024); arms: Q&A only (control), sequential Q&A then multi-turn, one mixed stage, LoRA adapters; multi-turn probe, history gain, retention, clean card, gap, cost | which training structure holds a conversation best without losing recall or language? | ready and queued after S30 (chains/session31_multiturn.sh; adopted S28/S30 options go into chains/session31.env) |
+| S31 | multi-turn training structure at 5M (docs/MULTITURN_PLAN.md): new 5M core (modern, Muon + WSD, P100 mix, window 1,024); arms: Q&A only (control), sequential Q&A then multi-turn, one mixed stage, LoRA adapters; multi-turn probe, history gain, retention, clean card, gap, cost | which training structure holds a conversation best without losing recall or language? | done 15 October: no winner yet (see findings); LoRA dropped; seed 2 of Q/S/M and a 120-conversation probe in S33 |
+| S33 | settle the multi-turn study: probe v2 (120 generated conversations: recall, correction, choosing between two people, returning after unrelated turns; held-out names) on every S31 arm; seed 2 of Q, S and M with every test | which training structure holds a conversation best, beyond the noise of a 27-item probe? | queued after the 100k skills arm (chains/session33_mt_seed2.sh) |
 | S32 | K2, our own learned question key (Adam, 14 October: keep MiniLM for now, retrieval must become our own): K1's design (head on a frozen core of ours) on the 100M core and the 5M chat core, trained on Quora duplicates, our own reworded Alpaca questions and invented-fact rewordings with near-miss negatives; Quora recall@1, skills-test retrieval@1, ms per query; answers (skills test + chat probe) with literal only, MiniLM, K2-5M, K2-100M | can our own key match or beat the outside sentence encoder, and is it faster? | queued after S31 (chains/session32_k2.sh); the GPU speed tests now follow S32 |
 | SKILLS | reasoning over memory at 5M (skills_lab/, CPU beside the queue): 100-question skills test of invented facts (taught, updated, near-miss, unknown, clarify, follow-up); continued training with synthetic skill windows and 2-3 candidates in the window, against a control of the same steps | can the model pick the right of several candidates, use updates, say it does not know and ask a clarifying question? | running: baseline 5M 33/100, 100M 29/100 (0 unknown, 0 clarify at both sizes); 3 candidates untrained 12/100; trained arms score ~19:20 |
 | LEXKEY | deterministic word-key upgrades, no network: spelling folding (colour/color), character-trigram index (typos, variants), compiler-code keys, a synonym table learned from our own reworded pairs | a faster, fully explainable retrieval layer under K2 | future (proposed 14 October) |
@@ -231,6 +238,12 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 
 - The exact-table gain reverses with core size: +10% at 0.8M, 0 at 4.7M, -1% at 19M (equal time), and 9-12% worse on Wikipedia. The tables are a crutch for a small core; the trust head does not reject them off-domain.
 - The tables stay as the store that learns by reading; they are not the mechanism for 'lighter and faster at equal quality'. The memory and the copy head are.
+
+**15 Oct, session 31 (multi-turn training structure, new 5M core)**
+
+- New 5M core (modern block, Muon + WSD, P100 mix, window 1,024, 5 GB seen): clean held-out Wikipedia 1.260 bits/byte (old 5M core 1.555, 50M 1.134), conversation 0.924 (1.290); evidence gain 6.8%.
+- Arms (multi-turn probe /27, history gain on 1,000 held-out conversations, chat probe /32, typo probe, stored F1, network-alone F1): Q (Q&A only) 12, 5.0%, 24, 20, 0.886, 0.207; S (Q&A then multi-turn) 11, 9.4%, 25, 23, 0.842, 0.180; M (one mixed stage) 6, 11.3%, 23, 20, 0.862, 0.204; L1 (LoRA Q&A) 6, 4.6%, 22, 21, 0.883, 0.116; L2 (L1 + LoRA multi-turn) 9, 8.4%, 24, 23, 0.831, 0.114.
+- No arm meets the adoption rule. The two conversation measures disagree: history gain (real conversations) favours multi-turn training (M, then S), the small probe favours Q (which recalls stated facts by copying from the history as from memory). S gives the best chat and typo probes but loses Q&A detail (stored -0.044); M keeps more of it. LoRA lost 40%+ of the network-alone answers: dropped. Next: S33 (seed 2 and a 120-conversation probe); on probe v2 Q scores 18/120.
 
 **14 Oct, manual common-sense rating (50 questions, both answers, rated 1-100 by reading)**
 

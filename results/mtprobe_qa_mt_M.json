@@ -1,0 +1,517 @@
+{
+ "model": "runs/mt_M/qa_mt_M.pt",
+ "precision": "bf16",
+ "graph": true,
+ "summary": {
+  "recall": {
+   "n": 6,
+   "ok": 2,
+   "ok_without_history": 0
+  },
+  "reference": {
+   "n": 5,
+   "ok": 0,
+   "ok_without_history": 0
+  },
+  "followup": {
+   "n": 4,
+   "ok": 1,
+   "ok_without_history": 0
+  },
+  "correction": {
+   "n": 4,
+   "ok": 1,
+   "ok_without_history": 0
+  },
+  "return": {
+   "n": 3,
+   "ok": 2,
+   "ok_without_history": 0
+  },
+  "multipart": {
+   "n": 5,
+   "ok": 0,
+   "ok_without_history": 0
+  }
+ },
+ "total": {
+  "n": 27,
+  "ok": 6,
+  "ok_without_history": 0
+ },
+ "history_gain": {
+  "threads": 300,
+  "bpb_with_history": 0.7586,
+  "bpb_without_history": 0.8547,
+  "history_gain_pct": 11.25
+ },
+ "seconds": 22.1,
+ "rows": [
+  {
+   "group": "recall",
+   "turns": [
+    "My sister is called Ana and she lives in Lisbon."
+   ],
+   "question": "Where does my sister live?",
+   "answer": "Ana is a beautiful woman with a beautiful, beautiful woman.",
+   "answer_without_history": "I live in a small town, with a large family of friends and family. I love the world and I love to share my love and support with you. I am a great person and I am so proud of you.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My sister is called Ana and she lives in Lisbon.",
+     "Ana is a beautiful woman with a beautiful, beautiful woman."
+    ]
+   ]
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "I have a dog named Max. He is three years old."
+   ],
+   "question": "How old is my dog?",
+   "answer": "I'm not sure what I've been looking for. I'd like to learn more about the dog's personality and how it affects the environment. I have a lot of fun and I'll be able to learn about the different types of dogs that I're looking for and how they affect the environment and the environment I' adventure. I also have a great memory and",
+   "answer_without_history": "I'm not sure what I've been in. I'll be able to tell you about my dog's behavior and how it affects them. I can tell you that I'd be able a dog to be able in a different way. I have a dog that is a dog, and I're able to learn from it. I am a dog who has a lot of",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I have a dog named Max. He is three years old.",
+     "Max is a friendly and loving talking dog who loves to learn new things and meet new people. He is well-mannered, loyal, and always up for an adventure! Max loves the friendly and always there for an article about how to learn and has a great memory. He loves exploring the house and often surprises his owner with his helpfulness."
+    ]
+   ]
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My favourite colour is green."
+   ],
+   "question": "What is my favourite colour?",
+   "answer": "Green is a colorful, vibrant color, with a bright, orange color.",
+   "answer_without_history": "I do not have the ability to see or hear any of the colors. However, I can suggest some color schemes that you can use to create a color scheme that suits your taste preferences.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My favourite colour is green.",
+     "Green is a colorful, vibrant color, with a bright, orange color."
+    ]
+   ]
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "I work as a nurse at a hospital in Chicago."
+   ],
+   "question": "What is my job?",
+   "answer": "I'm glad I could help. I'd be happy to help you with that. I hope you have a great day to visit the hospital and see the hospital you're looking for. Good luck!",
+   "answer_without_history": "I am not capable of employing any job. However, I can provide some general information on how to apply for job creation and how to use it in a job.\n\n1. Identify the job you want to work for.\n\n2. Idea the job and the job. Ideally, the job is a job that is required to work in a specific area.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I work as a nurse at a hospital in Chicago.",
+     "I'm glad I could help. I'd be happy to help you with that. I hope you have a great day to visit the hospital and see the hospital you're looking for. Good luck!"
+    ]
+   ]
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My car is a red Toyota."
+   ],
+   "question": "What brand is my car?",
+   "answer": "I recommend the car to my friends.",
+   "answer_without_history": "I'm not sure what I've been in the car.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My car is a red Toyota.",
+     "The car is a red Toyota."
+    ]
+   ]
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "I was born in 1990 in a small town."
+   ],
+   "question": "What year was I born?",
+   "answer": "I was born in 1990 in a small town. I was a young girl, and I was an old woman. I had a strong sense of community and a strong connection with the people around me. I also had a sense of belonging and a sense that I was always looking for. I found myself in a community of people who were not interested in living in a town.",
+   "answer_without_history": "James Madison was born in 1751.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I was born in 1990 in a small town.",
+     "I was born in 1990 in a small town. I was a young girl, and I was an old woman. I had a strong sense of community and a strong connection with the people around me. I also had a sense of belonging and a sense that I was always looking for. I found myself in a community of people who were not interested in living in a town."
+    ]
+   ]
+  },
+  {
+   "group": "reference",
+   "turns": [
+    "Here are three cities: Paris, Tokyo and Cairo."
+   ],
+   "question": "Which country is the second one in?",
+   "answer": "The second in the country is the second in Paris, Tokyo, Cairo, Cadasa, Caira, Casa.",
+   "answer_without_history": "The third country in the world is Canada.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "Here are three cities: Paris, Tokyo and Cairo.",
+     "Paris, Tokyo, Cairo, Caira, Cadasa, Casa."
+    ]
+   ]
+  },
+  {
+   "group": "reference",
+   "turns": [
+    "My children are Tom, Sara and Leo."
+   ],
+   "question": "What is the name of the last child I mentioned?",
+   "answer": "The first child I mentioned is a child who is a young child.",
+   "answer_without_history": "The first child I mentioned is a child I.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My children are Tom, Sara and Leo.",
+     "Tom, Sara and Leo are both friends."
+    ]
+   ]
+  },
+  {
+   "group": "reference",
+   "turns": [
+    "I bought apples, bread and milk today."
+   ],
+   "question": "What was the second thing I bought?",
+   "answer": "The second thing I bought was to buy a new apple.",
+   "answer_without_history": "The second thing to do after purchasing a new car was to read the manual and become familiar with the car's features, controls, and maintenance requirements.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I bought apples, bread and milk today.",
+     "Apples, bread, milk, and milk."
+    ]
+   ]
+  },
+  {
+   "group": "reference",
+   "turns": [
+    "The meeting is on Monday at 3 pm in room 12."
+   ],
+   "question": "What room is it in?",
+   "answer": "The room is open and open, and the room is closed.",
+   "answer_without_history": "The room is located in a small room with a large window facing east. The room has a light oak shade and a large room with tan walls. The hardwood floor is lightly illuminated with a lightly shade of tan and brown. The walls are lightly and lightly, and the room is light-colored.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "The meeting is on Monday at 3 pm in room 12.",
+     "1. The meeting will be held on Tuesday, November 3rd at 3 pm."
+    ]
+   ]
+  },
+  {
+   "group": "reference",
+   "turns": [
+    "Think about the planets Mars and Venus."
+   ],
+   "question": "Which of the two is closer to the Sun?",
+   "answer": "The two are closer to the Sun than the Sun.",
+   "answer_without_history": "The two are closer to the Sun than Mercury.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "Think about the planets Mars and Venus.",
+     "Mars and Venus are two planets in the Solar System. Mars is the largest planet in the solar system, and it is the second largest planet to be discovered. Mars and Earth are the largest and most important planets, and they are the second most important to the planets of the Sol system. Mars also has a large planet, with a diameter of 6,77"
+    ]
+   ]
+  },
+  {
+   "group": "followup",
+   "turns": [
+    "What is the capital of France?"
+   ],
+   "question": "What river runs through it?",
+   "answer": "The river is a river that flows through the river.",
+   "answer_without_history": "The river runs through the Nile River, which is the largest river in the world.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "What is the capital of France?",
+     "The capital of France is Paris."
+    ]
+   ]
+  },
+  {
+   "group": "followup",
+   "turns": [
+    "Who wrote Romeo and Juliet?"
+   ],
+   "question": "Name another play he wrote.",
+   "answer": "The other play he wrote is \"The Future\".",
+   "answer_without_history": "The other play he wrote was \"The Future\".",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "Who wrote Romeo and Juliet?",
+     "William Shakespeare"
+    ]
+   ]
+  },
+  {
+   "group": "followup",
+   "turns": [
+    "What is photosynthesis?"
+   ],
+   "question": "What gas do plants release during it?",
+   "answer": "The gases in the atmosphere are released during the process of photosynthesis.",
+   "answer_without_history": "Plants release their energy through the process of photosynthesis. During the process, they take in sunlight and convert it into chemical energy in the form of glucose. This glucose is then used to provide energy for plant growth and development.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "What is photosynthesis?",
+     "photosynthesis is the process by which plants use light energy to convert carbon dioxide and water into oxygen and sugars. It involves the transfer of electrons and protons between molecules as chlorophyll in the presence of light absorbs the light energy used to drive the reaction. The oxygen produced is released into the atmosphere, and the sugar produced is used by the plant for growth."
+    ]
+   ]
+  },
+  {
+   "group": "followup",
+   "turns": [
+    "Tell me about the Eiffel Tower."
+   ],
+   "question": "In which city is it?",
+   "answer": "The city is the largest city in Paris.",
+   "answer_without_history": "The city is the largest city in the world.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "Tell me about the Eiffel Tower.",
+     "The Eiffel Tower is a beautiful and beautiful building located in Paris, France. It is located in the heart of Paris, and is located at the hearth of Paris. It was built in 1889 and is the largest building in Paris. The tower is composed of four legs, each composed of seventeen lattice sections connected to one another. Each leg"
+    ]
+   ]
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "My meeting is on Tuesday.",
+    "Sorry, I meant Thursday, not Tuesday."
+   ],
+   "question": "What day is my meeting?",
+   "answer": "I am not aware of any specific events or events that are happening in Tuesday.",
+   "answer_without_history": "I am 15, 20, 30, and 40.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My meeting is on Tuesday.",
+     "I am not aware of any specific events or events. However, I can provide you with some information on the events and events that are happening in Tuesday."
+    ],
+    [
+     "Sorry, I meant Thursday, not Tuesday.",
+     "I am not aware of any specific events or events. However, I can provide you with some information on the events and events that are happening in Tuesday."
+    ]
+   ]
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "I live in Boston.",
+    "Actually, I moved to Denver last week."
+   ],
+   "question": "Where do I live now?",
+   "answer": "The area code associated with the Boston metropolitan area is 617.",
+   "answer_without_history": "I live in a lively city with a thriving arts scene, beautiful parks, and diverse cultures. I love that I can explore a different part of the city every day and take in the sights, sounds and smells. I also appreciate the fact that the city is always bustling with activity and there is always something to do and see.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I live in Boston.",
+     "The area code associated with the Boston metropolitan area is 617."
+    ],
+    [
+     "Actually, I moved to Denver last week.",
+     "The area code associated with the Boston metropolitan area is 617."
+    ]
+   ]
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "Please call me Sam.",
+    "On second thought, call me Alex instead."
+   ],
+   "question": "What should you call me?",
+   "answer": "I call you a Alex instead.",
+   "answer_without_history": "I call you a call for a new job or a new business.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "Please call me Sam.",
+     "Okay, I have set a reminder for you to call your parents tomorrow at 7 pm."
+    ],
+    [
+     "On second thought, call me Alex instead.",
+     "Okay, I have set a reminder for you to call your parents tomorrow at 7 pm."
+    ]
+   ]
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "My order number is 4417.",
+    "Correction: the order number is 4471."
+   ],
+   "question": "What is my order number?",
+   "answer": "1256",
+   "answer_without_history": "I am not able to determine the order number of your order. However, I can provide you with some general information about the order.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My order number is 4417.",
+     "1256"
+    ],
+    [
+     "Correction: the order number is 4471.",
+     "1256"
+    ]
+   ]
+  },
+  {
+   "group": "return",
+   "turns": [
+    "My cat is called Luna.",
+    "What is the capital of Italy?"
+   ],
+   "question": "What is my cat called?",
+   "answer": "Luna is a small cat with a large, rounded head.",
+   "answer_without_history": "I would recommend the Cat.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My cat is called Luna.",
+     "Luna is a small cat with a large, rounded head."
+    ],
+    [
+     "What is the capital of Italy?",
+     "The capital of Italy is Luna."
+    ]
+   ]
+  },
+  {
+   "group": "return",
+   "turns": [
+    "I am planning a trip to Spain in May.",
+    "What is a good book to read on a plane?"
+   ],
+   "question": "Which country am I travelling to?",
+   "answer": "A good book to read on a plane is \"The Future\" by John F. Kennedy.",
+   "answer_without_history": "I travelled to the United States and I traveled to the US.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I am planning a trip to Spain in May.",
+     "I am planning a trip to Spain in May."
+    ],
+    [
+     "What is a good book to read on a plane?",
+     "A good book to read on a plane is \"The Future\" by John F. Kennedy."
+    ]
+   ]
+  },
+  {
+   "group": "return",
+   "turns": [
+    "My brother plays the guitar.",
+    "Name a famous painter."
+   ],
+   "question": "What instrument does my brother play?",
+   "answer": "My brother plays the guitar.",
+   "answer_without_history": "A trombonist plays the trombone.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My brother plays the guitar.",
+     "The guitar is a violin."
+    ],
+    [
+     "Name a famous painter.",
+     "The famous painter, The The The guitar, is a painter."
+    ]
+   ]
+  },
+  {
+   "group": "multipart",
+   "turns": [],
+   "question": "I need two things. First, what is the capital of Canada? Second, what is the boiling point of water in Celsius?",
+   "answer": "The capital of Canada is the boiling point of water in Celsius.",
+   "answer_without_history": "The capital of Canada is the boiling point of water in Celsius.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": []
+  },
+  {
+   "group": "multipart",
+   "turns": [],
+   "question": "Here is a note from my courier: 'Order 5521 will be delivered on Friday at noon.' When will it arrive, and what is the order number?",
+   "answer": "[Company Name]",
+   "answer_without_history": "[Company Name]",
+   "ok": false,
+   "ok_without_history": false,
+   "history": []
+  },
+  {
+   "group": "multipart",
+   "turns": [],
+   "question": "I have three meetings tomorrow: budget at 9, design at 11 and hiring at 2. Which meeting is at 11, and what time is the hiring meeting?",
+   "answer": "I have three meetings at 11, and the hiring meeting is at 2. Which meeting is the most important meeting in the world.",
+   "answer_without_history": "I have three meetings at 11, and the hiring meeting is at 2. Which meeting is the most important meeting in the world.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": []
+  },
+  {
+   "group": "multipart",
+   "turns": [],
+   "question": "My name is Priya and I am learning to cook. I have chicken, rice and spinach at home. What could I make with them, and what is my name?",
+   "answer": "Priya is a traditional Japanese dish that is made from a variety of ingredients, including vegetables, vegetables, and vegetables. It is a popular dish in Japan and is often served with a variety from the savory and savory flavors of the dish.",
+   "answer_without_history": "Priya is a traditional Japanese dish that is made from a variety of ingredients, including vegetables, vegetables, and vegetables. It is a popular dish in Japan and is often served with a variety from the savory and savory flavors of the dish.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": []
+  },
+  {
+   "group": "multipart",
+   "turns": [
+    "I am planning a party for 12 people next Saturday. It will be in my garden, and two of my guests are vegetarian."
+   ],
+   "question": "How many guests are vegetarian, and where is the party?",
+   "answer": "The food you are going to eat is vegetarian, and the food you're going to consume is vegetation.",
+   "answer_without_history": "The most popular guests in the United States are the 100-year-old guest-style restaurant, the 20-day-long restaurant, and the 30-minute restaurant.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I am planning a party for 12 people next Saturday. It will be in my garden, and two of my guests are vegetarian.",
+     "I'm sure you'll enjoy the delicious and delicious food you're going to eat."
+    ]
+   ]
+  }
+ ]
+}

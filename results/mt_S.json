@@ -1,0 +1,761 @@
+{
+ "setup": {
+  "data": "data_qa",
+  "work": "runs/mt_S",
+  "native": "C:/Users/adams/OneDrive/Desktop/Text Bot Model Research/Text-Research-Model/data/cv0.exe",
+  "budget": 20000.0,
+  "ctx": 1024,
+  "batch": 32,
+  "topk": 64,
+  "neighbor_codes": 250,
+  "eval_n": 200,
+  "max_train": 0,
+  "out": "results/mt_S.json",
+  "seed": 1,
+  "self_context_p": 0.5,
+  "copy_bias": 0.0,
+  "device": "cuda",
+  "threads": 0,
+  "width": 256,
+  "layers": 6,
+  "heads": 8,
+  "block": "modern",
+  "precision": "fp32",
+  "greedy": true,
+  "no_repeat": 0,
+  "patience": 0,
+  "min_delta": 0.005,
+  "max_steps": 8000,
+  "dict": "runs/core_mt5m/v0_8k_plain.cv0d",
+  "init": "runs/mt_Q/qa_mt_Q.pt",
+  "copy_head": true,
+  "evidence": false,
+  "fold_keys": false,
+  "copy_answer_only": false,
+  "copy_question": false,
+  "calculator": false,
+  "perturb_self": 0.3,
+  "sim_feature": false,
+  "no_retrieval_p": 0.0,
+  "distractor_p": 0.0,
+  "loss_answer_only": true,
+  "stop_at_blank": false,
+  "lr": 0.0001,
+  "key_head": null,
+  "amp": true,
+  "mt_data": "data_mt",
+  "mt_p": 0.6,
+  "mt_question_bytes": 1200,
+  "history_codes": 400,
+  "lora_rank": 0,
+  "lora_lr": 0.001,
+  "dropout": 0.0,
+  "freeze_core_steps": 0,
+  "typo_p": 0.0,
+  "track_gap": true,
+  "accum": 1,
+  "perturb_synonyms": false,
+  "rerank_core": 0,
+  "dense_train": true,
+  "dense": 2.0,
+  "eos": true,
+  "head_lr": 0.001,
+  "schedule": "cosine",
+  "net_n": 200,
+  "rehearse": "data_core/mix_P100",
+  "rehearse_p": 0.3,
+  "save": "runs/mt_S/qa_mt_S.pt",
+  "train_exchanges": 50965,
+  "eval": 520,
+  "added": 521,
+  "distinct_keys": 50605
+ },
+ "training": {
+  "steps": 8000,
+  "train_s": 1891.8,
+  "stop_reason": "budget",
+  "best_valid": 0.8712,
+  "history": [
+   {
+    "train_s": 60.2,
+    "step": 247,
+    "train_bits_per_code": 4.222,
+    "valid_bits_per_byte": 0.883,
+    "train_heldout_style_bits_per_byte": 0.8339,
+    "gap_bits_per_byte": 0.0491
+   },
+   {
+    "train_s": 120.0,
+    "step": 501,
+    "train_bits_per_code": 3.483,
+    "valid_bits_per_byte": 0.8865,
+    "train_heldout_style_bits_per_byte": 0.8346,
+    "gap_bits_per_byte": 0.052
+   },
+   {
+    "train_s": 180.1,
+    "step": 755,
+    "train_bits_per_code": 4.022,
+    "valid_bits_per_byte": 0.8867,
+    "train_heldout_style_bits_per_byte": 0.8332,
+    "gap_bits_per_byte": 0.0536
+   },
+   {
+    "train_s": 240.2,
+    "step": 1011,
+    "train_bits_per_code": 3.376,
+    "valid_bits_per_byte": 0.8852,
+    "train_heldout_style_bits_per_byte": 0.8476,
+    "gap_bits_per_byte": 0.0376
+   },
+   {
+    "train_s": 300.1,
+    "step": 1264,
+    "train_bits_per_code": 3.919,
+    "valid_bits_per_byte": 0.8862,
+    "train_heldout_style_bits_per_byte": 0.8413,
+    "gap_bits_per_byte": 0.0449
+   },
+   {
+    "train_s": 360.2,
+    "step": 1517,
+    "train_bits_per_code": 4.025,
+    "valid_bits_per_byte": 0.8859,
+    "train_heldout_style_bits_per_byte": 0.8423,
+    "gap_bits_per_byte": 0.0436
+   },
+   {
+    "train_s": 420.0,
+    "step": 1771,
+    "train_bits_per_code": 4.267,
+    "valid_bits_per_byte": 0.8833,
+    "train_heldout_style_bits_per_byte": 0.8441,
+    "gap_bits_per_byte": 0.0391
+   },
+   {
+    "train_s": 480.2,
+    "step": 2028,
+    "train_bits_per_code": 4.132,
+    "valid_bits_per_byte": 0.8878,
+    "train_heldout_style_bits_per_byte": 0.8474,
+    "gap_bits_per_byte": 0.0403
+   },
+   {
+    "train_s": 540.2,
+    "step": 2281,
+    "train_bits_per_code": 3.844,
+    "valid_bits_per_byte": 0.8857,
+    "train_heldout_style_bits_per_byte": 0.8436,
+    "gap_bits_per_byte": 0.0422
+   },
+   {
+    "train_s": 600.1,
+    "step": 2532,
+    "train_bits_per_code": 3.77,
+    "valid_bits_per_byte": 0.8843,
+    "train_heldout_style_bits_per_byte": 0.8409,
+    "gap_bits_per_byte": 0.0434
+   },
+   {
+    "train_s": 660.2,
+    "step": 2787,
+    "train_bits_per_code": 3.858,
+    "valid_bits_per_byte": 0.8821,
+    "train_heldout_style_bits_per_byte": 0.8343,
+    "gap_bits_per_byte": 0.0479
+   },
+   {
+    "train_s": 720.2,
+    "step": 3043,
+    "train_bits_per_code": 4.071,
+    "valid_bits_per_byte": 0.8812,
+    "train_heldout_style_bits_per_byte": 0.8382,
+    "gap_bits_per_byte": 0.0431
+   },
+   {
+    "train_s": 780.2,
+    "step": 3299,
+    "train_bits_per_code": 4.063,
+    "valid_bits_per_byte": 0.8811,
+    "train_heldout_style_bits_per_byte": 0.8328,
+    "gap_bits_per_byte": 0.0483
+   },
+   {
+    "train_s": 840.1,
+    "step": 3551,
+    "train_bits_per_code": 3.505,
+    "valid_bits_per_byte": 0.8812,
+    "train_heldout_style_bits_per_byte": 0.8352,
+    "gap_bits_per_byte": 0.046
+   },
+   {
+    "train_s": 900.2,
+    "step": 3807,
+    "train_bits_per_code": 4.01,
+    "valid_bits_per_byte": 0.8819,
+    "train_heldout_style_bits_per_byte": 0.8328,
+    "gap_bits_per_byte": 0.0491
+   },
+   {
+    "train_s": 960.1,
+    "step": 4060,
+    "train_bits_per_code": 4.106,
+    "valid_bits_per_byte": 0.8783,
+    "train_heldout_style_bits_per_byte": 0.8298,
+    "gap_bits_per_byte": 0.0486
+   },
+   {
+    "train_s": 1020.1,
+    "step": 4316,
+    "train_bits_per_code": 3.89,
+    "valid_bits_per_byte": 0.8788,
+    "train_heldout_style_bits_per_byte": 0.8331,
+    "gap_bits_per_byte": 0.0457
+   },
+   {
+    "train_s": 1080.2,
+    "step": 4570,
+    "train_bits_per_code": 4.217,
+    "valid_bits_per_byte": 0.8781,
+    "train_heldout_style_bits_per_byte": 0.8358,
+    "gap_bits_per_byte": 0.0423
+   },
+   {
+    "train_s": 1140.1,
+    "step": 4824,
+    "train_bits_per_code": 3.979,
+    "valid_bits_per_byte": 0.8769,
+    "train_heldout_style_bits_per_byte": 0.8337,
+    "gap_bits_per_byte": 0.0431
+   },
+   {
+    "train_s": 1200.2,
+    "step": 5079,
+    "train_bits_per_code": 3.664,
+    "valid_bits_per_byte": 0.8775,
+    "train_heldout_style_bits_per_byte": 0.8332,
+    "gap_bits_per_byte": 0.0442
+   },
+   {
+    "train_s": 1260.0,
+    "step": 5330,
+    "train_bits_per_code": 4.027,
+    "valid_bits_per_byte": 0.8764,
+    "train_heldout_style_bits_per_byte": 0.8317,
+    "gap_bits_per_byte": 0.0446
+   },
+   {
+    "train_s": 1320.2,
+    "step": 5583,
+    "train_bits_per_code": 4.333,
+    "valid_bits_per_byte": 0.8756,
+    "train_heldout_style_bits_per_byte": 0.8285,
+    "gap_bits_per_byte": 0.0472
+   },
+   {
+    "train_s": 1380.1,
+    "step": 5838,
+    "train_bits_per_code": 3.889,
+    "valid_bits_per_byte": 0.8753,
+    "train_heldout_style_bits_per_byte": 0.8328,
+    "gap_bits_per_byte": 0.0425
+   },
+   {
+    "train_s": 1440.1,
+    "step": 6093,
+    "train_bits_per_code": 3.957,
+    "valid_bits_per_byte": 0.8758,
+    "train_heldout_style_bits_per_byte": 0.8301,
+    "gap_bits_per_byte": 0.0457
+   },
+   {
+    "train_s": 1500.1,
+    "step": 6347,
+    "train_bits_per_code": 3.118,
+    "valid_bits_per_byte": 0.8741,
+    "train_heldout_style_bits_per_byte": 0.8278,
+    "gap_bits_per_byte": 0.0463
+   },
+   {
+    "train_s": 1560.1,
+    "step": 6601,
+    "train_bits_per_code": 4.137,
+    "valid_bits_per_byte": 0.8737,
+    "train_heldout_style_bits_per_byte": 0.8279,
+    "gap_bits_per_byte": 0.0457
+   },
+   {
+    "train_s": 1620.1,
+    "step": 6855,
+    "train_bits_per_code": 3.752,
+    "valid_bits_per_byte": 0.873,
+    "train_heldout_style_bits_per_byte": 0.8276,
+    "gap_bits_per_byte": 0.0455
+   },
+   {
+    "train_s": 1680.1,
+    "step": 7106,
+    "train_bits_per_code": 3.695,
+    "valid_bits_per_byte": 0.8719,
+    "train_heldout_style_bits_per_byte": 0.8266,
+    "gap_bits_per_byte": 0.0453
+   },
+   {
+    "train_s": 1740.0,
+    "step": 7358,
+    "train_bits_per_code": 3.771,
+    "valid_bits_per_byte": 0.8712,
+    "train_heldout_style_bits_per_byte": 0.827,
+    "gap_bits_per_byte": 0.0442
+   },
+   {
+    "train_s": 1800.0,
+    "step": 7611,
+    "train_bits_per_code": 4.003,
+    "valid_bits_per_byte": 0.872,
+    "train_heldout_style_bits_per_byte": 0.8285,
+    "gap_bits_per_byte": 0.0435
+   },
+   {
+    "train_s": 1860.2,
+    "step": 7866,
+    "train_bits_per_code": 4.091,
+    "valid_bits_per_byte": 0.8714,
+    "train_heldout_style_bits_per_byte": 0.8279,
+    "gap_bits_per_byte": 0.0435
+   },
+   {
+    "train_s": 1891.8,
+    "step": 8000,
+    "train_bits_per_code": 3.689,
+    "valid_bits_per_byte": 0.8719,
+    "train_heldout_style_bits_per_byte": 0.8288,
+    "gap_bits_per_byte": 0.0431
+   }
+  ],
+  "cost": {
+   "seconds": 1891.8,
+   "gpu_avg_w": 276.9,
+   "gpu_kj": 523.77,
+   "peak_mem_mb": 6177,
+   "power_samples": 1112,
+   "units": 8000,
+   "s_per_unit": 0.2365,
+   "j_per_unit": 65.47
+  }
+ },
+ "groups": {
+  "seen_memory_path": {
+   "n": 200,
+   "f1": 0.9751,
+   "exact": 0.985
+  },
+  "seen_network_with_own_exchange_in_context": {
+   "n": 200,
+   "f1": 0.8421,
+   "exact": 0.485,
+   "f1_no_m1": 0.8421,
+   "f1_bias": 0.8421,
+   "exact_bias": 0.485
+  },
+  "paraphrase_network_with_nearest": {
+   "n": 34,
+   "f1": 0.2118,
+   "exact": 0.0294,
+   "f1_no_m1": 0.2227,
+   "f1_bias": 0.2118,
+   "exact_bias": 0.0294,
+   "retrieved_answer_f1_vs_ref": 0.2611
+  },
+  "unseen_network_with_nearest": {
+   "n": 166,
+   "f1": 0.2787,
+   "exact": 0.0,
+   "f1_no_m1": 0.2804,
+   "f1_bias": 0.2787,
+   "exact_bias": 0.0,
+   "retrieved_answer_f1_vs_ref": 0.2169
+  },
+  "heldout_network_without_memory": {
+   "n": 200,
+   "f1": 0.1801,
+   "exact": 0.0
+  },
+  "heldout_policy_retrieved_if_similar_else_generated": {
+   "n": 200,
+   "f1": 0.2757
+  },
+  "added_memory_path": {
+   "n": 200,
+   "f1": 0.9567,
+   "exact": 0.985
+  },
+  "added_network_with_added_exchange_in_context": {
+   "n": 200,
+   "f1": 0.8433,
+   "exact": 0.505,
+   "f1_no_m1": 0.8433,
+   "f1_bias": 0.8433,
+   "exact_bias": 0.505
+  }
+ },
+ "samples": {
+  "seen_network": [
+   {
+    "q": "What techniques can be used to detect outliers in a dataset?",
+    "a": "Some of the techniques that can be used to detect outliers in a dataset include using box-and-whisker plots, and using box-and-whisker plots, and using box-and-",
+    "f1": 0.4948453608247423,
+    "exact": 0.0,
+    "a_no_m1": "Some of the techniques that can be used to detect outliers in a dataset include using box-and-whisker plots, and using box-and-whisker plots, and using box-and-",
+    "f1_no_m1": 0.4948453608247423,
+    "a_bias": "Some of the techniques that can be used to detect outliers in a dataset include using box-and-whisker plots, and using box-and-whisker plots, and using box-and-",
+    "f1_bias": 0.4948453608247423,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Generate an output that satisfies the given conditions\nGenerate a sequence of in",
+    "a": "0, 3, 6, 9, 12, 15, 18, 21, 24, 27",
+    "f1": 0.0,
+    "exact": 1.0,
+    "a_no_m1": "0, 3, 6, 9, 12, 15, 18, 21, 24, 27",
+    "f1_no_m1": 0.0,
+    "a_bias": "0, 3, 6, 9, 12, 15, 18, 21, 24, 27",
+    "f1_bias": 0.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Order the following characters from oldest to youngest\nNed, Arya, Bran",
+    "a": "Ned, Arya, Bran, Arya.",
+    "f1": 0.8571428571428571,
+    "exact": 0.0,
+    "a_no_m1": "Ned, Arya, Bran, Arya.",
+    "f1_no_m1": 0.8571428571428571,
+    "a_bias": "Ned, Arya, Bran, Arya.",
+    "f1_bias": 0.8571428571428571,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "What is a stack data structure?",
+    "a": "A stack data structure is a particular type of linear data structure that follows a Last In First Out (LIFO) approach to data storage. It can be visualized as a",
+    "f1": 0.9402985074626865,
+    "exact": 0.0,
+    "a_no_m1": "A stack data structure is a particular type of linear data structure that follows a Last In First Out (LIFO) approach to data storage. It can be visualized as a",
+    "f1_no_m1": 0.9402985074626865,
+    "a_bias": "A stack data structure is a particular type of linear data structure that follows a Last In First Out (LIFO) approach to data storage. It can be visualized as a",
+    "f1_bias": 0.9402985074626865,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Generate a new headline for the following article: Heuristic Evaluation of a Web",
+    "a": "Gaining Insights Through Heuristic Evaluation: How to Improve Your Web Site's UX.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "Gaining Insights Through Heuristic Evaluation: How to Improve Your Web Site's UX.",
+    "f1_no_m1": 1.0,
+    "a_bias": "Gaining Insights Through Heuristic Evaluation: How to Improve Your Web Site's UX.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Classify this sentence according to sentiment.\nI had a delightful time at the pa",
+    "a": "positive sentiment",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "positive sentiment",
+    "f1_no_m1": 1.0,
+    "a_bias": "positive sentiment",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ],
+  "paraphrase": [
+   {
+    "q": "Name two possible solutions to reduce the effects of global warming.",
+    "a": "Two possible solutions to reduce global warming are: reducing greenhouse gases such as carbon dioxide, switching to clean energy sources like wind and solar, an",
+    "f1": 0.36363636363636365,
+    "exact": 0.0,
+    "a_no_m1": "Two possible solutions to reduce global warming are: reducing greenhouse gases such as carbon dioxide, switching to clean energy sources like wind and solar, an",
+    "f1_no_m1": 0.36363636363636365,
+    "a_bias": "Two possible solutions to reduce global warming are: reducing greenhouse gases such as carbon dioxide, switching to clean energy sources like wind and solar, an",
+    "f1_bias": 0.36363636363636365,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.698,
+    "f1_vs_retrieved": 0.7656250000000001,
+    "retrieved_answer_f1_vs_ref": 0.4047619047619047
+   },
+   {
+    "q": "Write a function that takes an array of numbers and sorts them in ascending orde",
+    "a": "def descending_sort(arr):\n    arr.sort(arr):\n    arr.sort(reverse = True)\n    return arr",
+    "f1": 0.34782608695652173,
+    "exact": 0.0,
+    "a_no_m1": "def descending_sort(arr):\n    arr.sort(arr):\n    arr.sort(reverse = True)\n    return arr",
+    "f1_no_m1": 0.34782608695652173,
+    "a_bias": "def descending_sort(arr):\n    arr.sort(arr):\n    arr.sort(reverse = True)\n    return arr",
+    "f1_bias": 0.34782608695652173,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.51,
+    "f1_vs_retrieved": 0.8695652173913044,
+    "retrieved_answer_f1_vs_ref": 0.4000000000000001
+   },
+   {
+    "q": "Generate an example use case of how an AI system can improve customer service.",
+    "a": "AI system can be used to automate customer service operations and make it easier to respond to customer inquiries. For example, a company can use an AI system t",
+    "f1": 0.5306122448979592,
+    "exact": 0.0,
+    "a_no_m1": "AI system can be used to automate customer service operations and make it easier to respond to customer inquiries. For example, a company can use an AI system t",
+    "f1_no_m1": 0.5306122448979592,
+    "a_bias": "AI system can be used to automate customer service operations and make it easier to respond to customer inquiries. For example, a company can use an AI system t",
+    "f1_bias": 0.5306122448979592,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.629,
+    "f1_vs_retrieved": 0.7586206896551724,
+    "retrieved_answer_f1_vs_ref": 0.45901639344262296
+   },
+   {
+    "q": "Write an essay about what makes a good leader.",
+    "a": "A good leader is motivated, confident, persuasive, inspiring, organized, and reliable.",
+    "f1": 0.03891050583657587,
+    "exact": 0.0,
+    "a_no_m1": "A good leader is motivated, confident, persuasive, inspiring, organized, and reliable.",
+    "f1_no_m1": 0.03891050583657587,
+    "a_bias": "A good leader is motivated, confident, persuasive, inspiring, organized, and reliable.",
+    "f1_bias": 0.03891050583657587,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.683,
+    "f1_vs_retrieved": 1.0,
+    "retrieved_answer_f1_vs_ref": 0.03891050583657587
+   },
+   {
+    "q": "Create a conclusion paragraph for a persuasive essay on the importance of voting",
+    "a": "The importance of voting is a powerful weapon that is often used in democratic society. It is a powerful weapon that is able to participate in their own decisio",
+    "f1": 0.2857142857142857,
+    "exact": 0.0,
+    "a_no_m1": "The importance of voting is a powerful weapon that is often used in democratic society. It is a powerful weapon that is able to participate in their own decisio",
+    "f1_no_m1": 0.2857142857142857,
+    "a_bias": "The importance of voting is a powerful weapon that is often used in democratic society. It is a powerful weapon that is able to participate in their own decisio",
+    "f1_bias": 0.2857142857142857,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.599,
+    "f1_vs_retrieved": 0.3037383177570094,
+    "retrieved_answer_f1_vs_ref": 0.23126338329764454
+   },
+   {
+    "q": "Given categories of animals (mammal, reptile, fish, bird, amphibian), classify a",
+    "a": "Mammal",
+    "f1": 0.0,
+    "exact": 0.0,
+    "a_no_m1": "Mammal",
+    "f1_no_m1": 0.0,
+    "a_bias": "Mammal",
+    "f1_bias": 0.0,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.649,
+    "f1_vs_retrieved": 1.0,
+    "retrieved_answer_f1_vs_ref": 0.0
+   }
+  ],
+  "unseen": [
+   {
+    "q": "Develop a website for a travel blog",
+    "a": "The website for a travel blog is a website that is designed to be easy to navigate and can be easily accessible. It is designed to be easy to navigate and can b",
+    "f1": 0.272108843537415,
+    "exact": 0.0,
+    "a_no_m1": "The website for a travel blog is a website that is designed to be easy to navigate and can be easily accessible. It is designed to be easy to navigate and can b",
+    "f1_no_m1": 0.272108843537415,
+    "a_bias": "The website for a travel blog is a website that is designed to be easy to navigate and can be easily accessible. It is designed to be easy to navigate and can b",
+    "f1_bias": 0.272108843537415,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.361,
+    "f1_vs_retrieved": 0.06349206349206349,
+    "retrieved_answer_f1_vs_ref": 0.03846153846153846
+   },
+   {
+    "q": "Generate a list of questions the user can ask a chatbot about home insurance.",
+    "a": "1. What are the best options for home insurance?\n2. What are the best options for home insurance?\n3. What are the best options for home insurance?\n4. What are t",
+    "f1": 0.5426356589147286,
+    "exact": 0.0,
+    "a_no_m1": "1. What are your best home insurance?\n2. What are your best home insurance?\n3. What are your best home insurance?\n4. What are your best home insurance?\n5. What ",
+    "f1_no_m1": 0.48387096774193544,
+    "a_bias": "1. What are the best options for home insurance?\n2. What are the best options for home insurance?\n3. What are the best options for home insurance?\n4. What are t",
+    "f1_bias": 0.5426356589147286,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.424,
+    "f1_vs_retrieved": 0.12195121951219515,
+    "retrieved_answer_f1_vs_ref": 0.09523809523809525
+   },
+   {
+    "q": "Create a paragraph to describe the moon.",
+    "a": "The moon glows in the night sky,\nIlluminating the dark like a radiant light.\nIt guides the stars to shine so bright,\nAs the night owl spreads its wings and take",
+    "f1": 0.28776978417266186,
+    "exact": 0.0,
+    "a_no_m1": "The moon glows in the night sky,\nIlluminating the dark like a radiant light.\nIt guides the stars to shine so bright,\nAs the night owl spreads its wings and take",
+    "f1_no_m1": 0.28776978417266186,
+    "a_bias": "The moon glows in the night sky,\nIlluminating the dark like a radiant light.\nIt guides the stars to shine so bright,\nAs the night owl spreads its wings and take",
+    "f1_bias": 0.28776978417266186,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.397,
+    "f1_vs_retrieved": 0.697986577181208,
+    "retrieved_answer_f1_vs_ref": 0.30434782608695654
+   },
+   {
+    "q": "Describe a technique to make effective use of hashtags on social media.",
+    "a": "A technique to make effective use of hashtags on social media is to use a combination of different types of hashtags, such as social media, social media, and so",
+    "f1": 0.2857142857142857,
+    "exact": 0.0,
+    "a_no_m1": "A technique to make effective use of hashtags on social media is to use a combination of different types of hashtags, such as social media, social media, and so",
+    "f1_no_m1": 0.2857142857142857,
+    "a_bias": "A technique to make effective use of hashtags on social media is to use a combination of different types of hashtags, such as social media, social media, and so",
+    "f1_bias": 0.2857142857142857,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.437,
+    "f1_vs_retrieved": 0.35200000000000004,
+    "retrieved_answer_f1_vs_ref": 0.35714285714285715
+   },
+   {
+    "q": "Why is it important to know the environment of a place before visiting?",
+    "a": "It is important to know the environment of a place before visiting. It is important to know the environment of the place before visiting, as it can be a source ",
+    "f1": 0.4186046511627907,
+    "exact": 0.0,
+    "a_no_m1": "It is important to know the environment of a place before visiting. It is important to know the environment of the place before visiting, as it can be a source ",
+    "f1_no_m1": 0.4186046511627907,
+    "a_bias": "It is important to know the environment of a place before visiting. It is important to know the environment of the place before visiting, as it can be a source ",
+    "f1_bias": 0.4186046511627907,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.201,
+    "f1_vs_retrieved": 0.5565217391304349,
+    "retrieved_answer_f1_vs_ref": 0.3333333333333333
+   },
+   {
+    "q": "Explain what is a Block Chain.",
+    "a": "Block Chain is a type of digital ledger that records transactions in a secure and immutable manner. It is a distributed system, meaning that it does not rely on",
+    "f1": 0.47457627118644063,
+    "exact": 0.0,
+    "a_no_m1": "Block Chain is a type of digital ledger that records transactions in a secure and immutable manner. It is a distributed system, meaning that it does not rely on",
+    "f1_no_m1": 0.47457627118644063,
+    "a_bias": "Block Chain is a type of digital ledger that records transactions in a secure and immutable manner. It is a distributed system, meaning that it does not rely on",
+    "f1_bias": 0.47457627118644063,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null,
+    "sim": 0.0,
+    "f1_vs_retrieved": 0.8000000000000002,
+    "retrieved_answer_f1_vs_ref": 0.5179856115107915
+   }
+  ],
+  "added_network": [
+   {
+    "q": "Find the number of times the letter E appears in the following sentence.\nThe qui",
+    "a": "The letter E appears 3 times in the sentence.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The letter E appears 3 times in the sentence.",
+    "f1_no_m1": 1.0,
+    "a_bias": "The letter E appears 3 times in the sentence.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Fix any grammar and spelling errors in the following sentence.\nThe malloys bough",
+    "a": "The Malloys bought a box of chocolates.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "The Malloys bought a box of chocolates.",
+    "f1_no_m1": 1.0,
+    "a_bias": "The Malloys bought a box of chocolates.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "What describes the following equation: y = x^2 - 3",
+    "a": "This equation is a parabola opens upward, as the sign of y = x^2 is positive.",
+    "f1": 0.8333333333333333,
+    "exact": 0.0,
+    "a_no_m1": "This equation is a parabola opens upward, as the sign of y = x^2 is positive.",
+    "f1_no_m1": 0.8333333333333333,
+    "a_bias": "This equation is a parabola opens upward, as the sign of y = x^2 is positive.",
+    "f1_bias": 0.8333333333333333,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Rewrite the sentence in the negative form and output the result.\nI was delighted",
+    "a": "I was delighted to hear from you.",
+    "f1": 0.9333333333333333,
+    "exact": 0.0,
+    "a_no_m1": "I was delighted to hear from you.",
+    "f1_no_m1": 0.9333333333333333,
+    "a_bias": "I was delighted to hear from you.",
+    "f1_bias": 0.9333333333333333,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Write a short paragraph to explain the importance of communication in the workpl",
+    "a": "Effective communication in the workplace is essential for the success of any business. It enables employees to share information and collaborate on projects, wh",
+    "f1": 0.8421052631578947,
+    "exact": 0.0,
+    "a_no_m1": "Effective communication in the workplace is essential for the success of any business. It enables employees to share information and collaborate on projects, wh",
+    "f1_no_m1": 0.8421052631578947,
+    "a_bias": "Effective communication in the workplace is essential for the success of any business. It enables employees to share information and collaborate on projects, wh",
+    "f1_bias": 0.8421052631578947,
+    "exact_bias": 0.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   },
+   {
+    "q": "Determine which of the two words is the antonym of the other.\nAbundant and Rare",
+    "a": "Abundant and Rare are antonyms.",
+    "f1": 1.0,
+    "exact": 1.0,
+    "a_no_m1": "Abundant and Rare are antonyms.",
+    "f1_no_m1": 1.0,
+    "a_bias": "Abundant and Rare are antonyms.",
+    "f1_bias": 1.0,
+    "exact_bias": 1.0,
+    "num_exact": null,
+    "num_exact_bias": null
+   }
+  ]
+ },
+ "checks": {}
+}

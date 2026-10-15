@@ -1,0 +1,647 @@
+{
+ "run": "scale_run",
+ "seed": 1,
+ "amp": true,
+ "device": "cuda",
+ "corpus": {
+  "train_books": 7,
+  "wiki_files": 0,
+  "train_bytes": 3204942365,
+  "heldout": [
+   "books",
+   "evidence",
+   "fineweb",
+   "oasst",
+   "qqp",
+   "ultrachat",
+   "wiki"
+  ],
+  "ood": []
+ },
+ "sizes": {
+  "5M": {
+   "width": 256,
+   "layers": 6,
+   "heads": 8
+  },
+  "20M": {
+   "width": 448,
+   "layers": 8,
+   "heads": 8
+  },
+  "50M": {
+   "width": 640,
+   "layers": 10,
+   "heads": 10
+  },
+  "custom": {
+   "width": 256,
+   "layers": 6,
+   "heads": 8
+  }
+ },
+ "runs": {
+  "custom/v0_8k": {
+   "encoding": {
+    "name": "v0_8k_plain",
+    "vocab": 8192,
+    "groups": 0,
+    "members": 0,
+    "dictionary": "runs\\core_mt5m\\v0_8k_plain.cv0d",
+    "dictionary_hash": "8fd7f1c0379a8e89",
+    "entries": 7934,
+    "phrases": 0,
+    "case_flags": false,
+    "max_phrase_units": 1
+   },
+   "model": {
+    "width": 256,
+    "layers": 6,
+    "heads": 8,
+    "ctx": 1024,
+    "block": "modern",
+    "batch": 32,
+    "peak_lr": 0.001,
+    "table_rows": 0,
+    "table_orders": [],
+    "params": {
+     "core": 4718848,
+     "embedding": 2097152,
+     "output_heads": 0,
+     "table": 0,
+     "total": 6816000
+    },
+    "ngram_tables": []
+   },
+   "training": {
+    "budget_s": 20000.0,
+    "max_steps": 42538,
+    "amp": true,
+    "optimizer": "muon",
+    "schedule": "wsd",
+    "fused": true,
+    "accum": 1,
+    "aligned_windows": null,
+    "train_s": 9661.5,
+    "steps": 42538,
+    "tokens_seen": 1393885184,
+    "bytes_seen": 5052387935,
+    "tokens_per_s": 144271.4,
+    "bytes_per_s": 522937.7,
+    "final_train_bits_per_token": 4.2513,
+    "train_tokens": 868177245,
+    "valid_tokens": 17717903,
+    "valid_bytes": 58067650,
+    "patience": 0,
+    "min_delta": 0.002,
+    "stop_reason": "budget",
+    "stopped_early": false,
+    "history": [
+     {
+      "train_s": 600.2,
+      "step": 2631,
+      "tokens_seen": 86212608,
+      "bytes_seen": 312767795,
+      "train_bits_per_token": 4.964,
+      "quick_bits_per_byte": 0.3692,
+      "lr": 0.001
+     },
+     {
+      "train_s": 1200.2,
+      "step": 5258,
+      "tokens_seen": 172294144,
+      "bytes_seen": 624651127,
+      "train_bits_per_token": 4.7793,
+      "quick_bits_per_byte": 0.357,
+      "lr": 0.001
+     },
+     {
+      "train_s": 1800.0,
+      "step": 7917,
+      "tokens_seen": 259424256,
+      "bytes_seen": 940491127,
+      "train_bits_per_token": 4.6937,
+      "quick_bits_per_byte": 0.3459,
+      "lr": 0.001
+     },
+     {
+      "train_s": 2400.1,
+      "step": 10576,
+      "tokens_seen": 346554368,
+      "bytes_seen": 1256269911,
+      "train_bits_per_token": 4.6354,
+      "quick_bits_per_byte": 0.3414,
+      "lr": 0.001
+     },
+     {
+      "train_s": 3000.0,
+      "step": 13196,
+      "tokens_seen": 432406528,
+      "bytes_seen": 1567633260,
+      "train_bits_per_token": 4.5715,
+      "quick_bits_per_byte": 0.3358,
+      "lr": 0.001
+     },
+     {
+      "train_s": 3600.0,
+      "step": 15818,
+      "tokens_seen": 518324224,
+      "bytes_seen": 1879169068,
+      "train_bits_per_token": 4.5654,
+      "quick_bits_per_byte": 0.3355,
+      "lr": 0.001
+     },
+     {
+      "train_s": 4200.2,
+      "step": 18485,
+      "tokens_seen": 605716480,
+      "bytes_seen": 2195696526,
+      "train_bits_per_token": 4.5705,
+      "quick_bits_per_byte": 0.3349,
+      "lr": 0.001
+     },
+     {
+      "train_s": 4800.0,
+      "step": 21134,
+      "tokens_seen": 692518912,
+      "bytes_seen": 2510327193,
+      "train_bits_per_token": 4.5155,
+      "quick_bits_per_byte": 0.329,
+      "lr": 0.001
+     },
+     {
+      "train_s": 5400.0,
+      "step": 23767,
+      "tokens_seen": 778797056,
+      "bytes_seen": 2822765004,
+      "train_bits_per_token": 4.4997,
+      "quick_bits_per_byte": 0.3316,
+      "lr": 0.001
+     },
+     {
+      "train_s": 6000.1,
+      "step": 26394,
+      "tokens_seen": 864878592,
+      "bytes_seen": 3134762408,
+      "train_bits_per_token": 4.5194,
+      "quick_bits_per_byte": 0.3287,
+      "lr": 0.001
+     },
+     {
+      "train_s": 6600.2,
+      "step": 29030,
+      "tokens_seen": 951255040,
+      "bytes_seen": 3447798994,
+      "train_bits_per_token": 4.496,
+      "quick_bits_per_byte": 0.3279,
+      "lr": 0.001
+     },
+     {
+      "train_s": 7200.2,
+      "step": 31670,
+      "tokens_seen": 1037762560,
+      "bytes_seen": 3761307476,
+      "train_bits_per_token": 4.4594,
+      "quick_bits_per_byte": 0.3224,
+      "lr": 0.001
+     },
+     {
+      "train_s": 7800.1,
+      "step": 34304,
+      "tokens_seen": 1124073472,
+      "bytes_seen": 4074073467,
+      "train_bits_per_token": 4.4684,
+      "quick_bits_per_byte": 0.3251,
+      "lr": 0.0008388976394726253
+     },
+     {
+      "train_s": 8400.1,
+      "step": 36944,
+      "tokens_seen": 1210580992,
+      "bytes_seen": 4387821022,
+      "train_bits_per_token": 4.3506,
+      "quick_bits_per_byte": 0.3194,
+      "lr": 0.000473401763071676
+     },
+     {
+      "train_s": 9000.1,
+      "step": 39596,
+      "tokens_seen": 1297481728,
+      "bytes_seen": 4702909358,
+      "train_bits_per_token": 4.2751,
+      "quick_bits_per_byte": 0.3108,
+      "lr": 0.00027212642335371334
+     },
+     {
+      "train_s": 9600.2,
+      "step": 42265,
+      "tokens_seen": 1384939520,
+      "bytes_seen": 5019912041,
+      "train_bits_per_token": 4.2511,
+      "quick_bits_per_byte": 0.3047,
+      "lr": 0.00011461153336681982
+     },
+     {
+      "train_s": 9661.5,
+      "step": 42538,
+      "tokens_seen": 1393885184,
+      "bytes_seen": 5052387935,
+      "train_bits_per_token": 4.2513,
+      "quick_bits_per_byte": 0.3049,
+      "lr": 0.00010005289543752038
+     }
+    ],
+    "cost": {
+     "seconds": 9661.5,
+     "gpu_avg_w": 312.6,
+     "gpu_kj": 3020.03,
+     "peak_mem_mb": 5905,
+     "power_samples": 4628,
+     "units": 42538,
+     "s_per_unit": 0.2271,
+     "j_per_unit": 71.0
+    }
+   },
+   "eval": {
+    "validation": {
+     "bytes": 58067650,
+     "tokens": 17717903,
+     "bits_per_byte": 1.3267
+    },
+    "heldout": {
+     "books": {
+      "bytes": 2455804,
+      "tokens": 708297,
+      "ids_per_kb": 288.4,
+      "bits_per_byte": 1.4591,
+      "bits_per_token": 5.0589,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.3246,
+        "bits_share": 0.2746,
+        "bits_per_byte": 1.2346
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2758,
+        "bits_share": 0.2979,
+        "bits_per_byte": 1.5756
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.3996,
+        "bits_share": 0.4275,
+        "bits_per_byte": 1.561
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0677,
+        "bits_share": 0.1109,
+        "bits_per_byte": 2.3892
+       },
+       "type_word": {
+        "byte_share": 0.927,
+        "bits_share": 0.8864,
+        "bits_per_byte": 1.3952
+       },
+       "type_other": {
+        "byte_share": 0.0053,
+        "bits_share": 0.0027,
+        "bits_per_byte": 0.7395
+       }
+      }
+     },
+     "evidence": {
+      "bytes": 2006638,
+      "tokens": 563681,
+      "ids_per_kb": 280.9,
+      "bits_per_byte": 1.2751,
+      "bits_per_token": 4.5391,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.2814,
+        "bits_share": 0.2694,
+        "bits_per_byte": 1.2205
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2596,
+        "bits_share": 0.2844,
+        "bits_per_byte": 1.3967
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.459,
+        "bits_share": 0.4463,
+        "bits_per_byte": 1.2398
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0705,
+        "bits_share": 0.1397,
+        "bits_per_byte": 2.5257
+       },
+       "type_word": {
+        "byte_share": 0.9269,
+        "bits_share": 0.8566,
+        "bits_per_byte": 1.1784
+       },
+       "type_other": {
+        "byte_share": 0.0026,
+        "bits_share": 0.0037,
+        "bits_per_byte": 1.8132
+       }
+      }
+     },
+     "fineweb": {
+      "bytes": 2007810,
+      "tokens": 542132,
+      "ids_per_kb": 270.0,
+      "bits_per_byte": 1.2584,
+      "bits_per_token": 4.6605,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.2824,
+        "bits_share": 0.2685,
+        "bits_per_byte": 1.1966
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2571,
+        "bits_share": 0.278,
+        "bits_per_byte": 1.3611
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.4606,
+        "bits_share": 0.4535,
+        "bits_per_byte": 1.239
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0654,
+        "bits_share": 0.1275,
+        "bits_per_byte": 2.4518
+       },
+       "type_word": {
+        "byte_share": 0.9249,
+        "bits_share": 0.8652,
+        "bits_per_byte": 1.1773
+       },
+       "type_other": {
+        "byte_share": 0.0097,
+        "bits_share": 0.0073,
+        "bits_per_byte": 0.9474
+       }
+      }
+     },
+     "oasst": {
+      "bytes": 25747,
+      "tokens": 6780,
+      "ids_per_kb": 263.3,
+      "bits_per_byte": 1.1619,
+      "bits_per_token": 4.413,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.2642,
+        "bits_share": 0.2487,
+        "bits_per_byte": 1.0939
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2686,
+        "bits_share": 0.2885,
+        "bits_per_byte": 1.2482
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.4672,
+        "bits_share": 0.4628,
+        "bits_per_byte": 1.1511
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0639,
+        "bits_share": 0.1269,
+        "bits_per_byte": 2.3069
+       },
+       "type_word": {
+        "byte_share": 0.9262,
+        "bits_share": 0.8592,
+        "bits_per_byte": 1.078
+       },
+       "type_other": {
+        "byte_share": 0.0099,
+        "bits_share": 0.0139,
+        "bits_per_byte": 1.6357
+       }
+      }
+     },
+     "qqp": {
+      "bytes": 174859,
+      "tokens": 46785,
+      "ids_per_kb": 267.6,
+      "bits_per_byte": 0.9111,
+      "bits_per_token": 3.4053,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.2875,
+        "bits_share": 0.3038,
+        "bits_per_byte": 0.9628
+       },
+       "freq_101_1000": {
+        "byte_share": 0.3796,
+        "bits_share": 0.3142,
+        "bits_per_byte": 0.7541
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.3329,
+        "bits_share": 0.382,
+        "bits_per_byte": 1.0456
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0608,
+        "bits_share": 0.078,
+        "bits_per_byte": 1.17
+       },
+       "type_word": {
+        "byte_share": 0.9243,
+        "bits_share": 0.8348,
+        "bits_per_byte": 0.8229
+       },
+       "type_other": {
+        "byte_share": 0.015,
+        "bits_share": 0.0872,
+        "bits_per_byte": 5.3053
+       }
+      }
+     },
+     "ultrachat": {
+      "bytes": 2005412,
+      "tokens": 507047,
+      "ids_per_kb": 252.8,
+      "bits_per_byte": 0.9276,
+      "bits_per_token": 3.6686,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.2724,
+        "bits_share": 0.2429,
+        "bits_per_byte": 0.827
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2716,
+        "bits_share": 0.2909,
+        "bits_per_byte": 0.9932
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.4559,
+        "bits_share": 0.4662,
+        "bits_per_byte": 0.9485
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.056,
+        "bits_share": 0.0942,
+        "bits_per_byte": 1.56
+       },
+       "type_word": {
+        "byte_share": 0.9369,
+        "bits_share": 0.8942,
+        "bits_per_byte": 0.8853
+       },
+       "type_other": {
+        "byte_share": 0.0071,
+        "bits_share": 0.0116,
+        "bits_per_byte": 1.5141
+       }
+      }
+     },
+     "wiki": {
+      "bytes": 2004609,
+      "tokens": 580304,
+      "ids_per_kb": 289.5,
+      "bits_per_byte": 1.2892,
+      "bits_per_token": 4.4536,
+      "by_class": {
+       "freq_top100": {
+        "byte_share": 0.2859,
+        "bits_share": 0.2671,
+        "bits_per_byte": 1.2047
+       },
+       "freq_101_1000": {
+        "byte_share": 0.2528,
+        "bits_share": 0.2797,
+        "bits_per_byte": 1.4267
+       },
+       "freq_1001_10000": {
+        "byte_share": 0.4613,
+        "bits_share": 0.4531,
+        "bits_per_byte": 1.2663
+       },
+       "freq_rarer": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "freq_unseen_in_training": {
+        "byte_share": 0.0,
+        "bits_share": 0.0,
+        "bits_per_byte": 0.0
+       },
+       "type_byte_fallback": {
+        "byte_share": 0.0792,
+        "bits_share": 0.1441,
+        "bits_per_byte": 2.3442
+       },
+       "type_word": {
+        "byte_share": 0.9111,
+        "bits_share": 0.8497,
+        "bits_per_byte": 1.2023
+       },
+       "type_other": {
+        "byte_share": 0.0097,
+        "bits_share": 0.0062,
+        "bits_per_byte": 0.8341
+       }
+      }
+     }
+    },
+    "heldout_overall": {
+     "bytes": 10680879,
+     "tokens": 2955026,
+     "ids_per_kb": 276.7,
+     "bits_per_byte": 1.2454
+    }
+   },
+   "seed": 1,
+   "generation": {
+    "prompt": "We went to the park",
+    "tokens": 200,
+    "bytes": 774,
+    "seconds": 3.84,
+    "tokens_per_s": 52.1,
+    "bytes_per_s": 201.7,
+    "note": "sliding context, no KV cache, cuda",
+    "sample": " and the man who was going to be there.  They had been on the move to the end of the night, and they were so close to the water, that I was to go to the kitchen at the back of the stove, which is about the floor of the table.  I knew it was my home, that he would keep it on the other side, and that you can see the kitchen, especially for a long time.  I was always glad to have a look, and I wanted the house, who was very much interested in it, to have it ready at once.  I was about to go home and talk to you in that way and find it out.  I came to the kitchen and came to the kitchen, and there"
+   },
+   "machine": {
+    "python": "3.12.10",
+    "torch": "2.11.0+cu128",
+    "threads": 22,
+    "cpu": "Intel64 Family 6 Model 79 Stepping 1, GenuineIntel",
+    "cores": 44,
+    "device": "cuda",
+    "gpu": "NVIDIA GeForce RTX 3090"
+   },
+   "config": "v0_8k",
+   "size": "custom"
+  }
+ }
+}

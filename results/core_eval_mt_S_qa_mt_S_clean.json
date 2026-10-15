@@ -1,0 +1,38 @@
+{
+ "checkpoint": "runs/mt_S/qa_mt_S.pt",
+ "data": "data_core/eval_clean",
+ "evidence_file": "data_core/eval_clean/evidence_clean.jsonl",
+ "precision": "bf16",
+ "fluency": {
+  "books": 1.4378,
+  "evidence": 1.2669,
+  "fineweb": 1.2664,
+  "math": 1.2726,
+  "oasst": 1.1523,
+  "qqp": 0.8759,
+  "ultrachat": 0.9074,
+  "wiki": 1.2676,
+  "v2_books/Heart-of-Darkness_219": 1.7583,
+  "v2_books/The-Adventures-of-Sherlock-Holmes_1661": 1.6309,
+  "v2_books/The-Prince_1232": 1.5835,
+  "v2_books/Walden-and-On-The-Duty-Of-Civil-Disobedience_205": 1.7245
+ },
+ "evidence": {
+  "pairs": 203,
+  "bpb_related": 1.1536,
+  "bpb_unrelated": 1.238,
+  "evidence_gain_pct": 6.82
+ },
+ "questions": {
+  "core_state": {
+   "n": 2000,
+   "recall_at_1": 0.527,
+   "recall_at_10": 0.7875
+  },
+  "literal_key": {
+   "n": 2000,
+   "recall_at_1": 0.7265,
+   "recall_at_10": 0.9555
+  }
+ }
+}

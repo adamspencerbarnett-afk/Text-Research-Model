@@ -1,0 +1,517 @@
+{
+ "model": "runs/mt_L1/qa_mt_L1.pt",
+ "precision": "bf16",
+ "graph": true,
+ "summary": {
+  "recall": {
+   "n": 6,
+   "ok": 3,
+   "ok_without_history": 0
+  },
+  "reference": {
+   "n": 5,
+   "ok": 0,
+   "ok_without_history": 0
+  },
+  "followup": {
+   "n": 4,
+   "ok": 2,
+   "ok_without_history": 1
+  },
+  "correction": {
+   "n": 4,
+   "ok": 1,
+   "ok_without_history": 0
+  },
+  "return": {
+   "n": 3,
+   "ok": 0,
+   "ok_without_history": 0
+  },
+  "multipart": {
+   "n": 5,
+   "ok": 0,
+   "ok_without_history": 0
+  }
+ },
+ "total": {
+  "n": 27,
+  "ok": 6,
+  "ok_without_history": 1
+ },
+ "history_gain": {
+  "threads": 300,
+  "bpb_with_history": 0.8553,
+  "bpb_without_history": 0.8969,
+  "history_gain_pct": 4.64
+ },
+ "seconds": 32.4,
+ "rows": [
+  {
+   "group": "recall",
+   "turns": [
+    "My sister is called Ana and she lives in Lisbon."
+   ],
+   "question": "Where does my sister live?",
+   "answer": "I live in a beautiful and beautiful, beautiful, and beautiful woman with a beautiful, lover of nature and beauty. She is a beautiful woman, and she is a lover, and is always happy to be happy and happy.",
+   "answer_without_history": "Dear Sister, \n\nI just heard the wonderful news that you got a new job! Congrats! Congrowing my love for my new job is a great way to get a better sense of what I'm doing. I am so proud of you! I am confident that I am going to be a great friend of my family and I am proud to",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My sister is called Ana and she lives in Lisbon.",
+     "Anamika is a beautiful and beautiful woman with a beautiful, beautiful, and beautiful life. She is a great and beautiful man, and she is a lover of nature and beauty. She has a beautiful life, and is always happy to be happy and happy."
+    ]
+   ]
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "I have a dog named Max. He is three years old."
+   ],
+   "question": "How old is my dog?",
+   "answer": "I have a dog named Max. I love to learn new things and meet new people. Max is well-mannered, loyal, and always up for an adventure! Max is good for learning new things, and loyal is good. Max loves the same thing as his friends and family.",
+   "answer_without_history": "I have a dog, but I have no dog. I have been in the dog for a long time, but my dog is a little bit more likely to be a dog. Dogs are a great dog, and I have always been a dog in the family. I always have a lot of dog ownership and a lot more of my dog.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I have a dog named Max. He is three years old.",
+     "Max is a friendly and loving talking dog who loves to learn new things and meet new people. Max is well-mannered, loyal, and always up for an adventure! Max loves the same thing as his friends and family."
+    ]
+   ]
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My favourite colour is green."
+   ],
+   "question": "What is my favourite colour?",
+   "answer": "The green is green, green, and green.",
+   "answer_without_history": "I love the blue, but I love it. I love blue, and I love this color.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My favourite colour is green.",
+     "The green is green, green, and green."
+    ]
+   ]
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "I work as a nurse at a hospital in Chicago."
+   ],
+   "question": "What is my job?",
+   "answer": "My job is to provide me with a job that is not a job. I have a job in the hospital, but I have to work with a professional. I want to know what I can do to help me. I also want to provide a job to help you. I am a professional and I want you to know how to do it. I'm a professional, and I'll",
+   "answer_without_history": "My job is to work on a specific task or task, which is a task that is not a task. It is a process that involves the task of completing a task, such as a task or a task of automation, or a project management system. It can be done by working with a team or team, or by working on a task with a specific goal or task.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I work as a nurse at a hospital in Chicago.",
+     "Maggie was always on the lookout for a patient who had been admitted after experiencing a traumatic accident. She was assigned to care for a person in the hospital, and she was assigned a few extra times. She had been visiting the man's room a few more extra times, just to make sure that he was in poor condition, weak and barely"
+    ]
+   ]
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My car is a red Toyota."
+   ],
+   "question": "What brand is my car?",
+   "answer": "The red Toyota is a colorful and colorful object that is colorful, with a color palette that is blue and blue.",
+   "answer_without_history": "I have a car with a car that is a good fit for my business.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My car is a red Toyota.",
+     "The red Toyota is a red Toys that is a colorful and colorful object that is colorful, with a color palette that is blue and blue."
+    ]
+   ]
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "I was born in 1990 in a small town."
+   ],
+   "question": "What year was I born?",
+   "answer": "I was born in 1990 in a small town. I was a young girl, and I was an old girl. I had a great time in the town, but I was always a little bit of a bigger issue. I didn't know what to do. I wasn't sure about the issue.",
+   "answer_without_history": "I born was born in 1751.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I was born in 1990 in a small town.",
+     "I was born in 1990 in a small town. I was a young girl, and I was an old girl. I had a great time in the town, but I was always a little bit of a bigger issue. I always had a lot of fun and I didn't know what to do. I didn\u2019s work and I had to work harder"
+    ]
+   ]
+  },
+  {
+   "group": "reference",
+   "turns": [
+    "Here are three cities: Paris, Tokyo and Cairo."
+   ],
+   "question": "Which country is the second one in?",
+   "answer": "The second one in is the second in.",
+   "answer_without_history": "The second-largest country in the world is Canada, with an area of 9.98 million square kilometers.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "Here are three cities: Paris, Tokyo and Cairo.",
+     "Paris, Tokyo - Cairo, Cairo - Egypt"
+    ]
+   ]
+  },
+  {
+   "group": "reference",
+   "turns": [
+    "My children are Tom, Sara and Leo."
+   ],
+   "question": "What is the name of the last child I mentioned?",
+   "answer": "The last child I mentioned is the \"Mother of the Child\".",
+   "answer_without_history": "The first child I mentioned was a child who was born in 1917.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My children are Tom, Sara and Leo.",
+     "Tom, Sara, and Leo."
+    ]
+   ]
+  },
+  {
+   "group": "reference",
+   "turns": [
+    "I bought apples, bread and milk today."
+   ],
+   "question": "What was the second thing I bought?",
+   "answer": "Apples, butter, butter and milk.",
+   "answer_without_history": "The first thing to do after purchasing a new car was to read the manual and become familiar with the car's features, controls, and maintenance requirements.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I bought apples, bread and milk today.",
+     "Apples, butter, butter and milk."
+    ]
+   ]
+  },
+  {
+   "group": "reference",
+   "turns": [
+    "The meeting is on Monday at 3 pm in room 12."
+   ],
+   "question": "What room is it in?",
+   "answer": "The room is located on the right side of the room.",
+   "answer_without_history": "The room is in a small room with a large window facing east. The room has a light oak shade, and it is littered with scatter rugs in complementary shades of tan and brown. There are a few small paintings and photographs decorating the walls, and a cozy armchair sits in one corner. The floor is lightly ill",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "The meeting is on Monday at 3 pm in room 12.",
+     "The next meeting will be held on Tuesday, November 3rd at 2PM, in The Conference Room."
+    ]
+   ]
+  },
+  {
+   "group": "reference",
+   "turns": [
+    "Think about the planets Mars and Venus."
+   ],
+   "question": "Which of the two is closer to the Sun?",
+   "answer": "Mars and Mars are smaller than Earth. Mars is smaller than Mars and is smaller compared to Earth's surface. Mars also has a thicker surface than Earth'. Mars has a thinner surface than on Earth', with a thick, thicker, and thicker. Mars's thicker surfaces are smaller compared with Earth' and are smaller. Mars and its surface are smaller and have",
+   "answer_without_history": "The planet closest to the Sun is Mercury.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "Think about the planets Mars and Venus.",
+     "Mars and Venus are two planets in the Solar System. Mars and Mars are smaller than Earth, with a diameter of 6,779 kilometers compared to Earth's 12,742 kilometers. Mars also has a thicker surface than Earth. Mars is smaller than the Earth, meaning objects weigh less on its surface than on Earth."
+    ]
+   ]
+  },
+  {
+   "group": "followup",
+   "turns": [
+    "What is the capital of France?"
+   ],
+   "question": "What river runs through it?",
+   "answer": "The river runs through it.",
+   "answer_without_history": "The major river that runs through Egypt is the Nile River.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "What is the capital of France?",
+     "The capital of France is Paris."
+    ]
+   ]
+  },
+  {
+   "group": "followup",
+   "turns": [
+    "Who wrote Romeo and Juliet?"
+   ],
+   "question": "Name another play he wrote.",
+   "answer": "William Shakespeare.",
+   "answer_without_history": "A Midsummer Night's Dream",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "Who wrote Romeo and Juliet?",
+     "William Shakespeare"
+    ]
+   ]
+  },
+  {
+   "group": "followup",
+   "turns": [
+    "What is photosynthesis?"
+   ],
+   "question": "What gas do plants release during it?",
+   "answer": "The gas is released during the process by which plants use light energy to convert carbon dioxide and water into oxygen and sugars. It involves the transfer of electrons and protons between molecules as chlorophyll in the presence of light absorbs the light energy used to drive the reaction. The oxygen produced is released into the atmosphere, and the sugar produced is used by the plant for growth.",
+   "answer_without_history": "The gas is released from the atmosphere and is released into the atmosphere. The gas releases energy from the air, which is then released into air. The energy is released through the atmosphere, which produces energy from sunlight and is then converted into energy. The fuel is released by the gas and is converted to energy by the atmosphere by the fuel. The oxygen is released in the atmosphere through the",
+   "ok": true,
+   "ok_without_history": true,
+   "history": [
+    [
+     "What is photosynthesis?",
+     "photosynthesis is the process by which plants use light energy to convert carbon dioxide and water into oxygen and sugars. It involves the transfer of electrons and protons between molecules as chlorophyll in the presence of light absorbs the light energy used to drive the reaction. The oxygen produced is released into the atmosphere, and the sugar produced is used by the plant for growth."
+    ]
+   ]
+  },
+  {
+   "group": "followup",
+   "turns": [
+    "Tell me about the Eiffel Tower."
+   ],
+   "question": "In which city is it?",
+   "answer": "The city is the largest city in Paris, and it is the only city in the world. It is the home of the city's most famous city, the \"European\" city.",
+   "answer_without_history": "The city is the largest city in the world.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "Tell me about the Eiffel Tower.",
+     "The Eiffel Tower is a tower located in Paris, France. Designed by Gustave Eiffelle as the entrance to the 1889 World's Fair, the 2,063 ft tall tower is the tallest structure in Paris. The tower was built by Guestave Effel as the \""
+    ]
+   ]
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "My meeting is on Tuesday.",
+    "Sorry, I meant Thursday, not Tuesday."
+   ],
+   "question": "What day is my meeting?",
+   "answer": "Thursday, Thurston, and Thursh are all weekly meetings.",
+   "answer_without_history": "I am at 10 am on 11 Oct.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My meeting is on Tuesday.",
+     "Tuesday, November 3rd at 2PM, is a weekly meeting."
+    ],
+    [
+     "Sorry, I meant Thursday, not Tuesday.",
+     "Thursday, Thurston, and Thursh."
+    ]
+   ]
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "I live in Boston.",
+    "Actually, I moved to Denver last week."
+   ],
+   "question": "Where do I live now?",
+   "answer": "I am not in the United States.",
+   "answer_without_history": "I live in a lively city with a thriving arts scene, beautiful parks, and diverse cultures. I love that I can explore a different part of the city every day and take in the sights, sounds and smells. I also appreciate the fact that the city is always bustling with activity and there is always something to do and see.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I live in Boston.",
+     "The Boston metropolitan area is 617."
+    ],
+    [
+     "Actually, I moved to Denver last week.",
+     "The Boston metropolitan area is 617."
+    ]
+   ]
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "Please call me Sam.",
+    "On second thought, call me Alex instead."
+   ],
+   "question": "What should you call me?",
+   "answer": "I have set a reminder for you to call your parents tomorrow at 7 pm.",
+   "answer_without_history": "I call you my love.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "Please call me Sam.",
+     "I have set a reminder for you to call your parents tomorrow at 7 pm."
+    ],
+    [
+     "On second thought, call me Alex instead.",
+     "I have set a reminder for you to call your parents tomorrow at 7 pm."
+    ]
+   ]
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "My order number is 4417.",
+    "Correction: the order number is 4471."
+   ],
+   "question": "What is my order number?",
+   "answer": "Dear Customer,\n\nThank you for your order number 234567. We have received your order and it is being processed. You will receive an email confirming your shipment shortly.\n\nThanks for your time.",
+   "answer_without_history": "I am not able to order my orders. I have a list of orders.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My order number is 4417.",
+     "Dear Customer,\n\nThank you for your order number 234567. We have received your order and it is being processed. You will receive an email confirming your shipment shortly.\n\nThanks for your time."
+    ],
+    [
+     "Correction: the order number is 4471.",
+     "Dear Customer,\n\nThank you for your order number 234567. We have received your order and it is being processed. You will receive an email confirming your shipment shortly.\n\nThanks for your time."
+    ]
+   ]
+  },
+  {
+   "group": "return",
+   "turns": [
+    "My cat is called Luna.",
+    "What is the capital of Italy?"
+   ],
+   "question": "What is my cat called?",
+   "answer": "The capital of Italy is Luxembourg. It is a beautiful, vibrant country, with a rich history and a rich culture. Lux is a rich and vibrant nation, with the city of Luxeve, the city's rich culture, and it is a great place to live in a peaceful and peaceful country, and is known for its beautiful, sun",
+   "answer_without_history": "I don't have a cat like me. I have a pet, but I have an cat called a cat called Kit.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My cat is called Luna.",
+     "Luna is a small, lush, and beautiful country. Luna has a rich, rich history, and is known for its beautiful, beautiful, and vibrant landscape. It is a beautiful, vibrant country, with a rich history and a rich culture. Lunch is a rich and vibrent country, and it is a great place to live in a peaceful and peaceful"
+    ],
+    [
+     "What is the capital of Italy?",
+     "The capital of Italy is Luna, and the capital of the city is Luxembourg. It is the capital city of Italy, and is known for its beautiful, vibrant country, with a rich history and a rich culture. Lux is the largest city in Italy, with its famous city and its famous architecture. Lunch is a rich and vibrant city, with the"
+    ]
+   ]
+  },
+  {
+   "group": "return",
+   "turns": [
+    "I am planning a trip to Spain in May.",
+    "What is a good book to read on a plane?"
+   ],
+   "question": "Which country am I travelling to?",
+   "answer": "A good book to read on a plane is \"The Future of the World\" by John F. Kennedy.",
+   "answer_without_history": "The country is known for traveling to the Pacific Ocean, which is a great destination for travelers.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I am planning a trip to Spain in May.",
+     "I am planning a trip to Spain in May. I am sure I will be able to explore the city and explore the country."
+    ],
+    [
+     "What is a good book to read on a plane?",
+     "A good book to read on a plane is \"The Future of the World\" by John F. Kennedy."
+    ]
+   ]
+  },
+  {
+   "group": "return",
+   "turns": [
+    "My brother plays the guitar.",
+    "Name a famous painter."
+   ],
+   "question": "What instrument does my brother play?",
+   "answer": "My brother plays a violin.",
+   "answer_without_history": "A trombonist plays the trombone.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My brother plays the guitar.",
+     "person"
+    ],
+    [
+     "Name a famous painter.",
+     "The famous painter is a painter who is known for his paintings and paintings. He is known as a paintbrush."
+    ]
+   ]
+  },
+  {
+   "group": "multipart",
+   "turns": [],
+   "question": "I need two things. First, what is the capital of Canada? Second, what is the boiling point of water in Celsius?",
+   "answer": "The capital city of Canada is Ottawa.",
+   "answer_without_history": "The capital city of Canada is Ottawa.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": []
+  },
+  {
+   "group": "multipart",
+   "turns": [],
+   "question": "Here is a note from my courier: 'Order 5521 will be delivered on Friday at noon.' When will it arrive, and what is the order number?",
+   "answer": "[Company Name]",
+   "answer_without_history": "[Company Name]",
+   "ok": false,
+   "ok_without_history": false,
+   "history": []
+  },
+  {
+   "group": "multipart",
+   "turns": [],
+   "question": "I have three meetings tomorrow: budget at 9, design at 11 and hiring at 2. Which meeting is at 11, and what time is the hiring meeting?",
+   "answer": "The meeting is at 11 and hiring at 2. Which meeting is to be held at 3.",
+   "answer_without_history": "The meeting is at 11 and hiring at 2. Which meeting is to be held at 3.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": []
+  },
+  {
+   "group": "multipart",
+   "turns": [],
+   "question": "My name is Priya and I am learning to cook. I have chicken, rice and spinach at home. What could I make with them, and what is my name?",
+   "answer": "Priya is a traditional Japanese dish that is made with a variety of ingredients, including:\n\n1. Roasted vegetables - roasted vegetables, such as carrots, cucumbers, and bell peppers\n2. Roast beef - a side of roasted beef, such that is a great source of protein and fiber.\n\n2. Lentil soup -",
+   "answer_without_history": "Priya is a traditional Japanese dish that is made with a variety of ingredients, including:\n\n1. Roasted vegetables - roasted vegetables, such as carrots, cucumbers, and bell peppers\n2. Roast beef - a side of roasted beef, such that is a great source of protein and fiber.\n\n2. Lentil soup -",
+   "ok": false,
+   "ok_without_history": false,
+   "history": []
+  },
+  {
+   "group": "multipart",
+   "turns": [
+    "I am planning a party for 12 people next Saturday. It will be in my garden, and two of my guests are vegetarian."
+   ],
+   "question": "How many guests are vegetarian, and where is the party?",
+   "answer": "The food is vegetarian and vegetarian.",
+   "answer_without_history": "The most popular guests are the 10 guests of the 2019-2020 season.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I am planning a party for 12 people next Saturday. It will be in my garden, and two of my guests are vegetarian.",
+     "The food is vegetarian and vegetarian."
+    ]
+   ]
+  }
+ ]
+}

@@ -1,0 +1,443 @@
+{
+ "model": "runs/mt_Q/qa_mt_Q.pt",
+ "precision": "bf16",
+ "kernels": "fp32",
+ "graph": true,
+ "dense": 0.0,
+ "rerank_core": 0,
+ "typos": 0.15,
+ "min_sim": 0.0,
+ "summary": {
+  "stored": {
+   "n": 5,
+   "ok": 4,
+   "ok_without_memory": 0
+  },
+  "reworded": {
+   "n": 5,
+   "ok": 3,
+   "ok_without_memory": 0
+  },
+  "knowledge": {
+   "n": 5,
+   "ok": 5,
+   "ok_without_memory": 0
+  },
+  "heldout": {
+   "n": 5,
+   "ok": 3,
+   "ok_without_memory": 3
+  },
+  "taught": {
+   "n": 6,
+   "ok": 4,
+   "ok_without_memory": 0
+  },
+  "arithmetic": {
+   "n": 3,
+   "ok": 0,
+   "ok_without_memory": 1
+  },
+  "chat": {
+   "n": 3,
+   "ok": 1,
+   "ok_without_memory": 1
+  }
+ },
+ "cost": {
+  "seconds": 4.6,
+  "gpu_avg_w": 183.0,
+  "gpu_kj": 0.84,
+  "peak_mem_mb": 271,
+  "power_samples": 6,
+  "units": 32,
+  "s_per_unit": 0.1437,
+  "j_per_unit": 26.29
+ },
+ "rows": [
+  {
+   "section": "stored",
+   "question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "answer": "A traditional Thanksgiving meal in the United States typically includes turkey, stuffing, mashed potatoes, gravy, cranberry sauce, vegetables, and pumpkin pie.",
+   "answer_without_memory": "Thanksgiving is a traditionally served during Thanksgiva. It is a popular dish that is served during the Thanksgive period. It has a variety of dishes, including a variety from the locals, the local food, and the local cuisine. It also has a wide range of dishes including the locally-sourced dishes, the food they are serving, and a variety that is not available in the local area.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "seconds": 0.69
+  },
+  {
+   "section": "stored",
+   "question": "Given the inpuut, porvide an example to demonstarte the cooncept of gravity.",
+   "answer": "The cooncept of gravity is a coonventricity of the gravity.",
+   "answer_without_memory": "The cooncept of gravity is a coonventricity.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.156,
+   "retrieved_question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "seconds": 0.18
+  },
+  {
+   "section": "stored",
+   "question": "Create a list of 10 verbs related to cooking",
+   "answer": "- Mix\n- Boil \n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+   "answer_without_memory": "1. 10 verbs related to cooking - 12 verbs - the 11 verbs of cooking \n1. The 15 verbs: the 2 verb of cooking, 1 verb \n2. The verbs that are 1: 13: 20: \n3. The first verb that is 17: \n\nThe 16 verbs are \"The 2\" verb, \"B\" verbs, 2: \"C\" vers,",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Create a list of 10 verbs related to cooking",
+   "seconds": 0.55
+  },
+  {
+   "section": "stored",
+   "question": "Name some computer viruses",
+   "answer": "Some computer viruses are: \n- WannaCry\n- Stuxnet\n- Trojan Horse\n- Code Red\n- Sality\n- CryptoLocker\n- ILoveYou\n- Chimera\n- MyDoom\n- Melissa",
+   "answer_without_memory": "1. Virus viruses - Virus is a virus that is responsible for the spread of viruses. Viruses are viruses that are responsible for spreading viruses, such as viruses and viruses such as viral viruses or viruses like viruses in the virus. Virs are viruss that are not responsible for viruses but are responsible in the spreading of virus.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Name some computer viruses",
+   "seconds": 0.52
+  },
+  {
+   "section": "stored",
+   "question": "Cmoe up with two statistics related to the US poulation.",
+   "answer": "According to the US Census Bureau, the current US poulation is approximately 331 million, and the current U.S. poulation.",
+   "answer_without_memory": "The US poulation is a significant factor in the economy. It is a major factor in economic growth, and it is a key factor in how the economy is affected. It has a significant role in the economic growth of the US poulae, and its impact on the economy has been a significant contributor to the economy's economy.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.315,
+   "retrieved_question": "Come up with two statistics related to the US population.",
+   "seconds": 0.39
+  },
+  {
+   "section": "reworded",
+   "question": "Whta food do Americans usually eat on Thanksgiving?",
+   "answer": "Yes, Americans often eat on Thanksgiving.",
+   "answer_without_memory": "Yes, there are many ways to make a delicious and delicious food. Here are some tips to make your own food:\n\n1. Choose a healthy and delicious snack: Choose a variety of healthy and healthy snacks that you can include in your food. For example, a healthy snack that is high in protein, protein, and fiber, can be a great way to make the snack a delicious sn.\n\n2. Choose healthy and nutritious snacks: Choose healthy sns that are high in fiber, fiber, and protein. For instance, a snack with a healthy",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.187,
+   "retrieved_question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "seconds": 0.47
+  },
+  {
+   "section": "reworded",
+   "question": "Can you give me an example that shows how gravity works?",
+   "answer": "A simple example of gravity is the ball.",
+   "answer_without_memory": "Sure, the gravity works by using gravity to create a \"super\" space. The gravity is a constant of gravity, and the gravitational force is the force of the grave. The force of gravitation is the gravitating force of a grave, and gravitationally is the forces of gravities. The forces of the force are the force that forces the graves of the object. The pull of graves is the pull of the objects, and it is the acceleration of grave motion. The acceleration is the movement of the",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.275,
+   "retrieved_question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "seconds": 0.48
+  },
+  {
+   "section": "reworded",
+   "question": "lit ten verbs you would use when cooking.",
+   "answer": "- Mix\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+   "answer_without_memory": "The verbs are a simple and easy-to-use way to make a delicious and delicious meal. They are easy to make and easy to prepare.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.36,
+   "retrieved_question": "Create a list of 10 verbs related to cooking",
+   "seconds": 0.27
+  },
+  {
+   "section": "reworded",
+   "question": "What are some well-known computer viruses?",
+   "answer": "Some well-known computer viruses include:\n\n1. WannaCry\n- Stuxnet\n- Trojan Horse\n- Code Red\n- Sality\n- CryptoLocker\n- ILoveYou\n- Chimera\n- MyDoom\n- Melissa",
+   "answer_without_memory": "1. Virus: Virus is a virus that is responsible for infecting the body. It is responsible by the viruses and is responsible in the process of infecting it.\n\n2. Viruses: Viruses are responsible for the spread of viruses, such as viruses that infect the body and cause it to spread. Virs are responsible by viruses which are responsible in infecting people.\n\n3. Vires: Virs can be responsible for spreading viruses by infecting infected people. Virtual viruses are responsible when infecting a person or person",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.509,
+   "retrieved_question": "Name some computer viruses",
+   "seconds": 0.66
+  },
+  {
+   "section": "reworded",
+   "question": "tell me two facts about the population of the united states.",
+   "answer": "The population of the United States is approximately 328 million people.",
+   "answer_without_memory": "The population of the united states is 100,000.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.65,
+   "retrieved_question": "Tell me the population of the United States.",
+   "seconds": 0.17
+  },
+  {
+   "section": "knowledge",
+   "question": "Whaat is the largest planet in our solar system",
+   "answer": "Jupiter is the largest planet in our solar system. It is the third largest planet on Earth, with 122.8 billion years.",
+   "answer_without_memory": "The largest planet in our solar system is the Solar System. It is the largest planet on Earth, with 122.8 billion years. It has a total of 112.9 billion years, and is the second largest planet to be discovered.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.502,
+   "retrieved_question": "Name a planet from our solar system.",
+   "seconds": 0.33
+  },
+  {
+   "section": "knowledge",
+   "question": "who wrote romeo and juliet",
+   "answer": "William Shakespeare",
+   "answer_without_memory": "I'm not sure how to get a romeo. I've been looking for a romantic relationship, but I'll definitely check out the romeos.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.789,
+   "retrieved_question": "Who wrote the play Romeo and Juliet?",
+   "seconds": 0.18
+  },
+  {
+   "section": "knowledge",
+   "question": "What is photosynthesis?",
+   "answer": "photosynthesis is the process by which plants use light energy to convert carbon dioxide and water into oxygen and sugars. It involves the transfer of electrons and protons between molecules as chlorophyll in the presence of light absorbs the light energy used to drive the reaction. The oxygen produced is released into the atmosphere, and the sugar produced is used by the plant for growth.",
+   "answer_without_memory": "1. Thermal structure of the air \n2. The temperature of the atmosphere \n3. The air temperature \n4. The atmosphere \n\nCharacteristics:\n1. Air temperature (1.1.2.10.12.20.22.0.3.13.23.32.33.4.34.24. Air temperatures (2.7.14.19.1).",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.589,
+   "retrieved_question": "Describe the process of photosynthesis to me.",
+   "seconds": 0.64
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the boilig point of water in Celsius?",
+   "answer": "The approximate boilig point of water in Celsius is 100 degrees.",
+   "answer_without_memory": "The boilig point of water in Celsius is the boilige. It is the water that flows through the boon. It flows from the boons to the boreal. It can flow through the Boon and flows to the Boons.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.396,
+   "retrieved_question": "What is the approximate boiling point of water in Celsius?",
+   "seconds": 0.31
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the capital of Japan?",
+   "answer": "The capital of Japan is Tokyo.",
+   "answer_without_memory": "The capital of Japan is 1.5% of the total area of the city.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Give me the capital of Japan.",
+   "seconds": 0.12
+  },
+  {
+   "section": "heldout",
+   "question": "Generate a creative poem describnig the night sky.",
+   "answer": "The night sky is a beautiful and serene night sky,\nA sight that never fades.\nThe night sky was a beautiful,\nThe sky is filled with a peaceful and serenizing sight.\n\nThe night is a peace of mind,\nIts beauty and beauty, a peace that never grows.",
+   "answer_without_memory": "The night sky is a beautiful night sky,\nA beautiful night night,\nThe night sky's bright and bright,\nIt's a beautiful day,\nAnd a beautiful evening night,",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.403,
+   "retrieved_question": "Write a poem about the beauty of the night sky.",
+   "seconds": 0.4
+  },
+  {
+   "section": "heldout",
+   "question": "Come up with a creative sentence to describe a summer day.",
+   "answer": "A warm summer day is like a cozy blanket.",
+   "answer_without_memory": "I'm a summer day, but I'll be happy to help you with this summer day.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.379,
+   "retrieved_question": "Generate a creative metaphor to describe a warm summer day.\n<no input>",
+   "seconds": 0.18
+  },
+  {
+   "section": "heldout",
+   "question": "list 5 famous italian dishes.",
+   "answer": "1. Italian Italian dishes \n2. Italian dishes\n3. Italian cuisine\n4. Italian food\n5. Italian dish dishes\n6. Italian spices\n7. Italian wine\n8. Italian pastries\n9. Italian soup\n10. Italian sauce",
+   "answer_without_memory": "1. \"The Fat\" - This is a classic Italian dish that is perfect for a delicious meal. It is a great way to make a delicious and delicious meal for a loved one. \n2. 100% Fat - A classic Italian version of the dish is perfect. It's a great addition to a meal.\n3. 2000 Fat: A classic French version of a classic French dish is a perfect way to add a touch of flavor to a dish.\n4. 300-305",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.453,
+   "retrieved_question": "Build a database for all Italian dishes",
+   "seconds": 0.61
+  },
+  {
+   "section": "heldout",
+   "question": "Tell me the most common hairstyle for men.",
+   "answer": "The most common hairstyle for men is the hairstrap. The hairstripping is made of a thin layer of hair that is thinner and more thinner than the hair. The thinner hair is made from a thinner, thinner fabric that is made up of thinner layers and thinner. The thicker hair is thin and the hair is thicker and the thinner is thin.",
+   "answer_without_memory": "Men are a great choice for men. Men are often used in a variety of styles, from classics to modern styles, to modern style styles. Men often use a variety to create a unique and unique style. Men typically use a combination of styles and styles to create unique and memorable styles. They often use different styles to add to their overall style.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.22,
+   "retrieved_question": "Come up with some tips for choosing a hairstyle.",
+   "seconds": 0.57
+  },
+  {
+   "section": "heldout",
+   "question": "Print the following statement: \"I want to learn to code\".",
+   "answer": "\"I want to learn to code\".",
+   "answer_without_memory": "I want to learn to code.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.336,
+   "retrieved_question": "Convert the following statement into a code snippet.\nPrint the sum of 1 and 2.",
+   "seconds": 0.13
+  },
+  {
+   "section": "taught",
+   "question": "What is the name of Adams' research model?",
+   "answer": "Adams' research model is called the Text Research Model.",
+   "answer_without_memory": "Adams' research model is a research model that is based on the research data provided by the research team. It is based in the research field of the University of California, where it is used to study the relationship between the two variables. It also has a research methodology that is used in the study of the relationship.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.354,
+   "retrieved_question": "What is the name of Adam's research model?",
+   "seconds": 0.34
+  },
+  {
+   "section": "taught",
+   "question": "What GPU dose the research computer use?",
+   "answer": "The research computer used the research computer to analyze the data and make it more accurate.",
+   "answer_without_memory": "The research computer used by the research computer is a computer-based computer. It is a software-based software that is designed to be used in a variety of industries, including healthcare, healthcare, and healthcare. It can be used to create a computer system that can be easily used in various industries, such as healthcare, medical, and medical. It also can be a tool for healthcare, health, healthcare and healthcare, as well as a variety such as medical, healthcare services, healthcare.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.676,
+   "retrieved_question": "What GPU does the research computer use?",
+   "seconds": 0.46
+  },
+  {
+   "section": "taught",
+   "question": "Wen was Version 1 of the compiler frozen?",
+   "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+   "answer_without_memory": "Version 1 of the compiler frozen is a compilers-based compileer. It is a free-source compilener that is designed to be used in a variety of applications. It has a compilation system that is easy to use and is designed for use in a wide range of applications, including automotive, automotives, and automotion. It also has a high-quality compileers, making it a great choice for a wide variety of devices.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.69,
+   "retrieved_question": "When was Version 1 of the compiler frozen?",
+   "seconds": 0.47
+  },
+  {
+   "section": "taught",
+   "question": "What is Adam's research model called",
+   "answer": "Adam's research model is called the Text Research Model.",
+   "answer_without_memory": "Adam's research model is a powerful tool for understanding the nature of the universe. It is a tool that allows us to understand the universe and its surroundings. It allows us humans to understand and understand the world around us, and it can be used to understand our environment. It also allows us the humans to explore the universe, and to understand it better. It can also be used for understanding our environment, such as the environment, environment, and the environment.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.74,
+   "retrieved_question": "What is the name of Adam's research model?",
+   "seconds": 0.41
+  },
+  {
+   "section": "taught",
+   "question": "which graphics card is in the research computer?",
+   "answer": "The graphics card is in the research computer.",
+   "answer_without_memory": "The graphics card is a graphics cards card that is designed to be a graphical representation of the graphics. It is a card that can be used to create graphics, graphics and graphics in a graphic. It can be a card with a graphically-small graphics system, and it can be easily used to make graphics graphics more visually appealing.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.253,
+   "retrieved_question": "What GPU does the research computer use?",
+   "seconds": 0.35
+  },
+  {
+   "section": "taught",
+   "question": "On what date was Version 1 frozen?",
+   "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+   "answer_without_memory": "Version 1 frozen was a 10-year-old woman who had been married to her husband and had been living in the United States for 20 years. She had been a 25-year old woman who was married to a family of 15, and had a 30-day life. She was a woman who lived in the U.S. and had an average lifetime of 24 years.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.476,
+   "retrieved_question": "When was Version 1 of the compiler frozen?",
+   "seconds": 0.43
+  },
+  {
+   "section": "arithmetic",
+   "question": "what is 12 plus 30",
+   "answer": "12 plus 30",
+   "answer_without_memory": "12 plus 10 plus 30 plus, 15 plus 5 plus, and 16 plus 6 plus, respectively.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.623,
+   "retrieved_question": "Add 2 plus 3.",
+   "seconds": 0.18
+  },
+  {
+   "section": "arithmetic",
+   "question": "if i hve 5 applles and eat 2, how many are left",
+   "answer": "You have one apple left.",
+   "answer_without_memory": "1. 1000 - 1500 apples \n2. 2001 -- 2.50 apple \n3. 3002 apples",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.203,
+   "retrieved_question": "If there are two apples and you give away one, how many apples do you have left?",
+   "seconds": 0.27
+  },
+  {
+   "section": "arithmetic",
+   "question": "What is 7 times 8",
+   "answer": "35",
+   "answer_without_memory": "1. 8. 10. 20.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.599,
+   "retrieved_question": "Calculate 7 times 5.",
+   "seconds": 0.13
+  },
+  {
+   "section": "chat",
+   "question": "hello, how are you today",
+   "answer": "We are today.",
+   "answer_without_memory": "The article is about the importance of being a good person. It is a good thing. It's a good idea. It can be a good way to stay motivated and motivated. It also has a positive impact on your life.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.383,
+   "retrieved_question": "Rewrite this sentence:\n\n\"Hello, how are you?\"",
+   "seconds": 0.24
+  },
+  {
+   "section": "chat",
+   "question": "Can you help me wrie a short email to my boss askign for a day offf",
+   "answer": "Dear [Boss], \n\nI am writing to kindly request a leave of absence for tomorrow, [date]. I have an important personal matter that I need to attend to and would greatly appreciate your understanding in this matter.\n\nI assure you that I will make up for any work missed during my leave and look forward to hearing your response. \n\nBest regards, \n[Name]",
+   "answer_without_memory": "Thanks for your help! I'm so excited to start my day offf!",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.171,
+   "retrieved_question": "Write a formal email to the boss politely asking for leave the next day.\nNoinput",
+   "seconds": 0.42
+  },
+  {
+   "section": "chat",
+   "question": "What should I cook for dinner tonight",
+   "answer": "You can cook for dinner tonight if you are not satisfied with the food you are eating.",
+   "answer_without_memory": "1. Cooking - Cooking a 1/2 cup of 1 cup of whole wheat bread. \n2. Cooked - cook 1 1 tablespoon of whole grain bread.\n3. Cook 1 teaspoon of salt - 12 tablespoons of salt",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.14,
+   "retrieved_question": "What kind of food would be appropriate for a romantic dinner?",
+   "seconds": 0.32
+  }
+ ]
+}

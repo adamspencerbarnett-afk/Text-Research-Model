@@ -1,0 +1,517 @@
+{
+ "model": "runs/mt_L2/qa_mt_L2.pt",
+ "precision": "bf16",
+ "graph": true,
+ "summary": {
+  "recall": {
+   "n": 6,
+   "ok": 4,
+   "ok_without_history": 0
+  },
+  "reference": {
+   "n": 5,
+   "ok": 0,
+   "ok_without_history": 0
+  },
+  "followup": {
+   "n": 4,
+   "ok": 2,
+   "ok_without_history": 0
+  },
+  "correction": {
+   "n": 4,
+   "ok": 1,
+   "ok_without_history": 0
+  },
+  "return": {
+   "n": 3,
+   "ok": 1,
+   "ok_without_history": 0
+  },
+  "multipart": {
+   "n": 5,
+   "ok": 1,
+   "ok_without_history": 1
+  }
+ },
+ "total": {
+  "n": 27,
+  "ok": 9,
+  "ok_without_history": 1
+ },
+ "history_gain": {
+  "threads": 300,
+  "bpb_with_history": 0.7971,
+  "bpb_without_history": 0.8705,
+  "history_gain_pct": 8.44
+ },
+ "seconds": 28.6,
+ "rows": [
+  {
+   "group": "recall",
+   "turns": [
+    "My sister is called Ana and she lives in Lisbon."
+   ],
+   "question": "Where does my sister live?",
+   "answer": "Ana lives in Lisbon.",
+   "answer_without_history": "Dear Sister, \n\nI just heard the wonderful news that you got a new job! Congrats! I know that you get a new work! Congrow, \nYour loving Sister! Congo, 100%",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My sister is called Ana and she lives in Lisbon.",
+     "Ana is called Ana, and she lives in Lisbon."
+    ]
+   ]
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "I have a dog named Max. He is three years old."
+   ],
+   "question": "How old is my dog?",
+   "answer": "I don't have access to the latest information about my dog. I have a dog named Max. I love to learn new things and meet new people. I'm always up for an adventure! Max loves the way I loves and loves. I always have a good time and have a great time. I also love to love to be a good friend and a good person",
+   "answer_without_history": "I don't have access to the latest information about my dog. However, I can provide you with some information about the dog's size and size.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I have a dog named Max. He is three years old.",
+     "Max is a friendly and loving talking dog who loves to learn new things and meet new people. Max is well-mannered, loyal, and always up for an adventure! Max loves the way he loves and loves. He is well and good, loyal and always there is no one else. He often shares stories from his past, or talks about how"
+    ]
+   ]
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My favourite colour is green."
+   ],
+   "question": "What is my favourite colour?",
+   "answer": "The green is green, green, and green, with a bright red, orange, and red. It has a bright yellow, green and green. It is a bright green, a bright orange, with red and green green, both red and red green.",
+   "answer_without_history": "I do not have a favourite colour, but I can tell you that I love the color of the ocean. I love it, but it is a bright and colorful color that I can use to make my own.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My favourite colour is green.",
+     "The green is green, green, and green. It is a bright green, with a bright red, orange, and red. It has a bright yellow, greenish, and a bright orange, with red and green green."
+    ]
+   ]
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "I work as a nurse at a hospital in Chicago."
+   ],
+   "question": "What is my job?",
+   "answer": "I'm glad to hear that you're working on the hospital. I've been working on a hospital in Chicago, and I'd be happy to help you with that. I hope you have a better day.",
+   "answer_without_history": "My job is to work on a specific project or project, and I would like to work in a specific area of work. I would want to work with a team of professionals who work in an organization that works for a specific purpose. I will work with the team of experts who work with them, and they will be able to work together to create a work environment that will be effective in achieving",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I work as a nurse at a hospital in Chicago.",
+     "I'm glad to hear that you're working on the hospital. I've been working on a hospital in Chicago, and I'd be happy to help you with that. I hope you have a better day."
+    ]
+   ]
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "My car is a red Toyota."
+   ],
+   "question": "What brand is my car?",
+   "answer": "The car is a red Toyota.",
+   "answer_without_history": "I do not have a car.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My car is a red Toyota.",
+     "The car is a red Toyota."
+    ]
+   ]
+  },
+  {
+   "group": "recall",
+   "turns": [
+    "I was born in 1990 in a small town."
+   ],
+   "question": "What year was I born?",
+   "answer": "I was born in 1990 in a small town. I was a young girl, and I was always a little bit of a bigger than mys. I had a lot of fun and a lot to do. I always had a great time and I had the same thing. I spent a lot in the woods and was always on the look. I never had a good",
+   "answer_without_history": "I born was born in 1751.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I was born in 1990 in a small town.",
+     "I was born in 1990 in a small town. I was a young girl, and I was always a little bit of a bigger than mys. I had a lot of fun and a lot to do. I always had a great time and I had to spend a lot on the things around me. I spent a lot in the woods and was always on the look"
+    ]
+   ]
+  },
+  {
+   "group": "reference",
+   "turns": [
+    "Here are three cities: Paris, Tokyo and Cairo."
+   ],
+   "question": "Which country is the second one in?",
+   "answer": "The second one in is the second in.",
+   "answer_without_history": "The second-largest country in the world is Canada, with an area of 9.98 million square kilometers.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "Here are three cities: Paris, Tokyo and Cairo.",
+     "Paris, Tokyo - Cairo, Cairo - Egypt"
+    ]
+   ]
+  },
+  {
+   "group": "reference",
+   "turns": [
+    "My children are Tom, Sara and Leo."
+   ],
+   "question": "What is the name of the last child I mentioned?",
+   "answer": "The last child I mentioned is Tom.",
+   "answer_without_history": "The first child I mentioned was John, Elizabeth, Elizabeth.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My children are Tom, Sara and Leo.",
+     "Tom"
+    ]
+   ]
+  },
+  {
+   "group": "reference",
+   "turns": [
+    "I bought apples, bread and milk today."
+   ],
+   "question": "What was the second thing I bought?",
+   "answer": "Apples, butter, butter and milk.",
+   "answer_without_history": "The first thing to do after purchasing a new car was to read the manual and become familiar with the car's features, controls, and maintenance requirements.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I bought apples, bread and milk today.",
+     "Apples, butter, butter and milk."
+    ]
+   ]
+  },
+  {
+   "group": "reference",
+   "turns": [
+    "The meeting is on Monday at 3 pm in room 12."
+   ],
+   "question": "What room is it in?",
+   "answer": "The room is located on the right side of the room, and the room is open.",
+   "answer_without_history": "The room is in a small room with a large window facing east. The room has a light oak shade, and it is littered with scatter rugs in complementary shades of tan and brown. The walls are lightly illuminated by a large door, and the room is lightly brown. There are a few small paintings and photographs decorating the",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "The meeting is on Monday at 3 pm in room 12.",
+     "The next meeting will be held on Tuesday, November 3rd at 2PM, in The Conference Room."
+    ]
+   ]
+  },
+  {
+   "group": "reference",
+   "turns": [
+    "Think about the planets Mars and Venus."
+   ],
+   "question": "Which of the two is closer to the Sun?",
+   "answer": "Mars is closer to the Sun than Earth. Mars is smaller than Earth, with a diameter of 6,779 kilometers compared to Earth's 12,742 kilometers. Mars also has more hotter climate than Earth''s. Mars has a much colder climate than earth, meaning objects weigh less on its surface than Earth or also. Mars",
+   "answer_without_history": "The planet closest to the Sun is Mercury.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "Think about the planets Mars and Venus.",
+     "Mars and Venus are two planets in the Solar System. Mars is smaller than Earth, with a diameter of 6,779 kilometers compared to Earth's 12,742 kilometers. Mars also has more hotter climate than Earth. Mars has a much colder climate than earth, meaning objects weigh less on its surface than Earth or also"
+    ]
+   ]
+  },
+  {
+   "group": "followup",
+   "turns": [
+    "What is the capital of France?"
+   ],
+   "question": "What river runs through it?",
+   "answer": "The river runs through it.",
+   "answer_without_history": "The major river that runs through Egypt is the Nile River.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "What is the capital of France?",
+     "The capital of France is Paris."
+    ]
+   ]
+  },
+  {
+   "group": "followup",
+   "turns": [
+    "Who wrote Romeo and Juliet?"
+   ],
+   "question": "Name another play he wrote.",
+   "answer": "William Shakespeare is a play he wrote.",
+   "answer_without_history": "A Midsummer Night's Dream",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "Who wrote Romeo and Juliet?",
+     "William Shakespeare"
+    ]
+   ]
+  },
+  {
+   "group": "followup",
+   "turns": [
+    "What is photosynthesis?"
+   ],
+   "question": "What gas do plants release during it?",
+   "answer": "The gas is released during the process by which plants use light energy to convert carbon dioxide and water into oxygen and sugars. It involves the transfer of electrons and protons between molecules as chlorophyll in the presence of light absorbs the light energy used to drive the reaction. The oxygen produced is released into the atmosphere, and the sugar produced is used by the plant for growth.",
+   "answer_without_history": "The gas is released during the process of photosynthesis. The gas releases energy from the atmosphere and is released into the atmosphere. The process of producing energy is called the gas. The energy is released from the gas and is then released into a gas.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "What is photosynthesis?",
+     "photosynthesis is the process by which plants use light energy to convert carbon dioxide and water into oxygen and sugars. It involves the transfer of electrons and protons between molecules as chlorophyll in the presence of light absorbs the light energy used to drive the reaction. The oxygen produced is released into the atmosphere, and the sugar produced is used by the plant for growth."
+    ]
+   ]
+  },
+  {
+   "group": "followup",
+   "turns": [
+    "Tell me about the Eiffel Tower."
+   ],
+   "question": "In which city is it?",
+   "answer": "The city is the largest city in Paris, and it is the tallest city in the world. It is the world's tallest building, with a total of 125,000 square feet.",
+   "answer_without_history": "The city is the largest city in the world.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "Tell me about the Eiffel Tower.",
+     "The Eiffel Tower is a tower located in Paris, France. Designed by Gustave Eiffelle, the tower is the tallest structure in Paris. Designated by Guestave Effel as the entrance to the 1889 World's Fair, the 2,063 ft tall tower was the tall"
+    ]
+   ]
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "My meeting is on Tuesday.",
+    "Sorry, I meant Thursday, not Tuesday."
+   ],
+   "question": "What day is my meeting?",
+   "answer": "Thursday is on Tuesday, not Tuestone, November 2nd at 2PM.",
+   "answer_without_history": "I am not able to meet with you.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My meeting is on Tuesday.",
+     "Tuesday is on Tuestone, November 1st, and November 2nd at 2PM."
+    ],
+    [
+     "Sorry, I meant Thursday, not Tuesday.",
+     "Thursday is on Tuesday, not Tuestone, November 2nd at 2PM."
+    ]
+   ]
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "I live in Boston.",
+    "Actually, I moved to Denver last week."
+   ],
+   "question": "Where do I live now?",
+   "answer": "I do not have access to real-time information. However, I can tell you that the city is home to many of the most famous and well-known cities in the world.",
+   "answer_without_history": "I live in a lively city with a thriving arts scene, beautiful parks, and diverse cultures. I love that I can explore a different part of the city every day and take in the sights, sounds and smells. I also appreciate the fact that the city is always bustling with activity and there is always something to do and see.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I live in Boston.",
+     "The Boston metropolitan area is 617."
+    ],
+    [
+     "Actually, I moved to Denver last week.",
+     "The Boston metropolitan area is 617."
+    ]
+   ]
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "Please call me Sam.",
+    "On second thought, call me Alex instead."
+   ],
+   "question": "What should you call me?",
+   "answer": "I call you a reminder for you to call your parents tomorrow at 7 pm.",
+   "answer_without_history": "I call you a call for you to call you.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "Please call me Sam.",
+     "Okay, I have set a reminder for you to call your parents tomorrow at 7 pm."
+    ],
+    [
+     "On second thought, call me Alex instead.",
+     "I have set a reminder for you to call your parents tomorrow at 7 pm."
+    ]
+   ]
+  },
+  {
+   "group": "correction",
+   "turns": [
+    "My order number is 4417.",
+    "Correction: the order number is 4471."
+   ],
+   "question": "What is my order number?",
+   "answer": "[Company Name]",
+   "answer_without_history": "I am not able to determine the order number of orders. However, I can provide you with a list of orders that are not listed in the order list.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My order number is 4417.",
+     "[Company Name]"
+    ],
+    [
+     "Correction: the order number is 4471.",
+     "[Company Name]"
+    ]
+   ]
+  },
+  {
+   "group": "return",
+   "turns": [
+    "My cat is called Luna.",
+    "What is the capital of Italy?"
+   ],
+   "question": "What is my cat called?",
+   "answer": "I don't have a cat called.",
+   "answer_without_history": "I do not have a cat like you, but I can tell you that it is a cat called. It is a small cat that has a long, long, and long tail that is very long and long. It has a short tail that has long tail and long legs that are long and short. It also has a tail that can be long and has long legs and long necks that are",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My cat is called Luna.",
+     "Luna is a small, lush, and well-known species of the lush forest. It is a large, well-drained, and has a long, dark, and dark, with a long and dark hair. It has a dark, dark hair that is often used in theaters, and is often found in the area."
+    ],
+    [
+     "What is the capital of Italy?",
+     "The capital of Italy is the capital of the Italian city of Rome."
+    ]
+   ]
+  },
+  {
+   "group": "return",
+   "turns": [
+    "I am planning a trip to Spain in May.",
+    "What is a good book to read on a plane?"
+   ],
+   "question": "Which country am I travelling to?",
+   "answer": "A good book to read on a plane is \"The Catcher in the World\".",
+   "answer_without_history": "The country is known for traveling to the Pacific Ocean, which is a great destination for travelers.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I am planning a trip to Spain in May.",
+     "I am planning a trip to Spain in May."
+    ],
+    [
+     "What is a good book to read on a plane?",
+     "A good book to read on a plane is \"The Catcher in the World\"."
+    ]
+   ]
+  },
+  {
+   "group": "return",
+   "turns": [
+    "My brother plays the guitar.",
+    "Name a famous painter."
+   ],
+   "question": "What instrument does my brother play?",
+   "answer": "He is a guitar.",
+   "answer_without_history": "A trombonist plays the trombone.",
+   "ok": true,
+   "ok_without_history": false,
+   "history": [
+    [
+     "My brother plays the guitar.",
+     "He is a guitar. He is an instrumental guitar."
+    ],
+    [
+     "Name a famous painter.",
+     "He is a guitar."
+    ]
+   ]
+  },
+  {
+   "group": "multipart",
+   "turns": [],
+   "question": "I need two things. First, what is the capital of Canada? Second, what is the boiling point of water in Celsius?",
+   "answer": "The capital city of Canada is Ottawa.",
+   "answer_without_history": "The capital city of Canada is Ottawa.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": []
+  },
+  {
+   "group": "multipart",
+   "turns": [],
+   "question": "Here is a note from my courier: 'Order 5521 will be delivered on Friday at noon.' When will it arrive, and what is the order number?",
+   "answer": "[Your Name]",
+   "answer_without_history": "[Your Name]",
+   "ok": false,
+   "ok_without_history": false,
+   "history": []
+  },
+  {
+   "group": "multipart",
+   "turns": [],
+   "question": "I have three meetings tomorrow: budget at 9, design at 11 and hiring at 2. Which meeting is at 11, and what time is the hiring meeting?",
+   "answer": "The meeting is scheduled at 11, and the meeting is at 2. Which meeting is expected at 9, design at 3.",
+   "answer_without_history": "The meeting is scheduled at 11, and the meeting is at 2. Which meeting is expected at 9, design at 3.",
+   "ok": true,
+   "ok_without_history": true,
+   "history": []
+  },
+  {
+   "group": "multipart",
+   "turns": [],
+   "question": "My name is Priya and I am learning to cook. I have chicken, rice and spinach at home. What could I make with them, and what is my name?",
+   "answer": "I do not have access to the specific recipe or recipe you are interested in. However, you can try using a variety of ingredients such as olive oil, garlic powder, onion powder, garlic, and onion powder. You can also try using fresh herbs like thyme, rosemary, or thyme for a more flavorful and flavorful flavor. You may want to try using dried herbs like par",
+   "answer_without_history": "I do not have access to the specific recipe or recipe you are interested in. However, you can try using a variety of ingredients such as olive oil, garlic powder, onion powder, garlic, and onion powder. You can also try using fresh herbs like thyme, rosemary, or thyme for a more flavorful and flavorful flavor. You may want to try using dried herbs like par",
+   "ok": false,
+   "ok_without_history": false,
+   "history": []
+  },
+  {
+   "group": "multipart",
+   "turns": [
+    "I am planning a party for 12 people next Saturday. It will be in my garden, and two of my guests are vegetarian."
+   ],
+   "question": "How many guests are vegetarian, and where is the party?",
+   "answer": "I'm glad to hear that you're planning a party.",
+   "answer_without_history": "The average of the guests is 100,000.",
+   "ok": false,
+   "ok_without_history": false,
+   "history": [
+    [
+     "I am planning a party for 12 people next Saturday. It will be in my garden, and two of my guests are vegetarian.",
+     "I'm glad to hear that you're planning a party."
+    ]
+   ]
+  }
+ ]
+}

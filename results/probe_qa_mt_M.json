@@ -1,0 +1,443 @@
+{
+ "model": "runs/mt_M/qa_mt_M.pt",
+ "precision": "bf16",
+ "kernels": "fp32",
+ "graph": true,
+ "dense": 0.0,
+ "rerank_core": 0,
+ "typos": 0.0,
+ "min_sim": 0.0,
+ "summary": {
+  "stored": {
+   "n": 5,
+   "ok": 5,
+   "ok_without_memory": 1
+  },
+  "reworded": {
+   "n": 5,
+   "ok": 3,
+   "ok_without_memory": 1
+  },
+  "knowledge": {
+   "n": 5,
+   "ok": 5,
+   "ok_without_memory": 0
+  },
+  "heldout": {
+   "n": 5,
+   "ok": 4,
+   "ok_without_memory": 3
+  },
+  "taught": {
+   "n": 6,
+   "ok": 6,
+   "ok_without_memory": 0
+  },
+  "arithmetic": {
+   "n": 3,
+   "ok": 0,
+   "ok_without_memory": 0
+  },
+  "chat": {
+   "n": 3,
+   "ok": 0,
+   "ok_without_memory": 3
+  }
+ },
+ "cost": {
+  "seconds": 5.4,
+  "gpu_avg_w": 185.5,
+  "gpu_kj": 0.99,
+  "peak_mem_mb": 271,
+  "power_samples": 7,
+  "units": 32,
+  "s_per_unit": 0.1676,
+  "j_per_unit": 31.08
+ },
+ "rows": [
+  {
+   "section": "stored",
+   "question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "answer": "A traditional Thanksgiving meal in the United States typically includes turkey, stuffing, mashed potatoes, gravy, cranberry sauce, vegetables, and pumpkin pie.",
+   "answer_without_memory": "Thanksgiving is a traditionally served during Thanksgivers' holiday. It is a time for people to eat and eat, and the food is served in the same way as the other people.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "seconds": 0.65
+  },
+  {
+   "section": "stored",
+   "question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "answer": "A simple example of gravity can be demonstrated by dropping a ball; the ball falls to the ground due to the force of grav) the ball is downwards.",
+   "answer_without_memory": "The concept of gravity is a concept that is used to explain the concept of the universe. It is a fundamental concept that can be used to describe the universe, such as the universe and the universe in a way that is not just about space, but also about the universe's universe.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "seconds": 0.36
+  },
+  {
+   "section": "stored",
+   "question": "Create a list of 10 verbs related to cooking",
+   "answer": "- Mix\n- Boil \n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+   "answer_without_memory": "1. \"The best way to cook the meat is to cook it in a pan with a pan and then add it to the pan. \n2. Cook the meat in a large skillet and cook it until it is cooked through. \n\nThe pan is then heated in a skillet over medium heat. 3. In a large pot, heat the meat over medium-high heat.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Create a list of 10 verbs related to cooking",
+   "seconds": 0.47
+  },
+  {
+   "section": "stored",
+   "question": "Name some computer viruses",
+   "answer": "Some computer viruses are: \n- WannaCry\n- Stuxnet\n- Trojan Horse\n- Code Red\n- Sality\n- CryptoLocker\n- ILoveYou\n- Chimera\n- MyDoom\n- Melissa",
+   "answer_without_memory": "Computer viruses are a common type of virus that can be caused by viruses. They are caused by a virus that is responsible for the spread of viruses, such as viruses that can cause the spreading of virus. Computer-preventable viruses can cause viruses to spread, leading to spread of the virus.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Name some computer viruses",
+   "seconds": 0.51
+  },
+  {
+   "section": "stored",
+   "question": "Come up with two statistics related to the US population.",
+   "answer": "According to the US Census Bureau, the current US population is approximately 331 million, and the current current US US population growth rate is 0.7%.",
+   "answer_without_memory": "The US population is expected to be 1.5 billion in the past year, with a 10% increase in the number of people living in the US population. This is due to the fact that the US is expected of 20% to be the second largest in the world, with 15% of the population living in 21 countries. This means that the number is expected by the US as a whole, and the US will be the third largest in 1999.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Come up with two statistics related to the US population.",
+   "seconds": 0.51
+  },
+  {
+   "section": "reworded",
+   "question": "What food do Americans usually eat on Thanksgiving?",
+   "answer": "The food of the United States is typically eaten on Thanksgiving.",
+   "answer_without_memory": "The food you eat on Thanksgiving is typically served with a variety of ingredients, including:\n\n1. Vegetables: The food is typically made from vegetables such as broccoli, onions, and mushrooms, and is often served with vegetables such that it is often cooked in a variety that is often eaten in the form of vegetables such like broccolas, brocco, and broccal meats.\n\n2. Veggie: The vegetables are typically served in soups such as soups, soups or soups. They are often served",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.223,
+   "retrieved_question": "Name a food that is traditionally served during Thanksgiving in the US.",
+   "seconds": 0.5
+  },
+  {
+   "section": "reworded",
+   "question": "Can you give me an example that shows how gravity works?",
+   "answer": "Sure, here's an example of a gravity that shows how gravity can be used to create a simple ball:\n\n- The ball is a ball that is made of a metallic material, such as a metal or metallic.\n- The object is a metal that is used to make a ball.",
+   "answer_without_memory": "Sure! One example of a gravity that is a gravitational force is the gravitation of a gas. The gravitationally charged gas is the force of the gas that is in the gas. This force is called the gravity, and the gas is called a gas that can be used to create a gas in the form of gas.\n\nIn the case of gas, gravity is the mass of gas that has been created by the gases. This mass is called gravity. The gas is formed by the gravitating gas that forms the gas of the grave. The",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.275,
+   "retrieved_question": "Given the input, provide an example to demonstrate the concept of gravity.",
+   "seconds": 0.71
+  },
+  {
+   "section": "reworded",
+   "question": "List ten verbs you would use when cooking.",
+   "answer": "- Mix\n- Boil \n- Saute\n- Bake\n- Grate\n- Roast\n- Fry\n- Chop\n- Grill\n- Simmer",
+   "answer_without_memory": "The verbs are a simple and easy to understand. They are simple and simple, and they are easy to read. They can be easily readable and easy for beginners to understand, but they can be easy to use.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.473,
+   "retrieved_question": "Create a list of 10 verbs related to cooking",
+   "seconds": 0.36
+  },
+  {
+   "section": "reworded",
+   "question": "What are some well-known computer viruses?",
+   "answer": "Some well-known computer viruses include:\n\n1. WannaCry: This virus is a virus that is responsible for infecting viruses.\n\n2. Stuxnet: This is a type of virus that has been used to infect viruses in the past.\n\n3. Stu: This type ofCrypto is a viral virus that can infect virus.\n\n4. St: This viral viral is a: virus that infects viruses and is responsible somewhere else.\n\n5. St.: This was a virus in the",
+   "answer_without_memory": "There are many well-known computer viruses that are known for their ability to infect and infect. Here are some of the most well-designed and well-supported computer virus:\n\n1. Virus: Virus viruses are known to infect people and cause cancers, including cancer, heart disease, and cancer.\n\n2. Viruses: Viruses are known as viruses, which are viruses in the body that are responsible for the spread of cancer. They are known by their ability and are known in the form of cancer, which is a common cause of cancer",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.509,
+   "retrieved_question": "Name some computer viruses",
+   "seconds": 0.87
+  },
+  {
+   "section": "reworded",
+   "question": "Tell me two facts about the population of the United States.",
+   "answer": "The population of the United States is approximately 328 million people.",
+   "answer_without_memory": "The population of the United States is estimated to be 1.5 million, with a population of 11.8 million people living in the United Kingdom. The population is estimated at 10.8%, with 14.8 billion people living on the planet. The United States has a population density of 2.86 billion people, with an average of 3.87 million people. The total population is 1,200, with the total population of US 19.88 million. The US is estimated that 13.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.65,
+   "retrieved_question": "Tell me the population of the United States.",
+   "seconds": 0.52
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the largest planet in our solar system?",
+   "answer": "The largest planet in our solar system is the Jupiter.",
+   "answer_without_memory": "The largest planet in our solar system is the Solar System. It is the largest planet on Earth, with a total of 12,800 km\u00b2. It has a total area of 2.1 km\u00b3, which is 1.2 km\u00b0.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.744,
+   "retrieved_question": "Name a planet from our solar system.",
+   "seconds": 0.32
+  },
+  {
+   "section": "knowledge",
+   "question": "Who wrote Romeo and Juliet?",
+   "answer": "William Shakespeare",
+   "answer_without_memory": "Romeo's most famous works include the \"The Fall of the Fall\" by Juliet, which is a collection of works by Julius Caesar and the 19th century. The works are a collection by Julian and are often considered to be one of the most famous and influential works of the 20th century, and are considered to have a significant impact on the world.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.789,
+   "retrieved_question": "Who wrote the play Romeo and Juliet?",
+   "seconds": 0.37
+  },
+  {
+   "section": "knowledge",
+   "question": "What is photosynthesis?",
+   "answer": "photosynthesis is the process by which plants use light energy to convert carbon dioxide and water into oxygen and sugars. It involves the transfer of electrons and protons between molecules as chlorophyll in the presence of light absorbs the light energy used to drive the reaction. The oxygen produced is released into the atmosphere, and the sugar produced is used by the plant for growth.",
+   "answer_without_memory": "Photosynthesis is a process of transforming the environment into a natural environment. It is a complex process that involves the development of new materials, such as biomass, biomas, and biomas. Photos of photosynthesis are used to create a more sustainable environment, such that the environment is more sustainable and more sustainable.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.589,
+   "retrieved_question": "Describe the process of photosynthesis to me.",
+   "seconds": 0.57
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the boiling point of water in Celsius?",
+   "answer": "The approximate boiling point of water in Celsius is 100 degrees.",
+   "answer_without_memory": "The boiling point of Celsius is the point of water in the water. It is the water that flows through the water and is the main source of water. The water is then flowed through the drainage system and the water is flowed into the water by the water flowing through the pipe. The flow of water is the flow of the water through the flowing water.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.76,
+   "retrieved_question": "What is the approximate boiling point of water in Celsius?",
+   "seconds": 0.41
+  },
+  {
+   "section": "knowledge",
+   "question": "What is the capital of Japan?",
+   "answer": "The capital of Japan is Tokyo.",
+   "answer_without_memory": "The capital of Japan is the capital of the United States of America. It is the largest city in the world and the largest of the world's largest cities. It has a population of 1,000,040, and is the second largest city of Japan. The capital is the 13th largest city, with a population density of 23.8%. The largest city is the Kokuoka, which is the third largest city. The city is also the largest in the United Kingdom.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "Give me the capital of Japan.",
+   "seconds": 0.46
+  },
+  {
+   "section": "heldout",
+   "question": "Generate a creative poem describing the night sky.",
+   "answer": "The night sky is a beautiful and beautiful night sky,\nA sight that never stops. \nThe night sky was a sight that no one ever saw,\nThe sight that ever seen was a night of peace. \n\nThe night was a peaceful and peaceful night,\nIts beauty and peace, it never stopping.  \nIt's a sight to behold,\nAnd it's an unforgettable night. \"The night is a night,\" \nA painted masterpiece, \nAnd never grow",
+   "answer_without_memory": "The night sky is a beautiful and beautiful place, with a beautiful view of the sky. The sky is bright and the sky is full of vibrant colors, with the sky being bright and bright. The sun is bright, with its bright orange and orange, and the sun is a perfect place to relax.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.468,
+   "retrieved_question": "Write a poem about the beauty of the night sky.",
+   "seconds": 0.71
+  },
+  {
+   "section": "heldout",
+   "question": "Come up with a creative sentence to describe a summer day.",
+   "answer": "A warm summer day is like a cozy blanket.",
+   "answer_without_memory": "The sun is setting in the sky,\nA sunny day, a day,\nIt's a day of peace,\nThe sun is a day that's full,\nAnd the sun is the day of the sun.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.379,
+   "retrieved_question": "Generate a creative metaphor to describe a warm summer day.\n<no input>",
+   "seconds": 0.29
+  },
+  {
+   "section": "heldout",
+   "question": "List 5 famous Italian dishes.",
+   "answer": "1. Italian cuisine\n2. Italian dishes\n3. Italian food\n4. Italian soup\n5. Italian pasta\n6. Italian spices\n7. Italian wine\n8. Italian fish\n9. Italian meat\n10. Italian cheese",
+   "answer_without_memory": "1. Italian dishes: Italian dishes include Italian dishes such as Italian dishes, Italian dishes like Italian dishes and Italian dishes. \n2. Italian cuisine: Italian cuisine is a popular dish in Italian cuisine. Italians are often served with Italian dishes as a way to make a delicious Italian dish. \n\nChoosing Italian dishes is a great way to get a better sense of the flavors and flavors of the dishes. You can try Italian dishes with Italians as a side dish or with Italian cuisine as a meal.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.453,
+   "retrieved_question": "Build a database for all Italian dishes",
+   "seconds": 0.6
+  },
+  {
+   "section": "heldout",
+   "question": "Tell me the most common hairstyle for men.",
+   "answer": "The most common hairstyle for men is hairstrap. The hairstrip is made of a thin layer of hair that is made from a thin, thin layer. The thin layer is made with a thinner layer of fabric, which is made up of thin layers of hair. The thick layer is then coated with a thick layer of cream cheese, which can be used to make a hairstick. The skin is made by layering the hairsticks and coating the skin with a layer of oil. The coating is made using a thiner layer of a thick",
+   "answer_without_memory": "The most common hairstyle for men is the hairstyly. The hairstrap is the most common type of hairstrip, and the hair is the best hairstromp hairstile. The most commonly used hairstroping hairstinc is the shaft hairstrel. The shafts are the most commonly found in the United States and Canada. The best hairs are the ones that are most commonly known to be the ones in the hair.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.22,
+   "retrieved_question": "Come up with some tips for choosing a hairstyle.",
+   "seconds": 0.8
+  },
+  {
+   "section": "heldout",
+   "question": "Print the following statement: \"I want to learn to code\".",
+   "answer": "I want to learn to code.",
+   "answer_without_memory": "I want to learn to code for a new project.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.336,
+   "retrieved_question": "Convert the following statement into a code snippet.\nPrint the sum of 1 and 2.",
+   "seconds": 0.13
+  },
+  {
+   "section": "taught",
+   "question": "What is the name of Adam's research model?",
+   "answer": "Adam's research model is called the Text Research Model.",
+   "answer_without_memory": "Adam's research model is a research model that is based on the research and research data. It is a model that has been used to develop new technologies and technologies to improve the accuracy of research. It has been developed by the University of California, San Francisco, and has been a leading researcher in the field.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "What is the name of Adam's research model?",
+   "seconds": 0.31
+  },
+  {
+   "section": "taught",
+   "question": "What GPU does the research computer use?",
+   "answer": "The research computer uses an NVIDIA RTX 3090 GPU.",
+   "answer_without_memory": "The research computer is a powerful tool for improving the accuracy of a computer's performance. It is a tool that allows you to create and analyze data, analyze data and identify patterns in data, and analyze the data. It also allows you in-depth data analysis, which allows you for better understanding of the data and how it can be used to improve performance. Additionally, it is a great tool for optimizing performance in a variety of applications, such as automated systems, automated processes, and automated data analysis.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "What GPU does the research computer use?",
+   "seconds": 0.48
+  },
+  {
+   "section": "taught",
+   "question": "When was Version 1 of the compiler frozen?",
+   "answer": "Version 1 of the compiler was frozen on 9 October 2026.",
+   "answer_without_memory": "Version 1: Versions 1 - Versional - 2: Verse 1",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "exact",
+   "similarity": 1.0,
+   "retrieved_question": "When was Version 1 of the compiler frozen?",
+   "seconds": 0.21
+  },
+  {
+   "section": "taught",
+   "question": "What is Adam's research model called?",
+   "answer": "Adam's research model is called the Text Research Model.",
+   "answer_without_memory": "Adam's research model is a research model that is based on the research and research data. It is a model that uses data from various sources to support the research process. It has a large number of research models that are used to develop new insights into the world of research. Adam is also a research scientist who has been working on developing new insights and insights that can help to improve the accuracy of research and the impact of research on the world.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.74,
+   "retrieved_question": "What is the name of Adam's research model?",
+   "seconds": 0.42
+  },
+  {
+   "section": "taught",
+   "question": "Which graphics card is in the research computer?",
+   "answer": "The graphics card is a graphics computer that uses a an NVIDIA RTX 3090 GPU.",
+   "answer_without_memory": "The graphics card is a graphic card that is designed to be aesthetically pleasing and visually appealing. It is designed for creating visually pleasing graphics, such as graphs, graphs and graphs. It also has a variety of graphics and graphics that can be used to create visually engaging graphics.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.253,
+   "retrieved_question": "What GPU does the research computer use?",
+   "seconds": 0.41
+  },
+  {
+   "section": "taught",
+   "question": "On what date was Version 1 frozen?",
+   "answer": "Version 1 frozen was frozen on 9 October 2026.",
+   "answer_without_memory": "Version 1 frozen was a 100-year-old frozen plant that was grown in the United States. It was a small, medium-sized plant that had a large, medium size and a large amount of soil. It had a small amount of nutrients and nutrients, and it was a great source of nutrients. It also had a variety of plants, including the leaves, leaves, and other plants. It is also a great plant for the family, and its roots are a great addition to the family.",
+   "keywords_ok": true,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.476,
+   "retrieved_question": "When was Version 1 of the compiler frozen?",
+   "seconds": 0.49
+  },
+  {
+   "section": "arithmetic",
+   "question": "What is 12 plus 30?",
+   "answer": "12 plus 30 is 1.",
+   "answer_without_memory": "12 plus 10 plus 30 plus a 15 plus 20 plus an 16 plus 4 plus a plus 5 plus a half plus a more 18 plus a soybean 1 plus a whole 14 plus 6 plus a full 13 plus a no 17 plus a total 11 plus 7 plus 8 plus 9 plus a perfect 19 plus 0 plus some 1, 2, 3 plus (10 - 1) plus a complete 1",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.623,
+   "retrieved_question": "Add 2 plus 3.",
+   "seconds": 0.49
+  },
+  {
+   "section": "arithmetic",
+   "question": "If I have 5 apples and eat 2, how many are left?",
+   "answer": "You have one apple left.",
+   "answer_without_memory": "The amount of apples and eat 2 apples is 100%, which is 20%.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.486,
+   "retrieved_question": "If there are two apples and you give away one, how many apples do you have left?",
+   "seconds": 0.18
+  },
+  {
+   "section": "arithmetic",
+   "question": "What is 7 times 8?",
+   "answer": "7 times 8 is 7.",
+   "answer_without_memory": "1. 8 times 8 is 8.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": false,
+   "memory": "nearest",
+   "similarity": 0.599,
+   "retrieved_question": "Calculate 7 times 5.",
+   "seconds": 0.13
+  },
+  {
+   "section": "chat",
+   "question": "Hello, how are you today?",
+   "answer": "I am sorry for the day.",
+   "answer_without_memory": "I am not capable of experiencing any of the above. However, I can provide you with some examples of how you can help with this topic.\n\n1. Setting up a new project: Setting a new plan is a great way to get started. You can set up a project that you can use to create a new business. You could also set up an upgrade to create an existing project.\n\n2. Set up a plan: Set up an plan to create new plans. This will help you create a plan that is easy to use and can be easily completed.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.383,
+   "retrieved_question": "Rewrite this sentence:\n\n\"Hello, how are you?\"",
+   "seconds": 0.49
+  },
+  {
+   "section": "chat",
+   "question": "Can you help me write a short email to my boss asking for a day off?",
+   "answer": "Sure, here is a short email to your boss asking for a day off:\n\n[Name]",
+   "answer_without_memory": "Sure, here's a short email to your boss asking for a day off:\n\n1. \"I'm feeling overwhelmed with the day.\"\n2. ```\n3. // `/`\n4. -`` - `-`\n5. +` /``\n\nI hope this helps! Let me know if you have any other questions or concerns.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.336,
+   "retrieved_question": "Write a formal email to the boss politely asking for leave the next day.\nNoinput",
+   "seconds": 0.46
+  },
+  {
+   "section": "chat",
+   "question": "What should I cook for dinner tonight?",
+   "answer": "You can cook your dinner tonight tonight by using a variety of ingredients such as butter, butter, and butter.",
+   "answer_without_memory": "The recipe for this recipe is to add some fresh herbs and spices to the soup. You can also add some herbs like rosemary, thyme, or basil to the recipe. You could also add a few drops of dried herbs such as thyme or rosemary to the dish.",
+   "keywords_ok": false,
+   "keywords_ok_without_memory": true,
+   "memory": "nearest",
+   "similarity": 0.14,
+   "retrieved_question": "What kind of food would be appropriate for a romantic dinner?",
+   "seconds": 0.34
+  }
+ ]
+}
