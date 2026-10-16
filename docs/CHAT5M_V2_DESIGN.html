@@ -68,6 +68,26 @@ svg.dia .tag { fill: var(--accent-soft); }
 .risk h3 { color: var(--ink); }
 code { font-family: var(--f-mono); font-size: 13px; background: var(--accent-soft); padding: 1px 5px; border-radius: 4px; }
 @media (max-width: 640px) { h1 { font-size: 34px; } }
+
+/* results section (15 October) */
+:root { --c-old: #2a78d6; --c-mid: #1baf7a; --c-new: #eb6834; --l1: #2a78d6; --l2: #eb6834; --l3: #1baf7a; --l4: #c98500; --l5: #d55181; --gridl: #e1e0d9; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --c-old: #3987e5; --c-mid: #199e70; --c-new: #d95926; --l1: #3987e5; --l2: #d95926; --l3: #199e70; --l4: #c98500; --l5: #d55181; --gridl: #2c2c2a; } }
+:root[data-theme="dark"] { --c-old: #3987e5; --c-mid: #199e70; --c-new: #d95926; --l1: #3987e5; --l2: #d95926; --l3: #199e70; --l4: #c98500; --l5: #d55181; --gridl: #2c2c2a; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.tile { background: var(--card); border: 1px solid var(--hair); border-radius: 12px; padding: 14px 16px; }
+.tl { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.tv { font: 700 40px/1.1 var(--f-display); margin-top: 4px; color: var(--ink); }
+.tv span { font-size: 18px; color: var(--muted); font-weight: 600; margin-left: 2px; }
+.td { font: 13px var(--f-mono); color: var(--ink-2); margin-top: 2px; }
+.charts2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 440px), 1fr)); gap: 16px; }
+.chart svg { display: block; width: 100%; height: auto; margin-top: 8px; }
+.chart text, #curves text { font-family: var(--f-body); font-size: 12px; fill: var(--ink-2); }
+.chart text.v { font-family: var(--f-mono); fill: var(--ink); font-weight: 600; }
+.chart .track { fill: color-mix(in srgb, var(--ink) 6%, transparent); }
+#curves svg { display: block; width: 100%; min-width: 620px; height: auto; }
+#curves .grid line { stroke: var(--gridl); stroke-width: 1; }
+#curves path { fill: none; stroke-width: 2; }
+#tip { position: fixed; z-index: 30; pointer-events: none; background: var(--ink); color: var(--paper); font: 12px var(--f-body); padding: 5px 8px; border-radius: 6px; display: none; }
 </style>
 </head>
 <body>
@@ -78,12 +98,129 @@ code { font-family: var(--f-mono); font-size: 13px; background: var(--accent-sof
   <h1>5M Chat Model v2</h1>
   <p class="lede">A 5M model built from every result that held up this week: the best 5M core, the Q&amp;A recipe, the 100,000-example skills data with rewriting, real conversations, and a new kind of training for remembering a whole conversation, all at a window twice as long. It answers from memory, says when it doesn't know, asks which one you mean, and streams long replies such as short stories.</p>
   <div class="status">
-    <span class="pill p-run">Queued: session 35, after session 34 tonight (~5 h: three trainings, then tests)</span>
+    <span class="pill p-good">Trained 15 October: arms A, B and C measured (results below); D and the GPU test suite still running</span>
     <span class="pill p-good">Structure decided by session 33: one mixed stage</span>
     <span class="pill p-shine">Replies stream in the terminal</span>
     <span class="pill p-run">Revised 15 October: A/B/C/D experiment after the reasoning-research review</span>
   </div>
 </header>
+
+<section id="results">
+  <div class="eyebrow">Results so far · 15 October, 19:45 · arms A, B, C measured; D, the GPU suite and the context stress test run tonight</div>
+  <h2>How much better is it, and where did the gains come from?</h2>
+  <p>Measured through the chat engine on the CPU (the same questions every model gets): the original skills test (100), the held-out test with names and phrasings never trained (200), the rewriting test (40) and the 32-question chat probe. The old 5M chat model is the best model of 13 October.</p>
+  <div class="tiles" style="margin-top:16px">
+    <div class="tile"><div class="tl">Skills test</div><div class="tv">75<span>/100</span></div><div class="td">old 5M: 33</div></div>
+    <div class="tile"><div class="tl">Held-out skills test</div><div class="tv">121<span>/200</span></div><div class="td">old 5M: 75–77</div></div>
+    <div class="tile"><div class="tl">Rewriting test</div><div class="tv">32<span>/40</span></div><div class="td">old 5M: 4</div></div>
+    <div class="tile"><div class="tl">Chat probe</div><div class="tv">26<span>/32</span></div><div class="td">old 5M: 23 · best ever at 5M</div></div>
+    <div class="tile"><div class="tl">Invented an answer when nothing was stored</div><div class="tv">5<span>/20</span></div><div class="td">old 5M: 20/20</div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Where the gains came from</h2>
+  <p>Each step was measured in its own controlled test, so each gain can be traced to one change. Read top to bottom: the path from the old 5M chat model to this one.</p>
+  <div class="panel scroll" style="margin-top:14px">
+    <table>
+      <thead><tr><th>Step</th><th>Measured gain</th><th>Test</th><th>Verdict</th></tr></thead>
+      <tbody>
+        <tr><td><b>New 5M core</b> (modern block, Muon + WSD, 3.2 GB mix)</td><td class="num">Wikipedia 1.555 → 1.260 bits/byte; conversation probe 6 → 12/27</td><td>sessions 31, 33</td><td><span class="pill p-good">large</span></td></tr>
+        <tr><td><b>Skills data, 100k examples</b></td><td class="num">skills 33 → 58; held-out 77 → 112</td><td>skills arm v3</td><td><span class="pill p-good">largest</span></td></tr>
+        <tr><td><b>Several candidates when close</b> (trained)</td><td class="num">skills 58 → 65; updates 4 → 11/20</td><td>skills arm v3</td><td><span class="pill p-good">large</span></td></tr>
+        <tr><td><b>Rewriting examples + "your"</b></td><td class="num">rewriting 4 → 26–29/40; "your" 3 → 19/19</td><td>skills arm v4</td><td><span class="pill p-good">large</span></td></tr>
+        <tr><td><b>Everything in one mixed stage + conversations + recall + copyable history</b> (arm A)</td><td class="num">skills 72; held-out 119; rewriting 32; chat probe 26 (skills arm v4: 69, 132, 29, 24)</td><td>A vs skills arm v4</td><td><span class="pill p-good">conversation added; held-out −13</span></td></tr>
+        <tr><td><b>Intermediate targets</b> (B vs A)</td><td class="num">updates +3, taught +3, held-out +2; but "I don't know" −3, clarify −3, chat probe −2</td><td>A vs B</td><td><span class="pill p-shine">mixed</span></td></tr>
+        <tr><td><b>Verifier</b> (C = B + 5 candidates)</td><td class="num">skills 72 → 75; grounded 95% → 96%; chat probe +1; time per answer ×3.4</td><td>B vs C</td><td><span class="pill p-shine">small gain, costs time</span></td></tr>
+        <tr><td><b>Self-training</b> (D)</td><td class="num">B already answers 93.6% of its training questions right on the first try: little left to learn</td><td>self-training round</td><td><span class="pill p-run">D trains tonight</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="charts2" style="margin-top:16px">
+    <div class="panel"><h3>Skills test (100 questions)</h3><div class="chart" data-max="100" data-rows='[["old 5M chat model",33,"--c-old"],["skills arm v3",65,"--c-mid"],["skills arm v4",69,"--c-mid"],["chat v2, A",72,"--c-new"],["chat v2, B",72,"--c-new"],["chat v2, C (B + verifier)",75,"--c-new"]]'></div></div>
+    <div class="panel"><h3>Held-out test (200, never-trained names)</h3><div class="chart" data-max="200" data-rows='[["old 5M chat model",77,"--c-old"],["skills arm v3",128,"--c-mid"],["skills arm v4",132,"--c-mid"],["chat v2, A",119,"--c-new"],["chat v2, B",121,"--c-new"],["chat v2, C (B + verifier)",121,"--c-new"]]'></div></div>
+    <div class="panel"><h3>Rewriting test (40)</h3><div class="chart" data-max="40" data-rows='[["old 5M chat model",4,"--c-old"],["skills arm v3",3,"--c-mid"],["skills arm v4",29,"--c-mid"],["chat v2, A",32,"--c-new"],["chat v2, B",31,"--c-new"],["chat v2, C (B + verifier)",32,"--c-new"]]'></div></div>
+    <div class="panel"><h3>Chat probe (32 everyday questions)</h3><div class="chart" data-max="32" data-rows='[["old 5M chat model",23,"--c-old"],["skills arm v3",24,"--c-mid"],["skills arm v4",24,"--c-mid"],["chat v2, A",26,"--c-new"],["chat v2, B",24,"--c-new"],["chat v2, C (B + verifier)",25,"--c-new"]]'></div></div>
+  </div>
+  <div class="legend"><span class="sw"><i style="background:var(--c-old)"></i>old 5M chat model</span><span class="sw"><i style="background:var(--c-mid)"></i>skills arms (old core + skills)</span><span class="sw"><i style="background:var(--c-new)"></i>chat model v2</span></div>
+</section>
+
+<section>
+  <h2>A, B and C side by side</h2>
+  <div class="panel scroll" style="margin-top:14px">
+    <table>
+      <thead><tr><th></th><th>A</th><th>A + verifier</th><th>B</th><th>C = B + verifier</th></tr></thead>
+      <tbody>
+        <tr><td>Skills test /100</td><td class="num">72</td><td class="num">73</td><td class="num">72</td><td class="num"><b>75</b></td></tr>
+        <tr><td>· taught, reworded /20</td><td class="num">13</td><td class="num">14</td><td class="num">16</td><td class="num"><b>17</b></td></tr>
+        <tr><td>· updates /20</td><td class="num">10</td><td class="num">10</td><td class="num"><b>13</b></td><td class="num"><b>13</b></td></tr>
+        <tr><td>· near misses /20</td><td class="num">18</td><td class="num">18</td><td class="num">18</td><td class="num"><b>19</b></td></tr>
+        <tr><td>· "I don't know" /20</td><td class="num"><b>15</b></td><td class="num"><b>15</b></td><td class="num">12</td><td class="num">12</td></tr>
+        <tr><td>· clarify /10, follow-up /10</td><td class="num"><b>7</b>, 9</td><td class="num">6, <b>10</b></td><td class="num">4, 9</td><td class="num">4, <b>10</b></td></tr>
+        <tr><td>Held-out test /200</td><td class="num">119</td><td class="num">118</td><td class="num"><b>121</b></td><td class="num"><b>121</b></td></tr>
+        <tr><td>Rewriting /40 (short, yes/no, lists)</td><td class="num">32 (13, 15, 4)</td><td class="num"><b>33</b> (14, 15, 4)</td><td class="num">31 (13, 14, 4)</td><td class="num">32 (13, 14, 5)</td></tr>
+        <tr><td>Chat probe /32</td><td class="num"><b>26</b></td><td class="num"><b>26</b></td><td class="num">24</td><td class="num">25</td></tr>
+        <tr><td>Wrong refusals (skills / held-out)</td><td class="num">5 / 13</td><td class="num">5 / 13</td><td class="num"><b>4 / 11</b></td><td class="num"><b>4 / 11</b></td></tr>
+        <tr><td>Invented an answer, nothing stored (/20, /40)</td><td class="num"><b>5 / 18</b></td><td class="num"><b>5 / 18</b></td><td class="num">8 / 21</td><td class="num">8 / 21</td></tr>
+        <tr><td>Answers built from the evidence</td><td class="num">93–97%</td><td class="num">95–98%</td><td class="num">95–100%</td><td class="num"><b>96–100%</b></td></tr>
+        <tr><td>Seconds per answer (CPU)</td><td class="num"><b>0.20</b></td><td class="num">0.63–0.74</td><td class="num"><b>0.20</b></td><td class="num">0.66–0.72</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:12px">Reading it: the intermediate targets made the model better at picking and copying the right fact (taught, updates) and worse at the two judgement calls ("I don't know", clarify): pointing training pulls answers toward copying. The verifier adds a little on top at three times the time. A is the most balanced; C scores highest on the skills test.</p>
+</section>
+
+<section>
+  <h2>Training: what the model learned, by window kind</h2>
+  <p>Bits per code on each kind of window during arm A's 30,000 steps (63 minutes on the RTX 3090). Arm B's curves sit on top of A's (final values within 1%), so the extra target cost nothing elsewhere; its own pointing loss fell from 0.86 to 0.10.</p>
+  <div class="panel" style="margin-top:14px"><div id="curves" class="scroll"></div>
+    <p style="margin-top:8px">The skills and recall windows fall to almost zero (0.01 and 0.003 bits per code): the invented-fact examples became easy, and part of what the model learned is their surface pattern. That shows up in the live chat below.</p></div>
+</section>
+
+<section>
+  <h2>The first live conversation</h2>
+  <p>Adam's first chat with arm A, nine messages. The tests above did not include greetings, statements or creative requests; this conversation did.</p>
+  <div class="panel scroll" style="margin-top:14px">
+    <table>
+      <thead><tr><th>Message</th><th>Reply</th><th>Verdict and cause</th></tr></thead>
+      <tbody>
+        <tr><td>Where does my sister live now?</td><td>Your sister is called Ana and she lives in Lisbon.</td><td><span class="pill p-good">worked</span> copied from an earlier turn, "your" for "my" (the copyable-history fix)</td></tr>
+        <tr><td>How are you? · hello</td><td>I don't have that in my memory. Could you tell me?</td><td><span class="pill p-shine">over-refusal</span> no chit-chat in training; an unfamiliar personal topic triggers "I don't know"</td></tr>
+        <tr><td>My sister is called Ana and she lives in Lisbon. My brother Tom is a pilot.</td><td>I don't have that in my memory. Could you tell me?</td><td><span class="pill p-shine">gap</span> replying to a statement was never a training target (acknowledgements only appeared inside history)</td></tr>
+        <tr><td>Are you able to write me a little story about a girl named Alexis?</td><td>I don't have that in my memory. Could you tell me?</td><td><span class="pill p-shine">over-refusal</span> a name in the request looked like a personal-fact question</td></tr>
+        <tr><td>What is your favorite food?</td><td>Do you mean a restaurant or a restaurant?</td><td><span class="pill p-shine">misfire</span> the clarifying habit with nothing to tell apart</td></tr>
+        <tr><td>Actually, Ana moved to Porto … Where does my sister live now?</td><td>… lives in Lisbon.</td><td><span class="pill p-shine">gap</span> corrections in training always said "my sister", never the name</td></tr>
+        <tr><td>What does my brother do?</td><td>Your brother</td><td><span class="pill p-shine">verifier flaw</span> a two-word fragment is 100% "supported"; ranking must reward saying something</td></tr>
+        <tr><td>Time to the first word</td><td>22–25 ms (verifier on: 0.3–0.9 s)</td><td><span class="pill p-good">fast</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:12px">Planned data revision: statement → acknowledgement replies, chit-chat, creative requests that name people, free-form recall, corrections by name, more real conversation and fewer "unknown" examples, a verifier that prefers informative answers, and an everyday-chat test so this is measured from now on.</p>
+</section>
+
+<section>
+  <h2>Long context: first measurements (CPU trial)</h2>
+  <p>The full test (raw window to 1M codes on the GPU, session memory to ~3M codes) runs tonight as session 36. The CPU trial already shows the two regimes.</p>
+  <div class="panel scroll" style="margin-top:14px">
+    <table>
+      <thead><tr><th></th><th>5M chat model</th><th>100M</th></tr></thead>
+      <tbody>
+        <tr><td>Read 2,048 / 8,192 codes before the first word (CPU)</td><td class="num">0.3 s / 1.3 s</td><td class="num">1.2 s / 6.1 s</td></tr>
+        <tr><td>Writing speed at 2,048 / 8,192 codes (CPU)</td><td class="num">11 / 25 ms per code</td><td class="num">42 / 64 ms per code</td></tr>
+        <tr><td>A code word planted early, found by attention alone</td><td class="num">no, even at 2,048</td><td class="num">no</td></tr>
+        <tr><td>Past the trained window</td><td class="num">rambles</td><td class="num">degenerates into repeated lines</td></tr>
+        <tr><td>A fact told in turn 1, asked after 100 turns (40,000 codes, 143,000 characters) via session memory</td><td class="num"><b>3 of 3</b>, lookup 21 ms, answer 0.25 s</td><td class="num">0 of 3 (never trained to read the user's own statements)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="margin-top:12px">So far: attention over a long window is not where these small models remember; session memory is, and its cost barely depends on length.</p>
+</section>
+
+<section class="panel">
+  <h2>Still to come tonight</h2>
+  <p>Arm D (self-training) and its tests; the GPU test suite on A, B and D (speed as the window fills, quality by position to 4,096, recall after 2–40 turns with and without session memory, eight short stories, both conversation probes as real chats, the report card); hand ratings of the 50 questions; session 36's long-context stress test. This page will be updated with them.</p>
+</section>
+
 
 <section>
   <h2>The experiment: four versions of the same model</h2>
@@ -299,5 +436,43 @@ code { font-family: var(--f-mono); font-size: 13px; background: var(--accent-sof
 </section>
 
 </main>
+
+<div id="tip"></div>
+<script>
+// bar charts (one measure each) and the training curves; every number above comes from the result files
+(function () {
+  const tip = document.getElementById("tip");
+  const showTip = (e, t) => { tip.textContent = t; tip.style.display = "block"; tip.style.left = (e.clientX + 12) + "px"; tip.style.top = (e.clientY + 12) + "px"; };
+  document.addEventListener("pointermove", e => { if (tip.style.display === "block") { tip.style.left = (e.clientX + 12) + "px"; tip.style.top = (e.clientY + 12) + "px"; } });
+  document.querySelectorAll(".chart").forEach(div => {
+    const rows = JSON.parse(div.dataset.rows), max = +div.dataset.max, W = 400, lab = 150, val = 40, plot = W - lab - val, rh = 26;
+    let s = `<svg viewBox="0 0 ${W} ${rows.length * rh + 6}" role="img" aria-label="bar chart">`;
+    rows.forEach(([l, v, c], i) => {
+      const y = i * rh + 4, w = Math.max(2, plot * v / max);
+      s += `<text x="0" y="${y + 15}">${l}</text><rect class="track" x="${lab}" y="${y + 5}" width="${plot}" height="13" rx="3"></rect>`;
+      s += `<rect x="${lab}" y="${y + 5}" width="${w}" height="13" rx="3" style="fill:var(${c})" data-t="${l}: ${v} of ${max}"></rect>`;
+      s += `<text class="v" x="${lab + w + 6}" y="${y + 15}">${v}</text>`;
+    });
+    div.innerHTML = s + "</svg>";
+    div.querySelectorAll("rect[data-t]").forEach(r => { r.addEventListener("pointerenter", e => showTip(e, r.dataset.t)); r.addEventListener("pointerleave", () => tip.style.display = "none"); });
+  });
+  const A = [{"step": 500, "qa": 2.59, "skills": 0.619, "convo": 3.581, "recall": 1.397, "rehearse": 4.626}, {"step": 1000, "qa": 2.401, "skills": 0.22, "convo": 3.304, "recall": 0.145, "rehearse": 4.351}, {"step": 1500, "qa": 2.201, "skills": 0.167, "convo": 3.255, "recall": 0.083, "rehearse": 4.323}, {"step": 2000, "qa": 2.27, "skills": 0.131, "convo": 3.274, "recall": 0.088, "rehearse": 4.293}, {"step": 2500, "qa": 2.27, "skills": 0.108, "convo": 3.25, "recall": 0.069, "rehearse": 4.327}, {"step": 3000, "qa": 2.259, "skills": 0.095, "convo": 3.25, "recall": 0.052, "rehearse": 4.248}, {"step": 3500, "qa": 2.238, "skills": 0.094, "convo": 3.298, "recall": 0.043, "rehearse": 4.259}, {"step": 4000, "qa": 2.257, "skills": 0.085, "convo": 3.235, "recall": 0.042, "rehearse": 4.22}, {"step": 4500, "qa": 2.216, "skills": 0.081, "convo": 3.197, "recall": 0.042, "rehearse": 4.177}, {"step": 5000, "qa": 2.227, "skills": 0.075, "convo": 3.281, "recall": 0.038, "rehearse": 4.185}, {"step": 5500, "qa": 2.257, "skills": 0.068, "convo": 3.217, "recall": 0.03, "rehearse": 4.171}, {"step": 6000, "qa": 2.233, "skills": 0.061, "convo": 3.224, "recall": 0.04, "rehearse": 4.158}, {"step": 6500, "qa": 2.185, "skills": 0.06, "convo": 3.226, "recall": 0.031, "rehearse": 4.133}, {"step": 7000, "qa": 2.196, "skills": 0.058, "convo": 3.217, "recall": 0.029, "rehearse": 4.129}, {"step": 7500, "qa": 2.196, "skills": 0.056, "convo": 3.269, "recall": 0.034, "rehearse": 4.122}, {"step": 8000, "qa": 2.147, "skills": 0.053, "convo": 3.287, "recall": 0.022, "rehearse": 4.155}, {"step": 8500, "qa": 2.19, "skills": 0.046, "convo": 3.248, "recall": 0.029, "rehearse": 4.068}, {"step": 9000, "qa": 2.112, "skills": 0.051, "convo": 3.202, "recall": 0.02, "rehearse": 4.082}, {"step": 9500, "qa": 2.124, "skills": 0.051, "convo": 3.196, "recall": 0.026, "rehearse": 4.074}, {"step": 10000, "qa": 2.139, "skills": 0.044, "convo": 3.188, "recall": 0.028, "rehearse": 4.08}, {"step": 10500, "qa": 2.164, "skills": 0.046, "convo": 3.296, "recall": 0.019, "rehearse": 4.08}, {"step": 11000, "qa": 2.115, "skills": 0.047, "convo": 3.296, "recall": 0.021, "rehearse": 4.061}, {"step": 11500, "qa": 2.199, "skills": 0.041, "convo": 3.185, "recall": 0.012, "rehearse": 4.031}, {"step": 12000, "qa": 2.196, "skills": 0.041, "convo": 3.216, "recall": 0.018, "rehearse": 4.032}, {"step": 12500, "qa": 2.142, "skills": 0.042, "convo": 3.203, "recall": 0.016, "rehearse": 4.022}, {"step": 13000, "qa": 2.083, "skills": 0.035, "convo": 3.191, "recall": 0.013, "rehearse": 4.02}, {"step": 13500, "qa": 2.179, "skills": 0.035, "convo": 3.202, "recall": 0.013, "rehearse": 4.006}, {"step": 14000, "qa": 2.176, "skills": 0.032, "convo": 3.23, "recall": 0.022, "rehearse": 4.02}, {"step": 14500, "qa": 2.109, "skills": 0.031, "convo": 3.243, "recall": 0.016, "rehearse": 3.984}, {"step": 15000, "qa": 2.191, "skills": 0.031, "convo": 3.221, "recall": 0.012, "rehearse": 3.968}, {"step": 15500, "qa": 2.164, "skills": 0.029, "convo": 3.215, "recall": 0.019, "rehearse": 3.961}, {"step": 16000, "qa": 2.124, "skills": 0.031, "convo": 3.198, "recall": 0.008, "rehearse": 3.946}, {"step": 16500, "qa": 2.093, "skills": 0.029, "convo": 3.232, "recall": 0.01, "rehearse": 3.935}, {"step": 17000, "qa": 2.034, "skills": 0.027, "convo": 3.145, "recall": 0.01, "rehearse": 3.935}, {"step": 17500, "qa": 2.161, "skills": 0.026, "convo": 3.213, "recall": 0.008, "rehearse": 3.928}, {"step": 18000, "qa": 2.137, "skills": 0.028, "convo": 3.189, "recall": 0.009, "rehearse": 3.935}, {"step": 18500, "qa": 2.144, "skills": 0.025, "convo": 3.204, "recall": 0.006, "rehearse": 3.929}, {"step": 19000, "qa": 2.055, "skills": 0.025, "convo": 3.241, "recall": 0.005, "rehearse": 3.914}, {"step": 19500, "qa": 2.055, "skills": 0.025, "convo": 3.18, "recall": 0.006, "rehearse": 3.886}, {"step": 20000, "qa": 2.074, "skills": 0.022, "convo": 3.181, "recall": 0.002, "rehearse": 3.929}, {"step": 20500, "qa": 2.184, "skills": 0.021, "convo": 3.2, "recall": 0.005, "rehearse": 3.894}, {"step": 21000, "qa": 2.094, "skills": 0.02, "convo": 3.209, "recall": 0.005, "rehearse": 3.918}, {"step": 21500, "qa": 2.05, "skills": 0.021, "convo": 3.142, "recall": 0.005, "rehearse": 3.881}, {"step": 22000, "qa": 2.139, "skills": 0.019, "convo": 3.158, "recall": 0.004, "rehearse": 3.861}, {"step": 22500, "qa": 2.099, "skills": 0.019, "convo": 3.114, "recall": 0.002, "rehearse": 3.888}, {"step": 23000, "qa": 1.999, "skills": 0.02, "convo": 3.134, "recall": 0.003, "rehearse": 3.885}, {"step": 23500, "qa": 2.099, "skills": 0.02, "convo": 3.152, "recall": 0.002, "rehearse": 3.835}, {"step": 24000, "qa": 2.13, "skills": 0.015, "convo": 3.158, "recall": 0.003, "rehearse": 3.873}, {"step": 24500, "qa": 2.095, "skills": 0.015, "convo": 3.099, "recall": 0.002, "rehearse": 3.864}, {"step": 25000, "qa": 2.07, "skills": 0.014, "convo": 3.12, "recall": 0.008, "rehearse": 3.852}, {"step": 25500, "qa": 2.035, "skills": 0.016, "convo": 3.155, "recall": 0.002, "rehearse": 3.859}, {"step": 26000, "qa": 2.063, "skills": 0.015, "convo": 3.115, "recall": 0.004, "rehearse": 3.85}, {"step": 26500, "qa": 2.164, "skills": 0.013, "convo": 3.143, "recall": 0.003, "rehearse": 3.849}, {"step": 27000, "qa": 2.096, "skills": 0.014, "convo": 3.132, "recall": 0.003, "rehearse": 3.842}, {"step": 27500, "qa": 2.051, "skills": 0.015, "convo": 3.113, "recall": 0.002, "rehearse": 3.842}, {"step": 28000, "qa": 2.04, "skills": 0.013, "convo": 3.167, "recall": 0.001, "rehearse": 3.843}, {"step": 28500, "qa": 1.979, "skills": 0.014, "convo": 3.14, "recall": 0.002, "rehearse": 3.845}, {"step": 29000, "qa": 2.093, "skills": 0.013, "convo": 3.175, "recall": 0.003, "rehearse": 3.842}, {"step": 29500, "qa": 1.993, "skills": 0.013, "convo": 3.107, "recall": 0.002, "rehearse": 3.813}, {"step": 30000, "qa": 2.044, "skills": 0.012, "convo": 3.092, "recall": 0.003, "rehearse": 3.826}];
+  const kinds = [["rehearse", "rehearsal text", "--l1"], ["convo", "real conversations", "--l2"], ["qa", "Q&A", "--l3"], ["recall", "long recall", "--l4"], ["skills", "skills", "--l5"]];
+  const W = 760, H = 310, L = 46, R = 170, T = 26, B = 34, ymax = 5;
+  const x = st => L + (W - L - R) * st / 30000, y = v => T + (H - T - B) * (1 - v / ymax);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="training curves by window kind"><g class="grid">`;
+  for (let v = 0; v <= ymax; v++) s += `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"></line><text x="${L - 8}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
+  for (let st = 0; st <= 30000; st += 10000) s += `<text x="${x(st)}" y="${H - 12}" text-anchor="middle">${st / 1000}k</text>`;
+  s += `</g><text x="${L}" y="${H - 1}" font-size="11">training step</text><text x="4" y="12" font-size="11">bits/code</text>`;
+  let prevY = -1e9;   // end labels top to bottom, pushed apart so they never overlap
+  kinds.forEach(([k, name, c]) => {
+    const d = A.map((r, i) => `${i ? "L" : "M"}${x(r.step).toFixed(1)},${y(Math.min(ymax, r[k])).toFixed(1)}`).join(" ");
+    const last = A[A.length - 1][k], ly = Math.max(y(last) + 4, prevY + 15); prevY = ly;
+    s += `<path d="${d}" style="stroke:var(${c})"></path><circle cx="${x(30000)}" cy="${y(last)}" r="4" style="fill:var(${c})"></circle>`;
+    s += `<text x="${x(30000) + 10}" y="${ly}">${name} ${last}</text>`;
+  });
+  document.getElementById("curves").innerHTML = s + "</svg>";
+})();
+</script>
 </body>
 </html>
