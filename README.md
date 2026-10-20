@@ -35,20 +35,30 @@ download them: run `git lfs pull`.
 
 The first chat downloads the MiniLM sentence encoder (about 90 MB, from Hugging Face) and builds the fact store's
 meaning vectors once (`data_real/shared/knowledge/knowledge_real_minilm.npy`, 0.5 GB, a few minutes on a GPU). After
-that the model starts in seconds. To skip the menu: `python run_model.py --chat runs/chat22/mix_5m_s2.pt`.
+that the model loads in under a minute (311,010 facts). To skip the menu: `python run_model.py --chat runs/chat22/mix_5m_s2.pt`.
 
 ### Things to try in the chat
 
 ```text
-you> My wifi password is maple42.
-you> What is my wifi password?
-you> Actually, I changed it to birch77.
-you> What's the wifi password now?
-you> What is the capital of Australia?          (answered from the permanent store)
-you> What is my sister's name?                  (never told: it should say it doesn't know)
-you> /add Who leads the project? || Adam Barnett leads the project.
-you> Who leads the project?
+you> My dog's name is Rex.
+you> What is my dog's name?                       -> Your dog Rex.
+you> My favorite color is green.
+you> Actually, my favorite color is blue now.
+you> What is my favorite color?                   -> Your favorite color is blue now.
+you> What is the capital of Australia?            -> The capital of Australia is Canberra   (permanent store)
+you> What is photosynthesis?                      -> Photosynthesis is the biological process by which plants ...
+you> What is 12 plus 30?                          -> 12 plus 30 is 42.   (calculator tool)
+you> What is my brother's name?                   -> I don't have that in my memory. Could you tell me?
+you> /forget
+you> /add When is the team meeting? || The team meeting is on Friday at 3 pm.
+you> When is the team meeting?                    -> The team meeting is on Friday at 3 pm.
 ```
+
+These replies come from the shipped model, typed in this order as one conversation (checked from a fresh clone on
+19 October). You will also see its weak spots: some ways of telling it a fact are refused ("My wifi password is
+maple42", "My name is Sam"), some general questions miss ("Who wrote Pride and Prejudice?"), stories wander after a
+sentence or two, and a refusal tends to make the next answer refuse too (asked right after "What is my brother's
+name?", even "What is 12 plus 30?" is refused; `/forget` starts fresh). These are the targets of the next rounds.
 
 Under each reply a short line shows where the answer came from (`memory: stored fact ...`, `memory: turn N ...`, a
 tool, or "nothing found, the model answered on its own"), how full the window is, and the time. Commands: `/add`,
