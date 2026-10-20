@@ -1,0 +1,31 @@
+{
+ "model": "runs/chat22/v24a_s1.pt",
+ "engine": "chat22",
+ "tier": "full",
+ "date": "2026-10-19 16:25",
+ "retrieval": "word key + MiniLM dense key (outside reference)",
+ "engine_opts": "{\"search\": \"v2\"}",
+ "clean_store_after_stored_skills": true,
+ "story": {
+  "questions": {
+   "k": 51,
+   "n": 75,
+   "share": 0.68,
+   "ci95": [
+    0.568,
+    0.775
+   ]
+  },
+  "contradictions_per_scene": 0.12,
+  "character_facts_used": {
+   "k": 22,
+   "n": 44,
+   "share": 0.5,
+   "ci95": [
+    0.358,
+    0.642
+   ]
+  }
+ },
+ "seconds": 101
+}

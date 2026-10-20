@@ -1,0 +1,29 @@
+{
+ "core": "runs/core_D3s512/scale_5M_v0_8k_ng64.pt",
+ "tag": "5m",
+ "unfreeze": 2,
+ "outcome_pairs": 19155,
+ "steps": 3000,
+ "quora": {
+  "literal": [
+   0.7425,
+   0.9715
+  ],
+  "k2v2_alone": [
+   0.749,
+   0.9735
+  ],
+  "literal_plus_k2v2": [
+   0.779,
+   0.9855
+  ],
+  "weight": 4.0
+ },
+ "skills_retrieval_at_1": {
+  "k2v2": "40/70"
+ },
+ "ms_per_query": {
+  "k2v2": 15.3
+ },
+ "note": "session 32 on the same items: literal 41/70, K2-5M 39/70, K2-100M 38/70, MiniLM 41/70; Quora literal+MiniLM 0.809"
+}

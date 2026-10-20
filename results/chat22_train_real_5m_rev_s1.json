@@ -1,0 +1,5506 @@
+{
+ "name": "real_5m_rev_s1",
+ "config": {
+  "vocab": 8192,
+  "width": 256,
+  "layers": 6,
+  "heads": 8,
+  "ctx": 2048,
+  "rope_scale": 1.0,
+  "dict": "runs\\core_mt5m\\v0_8k_plain.cv0d",
+  "facts": "data_real/shared/knowledge/knowledge_real.jsonl",
+  "dense": 2.0,
+  "parts": [
+   "longconv",
+   "longdocs",
+   "realev"
+  ],
+  "data_dir": "data_real/5m",
+  "memory_opts": {
+   "gate": [
+    0.3,
+    0.6
+   ],
+   "gate_facts": [
+    0.5,
+    0.8
+   ],
+   "k_facts": 2,
+   "k_session": 4
+  },
+  "mix": "v22",
+  "lr": 0.0001,
+  "batch": 16,
+  "mem_codes": 512,
+  "reply_room": 300,
+  "layout": "chat22",
+  "core": "runs/core_mt5m/scale_custom_v0_8k.pt",
+  "shares": {
+   "qa": 0.17,
+   "skills": 0.135,
+   "convo": 0.11,
+   "recall": 0.12,
+   "buried": 0.11,
+   "docqa": 0.06,
+   "story": 0.085,
+   "rehearse": 0.1,
+   "longconv": 0.11
+  },
+  "aux": 0.5,
+  "point": 0.5,
+  "seed": 1
+ },
+ "best": {
+  "step": 41000,
+  "combined": 0.5194889627397451
+ },
+ "log": [
+  {
+   "step": 500,
+   "s": 126,
+   "gpu_peak_gb": 6.43,
+   "lr_factor": 1.0,
+   "combined": 1.0,
+   "train": {
+    "qa": 2.2671,
+    "skills": 1.0148,
+    "convo": 3.7456,
+    "recall": 1.2691,
+    "buried": 1.9289,
+    "docqa": 2.3148,
+    "story": 4.693,
+    "rehearse": 4.7295,
+    "longconv": 0.6023
+   },
+   "held": {
+    "qa": {
+     "loss": 1.1801,
+     "reply_sure": 0.115,
+     "evidence_right": 0.766
+    },
+    "skills": {
+     "loss": 0.4268,
+     "reply_sure": 0.333,
+     "evidence_right": 0.896
+    },
+    "convo": {
+     "loss": 3.2135,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.2435,
+     "reply_sure": 0.365,
+     "evidence_right": 0.875
+    },
+    "buried": {
+     "loss": 1.2741,
+     "reply_sure": 0.052,
+     "evidence_right": 0.733
+    },
+    "docqa": {
+     "loss": 1.0915,
+     "reply_sure": 0.0,
+     "evidence_right": 0.789
+    },
+    "story": {
+     "loss": 4.3519,
+     "reply_sure": 0.01,
+     "evidence_right": 0.253
+    },
+    "rehearse": {
+     "loss": 4.9481,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.2457,
+     "reply_sure": 0.375,
+     "evidence_right": 0.938
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 1000,
+   "s": 248,
+   "gpu_peak_gb": 6.44,
+   "lr_factor": 1.0,
+   "combined": 0.8329,
+   "train": {
+    "qa": 1.9431,
+    "skills": 0.3004,
+    "convo": 3.4762,
+    "recall": 0.2614,
+    "buried": 1.1418,
+    "docqa": 0.8395,
+    "story": 4.129,
+    "rehearse": 4.4336,
+    "longconv": 0.2083
+   },
+   "held": {
+    "qa": {
+     "loss": 0.9829,
+     "reply_sure": 0.292,
+     "evidence_right": 0.792
+    },
+    "skills": {
+     "loss": 0.2497,
+     "reply_sure": 0.427,
+     "evidence_right": 0.927
+    },
+    "convo": {
+     "loss": 3.277,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.1873,
+     "reply_sure": 0.354,
+     "evidence_right": 0.925
+    },
+    "buried": {
+     "loss": 1.235,
+     "reply_sure": 0.042,
+     "evidence_right": 0.756
+    },
+    "docqa": {
+     "loss": 0.7424,
+     "reply_sure": 0.0,
+     "evidence_right": 0.89
+    },
+    "story": {
+     "loss": 4.4448,
+     "reply_sure": 0.042,
+     "evidence_right": 0.294
+    },
+    "rehearse": {
+     "loss": 5.0984,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.1444,
+     "reply_sure": 0.396,
+     "evidence_right": 0.953
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 1500,
+   "s": 372,
+   "gpu_peak_gb": 6.46,
+   "lr_factor": 1.0,
+   "combined": 0.7836,
+   "train": {
+    "qa": 1.7611,
+    "skills": 0.2312,
+    "convo": 3.4467,
+    "recall": 0.2178,
+    "buried": 0.9839,
+    "docqa": 0.6894,
+    "story": 4.2204,
+    "rehearse": 4.443,
+    "longconv": 0.13
+   },
+   "held": {
+    "qa": {
+     "loss": 1.0023,
+     "reply_sure": 0.26,
+     "evidence_right": 0.765
+    },
+    "skills": {
+     "loss": 0.2063,
+     "reply_sure": 0.448,
+     "evidence_right": 0.943
+    },
+    "convo": {
+     "loss": 3.1685,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.188,
+     "reply_sure": 0.375,
+     "evidence_right": 0.939
+    },
+    "buried": {
+     "loss": 1.1107,
+     "reply_sure": 0.052,
+     "evidence_right": 0.78
+    },
+    "docqa": {
+     "loss": 0.6622,
+     "reply_sure": 0.0,
+     "evidence_right": 0.92
+    },
+    "story": {
+     "loss": 4.2622,
+     "reply_sure": 0.042,
+     "evidence_right": 0.291
+    },
+    "rehearse": {
+     "loss": 4.9665,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.1228,
+     "reply_sure": 0.427,
+     "evidence_right": 0.963
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 2000,
+   "s": 503,
+   "gpu_peak_gb": 6.46,
+   "lr_factor": 1.0,
+   "combined": 0.7439,
+   "train": {
+    "qa": 1.9306,
+    "skills": 0.1869,
+    "convo": 3.4295,
+    "recall": 0.192,
+    "buried": 0.988,
+    "docqa": 0.5833,
+    "story": 3.9928,
+    "rehearse": 4.426,
+    "longconv": 0.119
+   },
+   "held": {
+    "qa": {
+     "loss": 0.9243,
+     "reply_sure": 0.302,
+     "evidence_right": 0.788
+    },
+    "skills": {
+     "loss": 0.1702,
+     "reply_sure": 0.5,
+     "evidence_right": 0.948
+    },
+    "convo": {
+     "loss": 3.1748,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.1731,
+     "reply_sure": 0.427,
+     "evidence_right": 0.938
+    },
+    "buried": {
+     "loss": 1.0755,
+     "reply_sure": 0.115,
+     "evidence_right": 0.774
+    },
+    "docqa": {
+     "loss": 0.5892,
+     "reply_sure": 0.0,
+     "evidence_right": 0.948
+    },
+    "story": {
+     "loss": 4.2511,
+     "reply_sure": 0.083,
+     "evidence_right": 0.288
+    },
+    "rehearse": {
+     "loss": 4.9842,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.1096,
+     "reply_sure": 0.375,
+     "evidence_right": 0.966
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 2500,
+   "s": 630,
+   "gpu_peak_gb": 6.47,
+   "lr_factor": 1.0,
+   "combined": 0.7224,
+   "train": {
+    "qa": 1.8162,
+    "skills": 0.1588,
+    "convo": 3.4881,
+    "recall": 0.1967,
+    "buried": 0.9223,
+    "docqa": 0.6024,
+    "story": 4.1765,
+    "rehearse": 4.4031,
+    "longconv": 0.1235
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8632,
+     "reply_sure": 0.312,
+     "evidence_right": 0.787
+    },
+    "skills": {
+     "loss": 0.1343,
+     "reply_sure": 0.615,
+     "evidence_right": 0.963
+    },
+    "convo": {
+     "loss": 3.165,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.1482,
+     "reply_sure": 0.562,
+     "evidence_right": 0.943
+    },
+    "buried": {
+     "loss": 1.0592,
+     "reply_sure": 0.115,
+     "evidence_right": 0.767
+    },
+    "docqa": {
+     "loss": 0.5837,
+     "reply_sure": 0.0,
+     "evidence_right": 0.946
+    },
+    "story": {
+     "loss": 4.3085,
+     "reply_sure": 0.073,
+     "evidence_right": 0.297
+    },
+    "rehearse": {
+     "loss": 5.0087,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.1212,
+     "reply_sure": 0.542,
+     "evidence_right": 0.964
+    }
+   },
+   "overfit_alarm": [
+    "rehearse"
+   ]
+  },
+  {
+   "step": 3000,
+   "s": 763,
+   "gpu_peak_gb": 6.48,
+   "lr_factor": 1.0,
+   "combined": 0.7126,
+   "train": {
+    "qa": 1.6093,
+    "skills": 0.136,
+    "convo": 3.5155,
+    "recall": 0.179,
+    "buried": 0.8633,
+    "docqa": 0.5388,
+    "story": 3.9585,
+    "rehearse": 4.3928,
+    "longconv": 0.1102
+   },
+   "held": {
+    "qa": {
+     "loss": 0.986,
+     "reply_sure": 0.208,
+     "evidence_right": 0.769
+    },
+    "skills": {
+     "loss": 0.1236,
+     "reply_sure": 0.635,
+     "evidence_right": 0.973
+    },
+    "convo": {
+     "loss": 3.1522,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.1404,
+     "reply_sure": 0.531,
+     "evidence_right": 0.943
+    },
+    "buried": {
+     "loss": 1.0616,
+     "reply_sure": 0.125,
+     "evidence_right": 0.782
+    },
+    "docqa": {
+     "loss": 0.5617,
+     "reply_sure": 0.0,
+     "evidence_right": 0.954
+    },
+    "story": {
+     "loss": 4.1859,
+     "reply_sure": 0.094,
+     "evidence_right": 0.304
+    },
+    "rehearse": {
+     "loss": 4.9565,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.103,
+     "reply_sure": 0.667,
+     "evidence_right": 0.97
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 3500,
+   "s": 889,
+   "gpu_peak_gb": 6.48,
+   "lr_factor": 1.0,
+   "combined": 0.6942,
+   "train": {
+    "qa": 1.7057,
+    "skills": 0.1265,
+    "convo": 3.4389,
+    "recall": 0.1566,
+    "buried": 0.8461,
+    "docqa": 0.5448,
+    "story": 3.9402,
+    "rehearse": 4.3778,
+    "longconv": 0.1113
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8877,
+     "reply_sure": 0.333,
+     "evidence_right": 0.76
+    },
+    "skills": {
+     "loss": 0.1073,
+     "reply_sure": 0.688,
+     "evidence_right": 0.981
+    },
+    "convo": {
+     "loss": 3.1427,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.1333,
+     "reply_sure": 0.594,
+     "evidence_right": 0.959
+    },
+    "buried": {
+     "loss": 1.0356,
+     "reply_sure": 0.156,
+     "evidence_right": 0.795
+    },
+    "docqa": {
+     "loss": 0.537,
+     "reply_sure": 0.01,
+     "evidence_right": 0.974
+    },
+    "story": {
+     "loss": 4.2369,
+     "reply_sure": 0.094,
+     "evidence_right": 0.311
+    },
+    "rehearse": {
+     "loss": 4.9874,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.1063,
+     "reply_sure": 0.573,
+     "evidence_right": 0.966
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 4000,
+   "s": 1012,
+   "gpu_peak_gb": 6.49,
+   "lr_factor": 1.0,
+   "combined": 0.6856,
+   "train": {
+    "qa": 1.7736,
+    "skills": 0.118,
+    "convo": 3.4102,
+    "recall": 0.1596,
+    "buried": 0.8544,
+    "docqa": 0.5206,
+    "story": 3.9012,
+    "rehearse": 4.381,
+    "longconv": 0.0964
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8798,
+     "reply_sure": 0.333,
+     "evidence_right": 0.779
+    },
+    "skills": {
+     "loss": 0.1022,
+     "reply_sure": 0.677,
+     "evidence_right": 0.977
+    },
+    "convo": {
+     "loss": 3.1532,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.1255,
+     "reply_sure": 0.615,
+     "evidence_right": 0.965
+    },
+    "buried": {
+     "loss": 0.9998,
+     "reply_sure": 0.104,
+     "evidence_right": 0.797
+    },
+    "docqa": {
+     "loss": 0.525,
+     "reply_sure": 0.021,
+     "evidence_right": 0.966
+    },
+    "story": {
+     "loss": 4.1224,
+     "reply_sure": 0.125,
+     "evidence_right": 0.332
+    },
+    "rehearse": {
+     "loss": 4.9852,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.115,
+     "reply_sure": 0.635,
+     "evidence_right": 0.973
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 4500,
+   "s": 1134,
+   "gpu_peak_gb": 6.49,
+   "lr_factor": 1.0,
+   "combined": 0.6912,
+   "train": {
+    "qa": 1.7233,
+    "skills": 0.1046,
+    "convo": 3.4349,
+    "recall": 0.1463,
+    "buried": 0.8274,
+    "docqa": 0.5212,
+    "story": 3.9907,
+    "rehearse": 4.4336,
+    "longconv": 0.0988
+   },
+   "held": {
+    "qa": {
+     "loss": 0.9546,
+     "reply_sure": 0.219,
+     "evidence_right": 0.742
+    },
+    "skills": {
+     "loss": 0.0847,
+     "reply_sure": 0.719,
+     "evidence_right": 0.978
+    },
+    "convo": {
+     "loss": 3.1419,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.13,
+     "reply_sure": 0.51,
+     "evidence_right": 0.944
+    },
+    "buried": {
+     "loss": 1.0093,
+     "reply_sure": 0.125,
+     "evidence_right": 0.786
+    },
+    "docqa": {
+     "loss": 0.5391,
+     "reply_sure": 0.0,
+     "evidence_right": 0.952
+    },
+    "story": {
+     "loss": 4.2031,
+     "reply_sure": 0.135,
+     "evidence_right": 0.314
+    },
+    "rehearse": {
+     "loss": 4.998,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.1081,
+     "reply_sure": 0.521,
+     "evidence_right": 0.965
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 5000,
+   "s": 1262,
+   "gpu_peak_gb": 6.49,
+   "lr_factor": 1.0,
+   "combined": 0.6766,
+   "train": {
+    "qa": 1.5214,
+    "skills": 0.095,
+    "convo": 3.4153,
+    "recall": 0.1405,
+    "buried": 0.8486,
+    "docqa": 0.4828,
+    "story": 3.8628,
+    "rehearse": 4.433,
+    "longconv": 0.0909
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8273,
+     "reply_sure": 0.427,
+     "evidence_right": 0.769
+    },
+    "skills": {
+     "loss": 0.1026,
+     "reply_sure": 0.698,
+     "evidence_right": 0.983
+    },
+    "convo": {
+     "loss": 3.1717,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.1082,
+     "reply_sure": 0.562,
+     "evidence_right": 0.957
+    },
+    "buried": {
+     "loss": 0.9563,
+     "reply_sure": 0.115,
+     "evidence_right": 0.806
+    },
+    "docqa": {
+     "loss": 0.5275,
+     "reply_sure": 0.0,
+     "evidence_right": 0.973
+    },
+    "story": {
+     "loss": 4.3088,
+     "reply_sure": 0.094,
+     "evidence_right": 0.306
+    },
+    "rehearse": {
+     "loss": 5.0403,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.1165,
+     "reply_sure": 0.375,
+     "evidence_right": 0.967
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 5500,
+   "s": 1391,
+   "gpu_peak_gb": 6.49,
+   "lr_factor": 1.0,
+   "combined": 0.6665,
+   "train": {
+    "qa": 1.6615,
+    "skills": 0.0932,
+    "convo": 3.4651,
+    "recall": 0.1497,
+    "buried": 0.7831,
+    "docqa": 0.5123,
+    "story": 3.9405,
+    "rehearse": 4.4274,
+    "longconv": 0.0879
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8993,
+     "reply_sure": 0.26,
+     "evidence_right": 0.766
+    },
+    "skills": {
+     "loss": 0.095,
+     "reply_sure": 0.583,
+     "evidence_right": 0.973
+    },
+    "convo": {
+     "loss": 3.1465,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.1155,
+     "reply_sure": 0.5,
+     "evidence_right": 0.958
+    },
+    "buried": {
+     "loss": 0.9689,
+     "reply_sure": 0.135,
+     "evidence_right": 0.789
+    },
+    "docqa": {
+     "loss": 0.4976,
+     "reply_sure": 0.01,
+     "evidence_right": 0.98
+    },
+    "story": {
+     "loss": 4.1612,
+     "reply_sure": 0.146,
+     "evidence_right": 0.321
+    },
+    "rehearse": {
+     "loss": 4.9866,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0933,
+     "reply_sure": 0.5,
+     "evidence_right": 0.971
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 6000,
+   "s": 1525,
+   "gpu_peak_gb": 6.5,
+   "lr_factor": 1.0,
+   "combined": 0.6468,
+   "train": {
+    "qa": 1.4779,
+    "skills": 0.0844,
+    "convo": 3.4535,
+    "recall": 0.1539,
+    "buried": 0.7777,
+    "docqa": 0.4687,
+    "story": 4.0015,
+    "rehearse": 4.4289,
+    "longconv": 0.0985
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7977,
+     "reply_sure": 0.438,
+     "evidence_right": 0.773
+    },
+    "skills": {
+     "loss": 0.0693,
+     "reply_sure": 0.771,
+     "evidence_right": 0.981
+    },
+    "convo": {
+     "loss": 3.1497,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.112,
+     "reply_sure": 0.604,
+     "evidence_right": 0.949
+    },
+    "buried": {
+     "loss": 0.9594,
+     "reply_sure": 0.135,
+     "evidence_right": 0.803
+    },
+    "docqa": {
+     "loss": 0.5095,
+     "reply_sure": 0.0,
+     "evidence_right": 0.98
+    },
+    "story": {
+     "loss": 4.1635,
+     "reply_sure": 0.167,
+     "evidence_right": 0.328
+    },
+    "rehearse": {
+     "loss": 4.991,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0878,
+     "reply_sure": 0.583,
+     "evidence_right": 0.977
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 6500,
+   "s": 1661,
+   "gpu_peak_gb": 6.5,
+   "lr_factor": 1.0,
+   "combined": 0.6766,
+   "train": {
+    "qa": 1.7622,
+    "skills": 0.0634,
+    "convo": 3.4638,
+    "recall": 0.1412,
+    "buried": 0.7642,
+    "docqa": 0.4921,
+    "story": 3.9027,
+    "rehearse": 4.3961,
+    "longconv": 0.095
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8928,
+     "reply_sure": 0.25,
+     "evidence_right": 0.744
+    },
+    "skills": {
+     "loss": 0.0846,
+     "reply_sure": 0.719,
+     "evidence_right": 0.987
+    },
+    "convo": {
+     "loss": 3.1496,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.1386,
+     "reply_sure": 0.573,
+     "evidence_right": 0.951
+    },
+    "buried": {
+     "loss": 0.9496,
+     "reply_sure": 0.188,
+     "evidence_right": 0.808
+    },
+    "docqa": {
+     "loss": 0.5232,
+     "reply_sure": 0.042,
+     "evidence_right": 0.971
+    },
+    "story": {
+     "loss": 4.1606,
+     "reply_sure": 0.135,
+     "evidence_right": 0.317
+    },
+    "rehearse": {
+     "loss": 4.9882,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0974,
+     "reply_sure": 0.677,
+     "evidence_right": 0.972
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 7000,
+   "s": 1780,
+   "gpu_peak_gb": 6.5,
+   "lr_factor": 1.0,
+   "combined": 0.6736,
+   "train": {
+    "qa": 1.6298,
+    "skills": 0.0749,
+    "convo": 3.3879,
+    "recall": 0.1312,
+    "buried": 0.734,
+    "docqa": 0.4705,
+    "story": 3.8496,
+    "rehearse": 4.4513,
+    "longconv": 0.0861
+   },
+   "held": {
+    "qa": {
+     "loss": 1.0004,
+     "reply_sure": 0.24,
+     "evidence_right": 0.774
+    },
+    "skills": {
+     "loss": 0.067,
+     "reply_sure": 0.802,
+     "evidence_right": 0.983
+    },
+    "convo": {
+     "loss": 3.2408,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.1143,
+     "reply_sure": 0.573,
+     "evidence_right": 0.947
+    },
+    "buried": {
+     "loss": 0.9392,
+     "reply_sure": 0.188,
+     "evidence_right": 0.788
+    },
+    "docqa": {
+     "loss": 0.4991,
+     "reply_sure": 0.021,
+     "evidence_right": 0.984
+    },
+    "story": {
+     "loss": 4.1826,
+     "reply_sure": 0.135,
+     "evidence_right": 0.337
+    },
+    "rehearse": {
+     "loss": 5.0153,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.101,
+     "reply_sure": 0.531,
+     "evidence_right": 0.974
+    }
+   },
+   "overfit_alarm": [
+    "longconv"
+   ]
+  },
+  {
+   "step": 7500,
+   "s": 1892,
+   "gpu_peak_gb": 6.5,
+   "lr_factor": 1.0,
+   "combined": 0.6367,
+   "train": {
+    "qa": 1.6132,
+    "skills": 0.0651,
+    "convo": 3.3745,
+    "recall": 0.1235,
+    "buried": 0.776,
+    "docqa": 0.4573,
+    "story": 3.9147,
+    "rehearse": 4.4501,
+    "longconv": 0.0798
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7931,
+     "reply_sure": 0.417,
+     "evidence_right": 0.772
+    },
+    "skills": {
+     "loss": 0.0689,
+     "reply_sure": 0.76,
+     "evidence_right": 0.982
+    },
+    "convo": {
+     "loss": 3.1772,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.1122,
+     "reply_sure": 0.531,
+     "evidence_right": 0.956
+    },
+    "buried": {
+     "loss": 0.8752,
+     "reply_sure": 0.156,
+     "evidence_right": 0.815
+    },
+    "docqa": {
+     "loss": 0.484,
+     "reply_sure": 0.021,
+     "evidence_right": 0.982
+    },
+    "story": {
+     "loss": 4.1958,
+     "reply_sure": 0.135,
+     "evidence_right": 0.337
+    },
+    "rehearse": {
+     "loss": 5.0381,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0823,
+     "reply_sure": 0.542,
+     "evidence_right": 0.975
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 8000,
+   "s": 1996,
+   "gpu_peak_gb": 6.51,
+   "lr_factor": 1.0,
+   "combined": 0.6426,
+   "train": {
+    "qa": 1.5968,
+    "skills": 0.0682,
+    "convo": 3.4416,
+    "recall": 0.134,
+    "buried": 0.7609,
+    "docqa": 0.4402,
+    "story": 3.9888,
+    "rehearse": 4.4037,
+    "longconv": 0.0832
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8309,
+     "reply_sure": 0.396,
+     "evidence_right": 0.791
+    },
+    "skills": {
+     "loss": 0.0529,
+     "reply_sure": 0.823,
+     "evidence_right": 0.979
+    },
+    "convo": {
+     "loss": 3.1381,
+     "reply_sure": 0.021,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.1059,
+     "reply_sure": 0.667,
+     "evidence_right": 0.953
+    },
+    "buried": {
+     "loss": 0.9653,
+     "reply_sure": 0.188,
+     "evidence_right": 0.78
+    },
+    "docqa": {
+     "loss": 0.4877,
+     "reply_sure": 0.042,
+     "evidence_right": 0.984
+    },
+    "story": {
+     "loss": 4.1576,
+     "reply_sure": 0.156,
+     "evidence_right": 0.321
+    },
+    "rehearse": {
+     "loss": 5.0041,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0917,
+     "reply_sure": 0.677,
+     "evidence_right": 0.974
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 8500,
+   "s": 2096,
+   "gpu_peak_gb": 6.51,
+   "lr_factor": 1.0,
+   "combined": 0.6427,
+   "train": {
+    "qa": 1.5468,
+    "skills": 0.0587,
+    "convo": 3.4735,
+    "recall": 0.1387,
+    "buried": 0.7203,
+    "docqa": 0.4175,
+    "story": 3.8544,
+    "rehearse": 4.4394,
+    "longconv": 0.1067
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8377,
+     "reply_sure": 0.312,
+     "evidence_right": 0.753
+    },
+    "skills": {
+     "loss": 0.0582,
+     "reply_sure": 0.781,
+     "evidence_right": 0.986
+    },
+    "convo": {
+     "loss": 3.2481,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0963,
+     "reply_sure": 0.625,
+     "evidence_right": 0.952
+    },
+    "buried": {
+     "loss": 0.9664,
+     "reply_sure": 0.188,
+     "evidence_right": 0.786
+    },
+    "docqa": {
+     "loss": 0.4751,
+     "reply_sure": 0.083,
+     "evidence_right": 0.978
+    },
+    "story": {
+     "loss": 4.2264,
+     "reply_sure": 0.167,
+     "evidence_right": 0.317
+    },
+    "rehearse": {
+     "loss": 5.077,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0838,
+     "reply_sure": 0.594,
+     "evidence_right": 0.975
+    }
+   },
+   "overfit_alarm": [
+    "qa",
+    "buried"
+   ]
+  },
+  {
+   "step": 9000,
+   "s": 2195,
+   "gpu_peak_gb": 6.51,
+   "lr_factor": 1.0,
+   "combined": 0.6398,
+   "train": {
+    "qa": 1.5705,
+    "skills": 0.0531,
+    "convo": 3.5059,
+    "recall": 0.1277,
+    "buried": 0.6972,
+    "docqa": 0.3586,
+    "story": 4.0311,
+    "rehearse": 4.4664,
+    "longconv": 0.0955
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8775,
+     "reply_sure": 0.396,
+     "evidence_right": 0.802
+    },
+    "skills": {
+     "loss": 0.0585,
+     "reply_sure": 0.812,
+     "evidence_right": 0.989
+    },
+    "convo": {
+     "loss": 3.1926,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.1155,
+     "reply_sure": 0.542,
+     "evidence_right": 0.931
+    },
+    "buried": {
+     "loss": 0.8815,
+     "reply_sure": 0.135,
+     "evidence_right": 0.795
+    },
+    "docqa": {
+     "loss": 0.3796,
+     "reply_sure": 0.156,
+     "evidence_right": 0.986
+    },
+    "story": {
+     "loss": 4.1725,
+     "reply_sure": 0.146,
+     "evidence_right": 0.329
+    },
+    "rehearse": {
+     "loss": 5.0482,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0961,
+     "reply_sure": 0.5,
+     "evidence_right": 0.975
+    }
+   },
+   "overfit_alarm": [
+    "skills"
+   ]
+  },
+  {
+   "step": 9500,
+   "s": 2286,
+   "gpu_peak_gb": 6.51,
+   "lr_factor": 1.0,
+   "combined": 0.621,
+   "train": {
+    "qa": 1.8492,
+    "skills": 0.0612,
+    "convo": 3.532,
+    "recall": 0.1267,
+    "buried": 0.6695,
+    "docqa": 0.3291,
+    "story": 3.9479,
+    "rehearse": 4.4414,
+    "longconv": 0.0921
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8401,
+     "reply_sure": 0.333,
+     "evidence_right": 0.776
+    },
+    "skills": {
+     "loss": 0.0598,
+     "reply_sure": 0.812,
+     "evidence_right": 0.982
+    },
+    "convo": {
+     "loss": 3.1475,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.1034,
+     "reply_sure": 0.615,
+     "evidence_right": 0.95
+    },
+    "buried": {
+     "loss": 0.8545,
+     "reply_sure": 0.188,
+     "evidence_right": 0.803
+    },
+    "docqa": {
+     "loss": 0.3541,
+     "reply_sure": 0.219,
+     "evidence_right": 0.986
+    },
+    "story": {
+     "loss": 4.1691,
+     "reply_sure": 0.146,
+     "evidence_right": 0.331
+    },
+    "rehearse": {
+     "loss": 5.0424,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0886,
+     "reply_sure": 0.583,
+     "evidence_right": 0.973
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 10000,
+   "s": 2369,
+   "gpu_peak_gb": 6.51,
+   "lr_factor": 1.0,
+   "combined": 0.6156,
+   "train": {
+    "qa": 1.8231,
+    "skills": 0.0647,
+    "convo": 3.4743,
+    "recall": 0.1164,
+    "buried": 0.6768,
+    "docqa": 0.3095,
+    "story": 3.9943,
+    "rehearse": 4.4424,
+    "longconv": 0.0814
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8389,
+     "reply_sure": 0.365,
+     "evidence_right": 0.809
+    },
+    "skills": {
+     "loss": 0.0461,
+     "reply_sure": 0.865,
+     "evidence_right": 0.995
+    },
+    "convo": {
+     "loss": 3.1622,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.1035,
+     "reply_sure": 0.635,
+     "evidence_right": 0.943
+    },
+    "buried": {
+     "loss": 0.8743,
+     "reply_sure": 0.156,
+     "evidence_right": 0.798
+    },
+    "docqa": {
+     "loss": 0.3145,
+     "reply_sure": 0.271,
+     "evidence_right": 0.986
+    },
+    "story": {
+     "loss": 4.1619,
+     "reply_sure": 0.156,
+     "evidence_right": 0.341
+    },
+    "rehearse": {
+     "loss": 5.0646,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0881,
+     "reply_sure": 0.708,
+     "evidence_right": 0.97
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 10500,
+   "s": 2454,
+   "gpu_peak_gb": 6.51,
+   "lr_factor": 1.0,
+   "combined": 0.6128,
+   "train": {
+    "qa": 1.58,
+    "skills": 0.0525,
+    "convo": 3.4779,
+    "recall": 0.1393,
+    "buried": 0.7046,
+    "docqa": 0.2752,
+    "story": 3.9788,
+    "rehearse": 4.4366,
+    "longconv": 0.0792
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7971,
+     "reply_sure": 0.406,
+     "evidence_right": 0.805
+    },
+    "skills": {
+     "loss": 0.0642,
+     "reply_sure": 0.833,
+     "evidence_right": 0.997
+    },
+    "convo": {
+     "loss": 3.1421,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.1029,
+     "reply_sure": 0.604,
+     "evidence_right": 0.949
+    },
+    "buried": {
+     "loss": 0.8589,
+     "reply_sure": 0.25,
+     "evidence_right": 0.798
+    },
+    "docqa": {
+     "loss": 0.2918,
+     "reply_sure": 0.323,
+     "evidence_right": 0.984
+    },
+    "story": {
+     "loss": 4.1181,
+     "reply_sure": 0.177,
+     "evidence_right": 0.334
+    },
+    "rehearse": {
+     "loss": 5.0339,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0944,
+     "reply_sure": 0.583,
+     "evidence_right": 0.977
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 11000,
+   "s": 2536,
+   "gpu_peak_gb": 6.51,
+   "lr_factor": 1.0,
+   "combined": 0.6066,
+   "train": {
+    "qa": 1.7167,
+    "skills": 0.0549,
+    "convo": 3.4445,
+    "recall": 0.1321,
+    "buried": 0.6826,
+    "docqa": 0.2584,
+    "story": 3.8619,
+    "rehearse": 4.4933,
+    "longconv": 0.1034
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8135,
+     "reply_sure": 0.396,
+     "evidence_right": 0.804
+    },
+    "skills": {
+     "loss": 0.041,
+     "reply_sure": 0.875,
+     "evidence_right": 0.993
+    },
+    "convo": {
+     "loss": 3.1668,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.1024,
+     "reply_sure": 0.688,
+     "evidence_right": 0.95
+    },
+    "buried": {
+     "loss": 0.8906,
+     "reply_sure": 0.229,
+     "evidence_right": 0.791
+    },
+    "docqa": {
+     "loss": 0.2745,
+     "reply_sure": 0.354,
+     "evidence_right": 0.986
+    },
+    "story": {
+     "loss": 4.1624,
+     "reply_sure": 0.167,
+     "evidence_right": 0.357
+    },
+    "rehearse": {
+     "loss": 5.0482,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0838,
+     "reply_sure": 0.719,
+     "evidence_right": 0.976
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 11500,
+   "s": 2622,
+   "gpu_peak_gb": 6.52,
+   "lr_factor": 1.0,
+   "combined": 0.5936,
+   "train": {
+    "qa": 1.6997,
+    "skills": 0.0494,
+    "convo": 3.5085,
+    "recall": 0.1281,
+    "buried": 0.6717,
+    "docqa": 0.272,
+    "story": 3.9806,
+    "rehearse": 4.452,
+    "longconv": 0.0746
+   },
+   "held": {
+    "qa": {
+     "loss": 0.794,
+     "reply_sure": 0.375,
+     "evidence_right": 0.758
+    },
+    "skills": {
+     "loss": 0.0401,
+     "reply_sure": 0.812,
+     "evidence_right": 0.988
+    },
+    "convo": {
+     "loss": 3.1449,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0878,
+     "reply_sure": 0.583,
+     "evidence_right": 0.959
+    },
+    "buried": {
+     "loss": 0.8531,
+     "reply_sure": 0.229,
+     "evidence_right": 0.795
+    },
+    "docqa": {
+     "loss": 0.2856,
+     "reply_sure": 0.344,
+     "evidence_right": 0.987
+    },
+    "story": {
+     "loss": 4.1508,
+     "reply_sure": 0.156,
+     "evidence_right": 0.338
+    },
+    "rehearse": {
+     "loss": 5.0624,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0807,
+     "reply_sure": 0.542,
+     "evidence_right": 0.975
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 12000,
+   "s": 2709,
+   "gpu_peak_gb": 6.52,
+   "lr_factor": 1.0,
+   "combined": 0.6014,
+   "train": {
+    "qa": 1.703,
+    "skills": 0.0466,
+    "convo": 3.4399,
+    "recall": 0.1254,
+    "buried": 0.6627,
+    "docqa": 0.2451,
+    "story": 3.7058,
+    "rehearse": 4.4312,
+    "longconv": 0.0695
+   },
+   "held": {
+    "qa": {
+     "loss": 0.843,
+     "reply_sure": 0.323,
+     "evidence_right": 0.798
+    },
+    "skills": {
+     "loss": 0.0362,
+     "reply_sure": 0.875,
+     "evidence_right": 0.993
+    },
+    "convo": {
+     "loss": 3.1368,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0945,
+     "reply_sure": 0.719,
+     "evidence_right": 0.95
+    },
+    "buried": {
+     "loss": 0.891,
+     "reply_sure": 0.208,
+     "evidence_right": 0.806
+    },
+    "docqa": {
+     "loss": 0.2629,
+     "reply_sure": 0.406,
+     "evidence_right": 0.986
+    },
+    "story": {
+     "loss": 4.1458,
+     "reply_sure": 0.167,
+     "evidence_right": 0.349
+    },
+    "rehearse": {
+     "loss": 5.0353,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0833,
+     "reply_sure": 0.698,
+     "evidence_right": 0.979
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 12500,
+   "s": 2796,
+   "gpu_peak_gb": 6.52,
+   "lr_factor": 1.0,
+   "combined": 0.6171,
+   "train": {
+    "qa": 1.4528,
+    "skills": 0.0456,
+    "convo": 3.4713,
+    "recall": 0.1248,
+    "buried": 0.6353,
+    "docqa": 0.2337,
+    "story": 3.813,
+    "rehearse": 4.4501,
+    "longconv": 0.0866
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7885,
+     "reply_sure": 0.385,
+     "evidence_right": 0.789
+    },
+    "skills": {
+     "loss": 0.0406,
+     "reply_sure": 0.823,
+     "evidence_right": 0.986
+    },
+    "convo": {
+     "loss": 3.6085,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0892,
+     "reply_sure": 0.74,
+     "evidence_right": 0.958
+    },
+    "buried": {
+     "loss": 0.8819,
+     "reply_sure": 0.177,
+     "evidence_right": 0.798
+    },
+    "docqa": {
+     "loss": 0.2556,
+     "reply_sure": 0.438,
+     "evidence_right": 0.988
+    },
+    "story": {
+     "loss": 4.3009,
+     "reply_sure": 0.177,
+     "evidence_right": 0.343
+    },
+    "rehearse": {
+     "loss": 5.1413,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0854,
+     "reply_sure": 0.719,
+     "evidence_right": 0.979
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 13000,
+   "s": 2882,
+   "gpu_peak_gb": 6.52,
+   "lr_factor": 1.0,
+   "combined": 0.5946,
+   "train": {
+    "qa": 1.5086,
+    "skills": 0.0522,
+    "convo": 3.4659,
+    "recall": 0.1132,
+    "buried": 0.635,
+    "docqa": 0.2163,
+    "story": 3.9173,
+    "rehearse": 4.4313,
+    "longconv": 0.0837
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8257,
+     "reply_sure": 0.406,
+     "evidence_right": 0.795
+    },
+    "skills": {
+     "loss": 0.0387,
+     "reply_sure": 0.865,
+     "evidence_right": 0.994
+    },
+    "convo": {
+     "loss": 3.1788,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.082,
+     "reply_sure": 0.635,
+     "evidence_right": 0.968
+    },
+    "buried": {
+     "loss": 0.8944,
+     "reply_sure": 0.25,
+     "evidence_right": 0.791
+    },
+    "docqa": {
+     "loss": 0.2461,
+     "reply_sure": 0.427,
+     "evidence_right": 0.986
+    },
+    "story": {
+     "loss": 4.17,
+     "reply_sure": 0.146,
+     "evidence_right": 0.343
+    },
+    "rehearse": {
+     "loss": 5.0595,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0804,
+     "reply_sure": 0.594,
+     "evidence_right": 0.979
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 13500,
+   "s": 2967,
+   "gpu_peak_gb": 6.52,
+   "lr_factor": 1.0,
+   "combined": 0.584,
+   "train": {
+    "qa": 1.5608,
+    "skills": 0.046,
+    "convo": 3.4294,
+    "recall": 0.1266,
+    "buried": 0.6502,
+    "docqa": 0.2306,
+    "story": 3.9152,
+    "rehearse": 4.4418,
+    "longconv": 0.0707
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8206,
+     "reply_sure": 0.354,
+     "evidence_right": 0.785
+    },
+    "skills": {
+     "loss": 0.0334,
+     "reply_sure": 0.906,
+     "evidence_right": 0.991
+    },
+    "convo": {
+     "loss": 3.1423,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0728,
+     "reply_sure": 0.688,
+     "evidence_right": 0.969
+    },
+    "buried": {
+     "loss": 0.876,
+     "reply_sure": 0.219,
+     "evidence_right": 0.786
+    },
+    "docqa": {
+     "loss": 0.246,
+     "reply_sure": 0.438,
+     "evidence_right": 0.985
+    },
+    "story": {
+     "loss": 4.1444,
+     "reply_sure": 0.198,
+     "evidence_right": 0.335
+    },
+    "rehearse": {
+     "loss": 5.0541,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0784,
+     "reply_sure": 0.74,
+     "evidence_right": 0.977
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 14000,
+   "s": 3051,
+   "gpu_peak_gb": 6.52,
+   "lr_factor": 1.0,
+   "combined": 0.5969,
+   "train": {
+    "qa": 1.6053,
+    "skills": 0.0536,
+    "convo": 3.4488,
+    "recall": 0.1241,
+    "buried": 0.6341,
+    "docqa": 0.2324,
+    "story": 3.9762,
+    "rehearse": 4.4348,
+    "longconv": 0.0712
+   },
+   "held": {
+    "qa": {
+     "loss": 0.802,
+     "reply_sure": 0.417,
+     "evidence_right": 0.807
+    },
+    "skills": {
+     "loss": 0.0385,
+     "reply_sure": 0.854,
+     "evidence_right": 0.991
+    },
+    "convo": {
+     "loss": 3.173,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.1191,
+     "reply_sure": 0.5,
+     "evidence_right": 0.943
+    },
+    "buried": {
+     "loss": 0.8036,
+     "reply_sure": 0.26,
+     "evidence_right": 0.817
+    },
+    "docqa": {
+     "loss": 0.2389,
+     "reply_sure": 0.427,
+     "evidence_right": 0.993
+    },
+    "story": {
+     "loss": 4.1471,
+     "reply_sure": 0.177,
+     "evidence_right": 0.342
+    },
+    "rehearse": {
+     "loss": 5.0538,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0742,
+     "reply_sure": 0.604,
+     "evidence_right": 0.977
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 14500,
+   "s": 3135,
+   "gpu_peak_gb": 6.52,
+   "lr_factor": 1.0,
+   "combined": 0.5958,
+   "train": {
+    "qa": 1.4593,
+    "skills": 0.0513,
+    "convo": 3.4515,
+    "recall": 0.1261,
+    "buried": 0.5832,
+    "docqa": 0.234,
+    "story": 3.8307,
+    "rehearse": 4.4248,
+    "longconv": 0.0703
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8197,
+     "reply_sure": 0.354,
+     "evidence_right": 0.806
+    },
+    "skills": {
+     "loss": 0.0412,
+     "reply_sure": 0.875,
+     "evidence_right": 0.992
+    },
+    "convo": {
+     "loss": 3.1561,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.1079,
+     "reply_sure": 0.667,
+     "evidence_right": 0.945
+    },
+    "buried": {
+     "loss": 0.7776,
+     "reply_sure": 0.208,
+     "evidence_right": 0.82
+    },
+    "docqa": {
+     "loss": 0.2193,
+     "reply_sure": 0.521,
+     "evidence_right": 0.99
+    },
+    "story": {
+     "loss": 4.1387,
+     "reply_sure": 0.188,
+     "evidence_right": 0.341
+    },
+    "rehearse": {
+     "loss": 5.0494,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0892,
+     "reply_sure": 0.698,
+     "evidence_right": 0.969
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 15000,
+   "s": 3220,
+   "gpu_peak_gb": 6.52,
+   "lr_factor": 1.0,
+   "combined": 0.5952,
+   "train": {
+    "qa": 1.5387,
+    "skills": 0.0411,
+    "convo": 3.3726,
+    "recall": 0.1075,
+    "buried": 0.6401,
+    "docqa": 0.216,
+    "story": 3.8523,
+    "rehearse": 4.4654,
+    "longconv": 0.0645
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7916,
+     "reply_sure": 0.375,
+     "evidence_right": 0.78
+    },
+    "skills": {
+     "loss": 0.0388,
+     "reply_sure": 0.854,
+     "evidence_right": 0.993
+    },
+    "convo": {
+     "loss": 3.1831,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0991,
+     "reply_sure": 0.646,
+     "evidence_right": 0.943
+    },
+    "buried": {
+     "loss": 0.8008,
+     "reply_sure": 0.25,
+     "evidence_right": 0.811
+    },
+    "docqa": {
+     "loss": 0.2251,
+     "reply_sure": 0.49,
+     "evidence_right": 0.99
+    },
+    "story": {
+     "loss": 4.2158,
+     "reply_sure": 0.146,
+     "evidence_right": 0.345
+    },
+    "rehearse": {
+     "loss": 5.1316,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0877,
+     "reply_sure": 0.583,
+     "evidence_right": 0.978
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 15500,
+   "s": 3304,
+   "gpu_peak_gb": 6.52,
+   "lr_factor": 1.0,
+   "combined": 0.5841,
+   "train": {
+    "qa": 1.4966,
+    "skills": 0.0452,
+    "convo": 3.4585,
+    "recall": 0.1326,
+    "buried": 0.6377,
+    "docqa": 0.2249,
+    "story": 3.9313,
+    "rehearse": 4.4204,
+    "longconv": 0.0811
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8221,
+     "reply_sure": 0.406,
+     "evidence_right": 0.8
+    },
+    "skills": {
+     "loss": 0.0396,
+     "reply_sure": 0.875,
+     "evidence_right": 0.994
+    },
+    "convo": {
+     "loss": 3.129,
+     "reply_sure": 0.031,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.089,
+     "reply_sure": 0.615,
+     "evidence_right": 0.96
+    },
+    "buried": {
+     "loss": 0.8177,
+     "reply_sure": 0.208,
+     "evidence_right": 0.818
+    },
+    "docqa": {
+     "loss": 0.221,
+     "reply_sure": 0.479,
+     "evidence_right": 0.989
+    },
+    "story": {
+     "loss": 4.1567,
+     "reply_sure": 0.208,
+     "evidence_right": 0.351
+    },
+    "rehearse": {
+     "loss": 5.0618,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0751,
+     "reply_sure": 0.615,
+     "evidence_right": 0.983
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 16000,
+   "s": 3388,
+   "gpu_peak_gb": 6.52,
+   "lr_factor": 1.0,
+   "combined": 0.5794,
+   "train": {
+    "qa": 1.4817,
+    "skills": 0.0452,
+    "convo": 3.4142,
+    "recall": 0.1152,
+    "buried": 0.6175,
+    "docqa": 0.2181,
+    "story": 4.0093,
+    "rehearse": 4.4793,
+    "longconv": 0.0717
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7899,
+     "reply_sure": 0.396,
+     "evidence_right": 0.813
+    },
+    "skills": {
+     "loss": 0.0419,
+     "reply_sure": 0.844,
+     "evidence_right": 0.993
+    },
+    "convo": {
+     "loss": 3.1823,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0869,
+     "reply_sure": 0.635,
+     "evidence_right": 0.956
+    },
+    "buried": {
+     "loss": 0.7719,
+     "reply_sure": 0.219,
+     "evidence_right": 0.805
+    },
+    "docqa": {
+     "loss": 0.232,
+     "reply_sure": 0.521,
+     "evidence_right": 0.991
+    },
+    "story": {
+     "loss": 4.1521,
+     "reply_sure": 0.135,
+     "evidence_right": 0.344
+    },
+    "rehearse": {
+     "loss": 5.0695,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0744,
+     "reply_sure": 0.583,
+     "evidence_right": 0.98
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 16500,
+   "s": 3474,
+   "gpu_peak_gb": 6.52,
+   "lr_factor": 1.0,
+   "combined": 0.5789,
+   "train": {
+    "qa": 1.6204,
+    "skills": 0.0383,
+    "convo": 3.4528,
+    "recall": 0.1398,
+    "buried": 0.5864,
+    "docqa": 0.2068,
+    "story": 3.8581,
+    "rehearse": 4.466,
+    "longconv": 0.0782
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7719,
+     "reply_sure": 0.417,
+     "evidence_right": 0.798
+    },
+    "skills": {
+     "loss": 0.0325,
+     "reply_sure": 0.906,
+     "evidence_right": 0.993
+    },
+    "convo": {
+     "loss": 3.1767,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0817,
+     "reply_sure": 0.719,
+     "evidence_right": 0.961
+    },
+    "buried": {
+     "loss": 0.8028,
+     "reply_sure": 0.25,
+     "evidence_right": 0.811
+    },
+    "docqa": {
+     "loss": 0.2388,
+     "reply_sure": 0.479,
+     "evidence_right": 0.985
+    },
+    "story": {
+     "loss": 4.1689,
+     "reply_sure": 0.167,
+     "evidence_right": 0.343
+    },
+    "rehearse": {
+     "loss": 5.07,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0796,
+     "reply_sure": 0.667,
+     "evidence_right": 0.973
+    }
+   },
+   "overfit_alarm": [
+    "docqa"
+   ]
+  },
+  {
+   "step": 17000,
+   "s": 3558,
+   "gpu_peak_gb": 6.52,
+   "lr_factor": 1.0,
+   "combined": 0.5899,
+   "train": {
+    "qa": 1.5542,
+    "skills": 0.0386,
+    "convo": 3.4412,
+    "recall": 0.1149,
+    "buried": 0.5819,
+    "docqa": 0.1992,
+    "story": 3.9525,
+    "rehearse": 4.4869,
+    "longconv": 0.1008
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7687,
+     "reply_sure": 0.375,
+     "evidence_right": 0.811
+    },
+    "skills": {
+     "loss": 0.0521,
+     "reply_sure": 0.844,
+     "evidence_right": 0.994
+    },
+    "convo": {
+     "loss": 3.1707,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0905,
+     "reply_sure": 0.573,
+     "evidence_right": 0.955
+    },
+    "buried": {
+     "loss": 0.7767,
+     "reply_sure": 0.26,
+     "evidence_right": 0.802
+    },
+    "docqa": {
+     "loss": 0.2496,
+     "reply_sure": 0.479,
+     "evidence_right": 0.983
+    },
+    "story": {
+     "loss": 4.1974,
+     "reply_sure": 0.167,
+     "evidence_right": 0.352
+    },
+    "rehearse": {
+     "loss": 5.0752,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0856,
+     "reply_sure": 0.521,
+     "evidence_right": 0.975
+    }
+   },
+   "overfit_alarm": [
+    "docqa"
+   ]
+  },
+  {
+   "step": 17500,
+   "s": 3646,
+   "gpu_peak_gb": 6.52,
+   "lr_factor": 1.0,
+   "combined": 0.58,
+   "train": {
+    "qa": 1.4735,
+    "skills": 0.0418,
+    "convo": 3.5048,
+    "recall": 0.1117,
+    "buried": 0.5952,
+    "docqa": 0.1889,
+    "story": 3.8553,
+    "rehearse": 4.4716,
+    "longconv": 0.0736
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7908,
+     "reply_sure": 0.406,
+     "evidence_right": 0.816
+    },
+    "skills": {
+     "loss": 0.0388,
+     "reply_sure": 0.865,
+     "evidence_right": 0.993
+    },
+    "convo": {
+     "loss": 3.1776,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0888,
+     "reply_sure": 0.625,
+     "evidence_right": 0.965
+    },
+    "buried": {
+     "loss": 0.7793,
+     "reply_sure": 0.229,
+     "evidence_right": 0.806
+    },
+    "docqa": {
+     "loss": 0.228,
+     "reply_sure": 0.479,
+     "evidence_right": 0.988
+    },
+    "story": {
+     "loss": 4.1804,
+     "reply_sure": 0.198,
+     "evidence_right": 0.356
+    },
+    "rehearse": {
+     "loss": 5.0931,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0724,
+     "reply_sure": 0.583,
+     "evidence_right": 0.979
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 18000,
+   "s": 3743,
+   "gpu_peak_gb": 6.52,
+   "lr_factor": 1.0,
+   "combined": 0.5729,
+   "train": {
+    "qa": 1.6466,
+    "skills": 0.0434,
+    "convo": 3.4487,
+    "recall": 0.1175,
+    "buried": 0.6063,
+    "docqa": 0.2128,
+    "story": 3.8565,
+    "rehearse": 4.4761,
+    "longconv": 0.0617
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7843,
+     "reply_sure": 0.344,
+     "evidence_right": 0.798
+    },
+    "skills": {
+     "loss": 0.0371,
+     "reply_sure": 0.833,
+     "evidence_right": 0.992
+    },
+    "convo": {
+     "loss": 3.1849,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0831,
+     "reply_sure": 0.625,
+     "evidence_right": 0.951
+    },
+    "buried": {
+     "loss": 0.7603,
+     "reply_sure": 0.271,
+     "evidence_right": 0.821
+    },
+    "docqa": {
+     "loss": 0.2202,
+     "reply_sure": 0.51,
+     "evidence_right": 0.989
+    },
+    "story": {
+     "loss": 4.1806,
+     "reply_sure": 0.167,
+     "evidence_right": 0.345
+    },
+    "rehearse": {
+     "loss": 5.0855,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0701,
+     "reply_sure": 0.573,
+     "evidence_right": 0.984
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 18500,
+   "s": 3841,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5775,
+   "train": {
+    "qa": 1.5389,
+    "skills": 0.0413,
+    "convo": 3.4621,
+    "recall": 0.1097,
+    "buried": 0.5987,
+    "docqa": 0.2141,
+    "story": 3.8748,
+    "rehearse": 4.4356,
+    "longconv": 0.0676
+   },
+   "held": {
+    "qa": {
+     "loss": 0.772,
+     "reply_sure": 0.427,
+     "evidence_right": 0.804
+    },
+    "skills": {
+     "loss": 0.0429,
+     "reply_sure": 0.833,
+     "evidence_right": 0.992
+    },
+    "convo": {
+     "loss": 3.1991,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0755,
+     "reply_sure": 0.646,
+     "evidence_right": 0.961
+    },
+    "buried": {
+     "loss": 0.8189,
+     "reply_sure": 0.281,
+     "evidence_right": 0.827
+    },
+    "docqa": {
+     "loss": 0.1917,
+     "reply_sure": 0.5,
+     "evidence_right": 0.99
+    },
+    "story": {
+     "loss": 4.284,
+     "reply_sure": 0.198,
+     "evidence_right": 0.35
+    },
+    "rehearse": {
+     "loss": 5.1027,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0744,
+     "reply_sure": 0.615,
+     "evidence_right": 0.983
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 19000,
+   "s": 3941,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5762,
+   "train": {
+    "qa": 1.6661,
+    "skills": 0.0432,
+    "convo": 3.5367,
+    "recall": 0.1097,
+    "buried": 0.6111,
+    "docqa": 0.2147,
+    "story": 3.8891,
+    "rehearse": 4.4561,
+    "longconv": 0.0747
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7747,
+     "reply_sure": 0.375,
+     "evidence_right": 0.766
+    },
+    "skills": {
+     "loss": 0.0376,
+     "reply_sure": 0.896,
+     "evidence_right": 0.995
+    },
+    "convo": {
+     "loss": 3.1799,
+     "reply_sure": 0.031,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0864,
+     "reply_sure": 0.698,
+     "evidence_right": 0.956
+    },
+    "buried": {
+     "loss": 0.7562,
+     "reply_sure": 0.323,
+     "evidence_right": 0.83
+    },
+    "docqa": {
+     "loss": 0.2183,
+     "reply_sure": 0.542,
+     "evidence_right": 0.984
+    },
+    "story": {
+     "loss": 4.2009,
+     "reply_sure": 0.167,
+     "evidence_right": 0.337
+    },
+    "rehearse": {
+     "loss": 5.087,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0762,
+     "reply_sure": 0.729,
+     "evidence_right": 0.98
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 19500,
+   "s": 4041,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5759,
+   "train": {
+    "qa": 1.5799,
+    "skills": 0.0386,
+    "convo": 3.4275,
+    "recall": 0.1031,
+    "buried": 0.5857,
+    "docqa": 0.1964,
+    "story": 3.8206,
+    "rehearse": 4.4704,
+    "longconv": 0.0757
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7476,
+     "reply_sure": 0.406,
+     "evidence_right": 0.81
+    },
+    "skills": {
+     "loss": 0.0375,
+     "reply_sure": 0.885,
+     "evidence_right": 0.993
+    },
+    "convo": {
+     "loss": 3.1707,
+     "reply_sure": 0.031,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.082,
+     "reply_sure": 0.729,
+     "evidence_right": 0.961
+    },
+    "buried": {
+     "loss": 0.7999,
+     "reply_sure": 0.219,
+     "evidence_right": 0.811
+    },
+    "docqa": {
+     "loss": 0.2136,
+     "reply_sure": 0.531,
+     "evidence_right": 0.988
+    },
+    "story": {
+     "loss": 4.1962,
+     "reply_sure": 0.177,
+     "evidence_right": 0.365
+    },
+    "rehearse": {
+     "loss": 5.0835,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0793,
+     "reply_sure": 0.719,
+     "evidence_right": 0.984
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 20000,
+   "s": 4138,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5862,
+   "train": {
+    "qa": 1.5245,
+    "skills": 0.0427,
+    "convo": 3.477,
+    "recall": 0.1087,
+    "buried": 0.5936,
+    "docqa": 0.1964,
+    "story": 3.9591,
+    "rehearse": 4.4469,
+    "longconv": 0.087
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8224,
+     "reply_sure": 0.354,
+     "evidence_right": 0.747
+    },
+    "skills": {
+     "loss": 0.0411,
+     "reply_sure": 0.906,
+     "evidence_right": 0.995
+    },
+    "convo": {
+     "loss": 3.1608,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0904,
+     "reply_sure": 0.74,
+     "evidence_right": 0.958
+    },
+    "buried": {
+     "loss": 0.796,
+     "reply_sure": 0.271,
+     "evidence_right": 0.806
+    },
+    "docqa": {
+     "loss": 0.1865,
+     "reply_sure": 0.594,
+     "evidence_right": 0.992
+    },
+    "story": {
+     "loss": 4.1469,
+     "reply_sure": 0.177,
+     "evidence_right": 0.37
+    },
+    "rehearse": {
+     "loss": 5.0779,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0867,
+     "reply_sure": 0.708,
+     "evidence_right": 0.975
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 20500,
+   "s": 4236,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5882,
+   "train": {
+    "qa": 1.5035,
+    "skills": 0.0433,
+    "convo": 3.3957,
+    "recall": 0.1074,
+    "buried": 0.5855,
+    "docqa": 0.1937,
+    "story": 3.9004,
+    "rehearse": 4.4549,
+    "longconv": 0.089
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7689,
+     "reply_sure": 0.406,
+     "evidence_right": 0.816
+    },
+    "skills": {
+     "loss": 0.0489,
+     "reply_sure": 0.875,
+     "evidence_right": 0.99
+    },
+    "convo": {
+     "loss": 3.2617,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0858,
+     "reply_sure": 0.635,
+     "evidence_right": 0.958
+    },
+    "buried": {
+     "loss": 0.8463,
+     "reply_sure": 0.25,
+     "evidence_right": 0.8
+    },
+    "docqa": {
+     "loss": 0.2037,
+     "reply_sure": 0.531,
+     "evidence_right": 0.987
+    },
+    "story": {
+     "loss": 4.1876,
+     "reply_sure": 0.219,
+     "evidence_right": 0.349
+    },
+    "rehearse": {
+     "loss": 5.095,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0781,
+     "reply_sure": 0.625,
+     "evidence_right": 0.984
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 21000,
+   "s": 4334,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5753,
+   "train": {
+    "qa": 1.6276,
+    "skills": 0.0394,
+    "convo": 3.4605,
+    "recall": 0.1188,
+    "buried": 0.6194,
+    "docqa": 0.1953,
+    "story": 3.8704,
+    "rehearse": 4.4528,
+    "longconv": 0.0615
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7431,
+     "reply_sure": 0.406,
+     "evidence_right": 0.828
+    },
+    "skills": {
+     "loss": 0.0402,
+     "reply_sure": 0.833,
+     "evidence_right": 0.995
+    },
+    "convo": {
+     "loss": 3.1559,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0902,
+     "reply_sure": 0.635,
+     "evidence_right": 0.951
+    },
+    "buried": {
+     "loss": 0.8012,
+     "reply_sure": 0.26,
+     "evidence_right": 0.811
+    },
+    "docqa": {
+     "loss": 0.193,
+     "reply_sure": 0.542,
+     "evidence_right": 0.986
+    },
+    "story": {
+     "loss": 4.2154,
+     "reply_sure": 0.177,
+     "evidence_right": 0.348
+    },
+    "rehearse": {
+     "loss": 5.0768,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.074,
+     "reply_sure": 0.625,
+     "evidence_right": 0.976
+    }
+   },
+   "overfit_alarm": [
+    "story"
+   ]
+  },
+  {
+   "step": 21500,
+   "s": 4432,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.577,
+   "train": {
+    "qa": 1.6206,
+    "skills": 0.0376,
+    "convo": 3.4286,
+    "recall": 0.1003,
+    "buried": 0.6188,
+    "docqa": 0.1659,
+    "story": 3.8582,
+    "rehearse": 4.4892,
+    "longconv": 0.0623
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7978,
+     "reply_sure": 0.385,
+     "evidence_right": 0.79
+    },
+    "skills": {
+     "loss": 0.0319,
+     "reply_sure": 0.917,
+     "evidence_right": 0.994
+    },
+    "convo": {
+     "loss": 3.1918,
+     "reply_sure": 0.021,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0753,
+     "reply_sure": 0.729,
+     "evidence_right": 0.958
+    },
+    "buried": {
+     "loss": 0.8136,
+     "reply_sure": 0.219,
+     "evidence_right": 0.805
+    },
+    "docqa": {
+     "loss": 0.2063,
+     "reply_sure": 0.521,
+     "evidence_right": 0.984
+    },
+    "story": {
+     "loss": 4.2316,
+     "reply_sure": 0.208,
+     "evidence_right": 0.356
+    },
+    "rehearse": {
+     "loss": 5.1087,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0755,
+     "reply_sure": 0.771,
+     "evidence_right": 0.975
+    }
+   },
+   "overfit_alarm": [
+    "story"
+   ]
+  },
+  {
+   "step": 22000,
+   "s": 4531,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5847,
+   "train": {
+    "qa": 1.6663,
+    "skills": 0.0386,
+    "convo": 3.4527,
+    "recall": 0.1038,
+    "buried": 0.6338,
+    "docqa": 0.2085,
+    "story": 3.8445,
+    "rehearse": 4.4576,
+    "longconv": 0.0704
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8233,
+     "reply_sure": 0.312,
+     "evidence_right": 0.789
+    },
+    "skills": {
+     "loss": 0.0493,
+     "reply_sure": 0.896,
+     "evidence_right": 0.994
+    },
+    "convo": {
+     "loss": 3.1864,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0844,
+     "reply_sure": 0.719,
+     "evidence_right": 0.961
+    },
+    "buried": {
+     "loss": 0.8001,
+     "reply_sure": 0.24,
+     "evidence_right": 0.802
+    },
+    "docqa": {
+     "loss": 0.1985,
+     "reply_sure": 0.531,
+     "evidence_right": 0.989
+    },
+    "story": {
+     "loss": 4.2078,
+     "reply_sure": 0.167,
+     "evidence_right": 0.345
+    },
+    "rehearse": {
+     "loss": 5.1209,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0735,
+     "reply_sure": 0.708,
+     "evidence_right": 0.983
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 22500,
+   "s": 4634,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.575,
+   "train": {
+    "qa": 1.4628,
+    "skills": 0.0323,
+    "convo": 3.4522,
+    "recall": 0.1034,
+    "buried": 0.5597,
+    "docqa": 0.2008,
+    "story": 3.7992,
+    "rehearse": 4.4883,
+    "longconv": 0.0741
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8252,
+     "reply_sure": 0.344,
+     "evidence_right": 0.8
+    },
+    "skills": {
+     "loss": 0.0294,
+     "reply_sure": 0.844,
+     "evidence_right": 0.991
+    },
+    "convo": {
+     "loss": 3.2013,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0784,
+     "reply_sure": 0.615,
+     "evidence_right": 0.963
+    },
+    "buried": {
+     "loss": 0.7781,
+     "reply_sure": 0.271,
+     "evidence_right": 0.815
+    },
+    "docqa": {
+     "loss": 0.2007,
+     "reply_sure": 0.573,
+     "evidence_right": 0.984
+    },
+    "story": {
+     "loss": 4.1683,
+     "reply_sure": 0.198,
+     "evidence_right": 0.349
+    },
+    "rehearse": {
+     "loss": 5.0884,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0757,
+     "reply_sure": 0.583,
+     "evidence_right": 0.981
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 23000,
+   "s": 4736,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5785,
+   "train": {
+    "qa": 1.4847,
+    "skills": 0.0368,
+    "convo": 3.4346,
+    "recall": 0.1122,
+    "buried": 0.575,
+    "docqa": 0.2008,
+    "story": 3.9164,
+    "rehearse": 4.4384,
+    "longconv": 0.0711
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7898,
+     "reply_sure": 0.438,
+     "evidence_right": 0.807
+    },
+    "skills": {
+     "loss": 0.0322,
+     "reply_sure": 0.865,
+     "evidence_right": 0.993
+    },
+    "convo": {
+     "loss": 3.1938,
+     "reply_sure": 0.021,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0837,
+     "reply_sure": 0.667,
+     "evidence_right": 0.967
+    },
+    "buried": {
+     "loss": 0.7487,
+     "reply_sure": 0.229,
+     "evidence_right": 0.817
+    },
+    "docqa": {
+     "loss": 0.2098,
+     "reply_sure": 0.542,
+     "evidence_right": 0.986
+    },
+    "story": {
+     "loss": 4.176,
+     "reply_sure": 0.177,
+     "evidence_right": 0.351
+    },
+    "rehearse": {
+     "loss": 5.1211,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0859,
+     "reply_sure": 0.594,
+     "evidence_right": 0.975
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 23500,
+   "s": 4835,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.58,
+   "train": {
+    "qa": 1.5235,
+    "skills": 0.031,
+    "convo": 3.5013,
+    "recall": 0.1082,
+    "buried": 0.5609,
+    "docqa": 0.2045,
+    "story": 3.8619,
+    "rehearse": 4.4948,
+    "longconv": 0.0732
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8361,
+     "reply_sure": 0.385,
+     "evidence_right": 0.794
+    },
+    "skills": {
+     "loss": 0.0248,
+     "reply_sure": 0.896,
+     "evidence_right": 0.992
+    },
+    "convo": {
+     "loss": 3.1793,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.099,
+     "reply_sure": 0.635,
+     "evidence_right": 0.968
+    },
+    "buried": {
+     "loss": 0.7424,
+     "reply_sure": 0.25,
+     "evidence_right": 0.824
+    },
+    "docqa": {
+     "loss": 0.1879,
+     "reply_sure": 0.594,
+     "evidence_right": 0.99
+    },
+    "story": {
+     "loss": 4.2085,
+     "reply_sure": 0.208,
+     "evidence_right": 0.362
+    },
+    "rehearse": {
+     "loss": 5.1212,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0739,
+     "reply_sure": 0.573,
+     "evidence_right": 0.984
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 24000,
+   "s": 4935,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.583,
+   "train": {
+    "qa": 1.4368,
+    "skills": 0.0307,
+    "convo": 3.471,
+    "recall": 0.1147,
+    "buried": 0.5471,
+    "docqa": 0.1927,
+    "story": 3.6674,
+    "rehearse": 4.4638,
+    "longconv": 0.0618
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8676,
+     "reply_sure": 0.354,
+     "evidence_right": 0.79
+    },
+    "skills": {
+     "loss": 0.029,
+     "reply_sure": 0.927,
+     "evidence_right": 0.995
+    },
+    "convo": {
+     "loss": 3.1896,
+     "reply_sure": 0.031,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0794,
+     "reply_sure": 0.729,
+     "evidence_right": 0.957
+    },
+    "buried": {
+     "loss": 0.8386,
+     "reply_sure": 0.271,
+     "evidence_right": 0.826
+    },
+    "docqa": {
+     "loss": 0.1908,
+     "reply_sure": 0.583,
+     "evidence_right": 0.988
+    },
+    "story": {
+     "loss": 4.1778,
+     "reply_sure": 0.198,
+     "evidence_right": 0.359
+    },
+    "rehearse": {
+     "loss": 5.096,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0742,
+     "reply_sure": 0.75,
+     "evidence_right": 0.981
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 24500,
+   "s": 5042,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5712,
+   "train": {
+    "qa": 1.5475,
+    "skills": 0.0338,
+    "convo": 3.4599,
+    "recall": 0.1088,
+    "buried": 0.5774,
+    "docqa": 0.1882,
+    "story": 3.8363,
+    "rehearse": 4.4682,
+    "longconv": 0.0839
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7572,
+     "reply_sure": 0.385,
+     "evidence_right": 0.799
+    },
+    "skills": {
+     "loss": 0.0399,
+     "reply_sure": 0.833,
+     "evidence_right": 0.992
+    },
+    "convo": {
+     "loss": 3.1863,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.074,
+     "reply_sure": 0.667,
+     "evidence_right": 0.964
+    },
+    "buried": {
+     "loss": 0.7887,
+     "reply_sure": 0.271,
+     "evidence_right": 0.805
+    },
+    "docqa": {
+     "loss": 0.191,
+     "reply_sure": 0.552,
+     "evidence_right": 0.988
+    },
+    "story": {
+     "loss": 4.2033,
+     "reply_sure": 0.135,
+     "evidence_right": 0.347
+    },
+    "rehearse": {
+     "loss": 5.1102,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.078,
+     "reply_sure": 0.604,
+     "evidence_right": 0.98
+    }
+   },
+   "overfit_alarm": [
+    "docqa"
+   ]
+  },
+  {
+   "step": 25000,
+   "s": 5135,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5733,
+   "train": {
+    "qa": 1.5822,
+    "skills": 0.0322,
+    "convo": 3.4254,
+    "recall": 0.1148,
+    "buried": 0.5828,
+    "docqa": 0.1773,
+    "story": 3.8883,
+    "rehearse": 4.4802,
+    "longconv": 0.065
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7932,
+     "reply_sure": 0.396,
+     "evidence_right": 0.813
+    },
+    "skills": {
+     "loss": 0.023,
+     "reply_sure": 0.948,
+     "evidence_right": 0.997
+    },
+    "convo": {
+     "loss": 3.1678,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0831,
+     "reply_sure": 0.708,
+     "evidence_right": 0.958
+    },
+    "buried": {
+     "loss": 0.7789,
+     "reply_sure": 0.25,
+     "evidence_right": 0.812
+    },
+    "docqa": {
+     "loss": 0.1874,
+     "reply_sure": 0.573,
+     "evidence_right": 0.992
+    },
+    "story": {
+     "loss": 4.1972,
+     "reply_sure": 0.177,
+     "evidence_right": 0.352
+    },
+    "rehearse": {
+     "loss": 5.1152,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0799,
+     "reply_sure": 0.74,
+     "evidence_right": 0.981
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 25500,
+   "s": 5239,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5904,
+   "train": {
+    "qa": 1.5398,
+    "skills": 0.0372,
+    "convo": 3.4448,
+    "recall": 0.1117,
+    "buried": 0.5583,
+    "docqa": 0.1949,
+    "story": 3.8677,
+    "rehearse": 4.4982,
+    "longconv": 0.068
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8211,
+     "reply_sure": 0.396,
+     "evidence_right": 0.787
+    },
+    "skills": {
+     "loss": 0.0299,
+     "reply_sure": 0.896,
+     "evidence_right": 0.99
+    },
+    "convo": {
+     "loss": 3.2771,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0851,
+     "reply_sure": 0.625,
+     "evidence_right": 0.959
+    },
+    "buried": {
+     "loss": 0.8342,
+     "reply_sure": 0.208,
+     "evidence_right": 0.817
+    },
+    "docqa": {
+     "loss": 0.2087,
+     "reply_sure": 0.469,
+     "evidence_right": 0.987
+    },
+    "story": {
+     "loss": 4.3211,
+     "reply_sure": 0.188,
+     "evidence_right": 0.348
+    },
+    "rehearse": {
+     "loss": 5.2289,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0695,
+     "reply_sure": 0.625,
+     "evidence_right": 0.982
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 26000,
+   "s": 5336,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5708,
+   "train": {
+    "qa": 1.4897,
+    "skills": 0.0344,
+    "convo": 3.4729,
+    "recall": 0.1154,
+    "buried": 0.5481,
+    "docqa": 0.1743,
+    "story": 3.9337,
+    "rehearse": 4.5131,
+    "longconv": 0.0656
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7698,
+     "reply_sure": 0.427,
+     "evidence_right": 0.804
+    },
+    "skills": {
+     "loss": 0.0275,
+     "reply_sure": 0.896,
+     "evidence_right": 0.997
+    },
+    "convo": {
+     "loss": 3.1402,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0849,
+     "reply_sure": 0.625,
+     "evidence_right": 0.958
+    },
+    "buried": {
+     "loss": 0.7915,
+     "reply_sure": 0.208,
+     "evidence_right": 0.818
+    },
+    "docqa": {
+     "loss": 0.1997,
+     "reply_sure": 0.521,
+     "evidence_right": 0.986
+    },
+    "story": {
+     "loss": 4.1859,
+     "reply_sure": 0.177,
+     "evidence_right": 0.346
+    },
+    "rehearse": {
+     "loss": 5.08,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0741,
+     "reply_sure": 0.594,
+     "evidence_right": 0.984
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 26500,
+   "s": 5422,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5779,
+   "train": {
+    "qa": 1.4737,
+    "skills": 0.0329,
+    "convo": 3.5019,
+    "recall": 0.0989,
+    "buried": 0.5276,
+    "docqa": 0.178,
+    "story": 3.7786,
+    "rehearse": 4.4874,
+    "longconv": 0.0603
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7718,
+     "reply_sure": 0.427,
+     "evidence_right": 0.823
+    },
+    "skills": {
+     "loss": 0.0358,
+     "reply_sure": 0.854,
+     "evidence_right": 0.993
+    },
+    "convo": {
+     "loss": 3.1433,
+     "reply_sure": 0.031,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0769,
+     "reply_sure": 0.646,
+     "evidence_right": 0.968
+    },
+    "buried": {
+     "loss": 0.8306,
+     "reply_sure": 0.26,
+     "evidence_right": 0.826
+    },
+    "docqa": {
+     "loss": 0.1946,
+     "reply_sure": 0.552,
+     "evidence_right": 0.988
+    },
+    "story": {
+     "loss": 4.1697,
+     "reply_sure": 0.219,
+     "evidence_right": 0.351
+    },
+    "rehearse": {
+     "loss": 5.084,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0869,
+     "reply_sure": 0.583,
+     "evidence_right": 0.977
+    }
+   },
+   "overfit_alarm": [
+    "longconv"
+   ]
+  },
+  {
+   "step": 27000,
+   "s": 5507,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5725,
+   "train": {
+    "qa": 1.5545,
+    "skills": 0.0357,
+    "convo": 3.4753,
+    "recall": 0.0996,
+    "buried": 0.5077,
+    "docqa": 0.1732,
+    "story": 3.8823,
+    "rehearse": 4.4721,
+    "longconv": 0.065
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8038,
+     "reply_sure": 0.406,
+     "evidence_right": 0.79
+    },
+    "skills": {
+     "loss": 0.025,
+     "reply_sure": 0.917,
+     "evidence_right": 0.997
+    },
+    "convo": {
+     "loss": 3.1632,
+     "reply_sure": 0.021,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0858,
+     "reply_sure": 0.688,
+     "evidence_right": 0.955
+    },
+    "buried": {
+     "loss": 0.7486,
+     "reply_sure": 0.271,
+     "evidence_right": 0.821
+    },
+    "docqa": {
+     "loss": 0.2011,
+     "reply_sure": 0.552,
+     "evidence_right": 0.985
+    },
+    "story": {
+     "loss": 4.1802,
+     "reply_sure": 0.219,
+     "evidence_right": 0.345
+    },
+    "rehearse": {
+     "loss": 5.1113,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0763,
+     "reply_sure": 0.729,
+     "evidence_right": 0.977
+    }
+   },
+   "overfit_alarm": [
+    "rehearse"
+   ]
+  },
+  {
+   "step": 27500,
+   "s": 5593,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5707,
+   "train": {
+    "qa": 1.6117,
+    "skills": 0.031,
+    "convo": 3.5038,
+    "recall": 0.1015,
+    "buried": 0.5898,
+    "docqa": 0.1902,
+    "story": 3.9699,
+    "rehearse": 4.5055,
+    "longconv": 0.0814
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7753,
+     "reply_sure": 0.396,
+     "evidence_right": 0.796
+    },
+    "skills": {
+     "loss": 0.0321,
+     "reply_sure": 0.906,
+     "evidence_right": 0.993
+    },
+    "convo": {
+     "loss": 3.176,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0832,
+     "reply_sure": 0.76,
+     "evidence_right": 0.96
+    },
+    "buried": {
+     "loss": 0.7481,
+     "reply_sure": 0.281,
+     "evidence_right": 0.824
+    },
+    "docqa": {
+     "loss": 0.2147,
+     "reply_sure": 0.552,
+     "evidence_right": 0.989
+    },
+    "story": {
+     "loss": 4.1776,
+     "reply_sure": 0.198,
+     "evidence_right": 0.347
+    },
+    "rehearse": {
+     "loss": 5.1125,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0729,
+     "reply_sure": 0.708,
+     "evidence_right": 0.977
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 28000,
+   "s": 5679,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.568,
+   "train": {
+    "qa": 1.5684,
+    "skills": 0.0285,
+    "convo": 3.537,
+    "recall": 0.103,
+    "buried": 0.5815,
+    "docqa": 0.1886,
+    "story": 3.904,
+    "rehearse": 4.4446,
+    "longconv": 0.0776
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7714,
+     "reply_sure": 0.406,
+     "evidence_right": 0.815
+    },
+    "skills": {
+     "loss": 0.0235,
+     "reply_sure": 0.917,
+     "evidence_right": 0.995
+    },
+    "convo": {
+     "loss": 3.1685,
+     "reply_sure": 0.042,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0825,
+     "reply_sure": 0.688,
+     "evidence_right": 0.96
+    },
+    "buried": {
+     "loss": 0.7871,
+     "reply_sure": 0.229,
+     "evidence_right": 0.82
+    },
+    "docqa": {
+     "loss": 0.1959,
+     "reply_sure": 0.594,
+     "evidence_right": 0.988
+    },
+    "story": {
+     "loss": 4.1995,
+     "reply_sure": 0.208,
+     "evidence_right": 0.367
+    },
+    "rehearse": {
+     "loss": 5.1202,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0691,
+     "reply_sure": 0.688,
+     "evidence_right": 0.98
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 28500,
+   "s": 5768,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5828,
+   "train": {
+    "qa": 1.5244,
+    "skills": 0.0329,
+    "convo": 3.4843,
+    "recall": 0.0974,
+    "buried": 0.5694,
+    "docqa": 0.2003,
+    "story": 3.9384,
+    "rehearse": 4.511,
+    "longconv": 0.0652
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8421,
+     "reply_sure": 0.396,
+     "evidence_right": 0.808
+    },
+    "skills": {
+     "loss": 0.031,
+     "reply_sure": 0.865,
+     "evidence_right": 0.992
+    },
+    "convo": {
+     "loss": 3.2029,
+     "reply_sure": 0.031,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0785,
+     "reply_sure": 0.667,
+     "evidence_right": 0.964
+    },
+    "buried": {
+     "loss": 0.8401,
+     "reply_sure": 0.25,
+     "evidence_right": 0.839
+    },
+    "docqa": {
+     "loss": 0.1859,
+     "reply_sure": 0.562,
+     "evidence_right": 0.988
+    },
+    "story": {
+     "loss": 4.2439,
+     "reply_sure": 0.219,
+     "evidence_right": 0.352
+    },
+    "rehearse": {
+     "loss": 5.1476,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0724,
+     "reply_sure": 0.615,
+     "evidence_right": 0.977
+    }
+   },
+   "overfit_alarm": [
+    "buried"
+   ]
+  },
+  {
+   "step": 29000,
+   "s": 5852,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5769,
+   "train": {
+    "qa": 1.4522,
+    "skills": 0.0311,
+    "convo": 3.4729,
+    "recall": 0.0984,
+    "buried": 0.5821,
+    "docqa": 0.1834,
+    "story": 3.8263,
+    "rehearse": 4.4764,
+    "longconv": 0.0847
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8149,
+     "reply_sure": 0.354,
+     "evidence_right": 0.823
+    },
+    "skills": {
+     "loss": 0.0278,
+     "reply_sure": 0.885,
+     "evidence_right": 0.995
+    },
+    "convo": {
+     "loss": 3.1771,
+     "reply_sure": 0.021,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0907,
+     "reply_sure": 0.729,
+     "evidence_right": 0.965
+    },
+    "buried": {
+     "loss": 0.7757,
+     "reply_sure": 0.25,
+     "evidence_right": 0.829
+    },
+    "docqa": {
+     "loss": 0.1848,
+     "reply_sure": 0.562,
+     "evidence_right": 0.989
+    },
+    "story": {
+     "loss": 4.1795,
+     "reply_sure": 0.188,
+     "evidence_right": 0.362
+    },
+    "rehearse": {
+     "loss": 5.1133,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0745,
+     "reply_sure": 0.75,
+     "evidence_right": 0.981
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 29500,
+   "s": 5938,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5593,
+   "train": {
+    "qa": 1.5159,
+    "skills": 0.035,
+    "convo": 3.5347,
+    "recall": 0.0968,
+    "buried": 0.5501,
+    "docqa": 0.1748,
+    "story": 3.9913,
+    "rehearse": 4.5301,
+    "longconv": 0.0661
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7713,
+     "reply_sure": 0.427,
+     "evidence_right": 0.822
+    },
+    "skills": {
+     "loss": 0.0269,
+     "reply_sure": 0.885,
+     "evidence_right": 0.993
+    },
+    "convo": {
+     "loss": 3.2248,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.071,
+     "reply_sure": 0.698,
+     "evidence_right": 0.964
+    },
+    "buried": {
+     "loss": 0.7402,
+     "reply_sure": 0.24,
+     "evidence_right": 0.83
+    },
+    "docqa": {
+     "loss": 0.1776,
+     "reply_sure": 0.562,
+     "evidence_right": 0.992
+    },
+    "story": {
+     "loss": 4.1941,
+     "reply_sure": 0.177,
+     "evidence_right": 0.362
+    },
+    "rehearse": {
+     "loss": 5.1178,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0689,
+     "reply_sure": 0.625,
+     "evidence_right": 0.981
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 30000,
+   "s": 6027,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5568,
+   "train": {
+    "qa": 1.5472,
+    "skills": 0.027,
+    "convo": 3.4902,
+    "recall": 0.1066,
+    "buried": 0.5604,
+    "docqa": 0.1772,
+    "story": 3.8941,
+    "rehearse": 4.4856,
+    "longconv": 0.0656
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7446,
+     "reply_sure": 0.406,
+     "evidence_right": 0.818
+    },
+    "skills": {
+     "loss": 0.0211,
+     "reply_sure": 0.906,
+     "evidence_right": 0.996
+    },
+    "convo": {
+     "loss": 3.1838,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.073,
+     "reply_sure": 0.688,
+     "evidence_right": 0.964
+    },
+    "buried": {
+     "loss": 0.7382,
+     "reply_sure": 0.25,
+     "evidence_right": 0.824
+    },
+    "docqa": {
+     "loss": 0.1794,
+     "reply_sure": 0.562,
+     "evidence_right": 0.991
+    },
+    "story": {
+     "loss": 4.1834,
+     "reply_sure": 0.219,
+     "evidence_right": 0.351
+    },
+    "rehearse": {
+     "loss": 5.1216,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0738,
+     "reply_sure": 0.604,
+     "evidence_right": 0.982
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 30500,
+   "s": 6120,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5671,
+   "train": {
+    "qa": 1.6394,
+    "skills": 0.0345,
+    "convo": 3.5001,
+    "recall": 0.1047,
+    "buried": 0.5398,
+    "docqa": 0.182,
+    "story": 3.8695,
+    "rehearse": 4.5141,
+    "longconv": 0.0742
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7515,
+     "reply_sure": 0.448,
+     "evidence_right": 0.816
+    },
+    "skills": {
+     "loss": 0.0309,
+     "reply_sure": 0.865,
+     "evidence_right": 0.991
+    },
+    "convo": {
+     "loss": 3.2076,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0773,
+     "reply_sure": 0.667,
+     "evidence_right": 0.964
+    },
+    "buried": {
+     "loss": 0.7805,
+     "reply_sure": 0.26,
+     "evidence_right": 0.817
+    },
+    "docqa": {
+     "loss": 0.1771,
+     "reply_sure": 0.573,
+     "evidence_right": 0.99
+    },
+    "story": {
+     "loss": 4.2018,
+     "reply_sure": 0.188,
+     "evidence_right": 0.354
+    },
+    "rehearse": {
+     "loss": 5.1204,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0746,
+     "reply_sure": 0.583,
+     "evidence_right": 0.977
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 31000,
+   "s": 6219,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5707,
+   "train": {
+    "qa": 1.69,
+    "skills": 0.0323,
+    "convo": 3.436,
+    "recall": 0.1083,
+    "buried": 0.5796,
+    "docqa": 0.1742,
+    "story": 3.9365,
+    "rehearse": 4.4835,
+    "longconv": 0.1149
+   },
+   "held": {
+    "qa": {
+     "loss": 0.747,
+     "reply_sure": 0.469,
+     "evidence_right": 0.825
+    },
+    "skills": {
+     "loss": 0.0391,
+     "reply_sure": 0.885,
+     "evidence_right": 0.987
+    },
+    "convo": {
+     "loss": 3.168,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0803,
+     "reply_sure": 0.729,
+     "evidence_right": 0.965
+    },
+    "buried": {
+     "loss": 0.7412,
+     "reply_sure": 0.281,
+     "evidence_right": 0.821
+    },
+    "docqa": {
+     "loss": 0.1908,
+     "reply_sure": 0.542,
+     "evidence_right": 0.99
+    },
+    "story": {
+     "loss": 4.1749,
+     "reply_sure": 0.208,
+     "evidence_right": 0.351
+    },
+    "rehearse": {
+     "loss": 5.1045,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0857,
+     "reply_sure": 0.719,
+     "evidence_right": 0.983
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 31500,
+   "s": 6317,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5784,
+   "train": {
+    "qa": 1.5068,
+    "skills": 0.0281,
+    "convo": 3.4772,
+    "recall": 0.092,
+    "buried": 0.5311,
+    "docqa": 0.1811,
+    "story": 3.8616,
+    "rehearse": 4.4951,
+    "longconv": 0.0742
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7163,
+     "reply_sure": 0.438,
+     "evidence_right": 0.832
+    },
+    "skills": {
+     "loss": 0.0355,
+     "reply_sure": 0.865,
+     "evidence_right": 0.993
+    },
+    "convo": {
+     "loss": 3.2011,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.099,
+     "reply_sure": 0.688,
+     "evidence_right": 0.967
+    },
+    "buried": {
+     "loss": 0.7359,
+     "reply_sure": 0.281,
+     "evidence_right": 0.838
+    },
+    "docqa": {
+     "loss": 0.1862,
+     "reply_sure": 0.562,
+     "evidence_right": 0.992
+    },
+    "story": {
+     "loss": 4.2071,
+     "reply_sure": 0.219,
+     "evidence_right": 0.348
+    },
+    "rehearse": {
+     "loss": 5.1295,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0887,
+     "reply_sure": 0.594,
+     "evidence_right": 0.982
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 32000,
+   "s": 6417,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5815,
+   "train": {
+    "qa": 1.6015,
+    "skills": 0.0353,
+    "convo": 3.4377,
+    "recall": 0.1005,
+    "buried": 0.5283,
+    "docqa": 0.1691,
+    "story": 3.9222,
+    "rehearse": 4.5558,
+    "longconv": 0.0717
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8144,
+     "reply_sure": 0.365,
+     "evidence_right": 0.82
+    },
+    "skills": {
+     "loss": 0.0309,
+     "reply_sure": 0.917,
+     "evidence_right": 0.996
+    },
+    "convo": {
+     "loss": 3.2135,
+     "reply_sure": 0.021,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0956,
+     "reply_sure": 0.667,
+     "evidence_right": 0.961
+    },
+    "buried": {
+     "loss": 0.7869,
+     "reply_sure": 0.25,
+     "evidence_right": 0.833
+    },
+    "docqa": {
+     "loss": 0.1922,
+     "reply_sure": 0.573,
+     "evidence_right": 0.992
+    },
+    "story": {
+     "loss": 4.1687,
+     "reply_sure": 0.219,
+     "evidence_right": 0.363
+    },
+    "rehearse": {
+     "loss": 5.1213,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0716,
+     "reply_sure": 0.76,
+     "evidence_right": 0.983
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 32500,
+   "s": 6516,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5729,
+   "train": {
+    "qa": 1.5634,
+    "skills": 0.0295,
+    "convo": 3.5119,
+    "recall": 0.0928,
+    "buried": 0.5572,
+    "docqa": 0.1821,
+    "story": 3.9781,
+    "rehearse": 4.5725,
+    "longconv": 0.0771
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8465,
+     "reply_sure": 0.354,
+     "evidence_right": 0.809
+    },
+    "skills": {
+     "loss": 0.0229,
+     "reply_sure": 0.896,
+     "evidence_right": 0.997
+    },
+    "convo": {
+     "loss": 3.2951,
+     "reply_sure": 0.031,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0775,
+     "reply_sure": 0.635,
+     "evidence_right": 0.963
+    },
+    "buried": {
+     "loss": 0.7266,
+     "reply_sure": 0.292,
+     "evidence_right": 0.827
+    },
+    "docqa": {
+     "loss": 0.198,
+     "reply_sure": 0.531,
+     "evidence_right": 0.989
+    },
+    "story": {
+     "loss": 4.1907,
+     "reply_sure": 0.167,
+     "evidence_right": 0.355
+    },
+    "rehearse": {
+     "loss": 5.1355,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0711,
+     "reply_sure": 0.625,
+     "evidence_right": 0.984
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 33000,
+   "s": 6612,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.569,
+   "train": {
+    "qa": 1.4699,
+    "skills": 0.0357,
+    "convo": 3.4856,
+    "recall": 0.1026,
+    "buried": 0.5221,
+    "docqa": 0.1788,
+    "story": 3.947,
+    "rehearse": 4.5255,
+    "longconv": 0.0768
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7588,
+     "reply_sure": 0.427,
+     "evidence_right": 0.816
+    },
+    "skills": {
+     "loss": 0.0305,
+     "reply_sure": 0.885,
+     "evidence_right": 0.997
+    },
+    "convo": {
+     "loss": 3.2265,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0812,
+     "reply_sure": 0.729,
+     "evidence_right": 0.965
+    },
+    "buried": {
+     "loss": 0.7636,
+     "reply_sure": 0.323,
+     "evidence_right": 0.842
+    },
+    "docqa": {
+     "loss": 0.1888,
+     "reply_sure": 0.552,
+     "evidence_right": 0.987
+    },
+    "story": {
+     "loss": 4.1794,
+     "reply_sure": 0.188,
+     "evidence_right": 0.353
+    },
+    "rehearse": {
+     "loss": 5.1419,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0731,
+     "reply_sure": 0.76,
+     "evidence_right": 0.979
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 33500,
+   "s": 6711,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.571,
+   "train": {
+    "qa": 1.5875,
+    "skills": 0.03,
+    "convo": 3.5134,
+    "recall": 0.1017,
+    "buried": 0.5323,
+    "docqa": 0.1686,
+    "story": 3.7591,
+    "rehearse": 4.5217,
+    "longconv": 0.0702
+   },
+   "held": {
+    "qa": {
+     "loss": 0.829,
+     "reply_sure": 0.292,
+     "evidence_right": 0.815
+    },
+    "skills": {
+     "loss": 0.0345,
+     "reply_sure": 0.875,
+     "evidence_right": 0.993
+    },
+    "convo": {
+     "loss": 3.1856,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0763,
+     "reply_sure": 0.656,
+     "evidence_right": 0.972
+    },
+    "buried": {
+     "loss": 0.7789,
+     "reply_sure": 0.229,
+     "evidence_right": 0.826
+    },
+    "docqa": {
+     "loss": 0.1898,
+     "reply_sure": 0.552,
+     "evidence_right": 0.986
+    },
+    "story": {
+     "loss": 4.196,
+     "reply_sure": 0.188,
+     "evidence_right": 0.372
+    },
+    "rehearse": {
+     "loss": 5.1292,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0652,
+     "reply_sure": 0.594,
+     "evidence_right": 0.984
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 34000,
+   "s": 6810,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5715,
+   "train": {
+    "qa": 1.5232,
+    "skills": 0.0315,
+    "convo": 3.5228,
+    "recall": 0.1094,
+    "buried": 0.5157,
+    "docqa": 0.1601,
+    "story": 3.8005,
+    "rehearse": 4.5104,
+    "longconv": 0.0712
+   },
+   "held": {
+    "qa": {
+     "loss": 0.8134,
+     "reply_sure": 0.354,
+     "evidence_right": 0.795
+    },
+    "skills": {
+     "loss": 0.0337,
+     "reply_sure": 0.875,
+     "evidence_right": 0.995
+    },
+    "convo": {
+     "loss": 3.1996,
+     "reply_sure": 0.031,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0822,
+     "reply_sure": 0.719,
+     "evidence_right": 0.967
+    },
+    "buried": {
+     "loss": 0.7214,
+     "reply_sure": 0.271,
+     "evidence_right": 0.823
+    },
+    "docqa": {
+     "loss": 0.1818,
+     "reply_sure": 0.573,
+     "evidence_right": 0.986
+    },
+    "story": {
+     "loss": 4.2213,
+     "reply_sure": 0.229,
+     "evidence_right": 0.356
+    },
+    "rehearse": {
+     "loss": 5.1406,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0739,
+     "reply_sure": 0.75,
+     "evidence_right": 0.979
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 34500,
+   "s": 6911,
+   "gpu_peak_gb": 6.53,
+   "lr_factor": 1.0,
+   "combined": 0.5675,
+   "train": {
+    "qa": 1.6322,
+    "skills": 0.0307,
+    "convo": 3.4812,
+    "recall": 0.1029,
+    "buried": 0.4835,
+    "docqa": 0.1572,
+    "story": 3.9708,
+    "rehearse": 4.5041,
+    "longconv": 0.0743
+   },
+   "held": {
+    "qa": {
+     "loss": 0.767,
+     "reply_sure": 0.448,
+     "evidence_right": 0.823
+    },
+    "skills": {
+     "loss": 0.0451,
+     "reply_sure": 0.833,
+     "evidence_right": 0.992
+    },
+    "convo": {
+     "loss": 3.1725,
+     "reply_sure": 0.031,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0728,
+     "reply_sure": 0.667,
+     "evidence_right": 0.965
+    },
+    "buried": {
+     "loss": 0.7461,
+     "reply_sure": 0.271,
+     "evidence_right": 0.836
+    },
+    "docqa": {
+     "loss": 0.187,
+     "reply_sure": 0.604,
+     "evidence_right": 0.987
+    },
+    "story": {
+     "loss": 4.2335,
+     "reply_sure": 0.188,
+     "evidence_right": 0.358
+    },
+    "rehearse": {
+     "loss": 5.14,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.073,
+     "reply_sure": 0.573,
+     "evidence_right": 0.982
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 35000,
+   "s": 7010,
+   "gpu_peak_gb": 6.54,
+   "lr_factor": 0.988,
+   "combined": 0.5638,
+   "train": {
+    "qa": 1.6934,
+    "skills": 0.0345,
+    "convo": 3.4512,
+    "recall": 0.1051,
+    "buried": 0.6058,
+    "docqa": 0.1851,
+    "story": 3.9642,
+    "rehearse": 4.494,
+    "longconv": 0.0931
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7891,
+     "reply_sure": 0.396,
+     "evidence_right": 0.808
+    },
+    "skills": {
+     "loss": 0.0345,
+     "reply_sure": 0.875,
+     "evidence_right": 0.989
+    },
+    "convo": {
+     "loss": 3.1609,
+     "reply_sure": 0.031,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0763,
+     "reply_sure": 0.656,
+     "evidence_right": 0.966
+    },
+    "buried": {
+     "loss": 0.7321,
+     "reply_sure": 0.281,
+     "evidence_right": 0.826
+    },
+    "docqa": {
+     "loss": 0.1807,
+     "reply_sure": 0.604,
+     "evidence_right": 0.987
+    },
+    "story": {
+     "loss": 4.1914,
+     "reply_sure": 0.198,
+     "evidence_right": 0.351
+    },
+    "rehearse": {
+     "loss": 5.1255,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0709,
+     "reply_sure": 0.604,
+     "evidence_right": 0.987
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 35500,
+   "s": 7108,
+   "gpu_peak_gb": 6.54,
+   "lr_factor": 0.954,
+   "combined": 0.5672,
+   "train": {
+    "qa": 1.47,
+    "skills": 0.0286,
+    "convo": 3.531,
+    "recall": 0.0901,
+    "buried": 0.5272,
+    "docqa": 0.1851,
+    "story": 3.8181,
+    "rehearse": 4.5101,
+    "longconv": 0.0677
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7726,
+     "reply_sure": 0.385,
+     "evidence_right": 0.815
+    },
+    "skills": {
+     "loss": 0.0249,
+     "reply_sure": 0.885,
+     "evidence_right": 0.992
+    },
+    "convo": {
+     "loss": 3.1565,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0905,
+     "reply_sure": 0.625,
+     "evidence_right": 0.973
+    },
+    "buried": {
+     "loss": 0.7313,
+     "reply_sure": 0.219,
+     "evidence_right": 0.811
+    },
+    "docqa": {
+     "loss": 0.167,
+     "reply_sure": 0.635,
+     "evidence_right": 0.99
+    },
+    "story": {
+     "loss": 4.1973,
+     "reply_sure": 0.188,
+     "evidence_right": 0.353
+    },
+    "rehearse": {
+     "loss": 5.1197,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0766,
+     "reply_sure": 0.583,
+     "evidence_right": 0.987
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 36000,
+   "s": 7206,
+   "gpu_peak_gb": 6.54,
+   "lr_factor": 0.899,
+   "combined": 0.5675,
+   "train": {
+    "qa": 1.4914,
+    "skills": 0.025,
+    "convo": 3.4616,
+    "recall": 0.1005,
+    "buried": 0.5219,
+    "docqa": 0.166,
+    "story": 3.8497,
+    "rehearse": 4.5002,
+    "longconv": 0.0668
+   },
+   "held": {
+    "qa": {
+     "loss": 0.783,
+     "reply_sure": 0.427,
+     "evidence_right": 0.811
+    },
+    "skills": {
+     "loss": 0.031,
+     "reply_sure": 0.917,
+     "evidence_right": 0.993
+    },
+    "convo": {
+     "loss": 3.1919,
+     "reply_sure": 0.042,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0782,
+     "reply_sure": 0.719,
+     "evidence_right": 0.968
+    },
+    "buried": {
+     "loss": 0.766,
+     "reply_sure": 0.26,
+     "evidence_right": 0.812
+    },
+    "docqa": {
+     "loss": 0.1872,
+     "reply_sure": 0.625,
+     "evidence_right": 0.987
+    },
+    "story": {
+     "loss": 4.1802,
+     "reply_sure": 0.198,
+     "evidence_right": 0.354
+    },
+    "rehearse": {
+     "loss": 5.119,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0711,
+     "reply_sure": 0.771,
+     "evidence_right": 0.979
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 36500,
+   "s": 7303,
+   "gpu_peak_gb": 6.54,
+   "lr_factor": 0.826,
+   "combined": 0.555,
+   "train": {
+    "qa": 1.4516,
+    "skills": 0.0289,
+    "convo": 3.4633,
+    "recall": 0.0929,
+    "buried": 0.5602,
+    "docqa": 0.1861,
+    "story": 3.8351,
+    "rehearse": 4.4752,
+    "longconv": 0.0632
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7283,
+     "reply_sure": 0.427,
+     "evidence_right": 0.83
+    },
+    "skills": {
+     "loss": 0.0204,
+     "reply_sure": 0.896,
+     "evidence_right": 0.996
+    },
+    "convo": {
+     "loss": 3.1565,
+     "reply_sure": 0.0,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.083,
+     "reply_sure": 0.625,
+     "evidence_right": 0.967
+    },
+    "buried": {
+     "loss": 0.7222,
+     "reply_sure": 0.229,
+     "evidence_right": 0.833
+    },
+    "docqa": {
+     "loss": 0.1718,
+     "reply_sure": 0.625,
+     "evidence_right": 0.99
+    },
+    "story": {
+     "loss": 4.1719,
+     "reply_sure": 0.208,
+     "evidence_right": 0.357
+    },
+    "rehearse": {
+     "loss": 5.1092,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0717,
+     "reply_sure": 0.615,
+     "evidence_right": 0.987
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 37000,
+   "s": 7401,
+   "gpu_peak_gb": 6.54,
+   "lr_factor": 0.739,
+   "combined": 0.5597,
+   "train": {
+    "qa": 1.4615,
+    "skills": 0.0247,
+    "convo": 3.4221,
+    "recall": 0.092,
+    "buried": 0.5035,
+    "docqa": 0.163,
+    "story": 3.815,
+    "rehearse": 4.4792,
+    "longconv": 0.0593
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7246,
+     "reply_sure": 0.438,
+     "evidence_right": 0.818
+    },
+    "skills": {
+     "loss": 0.0269,
+     "reply_sure": 0.927,
+     "evidence_right": 0.997
+    },
+    "convo": {
+     "loss": 3.1273,
+     "reply_sure": 0.021,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0851,
+     "reply_sure": 0.729,
+     "evidence_right": 0.973
+    },
+    "buried": {
+     "loss": 0.7211,
+     "reply_sure": 0.281,
+     "evidence_right": 0.83
+    },
+    "docqa": {
+     "loss": 0.1497,
+     "reply_sure": 0.646,
+     "evidence_right": 0.993
+    },
+    "story": {
+     "loss": 4.1913,
+     "reply_sure": 0.208,
+     "evidence_right": 0.372
+    },
+    "rehearse": {
+     "loss": 5.1138,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.083,
+     "reply_sure": 0.719,
+     "evidence_right": 0.981
+    }
+   },
+   "overfit_alarm": [
+    "recall",
+    "longconv"
+   ]
+  },
+  {
+   "step": 37500,
+   "s": 7506,
+   "gpu_peak_gb": 6.54,
+   "lr_factor": 0.642,
+   "combined": 0.5475,
+   "train": {
+    "qa": 1.5627,
+    "skills": 0.0242,
+    "convo": 3.3894,
+    "recall": 0.0908,
+    "buried": 0.4647,
+    "docqa": 0.1572,
+    "story": 3.8386,
+    "rehearse": 4.4653,
+    "longconv": 0.0589
+   },
+   "held": {
+    "qa": {
+     "loss": 0.6923,
+     "reply_sure": 0.469,
+     "evidence_right": 0.836
+    },
+    "skills": {
+     "loss": 0.0271,
+     "reply_sure": 0.917,
+     "evidence_right": 0.995
+    },
+    "convo": {
+     "loss": 3.1186,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0782,
+     "reply_sure": 0.76,
+     "evidence_right": 0.965
+    },
+    "buried": {
+     "loss": 0.7356,
+     "reply_sure": 0.271,
+     "evidence_right": 0.833
+    },
+    "docqa": {
+     "loss": 0.156,
+     "reply_sure": 0.594,
+     "evidence_right": 0.991
+    },
+    "story": {
+     "loss": 4.1842,
+     "reply_sure": 0.219,
+     "evidence_right": 0.366
+    },
+    "rehearse": {
+     "loss": 5.1088,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0667,
+     "reply_sure": 0.781,
+     "evidence_right": 0.983
+    }
+   },
+   "overfit_alarm": [
+    "skills"
+   ]
+  },
+  {
+   "step": 38000,
+   "s": 7604,
+   "gpu_peak_gb": 6.54,
+   "lr_factor": 0.54,
+   "combined": 0.5412,
+   "train": {
+    "qa": 1.5057,
+    "skills": 0.0239,
+    "convo": 3.4365,
+    "recall": 0.0911,
+    "buried": 0.5096,
+    "docqa": 0.1619,
+    "story": 3.9154,
+    "rehearse": 4.4775,
+    "longconv": 0.0557
+   },
+   "held": {
+    "qa": {
+     "loss": 0.713,
+     "reply_sure": 0.479,
+     "evidence_right": 0.827
+    },
+    "skills": {
+     "loss": 0.0227,
+     "reply_sure": 0.927,
+     "evidence_right": 0.995
+    },
+    "convo": {
+     "loss": 3.0903,
+     "reply_sure": 0.021,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0781,
+     "reply_sure": 0.74,
+     "evidence_right": 0.968
+    },
+    "buried": {
+     "loss": 0.6707,
+     "reply_sure": 0.312,
+     "evidence_right": 0.835
+    },
+    "docqa": {
+     "loss": 0.1604,
+     "reply_sure": 0.635,
+     "evidence_right": 0.989
+    },
+    "story": {
+     "loss": 4.1558,
+     "reply_sure": 0.229,
+     "evidence_right": 0.377
+    },
+    "rehearse": {
+     "loss": 5.0785,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.068,
+     "reply_sure": 0.771,
+     "evidence_right": 0.985
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 38500,
+   "s": 7705,
+   "gpu_peak_gb": 6.54,
+   "lr_factor": 0.439,
+   "combined": 0.5426,
+   "train": {
+    "qa": 1.4033,
+    "skills": 0.019,
+    "convo": 3.4064,
+    "recall": 0.0857,
+    "buried": 0.448,
+    "docqa": 0.1436,
+    "story": 3.9496,
+    "rehearse": 4.4848,
+    "longconv": 0.058
+   },
+   "held": {
+    "qa": {
+     "loss": 0.7153,
+     "reply_sure": 0.469,
+     "evidence_right": 0.829
+    },
+    "skills": {
+     "loss": 0.0228,
+     "reply_sure": 0.917,
+     "evidence_right": 0.996
+    },
+    "convo": {
+     "loss": 3.0851,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.079,
+     "reply_sure": 0.74,
+     "evidence_right": 0.965
+    },
+    "buried": {
+     "loss": 0.6973,
+     "reply_sure": 0.333,
+     "evidence_right": 0.839
+    },
+    "docqa": {
+     "loss": 0.1454,
+     "reply_sure": 0.677,
+     "evidence_right": 0.994
+    },
+    "story": {
+     "loss": 4.1567,
+     "reply_sure": 0.24,
+     "evidence_right": 0.368
+    },
+    "rehearse": {
+     "loss": 5.0818,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.068,
+     "reply_sure": 0.771,
+     "evidence_right": 0.99
+    }
+   },
+   "overfit_alarm": [
+    "qa"
+   ]
+  },
+  {
+   "step": 39000,
+   "s": 7806,
+   "gpu_peak_gb": 6.54,
+   "lr_factor": 0.343,
+   "combined": 0.5301,
+   "train": {
+    "qa": 1.3055,
+    "skills": 0.0204,
+    "convo": 3.3908,
+    "recall": 0.0903,
+    "buried": 0.4519,
+    "docqa": 0.1481,
+    "story": 3.8257,
+    "rehearse": 4.4356,
+    "longconv": 0.0559
+   },
+   "held": {
+    "qa": {
+     "loss": 0.6831,
+     "reply_sure": 0.448,
+     "evidence_right": 0.813
+    },
+    "skills": {
+     "loss": 0.0189,
+     "reply_sure": 0.938,
+     "evidence_right": 0.997
+    },
+    "convo": {
+     "loss": 3.0815,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0811,
+     "reply_sure": 0.635,
+     "evidence_right": 0.967
+    },
+    "buried": {
+     "loss": 0.6299,
+     "reply_sure": 0.302,
+     "evidence_right": 0.844
+    },
+    "docqa": {
+     "loss": 0.144,
+     "reply_sure": 0.677,
+     "evidence_right": 0.993
+    },
+    "story": {
+     "loss": 4.1196,
+     "reply_sure": 0.25,
+     "evidence_right": 0.378
+    },
+    "rehearse": {
+     "loss": 5.0566,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.064,
+     "reply_sure": 0.625,
+     "evidence_right": 0.983
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 39500,
+   "s": 7905,
+   "gpu_peak_gb": 6.54,
+   "lr_factor": 0.258,
+   "combined": 0.5311,
+   "train": {
+    "qa": 1.3846,
+    "skills": 0.0218,
+    "convo": 3.3232,
+    "recall": 0.0918,
+    "buried": 0.4456,
+    "docqa": 0.1359,
+    "story": 3.7425,
+    "rehearse": 4.4326,
+    "longconv": 0.0653
+   },
+   "held": {
+    "qa": {
+     "loss": 0.6837,
+     "reply_sure": 0.427,
+     "evidence_right": 0.823
+    },
+    "skills": {
+     "loss": 0.0179,
+     "reply_sure": 0.906,
+     "evidence_right": 0.997
+    },
+    "convo": {
+     "loss": 3.0715,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0771,
+     "reply_sure": 0.625,
+     "evidence_right": 0.974
+    },
+    "buried": {
+     "loss": 0.6682,
+     "reply_sure": 0.281,
+     "evidence_right": 0.838
+    },
+    "docqa": {
+     "loss": 0.143,
+     "reply_sure": 0.677,
+     "evidence_right": 0.994
+    },
+    "story": {
+     "loss": 4.1115,
+     "reply_sure": 0.24,
+     "evidence_right": 0.368
+    },
+    "rehearse": {
+     "loss": 5.0546,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.065,
+     "reply_sure": 0.625,
+     "evidence_right": 0.985
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 40000,
+   "s": 8006,
+   "gpu_peak_gb": 6.54,
+   "lr_factor": 0.188,
+   "combined": 0.5241,
+   "train": {
+    "qa": 1.3786,
+    "skills": 0.0225,
+    "convo": 3.3159,
+    "recall": 0.0842,
+    "buried": 0.4237,
+    "docqa": 0.1336,
+    "story": 3.7756,
+    "rehearse": 4.3869,
+    "longconv": 0.0592
+   },
+   "held": {
+    "qa": {
+     "loss": 0.6571,
+     "reply_sure": 0.438,
+     "evidence_right": 0.827
+    },
+    "skills": {
+     "loss": 0.0179,
+     "reply_sure": 0.896,
+     "evidence_right": 0.996
+    },
+    "convo": {
+     "loss": 3.0543,
+     "reply_sure": 0.021,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.0774,
+     "reply_sure": 0.646,
+     "evidence_right": 0.968
+    },
+    "buried": {
+     "loss": 0.6382,
+     "reply_sure": 0.312,
+     "evidence_right": 0.848
+    },
+    "docqa": {
+     "loss": 0.1387,
+     "reply_sure": 0.677,
+     "evidence_right": 0.995
+    },
+    "story": {
+     "loss": 4.1102,
+     "reply_sure": 0.229,
+     "evidence_right": 0.367
+    },
+    "rehearse": {
+     "loss": 5.0425,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0635,
+     "reply_sure": 0.625,
+     "evidence_right": 0.989
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 40500,
+   "s": 8119,
+   "gpu_peak_gb": 6.54,
+   "lr_factor": 0.137,
+   "combined": 0.5232,
+   "train": {
+    "qa": 1.4344,
+    "skills": 0.0224,
+    "convo": 3.3752,
+    "recall": 0.0796,
+    "buried": 0.4116,
+    "docqa": 0.1377,
+    "story": 3.8551,
+    "rehearse": 4.3866,
+    "longconv": 0.0598
+   },
+   "held": {
+    "qa": {
+     "loss": 0.6625,
+     "reply_sure": 0.427,
+     "evidence_right": 0.84
+    },
+    "skills": {
+     "loss": 0.0174,
+     "reply_sure": 0.938,
+     "evidence_right": 0.996
+    },
+    "convo": {
+     "loss": 3.0361,
+     "reply_sure": 0.042,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.076,
+     "reply_sure": 0.698,
+     "evidence_right": 0.97
+    },
+    "buried": {
+     "loss": 0.6378,
+     "reply_sure": 0.312,
+     "evidence_right": 0.848
+    },
+    "docqa": {
+     "loss": 0.1381,
+     "reply_sure": 0.677,
+     "evidence_right": 0.994
+    },
+    "story": {
+     "loss": 4.1033,
+     "reply_sure": 0.25,
+     "evidence_right": 0.37
+    },
+    "rehearse": {
+     "loss": 5.0396,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0642,
+     "reply_sure": 0.688,
+     "evidence_right": 0.988
+    }
+   },
+   "overfit_alarm": []
+  },
+  {
+   "step": 41000,
+   "s": 8219,
+   "gpu_peak_gb": 6.54,
+   "lr_factor": 0.107,
+   "combined": 0.5195,
+   "train": {
+    "qa": 1.4821,
+    "skills": 0.0186,
+    "convo": 3.2818,
+    "recall": 0.0784,
+    "buried": 0.4166,
+    "docqa": 0.1256,
+    "story": 3.7722,
+    "rehearse": 4.4177,
+    "longconv": 0.0563
+   },
+   "held": {
+    "qa": {
+     "loss": 0.6596,
+     "reply_sure": 0.427,
+     "evidence_right": 0.836
+    },
+    "skills": {
+     "loss": 0.0179,
+     "reply_sure": 0.917,
+     "evidence_right": 0.996
+    },
+    "convo": {
+     "loss": 3.0315,
+     "reply_sure": 0.01,
+     "evidence_right": null
+    },
+    "recall": {
+     "loss": 0.073,
+     "reply_sure": 0.688,
+     "evidence_right": 0.97
+    },
+    "buried": {
+     "loss": 0.6222,
+     "reply_sure": 0.344,
+     "evidence_right": 0.856
+    },
+    "docqa": {
+     "loss": 0.1374,
+     "reply_sure": 0.708,
+     "evidence_right": 0.995
+    },
+    "story": {
+     "loss": 4.0978,
+     "reply_sure": 0.25,
+     "evidence_right": 0.376
+    },
+    "rehearse": {
+     "loss": 5.0286,
+     "reply_sure": null,
+     "evidence_right": null
+    },
+    "longconv": {
+     "loss": 0.0637,
+     "reply_sure": 0.656,
+     "evidence_right": 0.986
+    }
+   },
+   "overfit_alarm": []
+  }
+ ],
+ "steps_run": 41400,
+ "train_s": 8300,
+ "decay_from": 34500
+}

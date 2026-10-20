@@ -1,0 +1,31 @@
+{
+ "model": "runs/chat22/mix_5m_s2.pt",
+ "engine": "chat22",
+ "tier": "full",
+ "date": "2026-10-19 16:31",
+ "retrieval": "word key + MiniLM dense key (outside reference)",
+ "engine_opts": "{\"search\": \"v2\"}",
+ "clean_store_after_stored_skills": true,
+ "story": {
+  "questions": {
+   "k": 62,
+   "n": 75,
+   "share": 0.827,
+   "ci95": [
+    0.726,
+    0.896
+   ]
+  },
+  "contradictions_per_scene": 0.0,
+  "character_facts_used": {
+   "k": 29,
+   "n": 44,
+   "share": 0.659,
+   "ci95": [
+    0.511,
+    0.781
+   ]
+  }
+ },
+ "seconds": 120
+}

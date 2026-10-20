@@ -4,3 +4,14 @@
 *.md text eol=lf
 *.html text eol=lf
 *.py text eol=lf
+
+# the best model, its core and the permanent fact store travel through Git LFS (git lfs install, then clone)
+runs/**/*.pt filter=lfs diff=lfs merge=lfs -text
+runs/**/*.npz filter=lfs diff=lfs merge=lfs -text
+data_real/shared/knowledge/*.jsonl filter=lfs diff=lfs merge=lfs -text
+
+# held-out test text is kept byte-exact (some files have CRLF line ends); suite numbers depend on the exact bytes
+data_chat22/** -text
+data_core/** -text
+data_mt/** -text
+runs/**/*.cv0d -text

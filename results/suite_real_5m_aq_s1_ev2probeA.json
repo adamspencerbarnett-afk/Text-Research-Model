@@ -1,0 +1,95 @@
+{
+ "model": "runs/chat22/real_5m_aq_s1.pt",
+ "engine": "chat22",
+ "tier": "full",
+ "date": "2026-10-18 23:31",
+ "retrieval": "word key + MiniLM dense key (outside reference)",
+ "engine_opts": "{\"search\": \"v2\", \"facts\": \"data_qa/train/qa_train.txt\"}",
+ "clean_store_after_stored_skills": true,
+ "probe": {
+  "lookup": {
+   "k": 12,
+   "n": 13,
+   "share": 0.923,
+   "ci95": [
+    0.667,
+    0.986
+   ]
+  },
+  "not_lookup": {
+   "k": 11,
+   "n": 19,
+   "share": 0.579,
+   "ci95": [
+    0.363,
+    0.769
+   ]
+  },
+  "by_section": {
+   "stored": {
+    "k": 5,
+    "n": 5,
+    "share": 1.0,
+    "ci95": [
+     0.566,
+     1
+    ]
+   },
+   "reworded": {
+    "k": 3,
+    "n": 5,
+    "share": 0.6,
+    "ci95": [
+     0.231,
+     0.882
+    ]
+   },
+   "knowledge": {
+    "k": 4,
+    "n": 5,
+    "share": 0.8,
+    "ci95": [
+     0.376,
+     0.964
+    ]
+   },
+   "heldout": {
+    "k": 3,
+    "n": 5,
+    "share": 0.6,
+    "ci95": [
+     0.231,
+     0.882
+    ]
+   },
+   "taught": {
+    "k": 4,
+    "n": 6,
+    "share": 0.667,
+    "ci95": [
+     0.3,
+     0.903
+    ]
+   },
+   "arithmetic": {
+    "k": 3,
+    "n": 3,
+    "share": 1.0,
+    "ci95": [
+     0.438,
+     1
+    ]
+   },
+   "chat": {
+    "k": 1,
+    "n": 3,
+    "share": 0.333,
+    "ci95": [
+     0.061,
+     0.792
+    ]
+   }
+  }
+ },
+ "seconds": 46
+}

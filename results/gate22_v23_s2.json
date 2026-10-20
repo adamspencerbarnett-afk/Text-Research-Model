@@ -1,0 +1,259 @@
+{
+ "model": "v23_s2",
+ "refs": [
+  "chat5m_v2_A",
+  "chat5m_v21_s1",
+  "chat5m_v21_s2",
+  "v22_s1",
+  "v22_s2"
+ ],
+ "all_hold": false,
+ "rows": [
+  {
+   "front": "cache identical",
+   "verdict": "HOLDS",
+   "value": true,
+   "ref": "must be identical"
+  },
+  {
+   "front": "conversation generated",
+   "verdict": "HOLDS",
+   "value": "89/120",
+   "ref": "69/120 (chat5m_v2_A)"
+  },
+  {
+   "front": "conversation real_phrasing",
+   "verdict": "HOLDS",
+   "value": "8/27",
+   "ref": "6/27 (chat5m_v2_A)"
+  },
+  {
+   "front": "grounding: copied a wrong memory (lower)",
+   "verdict": "new",
+   "value": 0.042,
+   "ref": null
+  },
+  {
+   "front": "grounding: invented share (lower)",
+   "verdict": "new",
+   "value": 0.132,
+   "ref": null
+  },
+  {
+   "front": "grounding: right with memory on",
+   "verdict": "new",
+   "value": "837/1344",
+   "ref": null
+  },
+  {
+   "front": "latency first code p95 ms",
+   "verdict": "HOLDS",
+   "value": 23,
+   "ref": "21 (chat5m_v21_s1)"
+  },
+  {
+   "front": "long absent|memory",
+   "verdict": "HOLDS",
+   "value": "113/204",
+   "ref": "129/204 (chat5m_v21_s2)"
+  },
+  {
+   "front": "long absent|window",
+   "verdict": "LOST",
+   "value": "115/204",
+   "ref": "203/204 (v22_s2)"
+  },
+  {
+   "front": "long correction|memory",
+   "verdict": "LOST",
+   "value": "163/204",
+   "ref": "184/204 (chat5m_v2_A)"
+  },
+  {
+   "front": "long correction|window",
+   "verdict": "LOST",
+   "value": "149/204",
+   "ref": "178/204 (chat5m_v2_A)"
+  },
+  {
+   "front": "long distractor|memory",
+   "verdict": "HOLDS",
+   "value": "152/204",
+   "ref": "122/204 (chat5m_v21_s1)"
+  },
+  {
+   "front": "long distractor|window",
+   "verdict": "LOST",
+   "value": "131/204",
+   "ref": "161/204 (chat5m_v2_A)"
+  },
+  {
+   "front": "long doc|memory",
+   "verdict": "LOST",
+   "value": "59/204",
+   "ref": "129/204 (chat5m_v21_s1)"
+  },
+  {
+   "front": "long doc|window",
+   "verdict": "LOST",
+   "value": "69/204",
+   "ref": "151/204 (chat5m_v21_s1)"
+  },
+  {
+   "front": "long one|memory",
+   "verdict": "HOLDS",
+   "value": "137/204",
+   "ref": "135/204 (chat5m_v21_s1)"
+  },
+  {
+   "front": "long one|window",
+   "verdict": "LOST",
+   "value": "121/204",
+   "ref": "166/204 (chat5m_v2_A)"
+  },
+  {
+   "front": "long two|memory",
+   "verdict": "LOST",
+   "value": "122/204",
+   "ref": "164/204 (chat5m_v21_s1)"
+  },
+  {
+   "front": "long two|window",
+   "verdict": "LOST",
+   "value": "146/204",
+   "ref": "176/204 (chat5m_v21_s1)"
+  },
+  {
+   "front": "memory 100 turns never told",
+   "verdict": "HOLDS",
+   "value": "6/10",
+   "ref": "7/10 (chat5m_v21_s2)"
+  },
+  {
+   "front": "memory 100 turns recall",
+   "verdict": "HOLDS",
+   "value": "21/30",
+   "ref": "15/30 (chat5m_v2_A)"
+  },
+  {
+   "front": "memory 1000 turns never told",
+   "verdict": "HOLDS",
+   "value": "7/10",
+   "ref": "9/10 (chat5m_v21_s1)"
+  },
+  {
+   "front": "memory 1000 turns recall",
+   "verdict": "HOLDS",
+   "value": "25/30",
+   "ref": "20/30 (v22_s2)"
+  },
+  {
+   "front": "memory 10000 turns never told",
+   "verdict": "HOLDS",
+   "value": "8/10",
+   "ref": "9/10 (chat5m_v21_s2)"
+  },
+  {
+   "front": "memory 10000 turns recall",
+   "verdict": "HOLDS",
+   "value": "24/30",
+   "ref": "15/30 (v22_s1)"
+  },
+  {
+   "front": "probe lookup",
+   "verdict": "HOLDS",
+   "value": "11/13",
+   "ref": "12/13 (chat5m_v2_A)"
+  },
+  {
+   "front": "probe not_lookup",
+   "verdict": "HOLDS",
+   "value": "13/19",
+   "ref": "15/19 (chat5m_v21_s1)"
+  },
+  {
+   "front": "skills heldout_v2",
+   "verdict": "HOLDS",
+   "value": "60/180",
+   "ref": "68/180 (v22_s1)"
+  },
+  {
+   "front": "skills rewrite",
+   "verdict": "HOLDS",
+   "value": "12/40",
+   "ref": "17/40 (chat5m_v21_s1)"
+  },
+  {
+   "front": "skills stored heldout_v2",
+   "verdict": "LOST",
+   "value": "64/180",
+   "ref": "113/180 (chat5m_v21_s2)"
+  },
+  {
+   "front": "skills stored rewrite",
+   "verdict": "LOST",
+   "value": "14/40",
+   "ref": "32/40 (chat5m_v21_s2)"
+  },
+  {
+   "front": "skills v2 clarify",
+   "verdict": "HOLDS",
+   "value": "0/20",
+   "ref": "0/20 (chat5m_v2_A)"
+  },
+  {
+   "front": "skills v2 followup",
+   "verdict": "HOLDS",
+   "value": "6/20",
+   "ref": "9/20 (v22_s2)"
+  },
+  {
+   "front": "skills v2 nearmiss",
+   "verdict": "LOST",
+   "value": "13/40",
+   "ref": "26/40 (v22_s1)"
+  },
+  {
+   "front": "skills v2 unknown",
+   "verdict": "HOLDS",
+   "value": "35/40",
+   "ref": "7/40 (chat5m_v21_s1)"
+  },
+  {
+   "front": "skills v2 update",
+   "verdict": "LOST",
+   "value": "5/40",
+   "ref": "27/40 (chat5m_v21_s2)"
+  },
+  {
+   "front": "story character facts used",
+   "verdict": "LOST",
+   "value": "27/47",
+   "ref": "31/40 (chat5m_v21_s1)"
+  },
+  {
+   "front": "story contradictions per scene",
+   "verdict": "LOST",
+   "value": 1.68,
+   "ref": "0.32 (chat5m_v2_A)"
+  },
+  {
+   "front": "story questions",
+   "verdict": "HOLDS",
+   "value": "40/75",
+   "ref": "30/75 (v22_s2)"
+  },
+  {
+   "front": "text books bits/byte",
+   "verdict": "HOLDS",
+   "value": 1.4462,
+   "ref": "1.4569 (v22_s2)"
+  },
+  {
+   "front": "text wiki bits/byte",
+   "verdict": "HOLDS",
+   "value": 1.2993,
+   "ref": "1.3211 (v22_s2)"
+  }
+ ]
+}

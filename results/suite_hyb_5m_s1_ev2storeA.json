@@ -1,0 +1,142 @@
+{
+ "model": "runs/chat22/hyb_5m_s1.pt",
+ "engine": "chat22",
+ "tier": "full",
+ "date": "2026-10-19 07:52",
+ "retrieval": "word key + MiniLM dense key (outside reference)",
+ "engine_opts": "{\"search\": \"v2\", \"facts\": \"data_qa/train/qa_train.txt\"}",
+ "clean_store_after_stored_skills": true,
+ "skills": {
+  "heldout_v2": {
+   "total": {
+    "k": 91,
+    "n": 180,
+    "share": 0.506,
+    "ci95": [
+     0.433,
+     0.578
+    ]
+   },
+   "groups": {
+    "taught": {
+     "k": 24,
+     "n": 40,
+     "share": 0.6,
+     "ci95": [
+      0.446,
+      0.737
+     ]
+    },
+    "update": {
+     "k": 12,
+     "n": 40,
+     "share": 0.3,
+     "ci95": [
+      0.181,
+      0.454
+     ]
+    },
+    "nearmiss": {
+     "k": 31,
+     "n": 40,
+     "share": 0.775,
+     "ci95": [
+      0.625,
+      0.877
+     ]
+    },
+    "unknown": {
+     "k": 24,
+     "n": 40,
+     "share": 0.6,
+     "ci95": [
+      0.446,
+      0.737
+     ]
+    },
+    "followup": {
+     "k": 4,
+     "n": 20,
+     "share": 0.2,
+     "ci95": [
+      0.081,
+      0.416
+     ]
+    },
+    "clarify": {
+     "k": 0,
+     "n": 20,
+     "share": 0.0,
+     "ci95": [
+      0,
+      0.161
+     ]
+    }
+   },
+   "wrong_refusals": 13
+  },
+  "rewrite": {
+   "total": {
+    "k": 13,
+    "n": 40,
+    "share": 0.325,
+    "ci95": [
+     0.201,
+     0.48
+    ]
+   },
+   "groups": {
+    "short": {
+     "k": 7,
+     "n": 15,
+     "share": 0.467,
+     "ci95": [
+      0.248,
+      0.699
+     ]
+    },
+    "yesno": {
+     "k": 5,
+     "n": 15,
+     "share": 0.333,
+     "ci95": [
+      0.152,
+      0.583
+     ]
+    },
+    "list": {
+     "k": 1,
+     "n": 10,
+     "share": 0.1,
+     "ci95": [
+      0.018,
+      0.404
+     ]
+    }
+   },
+   "wrong_refusals": 0
+  }
+ },
+ "story": {
+  "questions": {
+   "k": 58,
+   "n": 75,
+   "share": 0.773,
+   "ci95": [
+    0.667,
+    0.853
+   ]
+  },
+  "contradictions_per_scene": 1.68,
+  "character_facts_used": {
+   "k": 32,
+   "n": 49,
+   "share": 0.653,
+   "ci95": [
+    0.513,
+    0.771
+   ]
+  }
+ },
+ "seconds": 154
+}

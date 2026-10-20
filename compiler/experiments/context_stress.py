@@ -47,6 +47,35 @@ def held_text_codes(enc, n_codes):
     return codes[:n_codes]
 
 
+def peak_ram_gb() -> float:
+    """This process's peak working set (Windows), in GB."""
+    import ctypes
+    from ctypes import wintypes
+
+    class PMC(ctypes.Structure):
+        _fields_ = [("cb", wintypes.DWORD), ("PageFaultCount", wintypes.DWORD), ("PeakWorkingSetSize", ctypes.c_size_t),
+                    ("WorkingSetSize", ctypes.c_size_t), ("QuotaPeakPagedPoolUsage", ctypes.c_size_t),
+                    ("QuotaPagedPoolUsage", ctypes.c_size_t), ("QuotaPeakNonPagedPoolUsage", ctypes.c_size_t),
+                    ("QuotaNonPagedPoolUsage", ctypes.c_size_t), ("PagefileUsage", ctypes.c_size_t), ("PeakPagefileUsage", ctypes.c_size_t)]
+    c = PMC(); c.cb = ctypes.sizeof(PMC)
+    k32 = ctypes.WinDLL("kernel32"); k32.GetCurrentProcess.restype = wintypes.HANDLE
+    gpmi = ctypes.WinDLL("psapi").GetProcessMemoryInfo
+    gpmi.argtypes = [wintypes.HANDLE, ctypes.POINTER(PMC), wintypes.DWORD]
+    gpmi(k32.GetCurrentProcess(), ctypes.byref(c), c.cb)
+    return c.PeakWorkingSetSize / 2**30
+
+
+def total_ram_gb() -> float:
+    import ctypes
+
+    class MS(ctypes.Structure):
+        _fields_ = [("dwLength", ctypes.c_ulong), ("dwMemoryLoad", ctypes.c_ulong), ("ullTotalPhys", ctypes.c_ulonglong),
+                    ("ullAvailPhys", ctypes.c_ulonglong), ("ullTotalPageFile", ctypes.c_ulonglong), ("ullAvailPageFile", ctypes.c_ulonglong),
+                    ("ullTotalVirtual", ctypes.c_ulonglong), ("ullAvailVirtual", ctypes.c_ulonglong), ("ullAvailExtendedVirtual", ctypes.c_ulonglong)]
+    m = MS(); m.dwLength = ctypes.sizeof(MS); ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(m))
+    return m.ullTotalPhys / 2**30
+
+
 @torch.no_grad()
 def raw_window(model, enc, dev, L, budget_s):
     """Read L codes (needle at 10% depth, question at the end) in chunks with a KV cache, then write 64 codes."""
@@ -97,6 +126,7 @@ def raw_window(model, enc, dev, L, budget_s):
     res = {"length": L, "status": "ok", "read_s": round(read_s, 2), "first_word_wait_s": round(read_s + times[0], 2),
            "ms_per_code": round(1000 * float(np.median(times[1:])), 2),
            "peak_gpu_gb": round(torch.cuda.max_memory_allocated() / 1e9, 2) if dev.type == "cuda" else None,
+           "peak_ram_gb": round(peak_ram_gb(), 2) if dev.type == "cpu" else None,
            "needle_found": "tangerine" in text.lower(), "reply": text[:100],
            "bits_per_code_by_position": {f"{BANDS[b]}-{BANDS[b + 1]}": round(float(sums[b] / cnts[b]), 3) for b in range(len(BANDS) - 1) if cnts[b]}}
     del cache; torch.cuda.empty_cache() if dev.type == "cuda" else None
@@ -162,16 +192,56 @@ def session_memory(path, dev, turns_list, n_needles=10):
     return rows
 
 
+def cpu_stress(a) -> int:
+    """Raw window on the CPU, both models, doubling from 2,048 codes: stops at the time budget per length, or before a
+    length whose memory (about 2.5x the last) would pass 3/4 of the PC's RAM."""
+    torch.set_num_threads(a.cpu_threads)
+    cap = 0.75 * total_ram_gb()
+    res = {"date": time.strftime("%Y-%m-%d %H:%M"), "device": f"cpu-{a.cpu_threads}", "ram_cap_gb": round(cap, 1), "raw_window": {}}
+    native = str(ROOT / "data" / "cv0.exe")
+    for name, path in MODELS.items():
+        if a.only and name != a.only:
+            continue
+        enc, model = C.load_core(str(ROOT / path), native, "cpu")
+        model = model.float().eval()
+        held_text_codes.cache = held_text_codes(enc, a.max_cpu + 10)
+        rows, L, base = [], 2048, peak_ram_gb()
+        while L <= a.max_cpu:
+            r = raw_window(model, enc, torch.device("cpu"), L, a.budget_s)
+            rows.append(r); print("raw window CPU", name, {k: v for k, v in r.items() if k != "bits_per_code_by_position"}, flush=True)
+            if r["status"] != "ok":
+                break
+            if base + (r["peak_ram_gb"] - base) * 2.5 > cap:
+                rows.append({"length": L * 2, "status": f"skipped: would pass 3/4 of RAM ({cap:.0f} GB)"}); break
+            L *= 2
+        res["raw_window"][name] = rows
+        del model
+        (ROOT / "results" / f"context_stress_cpu{'_' + a.only if a.only else ''}.json").write_text(json.dumps(res, indent=1))
+    print("done")
+    return 0
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--device", default="cuda"); ap.add_argument("--max-5m", type=int, default=1048576)
     ap.add_argument("--max-100m", type=int, default=524288); ap.add_argument("--budget-s", type=float, default=900)
     ap.add_argument("--cpu-threads", type=int, default=16); ap.add_argument("--quick", action="store_true")
+    ap.add_argument("--memory-only", action="store_true", help="keep the saved raw-window results; run only the session-memory part")
+    ap.add_argument("--cpu-stress", action="store_true", help="raw window on the CPU for both models (results/context_stress_cpu.json)")
+    ap.add_argument("--max-cpu", type=int, default=262144)
+    ap.add_argument("--only", default="", help="one model (5M or 100M); the CPU test runs each in its own process (peak RAM never resets)")
     a = ap.parse_args()
     dev = torch.device(a.device)
+    if dev.type == "cuda":      # Adam, 16 October: stress tests use at most 3/4 of the GPU (fail cleanly, never page to RAM)
+        torch.cuda.set_per_process_memory_fraction(0.75)
+    if a.cpu_stress:
+        return cpu_stress(a)
     res = {"date": time.strftime("%Y-%m-%d %H:%M"), "device": a.device, "raw_window": {}, "session_memory": {}}
     native = str(ROOT / "data" / "cv0.exe")
-    for name, path in MODELS.items():
+    out = ROOT / "results" / "context_stress.json"
+    if a.memory_only and out.exists():
+        res = json.loads(out.read_text()); res["session_memory"] = {}
+    for name, path in (MODELS.items() if not a.memory_only else []):
         enc, model = C.load_core(str(ROOT / path), native, a.device)
         model = model.to(torch.bfloat16 if dev.type == "cuda" else torch.float32).eval()
         top = (8192 if a.quick else (a.max_5m if name == "5M" else a.max_100m))
@@ -186,6 +256,10 @@ def main() -> int:
             rows.append(r); print("raw window", name, {k: v for k, v in r.items() if k != "bits_per_code_by_position"}, flush=True)
             if r["status"] != "ok":
                 break
+            # 16 October: past the GPU's memory Windows pages to system RAM instead of failing, and the 100M froze for
+            # 9.5 h at 131,072 codes. Stop when the next length (about 2.5x the memory) would not fit comfortably.
+            if dev.type == "cuda" and r.get("peak_gpu_gb", 0) * 2.5 > 0.75 * torch.cuda.get_device_properties(0).total_memory / 2**30:
+                rows.append({"length": L * 2, "status": "skipped: would not fit in GPU memory"}); break
             L *= 2
         res["raw_window"][name] = rows
         if dev.type == "cuda" and name == "5M" and not a.quick:          # the same on the CPU, short lengths

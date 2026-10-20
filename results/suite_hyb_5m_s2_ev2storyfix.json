@@ -1,0 +1,31 @@
+{
+ "model": "runs/chat22/hyb_5m_s2.pt",
+ "engine": "chat22",
+ "tier": "full",
+ "date": "2026-10-19 16:35",
+ "retrieval": "word key + MiniLM dense key (outside reference)",
+ "engine_opts": "{\"search\": \"v2\"}",
+ "clean_store_after_stored_skills": true,
+ "story": {
+  "questions": {
+   "k": 59,
+   "n": 75,
+   "share": 0.787,
+   "ci95": [
+    0.681,
+    0.864
+   ]
+  },
+  "contradictions_per_scene": 0.04,
+  "character_facts_used": {
+   "k": 25,
+   "n": 40,
+   "share": 0.625,
+   "ci95": [
+    0.47,
+    0.758
+   ]
+  }
+ },
+ "seconds": 114
+}

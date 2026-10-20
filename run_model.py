@@ -80,7 +80,12 @@ SETTINGS = dict(
                             # answers alone. 0.0 for the 5M model (gate 0.5 drops the probe 21 -> 19/32);
                             # 0.5 for the 50M models (21 -> 24/32), whose network alone is good enough
     # --- places
-    BEST_MODEL="models/qa_best_5M_dense.pt",   # the best Q&A model in git (menu option 3): probe 24/32; needs sentence-transformers; the 50M models are local in runs/
+    BEST_CHAT_MODEL="runs/chat22/mix_5m_s2.pt",   # the best chat model (menu option 3, 19 Oct): round 5 "A + real memory, sessions on the mixed pool" (recipes/BEST.json v2); seed 2 refuses told facts less often than seed 1 (41 vs 71 wrong refusals)
+    CHAT22_SEARCH="v2",     # chat22 models: "v2" = search engine v2 (fact table, fast lane, decide); "v1" = the word + meaning search
+    CHAT22_FACTS=None,      # chat22 models: another permanent store (.jsonl / .txt) instead of the one saved with the model
+    CHAT_INFO="short",      # chat22 models: the line under each reply: "off", "short" (where the answer came from, window fill,
+                            #   time) or "full" (also the search path, items, codes, first-word wait)
+    BEST_MODEL="models/qa_best_5M_dense.pt",   # the best Q&A model in git (menu option 5): probe 24/32; needs sentence-transformers; the 50M models are local in runs/
     MODELS_SUBDIR="models",                    # created inside the dataset folder
     START_DIR=str(Path.home() / "OneDrive" / "Desktop" / "Text Files"),   # where the popups open
     MODEL_DIR="runs",       # where the model popup (menu option 2) opens; relative to this script's folder
@@ -637,7 +642,129 @@ def chat_qa(path: str) -> None:
             print(f"       [memory: {src}{calc}; {info['codes']} codes in {dt:.1f}s]")
 
 
+def is_chat22_model(path: str) -> bool:
+    ck = torch.load(path, map_location="cpu", weights_only=False)
+    return (ck.get("config") or {}).get("layout") == "chat22"
+
+
+def _item_label(item) -> str:
+    """'[fact] User: What is X?\nAssistant: ...' -> 'stored fact "What is X?"'; '[turn 12] User: ...' -> 'turn 12 "..."'."""
+    t = item.decode("utf-8", "replace") if isinstance(item, bytes) else str(item)
+    m = re.match(r"\[(fact|turn (\d+))\]\s*(?:User:\s*)?(.*)", t, re.S)
+    if not m:
+        return '"' + t.strip().splitlines()[0][:50] + '"'
+    kind = "stored fact" if m.group(1) == "fact" else f"turn {m.group(2)}"
+    first = m.group(3).strip().splitlines()[0].strip()
+    return f'{kind} "{first[:50]}{"…" if len(first) > 50 else ""}"'
+
+
+def _source_line(info: dict, ctx: int, level: str, line: str = "") -> str:
+    items = info.get("items") or []
+    tool = None
+    if line:
+        from chat22 import tools as _T                      # the tool result is the first [fact] item; label it as a tool
+        t = _T.run(line.encode("utf-8")); tool = t[1].decode("utf-8", "replace") if t else None
+    if tool:
+        src = "tool: " + tool[:60]
+    elif info.get("verified", 0) > 1 and items:
+        src = "memory: " + _item_label(items[0]) + (f" (+{len(items) - 1} more)" if len(items) > 1 else "") + f", {info['verified']} tries"
+    elif items:
+        src = "memory: " + _item_label(items[0]) + (f" (+{len(items) - 1} more)" if len(items) > 1 else "")
+    else:
+        src = "memory: nothing found, the model answered on its own"
+    fill = 100 * info.get("window_codes", 0) // max(1, info.get("window", ctx))
+    parts = [src, f"window {fill}%", f"{info.get('seconds', 0):.1f} s"]
+    if level == "full":
+        found = (info.get("found") or {}).get("path", "-")
+        parts += [f"search {found}", f"{info.get('turns_in_window', 0)}/{info.get('turns_total', 0)} turns in window",
+                  f"{info.get('codes', 0)} codes", f"first word {info.get('first_code_ms', 0)} ms"]
+    return "     " + "  ·  ".join(parts)
+
+
+class _Stream:
+    """Prints a streamed reply cleanly: no leading space, no trailing blank lines, whitespace held until text follows."""
+
+    def __init__(self):
+        self.dec = codecs.getincrementaldecoder("utf-8")("replace"); self.started = False; self.held = ""
+
+    def __call__(self, b: bytes) -> None:
+        t = self.dec.decode(b)
+        if not self.started:
+            t = t.lstrip()
+            if not t:
+                return
+            self.started = True
+        t = self.held + t
+        stripped = t.rstrip()
+        self.held = t[len(stripped):]
+        if stripped:
+            print(stripped, end="", flush=True)
+
+
+def chat_chat22(path: str) -> None:
+    """Chat with a chat22 model (the clean package, 16 October on): replies stream; the window holds the recent turns and
+    a short memory block (stored facts and earlier turns the search chose); every turn goes into the conversation memory,
+    so anything said earlier can be recalled at any length. Search engine v2 by default (SETTINGS CHAT22_SEARCH)."""
+    sys.path.insert(0, str(ROOT))
+    from chat22.engine import Engine
+    S = SETTINGS
+    if S["THREADS"]:
+        torch.set_num_threads(S["THREADS"])
+    dev = device()
+    if dev == "auto":
+        dev = "cuda" if torch.cuda.is_available() else "cpu"
+    eng = Engine(path, dev, log=say, search=S["CHAT22_SEARCH"], facts_path=S["CHAT22_FACTS"])
+    n_codes = S["CHAT_REPLY_CODES"]; use_mem = True; level = S["CHAT_INFO"]
+    print(f"\nChat with {Path(path).stem} (window {eng.ctx:,} codes, search {S['CHAT22_SEARCH']}, {len(eng.memory.facts.items):,} stored facts)\n"
+          "  /add question || answer   store a permanent fact        /load [file.txt]   store many (User:/Assistant: pairs)\n"
+          "  /forget                   start a new conversation      /memory off|on     answer without / with memory\n"
+          "  /info off|short|full      the line under each reply     /codes N           reply length (stories: 500)\n"
+          "  /quit\n")
+    while True:
+        try:
+            line = input("you> ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print(); break
+        if not line:
+            continue
+        if line in ("/quit", "/exit", "/q"):
+            break
+        if line == "/forget":
+            eng.forget(); print("     new conversation: history and conversation memory cleared"); continue
+        if line.startswith("/memory"):
+            use_mem = "off" not in line; print(f"     memory {'on' if use_mem else 'off'}"); continue
+        if line.startswith("/info"):
+            level = next((w for w in ("off", "short", "full") if w in line), level); print(f"     info {level}"); continue
+        if line.startswith("/codes "):
+            try:
+                n_codes = max(16, int(line[7:])); print(f"     replies up to {n_codes} codes")
+            except ValueError:
+                print("     format: /codes 400")
+            continue
+        if line.startswith("/add "):
+            q, sep, ans = line[5:].partition("||")
+            if not sep or not q.strip() or not ans.strip():
+                print("     format: /add question || answer"); continue
+            eng.add_fact(q.strip().encode("utf-8"), ans.strip().encode("utf-8")); print("     stored; ask it now"); continue
+        if line == "/load" or line.startswith("/load "):
+            f = line[6:].strip() or pick_file("Choose a text file of User:/Assistant: pairs", [("Text", "*.txt"), ("All files", "*.*")])
+            if f:
+                pairs = m2_qa_parse(Path(f).read_bytes())
+                for q, ans in pairs:
+                    eng.add_fact(q, ans)
+                print(f"     stored {len(pairs):,} pairs")
+            continue
+        print("bot> ", end="", flush=True)
+        out, info = eng.reply(line.encode("utf-8"), n_codes, use_memory=use_mem, use_tools=S["CHAT_TOOLS"], stream=_Stream())
+        print()
+        eng.remember(line.encode("utf-8"), out)
+        if level != "off":
+            print(_source_line(info, eng.ctx, level, line))
+
+
 def chat(path: str) -> None:
+    if is_chat22_model(path):
+        return chat_chat22(path)
     if is_qa_model(path):
         return chat_qa(path)
     S = SETTINGS
@@ -692,10 +819,11 @@ def main() -> int:
     if a.chat:
         chat(a.chat); return 0
     while True:
-        best = ROOT / SETTINGS["BEST_MODEL"]
+        best = ROOT / SETTINGS["BEST_CHAT_MODEL"]; best_qa = ROOT / SETTINGS["BEST_MODEL"]
         print("\n  1  Train a model on a folder of text files\n  2  Chat with a saved model (popup)\n"
-              f"  3  Chat with the best research model ({SETTINGS['BEST_MODEL']})\n"
-              f"  4  Device and threads (now {SETTINGS['DEVICE']}, threads {SETTINGS['THREADS'] or 'default'})\n  5  Quit")
+              f"  3  Chat with the best chat model ({SETTINGS['BEST_CHAT_MODEL']})\n"
+              f"  4  Device and threads (now {SETTINGS['DEVICE']}, threads {SETTINGS['THREADS'] or 'default'})\n"
+              f"  5  Chat with the best Q&A model ({SETTINGS['BEST_MODEL']})\n  6  Quit")
         choice = input("choose> ").strip()
         if choice == "1":
             folder = pick_folder("Choose the folder with the .txt files to train on")
@@ -719,7 +847,12 @@ def main() -> int:
             if t.isdigit():
                 SETTINGS["THREADS"] = int(t)
             print(f"device {SETTINGS['DEVICE']}, threads {SETTINGS['THREADS'] or 'default'}: used by the next chat or training")
-        elif choice in ("5", "q", ""):
+        elif choice == "5":
+            if best_qa.exists():
+                chat(str(best_qa))
+            else:
+                print(f"not found: {best_qa}")
+        elif choice in ("6", "q", ""):
             return 0
 
 

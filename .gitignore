@@ -6,28 +6,26 @@ __pycache__/
 .ruff_cache/
 .coverage
 htmlcov/
-runs/
-data/
 *.tmp
 .DS_Store
 Thumbs.db
-data_v1/
-data_v2/
-data_uploads/
-data_qa/
-data_qa_gsm/
-data_qa_squad/
-data_core/
-data_qa_gsm_star_r1/
-data_qa_gsm_star_r2/
-data_qa_gsm_star50_r1/
 
-# model checkpoints stay local (only scripts, logs and results go to git)
+# Local only (19 Oct 2026). The repository carries the code, the research record and the current best model; everything
+# below stays on the research machine. A few files inside these folders are tracked on purpose (added with
+# `git add -f`): the best chat model and its core in runs/ (Git LFS), the permanent fact store in data_real/ (Git LFS),
+# and the small held-out test files the suite reads (data_chat22/eval_clean, data_core/eval_clean, data_mt/heldout).
+# Tracked files stay tracked; to share another file from these folders, add it with `git add -f`.
+runs/
+/data/
+/data_*/
+models/
+archive/
 *.pt
-models/_eval_*
-models/*.ids
-skills_lab/work/
-skills_lab/models/
-data_skills/train_v3.jsonl
-data_skills/train_v4.jsonl
-data_skills/train_v4c.jsonl
+*.npy
+
+# run markers and side outputs
+results/*_done
+results/*_trained
+chat22/tests/SUITE_READY
+research_side/*.log
+docs/chat_probes/

@@ -95,7 +95,7 @@ code { font-family: var(--f-mono); font-size: 13px; background: var(--accent-sof
 <main>
 
 <header>
-  <div class="eyebrow">Design sheet · 15 October 2026 · session 35</div>
+  <div class="eyebrow">Design sheet · 15 October 2026 · session 35 · revised through 17 October</div>
   <h1>5M Chat Model v2</h1>
   <p class="lede">A 5M model built from every result that held up this week: the best 5M core, the Q&amp;A recipe, the 100,000-example skills data with rewriting, real conversations, and a new kind of training for remembering a whole conversation, all at a window twice as long. It answers from memory, says when it doesn't know, asks which one you mean, and streams long replies such as short stories.</p>
   <div class="status">
@@ -103,8 +103,413 @@ code { font-family: var(--f-mono); font-size: 13px; background: var(--accent-sof
     <span class="pill p-good">Structure decided by session 33: one mixed stage</span>
     <span class="pill p-shine">Replies stream in the terminal</span>
     <span class="pill p-run">Revised 15 October: A/B/C/D experiment after the reasoning-research review</span>
+    <span class="pill p-run">Revised 16 October: roadmap, guard, long-context plan to 32k (cap 65k)</span>
+    <span class="pill p-run">Revised 16 October, evening: v2.2 results, v2.3 design (memory first, any-length); 8k dropped; 100M on hold</span>
+    <span class="pill p-good">Revised 17 October: v2.3 diagnosis, variant A best so far, merged-model plan (three stages), real-facts datasets</span>
   </div>
 </header>
+
+<section id="v24">
+  <div class="eyebrow">Next training · the merged model (v2.4) · revised 17 October 2026</div>
+  <h2>Merging every gain into one model, with real facts</h2>
+  <p>v2.3 proved the memory design works at any length, but lost ground elsewhere. A morning of diagnosis found why, the first repair (variant A) became the best model we have, and the plan below merges what each specialised training type gives into one model. It follows the big labs' staged pipeline where the evidence says it pays, and skips what a 5M model cannot use. Permanent knowledge is <b>real facts only</b>; made-up material lives only where it belongs, in conversation memory.</p>
+
+  <h3 style="margin-top:20px">What v2.3 and the repair runs showed</h3>
+  <div class="grid2" style="margin-top:8px">
+    <div class="panel"><h3>v2.3: memory at any length works</h3><p>Recall of 30 planted facts stayed flat from 100 to 10,000 turns (22-25 of 30; best earlier model 15). With engine v2: 83-90%. Reply time stays at about 0.26 s at every length: length costs storage, not speed.</p></div>
+    <div class="panel"><h3>v2.3: what it lost, and why</h3><p>Never told in the window fell 99% → 45-72%: the short-recall kind (in-window facts, 25% never told, 68% of its windows longer than 1,700 codes) was cut from 12% to 2%. Told facts were refused 72-81 times under every memory setting: 30% of the any-length windows end in "I don't have that". Neither the search engine nor the test settings caused the window losses (those tests run with memory off).</p></div>
+    <div class="panel"><h3>Variant A: the best model so far</h3><p>v2.2's recipe plus any-length conversations at 12% and full-length documents. Best or tied-best on 26 of 39 test fronts (next: v2.1 seed 1 at 20). Memory on: one fact 87%, never told 98%, two-step 90%; window back to v2.2 (never told 99%); told skills 79/180; grounding 79% right, 10% invented, 1.3% wrong memory.</p></div>
+    <div class="panel"><h3>Still open after A</h3><p>Documents 26-32% (v2.1: 80%; a loss since v2.2, not v2.3). Skill updates 7-9 of 40 under every setting (v2.2: 19): A says "I don't know" correctly 30/40 but refuses 38 told facts. Story consistency. Runs D, E (documents) and F (long windows) target these.</p></div>
+    <div class="panel"><h3>Engine v2 and the real-facts store</h3><p>Engine v2 rules beat today's search on every memory line (two-step 84 → 96%, wrong values halved) at about 0.1 ms per search. Swapping the made-up stored pool for real Wikipedia facts raised two-step 78 → 84% and stored skills 42 → 61%. The judge (part 2) is not usable yet: at the strict bar it kept only 26% of right items.</p></div>
+    <div class="panel"><h3>Training lessons</h3><p>Every kind was still improving when A stopped (26,400 steps): the stop needs a floor (now 20,000, patience 10). A cut kind fades even when its held-out loss looked finished. Plain text never improves in a chat stage; it only holds while it stays in the mix. One 5M run needs about 11 GB of GPU cache: one training at a time, with a hard memory cap.</p></div>
+  </div>
+
+  <h3 style="margin-top:20px">v2.2, v2.3 and variant A (identical cases)</h3>
+  <div class="panel scroll" style="margin-top:8px"><table>
+    <tr><th>test</th><th>v2.2 seed 1</th><th>v2.3 seed 1</th><th>variant A</th></tr>
+    <tr><td>window: one fact / never told / two-step</td><td class="num">74 / 99 / 79%</td><td class="num">67 / 69 / 79%</td><td class="num"><b>73 / 99 / 83%</b></td></tr>
+    <tr><td>memory on: one fact / never told / two-step</td><td class="num">43 / 20 / 67%</td><td class="num">76 / 66 / 78%</td><td class="num"><b>87 / 98 / 90%</b></td></tr>
+    <tr><td>recall at 100 / 1,000 / 10,000 turns (of 30)</td><td class="num">11 / 14 / 15</td><td class="num">22 / 22 / 24</td><td class="num"><b>25 / 24 / 25</b></td></tr>
+    <tr><td>skills told (180) · wrongly refused</td><td class="num">68 · 0</td><td class="num">61 · 81</td><td class="num"><b>79</b> · 38</td></tr>
+    <tr><td>skill updates (40)</td><td class="num"><b>19</b></td><td class="num">5</td><td class="num">8</td></tr>
+    <tr><td>skills stored (180)</td><td class="num">-</td><td class="num">76</td><td class="num"><b>113</b></td></tr>
+    <tr><td>document, window (204)</td><td class="num">32%</td><td class="num">17%</td><td class="num">26% (v2.1: 74-90% at short lengths)</td></tr>
+    <tr><td>story questions (75)</td><td class="num">28</td><td class="num">51</td><td class="num"><b>51</b></td></tr>
+    <tr><td>clean text, wiki bits/byte (lower is better)</td><td class="num">1.321</td><td class="num"><b>1.309</b></td><td class="num">1.327</td></tr>
+  </table></div>
+
+  <h3 style="margin-top:20px">Which training gives which gain</h3>
+  <div class="panel scroll" style="margin-top:8px"><table>
+    <tr><th>gain</th><th>comes from</th><th>evidence</th></tr>
+    <tr><td>window answers, never told in the window, long histories</td><td>short recall</td><td>12% → 2% in v2.3: never told 99% → 45-72%; restored in A: 99%</td></tr>
+    <tr><td>memory at any length</td><td>any-length conversations</td><td>A: recall 25/24/25 of 30, never told with memory 98%</td></tr>
+    <tr><td>over-refusal of told facts, lost updates</td><td>the any-length kind's 30% "I don't have that" endings</td><td>wrong refusals: v2.3 72-81, A 38-57, v2.2 0-1, under every setting</td></tr>
+    <tr><td>documents</td><td>buried evidence (possibly held back by the document-reading or story kinds)</td><td>v2.1 80% → about 30% since v2.2; runs D and E decide</td></tr>
+    <tr><td>story questions</td><td>story kind</td><td>v2.3 and A: 51/75 (v2.2: 28)</td></tr>
+    <tr><td>fluency</td><td>plain-text share</td><td>v2.3 at 17%: wiki 1.299-1.309, the best</td></tr>
+    <tr><td>look-alike facts + varied memory budget (variant B)</td><td>first sign: harmful</td><td>B's Q&amp;A, conversation and story held-out scores peaked at 7-17k steps, then worsened</td></tr>
+    <tr><td>choosing the right memory at answer time</td><td>engine v2 + real-facts store (no training)</td><td>better on every memory line</td></tr>
+  </table></div>
+
+  <h3 style="margin-top:20px">The staged plan: three training stages, not five</h3>
+  <div class="panel scroll" style="margin-top:8px">
+  <svg class="dia" viewBox="0 0 1120 250" role="img" aria-label="Training stages: core, merged chat stage, grounding stage, answer-time engine; later a 16k window stage and reinforcement learning at 100M">
+    <defs><marker id="ah24" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#7d8a96"/></marker></defs>
+    <rect class="box data" x="10" y="40" width="190" height="120" rx="10"/><text class="t" x="24" y="68">1 · Core</text><text class="s" x="24" y="90">pre-trained on real text</text><text class="s" x="24" y="108">(P100: Wikipedia, web,</text><text class="s" x="24" y="126">books, dialogue). Have it.</text>
+    <rect class="box model" x="240" y="40" width="250" height="120" rx="10"/><text class="t" x="254" y="68">2 · Merged chat stage</text><text class="s" x="254" y="90">every specialised kind in one mix</text><text class="s" x="254" y="108">at its evidence-based share;</text><text class="s" x="254" y="126">floor 30k steps; 2 seeds</text>
+    <rect class="box mem" x="530" y="40" width="250" height="120" rx="10"/><text class="t" x="544" y="68">3 · Grounding stage</text><text class="s" x="544" y="90">auto-graded answer pairs: answer over</text><text class="s" x="544" y="108">refuse when told, "I don't know" over</text><text class="s" x="544" y="126">invent, newest over old; mix replayed</text>
+    <rect class="box test" x="820" y="40" width="290" height="120" rx="10"/><text class="t" x="834" y="68">At answer time</text><text class="s" x="834" y="90">engine v2 rules (fact table, fast lane,</text><text class="s" x="834" y="108">decide) + Wikipedia fact store +</text><text class="s" x="834" y="126">strict memory setting</text>
+    <path class="arrow hot" d="M200,100 L236,100" marker-end="url(#ah24)"/><path class="arrow hot" d="M490,100 L526,100" marker-end="url(#ah24)"/><path class="arrow" d="M780,100 L816,100" marker-end="url(#ah24)"/>
+    <rect class="box" x="240" y="185" width="250" height="52" rx="10" stroke-dasharray="5 4"/><text class="t" x="254" y="207">Later · 16k window stage</text><text class="s" x="254" y="226">on the winner, if the study shows a gain</text>
+    <rect class="box" x="530" y="185" width="250" height="52" rx="10" stroke-dasharray="5 4"/><text class="t" x="544" y="207">At 100M · reinforcement learning</text><text class="s" x="544" y="226">reward checked answers; not at 5M</text>
+  </svg></div>
+  <div class="grid2" style="margin-top:12px">
+    <div class="panel"><h3>Why one merged mix, not stacked stages</h3><p>Every kind trained in the same run kept its gain; every kind cut or left out faded (v2.3). Stacking one skill after another would fade each earlier skill. The labs fine-tune on mixtures for the same reason and keep earlier data in the mix (replay).</p></div>
+    <div class="panel"><h3>Why a grounding stage</h3><p>The remaining errors are a balance problem (refuse vs answer, old vs new value) that example answers alone have not fixed. Our tests grade answers automatically, so preference pairs need no human raters: the labs' stage 4, aimed at the goal that facts come from memory and are never invented.</p></div>
+    <div class="panel"><h3>Before committing: two cheap tests</h3><p>(1) The doubled learning rate: same held-out score in 65% of the time, but its quick suite lost fluency (1.340 vs 1.309), conversations (88 vs 110/120) and memory (one fact 5 vs 8/12): rejected, the held-out score alone hid it. (2) Weight merging: every variant starts from the same core, so their weights can be averaged (A + the best document variant + F) in minutes. If the average keeps both gains it is a shortcut; if not, the merged mix is confirmed.</p></div>
+    <div class="panel"><h3>Why not all five stages</h3><p>Mid-training is the window extension: a separate, costly step, only after the 16k study. Reinforcement learning for step-by-step reasoning has little room in 5M parameters; it waits for the 100M. Each stage is tested at 5M before the 100M.</p></div>
+  </div>
+
+  <h3 style="margin-top:20px">Datasets: real facts for knowledge, made-up material only in conversation memory</h3>
+  <p style="margin-top:6px">Rule (Adam, 16-17 October): anything the model treats as lasting knowledge is a true fact about real things. Invented people, events and stories are fine inside a conversation (that is what conversation memory is for), so the skills, any-length and story-world kinds keep their invented content. Training data that works is not changed without a stated reason and approval.</p>
+  <div class="panel scroll" style="margin-top:8px"><table>
+    <tr><th>role</th><th>dataset</th><th>real facts?</th><th>size</th><th>status</th></tr>
+    <tr><td><b>permanent fact store</b> (answer time)</td><td>Wikipedia, P100 train split: article lead sentences ("What is X?") + clean pieces labelled with the article title</td><td>yes</td><td class="num">94,276 facts, 25,000 articles</td><td>built (data_chat22/knowledge_wiki.jsonl); in use for engine tests</td></tr>
+    <tr><td>permanent store, science</td><td>ARC corpus; OpenBookQA core science facts</td><td>yes</td><td class="num">14.6M sentences; 1,326 facts</td><td>on disk (data_uploads); to add for the 100M</td></tr>
+    <tr><td>Q&amp;A with evidence (reading real text)</td><td>SQuAD v1.1: Wikipedia paragraphs with crowd-written questions and answer spans</td><td>yes</td><td class="num">64,782 train / 7,563 held-out prepared (87,599 in the source)</td><td>on disk; <b>proposed</b> for buried evidence and document reading (also eases the Q&amp;A shortage)</td></tr>
+    <tr><td>Q&amp;A, science and common sense</td><td>ARC (Easy + Challenge), OpenBookQA, CommonsenseQA</td><td>yes</td><td class="num">3,370 / 4,957 / 9,741</td><td>on disk; for the 100M (multiple choice, rewritten as answers)</td></tr>
+    <tr><td>Q&amp;A, general (today)</td><td>Alpaca-style instructions</td><td>machine-written; some answers invented (stories, poems)</td><td class="num">50,965</td><td>kept for 5M comparability; the limiting set (about 2 passes at 30k steps); replaced by real-fact Q&amp;A at the 100M</td></tr>
+    <tr><td>plain text</td><td>P100 mix: Wikipedia, FineWeb, books, UltraChat, evidence</td><td>real text</td><td class="num">155M codes (rehearsal sample)</td><td>in use</td></tr>
+    <tr><td>conversations</td><td>real dialogues (UltraChat, OASST), de-duplicated</td><td>real conversations</td><td class="num">205,623</td><td>in use</td></tr>
+    <tr><td>conversation-memory skills</td><td>generated personal facts, corrections, look-alikes (gen_skills v4c)</td><td>invented on purpose (chat memory)</td><td class="num">127,635 records</td><td>in use; never in the permanent store</td></tr>
+    <tr><td>any-length conversations</td><td>real dialogues with planted invented facts, real engine search</td><td>invented facts on purpose (chat memory)</td><td class="num">65,757 windows</td><td>in use; <b>proposed</b>: never-told endings 30% → 15%, replaced by "give the corrected value"</td></tr>
+    <tr><td>stories</td><td>book continuation (real books) + generated story worlds</td><td>fiction by nature (story notes are chat memory)</td><td class="num">long pool 146M codes</td><td>in use</td></tr>
+  </table></div>
+
+  <h3 style="margin-top:20px">The merged recipe (stage 2), provisional until runs B-F report</h3>
+  <div class="panel scroll" style="margin-top:8px"><table>
+    <tr><th>kind</th><th>variant A</th><th>merged (draft)</th><th>decided by</th></tr>
+    <tr><td>short recall (window answers, long histories)</td><td class="num">10.6%</td><td class="num">14%</td><td>run F</td></tr>
+    <tr><td>buried evidence (documents)</td><td class="num">8.8%</td><td class="num">14%</td><td>runs D and E</td></tr>
+    <tr><td>Q&amp;A</td><td class="num">17.6%</td><td class="num">13%</td><td>Q&amp;A passes (about 2.1 at 32k steps)</td></tr>
+    <tr><td>skills</td><td class="num">13.2%</td><td class="num">13%</td><td>A held</td></tr>
+    <tr><td>any-length conversations</td><td class="num">12%</td><td class="num">11%</td><td>A held; rebalanced endings if approved</td></tr>
+    <tr><td>conversations</td><td class="num">11.4%</td><td class="num">10%</td><td>0.25 passes: plenty of data</td></tr>
+    <tr><td>plain text</td><td class="num">11.4%</td><td class="num">10-15%</td><td>fluency (v2.3 at 17% best)</td></tr>
+    <tr><td>stories</td><td class="num">8.8%</td><td class="num">8%</td><td>story questions held at 51/75</td></tr>
+    <tr><td>document reading</td><td class="num">6.2%</td><td class="num">6% or 0</td><td>run D (interference test)</td></tr>
+    <tr><td>switches</td><td colspan="2">A: any-length + full-length documents; look-alike facts and varied memory budget only if B beats A</td><td>run B</td></tr>
+    <tr><td>training</td><td colspan="2">floor 30,000 steps, ceiling about 32,000 (Q&amp;A at about 2 passes), patience 10; learning rate 1e-4 (2e-4 failed its quick suite: fluency 1.340 vs 1.309, conversations 88 vs 110/120, memory one fact 5 vs 8/12); 2 seeds; one run at a time with a GPU cap</td><td>quick suite, data passes</td></tr>
+  </table></div>
+
+  <h3 style="margin-top:20px">Decisions for Adam</h3>
+  <div class="grid2" style="margin-top:8px">
+    <div class="panel"><h3>1 · Rebalance the any-length endings</h3><p>Never-told endings 30% → 15%, replaced by corrections where the newest value must be given. A training-data change, proposed because it is the measured cause of refused told facts and lost updates.</p></div>
+    <div class="panel"><h3>2 · The grounding stage</h3><p>Auto-graded preference pairs on top of the stage-2 winner, with the mix replayed so nothing fades.</p></div>
+    <div class="panel"><h3>3 · SQuAD for evidence reading</h3><p>Real Wikipedia questions with their paragraphs, already on disk (no download): buried evidence and document reading from real text, and relief for the Q&amp;A shortage. Earlier 5M tests answered SQuAD poorly without the paragraph (13%), so it is proposed only with its evidence.</p></div>
+  </div>
+
+  <h3 style="margin-top:20px">Queue (17 October)</h3>
+  <div class="panel scroll" style="margin-top:8px"><table>
+    <tr><th>when</th><th>what</th></tr>
+    <tr><td class="num">done 09:30</td><td>variant A trained and tested: best model so far</td></tr>
+    <tr><td class="num">~12:50</td><td>variant B suite (look-alike facts + varied memory budget)</td></tr>
+    <tr><td class="num">~15:10</td><td>variant C suite (all v2.3 changes, shares restored)</td></tr>
+    <tr><td class="num">~16:30 / 18:00 / 19:30</td><td>D, E (documents), F (long windows), each with its suite and guard</td></tr>
+    <tr><td class="num">evening</td><td>weight-merge test; learning-rate decision; merged recipe set and reported</td></tr>
+    <tr><td class="num">overnight</td><td>stage 2, merged chat stage, two seeds; then engine v2 + real-facts store tests</td></tr>
+    <tr><td class="num">next</td><td>stage 3 grounding; window-removed test; "lots of information" test; 16k window study; judge rework</td></tr>
+  </table></div>
+</section>
+
+<section id="v23">
+  <div class="eyebrow">v2.3 design · 16 October 2026, evening · superseded by the merged model above (results and diagnosis there)</div>
+  <h2>What today taught us, and how the next model is built</h2>
+  <p>Today brought the first measured results from the clean chat22 package (v2.2) and from five sessions of measurements. Your direction (Adam, 16 October) is now standing policy: <b>memory first</b> (facts come from memory; the network reads, reasons and writes), <b>any-length conversation</b> is the main open question, the 8k window study is dropped (a 16k+ study comes later), and <b>no 100M training</b> until the 5M study is complete and the models work as intended.</p>
+
+  <h3 style="margin-top:20px">Today's evidence</h3>
+  <div class="grid2" style="margin-top:8px">
+    <div class="panel"><h3>v2.1 on two seeds: not adopted</h3><p>Long-context gains repeated (two-step 2% → 85%, never told 1% → 96-99%, document 50% → 70%), but recall from memory at 40 turns fell to 5 and 4 of 15 (arm A 14). The model retrieved the right fact and answered "I don't have that": its training paired facts in memory with "never told" targets too often.</p></div>
+    <div class="panel"><h3>Three audits</h3><p>Every chat model since 15 October trained on 15 MB of plain text, not 300 MB. The new layout would have put the old value nearest the message. Some rules applied only when answering. Several tests could be passed the wrong way (always abstaining, naming both values). All fixed in chat22 and its suite.</p></div>
+    <div class="panel"><h3>v2.2 on two seeds: real gains, one big loss</h3><p><b>Best of every chat model</b> on clean text (wiki 1.321), told facts (37-38% vs 18-22%), in-window reasoning (never told 99-100%) and recall at 1,000-10,000 turns. <b>But with memory on it dropped 20-40 points</b>: the engine filled every memory block with six look-alike stored facts, and the model copied them ("Pablo is a large oil painting").</p></div>
+    <div class="panel"><h3>Each model is good at the format it trained on</h3><p>v2.2: facts told in conversation 37-38%, stored 39-42%. Earlier models: told 18-22%, stored 62%. Training must cover both forms, and must look like what the engine really delivers.</p></div>
+    <div class="panel"><h3>Memory scales; the window has a cost</h3><p>A fact told in turn 1 was still recalled <b>10 of 10 times after 5,000 turns</b> (7.2M characters in memory), with a lookup of 18.7 ms. The window's attention cache belongs on the GPU (RAM is 2-5x and the NVMe drive 4-31x slower per code); big knowledge belongs in memory.</p></div>
+    <div class="panel"><h3>Memory-only side test</h3><p>With the conversation window removed, single facts and abstentions mostly held, but two-step and corrections collapsed: the old search returns the top 3 matches, with no linked facts and no "newest" label. Arm A said "I don't know" correctly 11/12 times from a short memory-only input, against 0/12 with a long window of filler: <b>a short, clean input keeps a small model grounded</b>.</p></div>
+    <div class="panel"><h3>Step 1 (running): cleaner memory alone helps</h3><p>On the strict setting, single fact with memory on went from 12 / 23 / 24 / 29 to 26 / 29 / 31 / 32 of 51 (512 to 4,096 codes), and stored-fact rewriting from 26 to 31/40, with no retraining. Final results (three settings, two seeds) set the v2.3 engine defaults.</p></div>
+    <div class="panel"><h3>The plateau trainer works</h3><p>Both v2.2 seeds levelled off at the same step (19,000), cooled down and stopped at 22,800 instead of a fixed 30,000; the cool-down gave the largest single gain (0.609 → 0.565). The held-out set differed by seed, which is fixed for v2.3.</p></div>
+  </div>
+
+  <h3 style="margin-top:20px">v2.2 against v2.1 and arm A (identical cases, chat22 suite)</h3>
+  <div class="panel scroll" style="margin-top:8px"><table>
+    <tr><th>test (cases per model)</th><th>arm A</th><th>v2.1 seed 1 / 2</th><th>v2.2 seed 1 / 2</th></tr>
+    <tr><td>clean text, wiki bits/byte (lower is better)</td><td class="num">1.353</td><td class="num">1.340 / 1.339</td><td class="num"><b>1.322 / 1.321</b></td></tr>
+    <tr><td>skills, facts told in conversation (180)</td><td class="num">18%</td><td class="num">21% / 22%</td><td class="num"><b>38% / 37%</b></td></tr>
+    <tr><td>skills, facts stored in memory (180)</td><td class="num"><b>62%</b></td><td class="num">62% / 63%</td><td class="num">39% / 42%</td></tr>
+    <tr><td>never told, memory off (204)</td><td class="num">1%</td><td class="num">94% / 97%</td><td class="num"><b>99% / 100%</b></td></tr>
+    <tr><td>two-step, memory off (204)</td><td class="num">1%</td><td class="num"><b>86% / 85%</b></td><td class="num">79% / 83%</td></tr>
+    <tr><td>single fact, memory on (204)</td><td class="num">56%</td><td class="num"><b>66%</b> / 59%</td><td class="num">43% / 42%</td></tr>
+    <tr><td>never told, memory on (204)</td><td class="num">1%</td><td class="num">53% / <b>63%</b></td><td class="num">20% / 18%</td></tr>
+    <tr><td>fact in a document, memory off (204)</td><td class="num">47%</td><td class="num"><b>74%</b> / 66%</td><td class="num">32% / 22%</td></tr>
+    <tr><td>recall at 1,000 / 10,000 turns (30)</td><td class="num">11 / 13</td><td class="num">12 / 8 · 11 / 5</td><td class="num"><b>14 / 15 · 20 / 11</b></td></tr>
+    <tr><td>never told in long conversations (3 x 10)</td><td class="num">0%</td><td class="num"><b>70-90%</b></td><td class="num">0-10%</td></tr>
+    <tr><td>generated conversation probe (120)</td><td class="num"><b>58%</b></td><td class="num">48% / 56%</td><td class="num">28% / 36%</td></tr>
+    <tr><td>story questions (75)</td><td class="num">36%</td><td class="num">29% / 33%</td><td class="num"><b>37% / 40%</b></td></tr>
+  </table></div>
+
+  <h3 style="margin-top:20px">Design changes for v2.3, each with its reason</h3>
+  <div class="panel scroll" style="margin-top:8px"><table class="gaps">
+    <tr><th style="width:30%">change</th><th style="width:42%">why (evidence)</th><th>where</th></tr>
+    <tr><td><b>1. Memory selection defaults from step 1</b>: stored facts need a real match; few items rather than a full block; empty when nothing applies</td><td>Six look-alike facts in every block caused the memory-on losses; the strict setting already recovers much of them</td><td>engine (Memory gate_facts, k_facts, k_session)</td></tr>
+    <tr><td><b>2. New window kind: any-length conversations (about 18%)</b>: real dialogues stitched into sessions of 10-10,000 turns, with facts, corrections (some by name), two-step links, look-alikes and never-told questions; the memory block is built by the <b>real engine search</b></td><td>v2.2's training blocks were small and relevant; at chat time they are crowded and noisy. Training must look like use. This is the infinite-loop proof Adam asked for</td><td>new generator + windows_train</td></tr>
+    <tr><td><b>3. Crowded blocks in the other kinds too</b>: half of the Q&A, skills, recall and buried windows get 1-6 look-alike stored facts, chosen by the same word overlap the engine uses; the target ignores them</td><td>The Picasso failure: the model copied the nearest look-alike. It must learn to choose, not copy whatever is near</td><td>windows_train</td></tr>
+    <tr><td><b>4. Facts in both forms</b>: skills windows half told ([turn N]) and half stored ([fact])</td><td>Each model is good only at the format it trained on (v2.2 told 38% vs stored 39-42%; earlier models told 18-22% vs stored 62%)</td><td>windows_train</td></tr>
+    <tr><td><b>5. A balanced "never told" signal</b>: in every kind, cases where the fact is only in memory (answer) outnumber cases with only look-alikes (abstain) about 2 to 1; a statement in memory never by itself means "I don't know"</td><td>v2.1 refused facts that were in memory (5/15 at 40 turns); v2.2 answered when it should abstain. Both balances are now counted in the audit</td><td>windows_train + audit</td></tr>
+    <tr><td><b>6. Dynamic memory budget</b>: the block takes what the question needs, up to the room left in the window (not a fixed 512 codes / about 6 items); training varies it from 0 to about 40 items</td><td>Adam: the amount pulled from memory should follow the question, not an arbitrary number; a big topic pulls a lot</td><td>window.py, engine, windows_train</td></tr>
+    <tr><td><b>7. Keep every v2.2 gain</b>: the 555 MB rehearsal (13%), stories, document reading, told facts, the plateau stop, the clean package</td><td>Clean text 1.321 (best), told facts doubled, in-window never told 99-100%, recall at 10,000 turns</td><td>mix below</td></tr>
+    <tr><td><b>8. Investigate the document-reading drop</b> before training: v2.2 read a fact out of a pasted document 22-32% of the time even with memory off (v2.1 66-74%)</td><td>Not explained by memory; candidates are the lower buried-evidence share (10% vs 15%) and the new sentence-ending task competing with it. A small check decides whether buried evidence goes back to 15%</td><td>check, then the mix</td></tr>
+    <tr><td><b>9. A grounding score in the suite</b>: every answer counted as right from memory / right from its own knowledge / wrong / invented</td><td>The goal is facts from memory, not the network; hallucination must be measured directly, not inferred</td><td>suite + guard</td></tr>
+    <tr><td><b>10. A fixed held-out set for both seeds</b></td><td>The trainer's held-out windows depended on the seed, so the two seeds' training curves could not be compared directly</td><td>train.py</td></tr>
+  </table></div>
+
+  <h3 style="margin-top:20px">The v2.3 training mix (proposed)</h3>
+  <div class="panel scroll" style="margin-top:8px"><table>
+    <tr><th>window kind</th><th>v2.1</th><th>v2.2</th><th>v2.3</th><th>note</th></tr>
+    <tr><td>Q&A (with look-alike facts half the time)</td><td class="num">25</td><td class="num">20</td><td class="num">14</td><td>crowded blocks added</td></tr>
+    <tr><td>skills (told and stored, half each)</td><td class="num">20</td><td class="num">15</td><td class="num">14</td><td>both formats</td></tr>
+    <tr><td>conversations (greetings, story requests)</td><td class="num">15</td><td class="num">13</td><td class="num">10</td><td></td></tr>
+    <tr><td>recall (short, generated)</td><td class="num">10</td><td class="num">12</td><td class="num">6</td><td>most recall moves to any-length</td></tr>
+    <tr><td><b>any-length conversations (real search)</b></td><td class="num">-</td><td class="num">-</td><td class="num"><b>18</b></td><td>new</td></tr>
+    <tr><td>buried evidence</td><td class="num">15</td><td class="num">10</td><td class="num">10</td><td>15 if the check points to it</td></tr>
+    <tr><td>document reading</td><td class="num">-</td><td class="num">7</td><td class="num">7</td><td></td></tr>
+    <tr><td>stories</td><td class="num">-</td><td class="num">10</td><td class="num">8</td><td></td></tr>
+    <tr><td>plain-text rehearsal (555 MB)</td><td class="num">15</td><td class="num">13</td><td class="num">13</td><td>kept: it restored fluency</td></tr>
+  </table></div>
+
+  <div class="grid2" style="margin-top:12px">
+    <div class="panel"><h3>Pass rules for v2.3 (two seeds)</h3><p>(1) Recall flat across 100 / 1,000 / 10,000 turns. (2) Newest value after corrections. (3) Few wrong values, and "I don't know" when not told (with memory on, at least v2.1's 53-63%). (4) Memory-on single fact at least v2.1's level (about 60%+). (5) None of v2.2's gains lost (text, told facts, in-window reasoning, stories). (6) The grounding score improves on v2.2. The guard compares with the best of A, v2.1 and v2.2 on each front.</p></div>
+    <div class="panel"><h3>Questions for Adam</h3><p>(a) Add a short learning-rate / batch check (two small arms) to v2.3 to see whether the plateau comes sooner without loss of quality? (b) Add the grounding score now (change 9)? (c) Is the proposed mix right, in particular any-length at 18% and Q&A down to 14%? (d) Reading in passes (chunks, then notes, then the answer), for memory pulls larger than any window: a study after v2.3, if you want it.</p></div>
+  </div>
+
+  <h3 style="margin-top:20px">The plan from here</h3>
+  <div class="panel scroll" style="margin-top:8px"><svg class="dia" viewBox="0 0 1160 176" role="img">
+<rect class="box test" x="2" y="10" width="172" height="160" rx="10"/>
+<text class="t" x="14" y="34">v2.2 (chat22)</text>
+<text class="s" x="14" y="59">clean package, plateau stop</text>
+<text class="s" x="14" y="76">555 MB rehearsal, stories,</text>
+<text class="s" x="14" y="93">  document reading</text>
+<text class="s" x="14" y="110">memory block next to message</text>
+<rect class="tag" x="8" y="122" width="160" height="42" rx="6"/>
+<text x="14" y="137" font-weight="600">done 16 Oct</text>
+<text x="14" y="154" class="s">not adopted: memory crowding</text>
+<text class="s" x="162" y="34" text-anchor="end" font-weight="600">done</text>
+<path class="arrow hot" d="M176,50 L196,50"/>
+<rect class="box mem" x="199" y="10" width="172" height="160" rx="10"/>
+<text class="t" x="211" y="34">Step 1</text>
+<text class="s" x="211" y="59">stricter memory selection</text>
+<text class="s" x="211" y="76">no training</text>
+<text class="s" x="211" y="93">3 settings x 2 seeds</text>
+<rect class="tag" x="205" y="105" width="160" height="42" rx="6"/>
+<text x="211" y="120" font-weight="600">running</text>
+<text x="211" y="137" class="s">strict: big early recovery</text>
+<text class="s" x="359" y="34" text-anchor="end" font-weight="600">now</text>
+<path class="arrow hot" d="M373,50 L393,50"/>
+<rect class="box mem" x="396" y="10" width="172" height="160" rx="10"/>
+<text class="t" x="408" y="34">v2.3 any-length</text>
+<text class="s" x="408" y="59">real engine search in training</text>
+<text class="s" x="408" y="76">crowded look-alike blocks</text>
+<text class="s" x="408" y="93">facts told AND stored</text>
+<text class="s" x="408" y="110">dynamic memory budget</text>
+<rect class="tag" x="402" y="122" width="160" height="42" rx="6"/>
+<text x="408" y="137" font-weight="600">the infinite-loop proof</text>
+<text x="408" y="154" class="s">first results ~17 Oct am</text>
+<text class="s" x="556" y="34" text-anchor="end" font-weight="600">next</text>
+<path class="arrow hot" d="M570,50 L590,50"/>
+<rect class="box model" x="592" y="10" width="172" height="160" rx="10"/>
+<text class="t" x="604" y="34">16k+ window study</text>
+<text class="s" x="604" y="59">copy head made long-safe</text>
+<text class="s" x="604" y="76">positions for 16k+</text>
+<text class="s" x="604" y="93">long documents and talks</text>
+<rect class="tag" x="598" y="105" width="160" height="42" rx="6"/>
+<text x="604" y="120" font-weight="600">how much in one pass</text>
+<text x="604" y="137" class="s">after v2.3, when Adam says</text>
+<path class="arrow hot" d="M766,50 L786,50"/>
+<rect class="box data" x="789" y="10" width="172" height="160" rx="10"/>
+<text class="t" x="801" y="34">Reading in passes</text>
+<text class="s" x="801" y="59">proposed, not started</text>
+<text class="s" x="801" y="76">chunks -&gt; notes -&gt; answer</text>
+<text class="s" x="801" y="93">learned &#x27;enough&#x27; stop</text>
+<rect class="tag" x="795" y="105" width="160" height="42" rx="6"/>
+<text x="801" y="120" font-weight="600">unlimited memory pulls</text>
+<text x="801" y="137" class="s">needs Adam&#x27;s go-ahead</text>
+<path class="arrow hot" d="M963,50 L983,50"/>
+<rect class="box model" x="986" y="10" width="172" height="160" rx="10"/>
+<text class="t" x="998" y="34">100M</text>
+<text class="s" x="998" y="59">on hold (Adam, 16 Oct)</text>
+<text class="s" x="998" y="76">only after the full 5M study</text>
+<text class="s" x="998" y="93">same recipe, more data</text>
+<rect class="tag" x="992" y="105" width="160" height="42" rx="6"/>
+<text x="998" y="120" font-weight="600">the larger brain</text>
+<text x="998" y="137" class="s">data downloads then</text>
+</svg></div>
+</section>
+
+<section id="roadmap">
+  <div class="eyebrow">Roadmap · 16 October 2026 · best of the 5M work, the guard, and the long-context plan</div>
+  <h2>Where the 5M work stands, and how we keep every gain</h2>
+  <p>The goal (Adam, 16 October): talk with a smart, reasoning model that remembers any length of conversation. What fits in the window it reasons over directly; anything older it recalls from memory. The 5M model is where we settle the recipe cheaply. The larger core then reuses the same recipe and gets the intelligence. Every change must keep all the gains below (the guard) and add a measured long-context gain.</p>
+
+  <h3 style="margin-top:22px">Proven at 5M: the recipe we keep</h3>
+  <div class="panel scroll" style="margin-top:8px"><svg class="dia" viewBox="0 0 1160 193" role="img">
+<rect class="box model" x="2" y="10" width="211" height="177" rx="10"/>
+<text class="t" x="14" y="34">1 · Core</text>
+<text class="s" x="14" y="59">modern block, 6 layers</text>
+<text class="s" x="14" y="76">Muon + warmup-stable-decay</text>
+<text class="s" x="14" y="93">bf16 training, int8 answers</text>
+<text class="s" x="14" y="110">P100 mix, separators kept</text>
+<rect class="tag" x="8" y="122" width="199" height="42" rx="6"/>
+<text x="14" y="137" font-weight="600">wiki 1.260 bits/byte</text>
+<text x="14" y="154" class="s">old 5M core: 1.555</text>
+<path class="arrow hot" d="M215,50 L235,50"/>
+<rect class="box data" x="238" y="10" width="211" height="177" rx="10"/>
+<text class="t" x="250" y="34">2 · Q&amp;A stage</text>
+<text class="s" x="250" y="59">copy head over memory</text>
+<text class="s" x="250" y="76">dense retrieval in training</text>
+<text class="s" x="250" y="93">reworded-copy training 30%</text>
+<text class="s" x="250" y="110">facts stored outside weights</text>
+<rect class="tag" x="244" y="122" width="199" height="42" rx="6"/>
+<text x="250" y="137" font-weight="600">chat probe 24/32, 2 seeds</text>
+<text x="250" y="154" class="s">retrieved-answer F1 +11-13%</text>
+<path class="arrow hot" d="M451,50 L471,50"/>
+<rect class="box data" x="474" y="10" width="211" height="177" rx="10"/>
+<text class="t" x="486" y="34">3 · Skills data</text>
+<text class="s" x="486" y="59">130k invented-fact windows:</text>
+<text class="s" x="486" y="76">near miss, update, unknown,</text>
+<text class="s" x="486" y="93">clarify, rewriting, &#x27;your&#x27;</text>
+<text class="s" x="486" y="110">audited: no test overlap</text>
+<rect class="tag" x="480" y="122" width="199" height="59" rx="6"/>
+<text x="486" y="137" font-weight="600">skills 33 -&gt; 72/100</text>
+<text x="486" y="154" class="s">held-out 77 -&gt; 122/200</text>
+<text x="486" y="171" class="s">rewriting 4 -&gt; 32/40</text>
+<path class="arrow hot" d="M688,50 L708,50"/>
+<rect class="box test" x="711" y="10" width="211" height="177" rx="10"/>
+<text class="t" x="723" y="34">4 · One mixed stage</text>
+<text class="s" x="723" y="59">Q&amp;A 30, skills 25, convo 15,</text>
+<text class="s" x="723" y="76">recall 10, rehearsal 20</text>
+<text class="s" x="723" y="93">window 2,048, 30k steps</text>
+<text class="s" x="723" y="110">copies from turns and memory</text>
+<rect class="tag" x="717" y="122" width="199" height="59" rx="6"/>
+<text x="723" y="137" font-weight="600">chat probe 26/32 (arm A)</text>
+<text x="723" y="154" class="s">conversation probe 110/120</text>
+<text x="723" y="171" class="s">history gain 11.2%</text>
+<path class="arrow hot" d="M924,50 L944,50"/>
+<rect class="box mem" x="947" y="10" width="211" height="177" rx="10"/>
+<text class="t" x="959" y="34">5 · Engine</text>
+<text class="s" x="959" y="59">session memory (fixed 16 Oct)</text>
+<text class="s" x="959" y="76">tools: arithmetic, dates</text>
+<text class="s" x="959" y="93">CUDA graph + KV cache</text>
+<text class="s" x="959" y="110">abstain / clarify rules</text>
+<rect class="tag" x="953" y="122" width="199" height="42" rx="6"/>
+<text x="959" y="137" font-weight="600">recall 14-15/15, 2-40 turns</text>
+<text x="959" y="154" class="s">0.093 s, 4.4 J per answer</text>
+</svg>
+
+    <div class="legend"><span class="sw"><i style="background:var(--c-model)"></i>model</span><span class="sw"><i style="background:var(--c-data)"></i>data / stage</span><span class="sw"><i style="background:var(--c-test)"></i>combined stage</span><span class="sw"><i style="background:var(--c-mem)"></i>memory / engine</span><span class="sw"><i style="background:var(--accent-soft)"></i>measured outcome</span></div>
+  </div>
+  <div class="panel" style="margin-top:12px">
+    <h3>Tried and not adopted (kept as lessons)</h3>
+    <div class="status">
+      <span class="pill p-shine">core reranking: probe 20/32</span>
+      <span class="pill p-shine">retrieval confidence into the trust head: no gain</span>
+      <span class="pill p-shine">course lessons (dropout, typos, two-phase): none held</span>
+      <span class="pill p-shine">LoRA: network-alone 0.116 vs 0.207</span>
+      <span class="pill p-shine">K2, our own key: 2-4 probe points behind MiniLM</span>
+      <span class="pill p-shine">decision head: more false refusals</span>
+      <span class="pill p-shine">intermediate targets alone (B): "I don't know" -3, clarify -3</span>
+      <span class="pill p-shine">verifier (C): +3 skills at 3.4x time, optional</span>
+      <span class="pill p-shine">self-training (D): level with B</span>
+      <span class="pill p-shine">all lessons combined: probe 22/32</span>
+      <span class="pill p-shine">untrained longer window: falls apart past 2,048 codes</span>
+    </div>
+  </div>
+
+  <h3 style="margin-top:22px">The guard: no front may be lost</h3>
+  <p>Floors are the best 5M value so far minus 2 points (1% on text). <code>gate_check.py</code> scores every new model against them automatically. No model so far holds every front: A is one point short on held-out skills, while B and D lose "I don't know" and clarify. Recall was measured before the 16 October engine fix, so the v2.1 tests will be the first to count on it.</p>
+  <div class="panel scroll" style="margin-top:8px"><table>
+    <tr><th>front</th><th>best 5M</th><th>floor</th><th>A</th><th>B</th><th>D</th></tr>
+    <tr><td>language: clean wiki bits/byte (lower)</td><td class="num">1.352</td><td class="num">1.368</td><td class="num">1.354</td><td class="num">1.352</td><td class="num">1.358</td></tr>
+    <tr><td>Q&amp;A: chat probe /32</td><td class="num">26</td><td class="num">24</td><td class="num">26</td><td class="num">24</td><td class="num">24</td></tr>
+    <tr><td>skills test /100</td><td class="num">73</td><td class="num">71</td><td class="num">72</td><td class="num">72</td><td class="num">73</td></tr>
+    <tr><td>held-out skills /200</td><td class="num">122</td><td class="num">120</td><td class="num"><b>119</b></td><td class="num">121</td><td class="num">122</td></tr>
+    <tr><td>rewriting /40</td><td class="num">32</td><td class="num">30</td><td class="num">32</td><td class="num">31</td><td class="num">31</td></tr>
+    <tr><td>"I don't know" when unknown /20</td><td class="num">15</td><td class="num">13</td><td class="num">15</td><td class="num"><b>12</b></td><td class="num">13</td></tr>
+    <tr><td>asks which one /10</td><td class="num">7</td><td class="num">5</td><td class="num">7</td><td class="num"><b>4</b></td><td class="num"><b>4</b></td></tr>
+    <tr><td>conversation probe v2 /120</td><td class="num">112</td><td class="num">110</td><td class="num">110</td><td class="num">112</td><td class="num">110</td></tr>
+    <tr><td>recall with memory, worst of 2-40 turns /15</td><td class="num">15</td><td class="num">13</td><td class="num" colspan="3">14 on A and B after the 16 October fix (0 before)</td></tr>
+    <tr><td>answer time, engine (lower)</td><td class="num">0.29 s</td><td class="num">0.35 s</td><td class="num">0.29</td><td class="num">0.31</td><td class="num">0.30</td></tr>
+  </table></div>
+
+  <h3 style="margin-top:22px">The long-context plan as of the morning of 16 October (superseded the same evening: 8k dropped, any-length next, 100M on hold; see the v2.3 section above)</h3>
+  <div class="panel scroll" style="margin-top:8px">
+<svg class="dia" viewBox="0 0 1160 193" role="img">
+<rect class="box test" x="2" y="10" width="211" height="177" rx="10"/>
+<text class="t" x="14" y="34">S37 · v2.1, 2k</text>
+<text class="s" x="14" y="59">buried evidence 15%</text>
+<text class="s" x="14" y="76">recall v2: depth, distractors,</text>
+<text class="s" x="14" y="93">  two-step, never told 25%</text>
+<text class="s" x="14" y="110">&#x27;nothing here&#x27; target</text>
+<rect class="tag" x="8" y="122" width="199" height="42" rx="6"/>
+<text x="14" y="137" font-weight="600">grid + every front</text>
+<text x="14" y="154" class="s">results ~11:00</text>
+<text class="s" x="201" y="34" text-anchor="end" font-weight="600">running</text>
+<path class="arrow hot" d="M215,50 L235,50"/>
+<rect class="box mem" x="238" y="10" width="211" height="177" rx="10"/>
+<text class="t" x="250" y="34">S41 · v2.2, 2k</text>
+<text class="s" x="250" y="59">history &gt; memory &gt; message</text>
+<text class="s" x="250" y="76">history cached between turns</text>
+<text class="s" x="250" y="93">two memories ranked apart,</text>
+<text class="s" x="250" y="110">  pieces, relevance gate</text>
+<text class="s" x="250" y="127">any-length talks, real search</text>
+<rect class="tag" x="244" y="139" width="199" height="42" rx="6"/>
+<text x="250" y="154" font-weight="600">grid at 100-10,000 turns</text>
+<text x="250" y="171" class="s">story test (memory)</text>
+<path class="arrow hot" d="M451,50 L471,50"/>
+<rect class="box model" x="474" y="10" width="211" height="177" rx="10"/>
+<text class="t" x="486" y="34">S42 · window 8k</text>
+<text class="s" x="486" y="59">plain vs rescaled positions</text>
+<text class="s" x="486" y="76">copy head made memory-safe</text>
+<text class="s" x="486" y="93">long data: buried, stories,</text>
+<text class="s" x="486" y="110">  long conversations</text>
+<rect class="tag" x="480" y="122" width="199" height="42" rx="6"/>
+<text x="486" y="137" font-weight="600">grid by length x depth</text>
+<text x="486" y="154" class="s">speed per turn</text>
+<path class="arrow hot" d="M688,50 L708,50"/>
+<rect class="box model" x="711" y="10" width="211" height="177" rx="10"/>
+<text class="t" x="723" y="34">S43 · window 32k (5M)</text>
+<text class="s" x="723" y="59">the 8k winner, stretched</text>
+<text class="s" x="723" y="76">tests capped at 65k codes</text>
+<text class="s" x="723" y="93">story to 65k with memory</text>
+<rect class="tag" x="717" y="105" width="199" height="42" rx="6"/>
+<text x="723" y="120" font-weight="600">usable 32k?</text>
+<text x="723" y="137" class="s">wait &lt; 0.5 s per turn</text>
+<path class="arrow hot" d="M924,50 L944,50"/>
+<rect class="box model" x="947" y="10" width="211" height="177" rx="10"/>
+<text class="t" x="959" y="34">S44 · 100M at 32k</text>
+<text class="s" x="959" y="59">only if the 5M passes</text>
+<text class="s" x="959" y="76">same recipe, same tests</text>
+<rect class="tag" x="953" y="88" width="199" height="42" rx="6"/>
+<text x="959" y="103" font-weight="600">then a larger core</text>
+<text x="959" y="120" class="s">(ask Adam above 100M)</text>
+</svg>
+</div>
+  <div class="grid2" style="margin-top:12px">
+    <div class="panel"><h3>Limits (Adam, 16 October)</h3><p>Training and tests on ultra-long context stop at <b>65,536 codes</b>. Target window: <b>32k for the 5M</b>, then 32k for the 100M if the 5M works well. Stress tests use at most 3/4 of the GPU and RAM. Disk tests only measure speed.</p></div>
+    <div class="panel"><h3>Why 32k</h3><p>Measured in session 36: the 5M writes 14-16 ms per code up to 32k and re-reads a whole 32k window in 0.5 s; the 100M re-reads 16k in 0.4 s and 32k in 1.2 s. With the history cached between turns, each turn reads only the new text. Past 65k the wait grows quickly (5M at 262k: 55 s).</p></div>
+    <div class="panel"><h3>The window, v2.2</h3><p><code>[older history … recent turns]</code> kept in the cache, then <code>[memory block]</code> and <code>[message]</code> re-read each turn. The memory block takes every entry that applies from both memories, up to a quarter of the window: conversation pieces and notes, labelled by turn ("you said, turn 12"), and stored facts. The newest version of a fact wins, and two-step questions follow links.</p></div>
+    <div class="panel"><h3>Training for any length</h3><p>The window keeps one shape whether the conversation is 10 turns or 10,000. A fact from turn 3 or turn 3,000 arrives the same way, as a memory item. So we train the skill, not a length: generated conversations of 10-10,000 turns, built with the engine's real search (including its misses), blocks of 0-40 items with 0-3 relevant. Success means a flat accuracy line from 100 to 10,000 turns.</p></div>
+    <div class="panel"><h3>Engineering before 8k / 32k</h3><p>(1) The copy head scores every code against every code: at 32k that is 1 billion pairs per window, so it must be limited or chunked. (2) Each new code copies the whole attention cache; preallocate it. (3) Keep the history cached between turns and move the memory slot behind the history (v2.2 layout). (4) Positions past the trained window need rescaling (tested as an arm).</p></div>
+    <div class="panel"><h3>Found today (CPU, arm A, memory on)</h3><p>Fact inside a pasted document: 2/54 even when the whole document fits, a reading problem v2.1 targets. Never told: 1/54 (it used someone else's fact 17 times). Two-step: 0. The relevance gate lifts distractor cases 87% to 93%. Bug: conversation memory lost to short general facts in one shared ranking; the two memories are now ranked separately (re-test running).</p></div>
+  </div>
+</section>
 
 <section id="results">
   <div class="eyebrow">Results so far · 15 October, 19:45 · arms A, B, C measured; D, the GPU suite and the context stress test run tonight</div>
@@ -237,7 +642,7 @@ code { font-family: var(--f-mono); font-size: 13px; background: var(--accent-sof
       <thead><tr><th>#</th><th>Gap</th><th>Evidence</th><th>Change</th><th>Priority</th></tr></thead>
       <tbody>
         <tr><td>1</td><td><b>The model never learns to find evidence inside a long input.</b> Every Q&amp;A, skills and recall window puts the evidence in a slot of at most 400 codes at the start of the window. The copy head learns "the answer is in the slot", not "find the answer".</td><td class="ev">The code word is not found even at 2,048 codes. The recall loss falls to 0.003, so the task is too easy.</td><td><b>Buried-evidence windows</b> (our form of the guide's proxy-context method). The same question and answer as a slot window, but the evidence passage is placed at a random depth (10–90%) inside 600–1,900 codes of other text. That filler includes its 4 nearest-neighbour passages (already computed in train_chat), which act as distractors. The intermediate target follows the passage to its new position. The slot window and the buried window of the same question go in the same batch.</td><td><span class="pill p-good">first</span></td></tr>
-        <tr><td>2</td><td><b>Session memory skips facts that have already left the window.</b> <code>chat_engine.py</code> line 206 assumes the last 12 turns are still in the window. With long turns only about 5 fit, so a fact 6–12 turns back is neither in the window nor retrieved.</td><td class="ev">Recall after 10 filler turns: 0/15 with memory, but 15/15 after 20 turns.</td><td>Skip only the turns that <code>build_window</code> actually kept. This is a fix to the chat engine; no retraining. I'll apply it after session 35 so that A, B and D are all tested with the same engine.</td><td><span class="pill p-good">bug fix</span></td></tr>
+        <tr><td>2</td><td><b>Session memory skips facts that have already left the window.</b> <code>chat_engine.py</code> line 206 assumes the last 12 turns are still in the window. With long turns only about 5 fit, so a fact 6–12 turns back is neither in the window nor retrieved.</td><td class="ev">Recall after 10 filler turns: 0/15 with memory, but 15/15 after 20 turns.</td><td>Skip only the turns that <code>build_window</code> actually kept. This is a fix to the chat engine; no retraining. <b>Fixed 15 Oct, 21:10:</b> recall with session memory after 2/5/10/20/40 turns is now 15/15/14/15/14 of 15 on A and on B (was 0/15 at 10 turns).</td><td><span class="pill p-good">fixed</span></td></tr>
         <tr><td>3</td><td><b>Intermediate targets have no "nothing here" answer.</b> When nothing supports an answer, the aux loss is silent, so B learned to point at something and copy it.</td><td class="ev">B against A: "I don't know" −3, clarify −3.</td><td><b>Answerability target:</b> with no gold span, the copy head is trained to put its attention on the separator, as a "not present" position. With two matching people, the target splits its attention between both spans, which signals that it should ask. Both labels come for free from the generators.</td><td><span class="pill p-good">first</span></td></tr>
         <tr><td>4</td><td><b>Recall training is too easy.</b> It uses 1–3 facts and 1–13 short filler turns, and the fact is usually near the question. It has no distractors of the same kind, no two-step questions, and almost no "you never told me" cases. Corrections only ever say "my sister", never the name.</td><td class="ev">Live chat: corrections by name were missed and statements were refused. The loss is close to 0.</td><td><b>Recall v2:</b> depth spread evenly across the whole window; same-attribute distractors ("my brother lives in …" next to "my sister lives in …"); corrections by name; two-step questions ("Where does my sister's husband work?" needs two statements); 25% where the fact was never given → "You haven't told me that."</td><td><span class="pill p-good">first</span></td></tr>
         <tr><td>5</td><td><b>We test bits per position, not answers per position.</b> We have one code word and a bits-by-position curve, but no accuracy by length and depth.</td><td class="ev">There is no grid of results to compare arms on.</td><td><b>Our own long-context grid</b> (RULER-style): lengths 512 / 1,024 / 2,048 × depth 10 / 50 / 90% × task (one fact, two facts, distractor, absent, correction). Each cell is run with and without session memory. Retrieval, evidence choice and the answer are scored separately.</td><td><span class="pill p-good">first</span></td></tr>
@@ -280,8 +685,13 @@ code { font-family: var(--f-mono); font-size: 13px; background: var(--accent-sof
 </section>
 
 <section class="panel">
-  <h2>Still to come tonight</h2>
-  <p>Arm D (self-training) and its tests; the GPU test suite on A, B and D (speed as the window fills, quality by position to 4,096, recall after 2–40 turns with and without session memory, eight short stories, both conversation probes as real chats, the report card); hand ratings of the 50 questions; session 36's long-context stress test. This page will be updated with them.</p>
+  <h2>Queue (16 October, evening)</h2>
+  <p><b>Done today:</b> v2.1 two seeds; three audits; the chat22 package and its checks; v2.2 two seeds and the full suite on five models; session 38 (memory to 5,000 turns: 10/10), session 39 (CPU stress to 262k codes), session 40 (disk speed); the memory-only side test.</p>
+  <ol>
+    <li><b>Step 1</b> (running): strict / stricter / no-stored-facts memory selection on both v2.2 seeds, memory-sensitive sections; results about 21:00.</li>
+    <li><b>v2.3 any-length study</b>: build tonight (generator with the real engine search, crowded blocks, both fact formats, dynamic budget), train two seeds overnight, suite and guard; first results about 17 October, morning.</li>
+    <li><b>Later</b>: the 16k+ window study; reading in passes if approved; the 100M only after the 5M study is complete.</li>
+  </ol>
 </section>
 
 

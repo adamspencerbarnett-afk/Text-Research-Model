@@ -1,0 +1,367 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Training Map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* A local page (never published). Every number is copied from the records: LOG.md, run_ledger.py, results/*.json,
+   docs/RESEARCH_STORY.html (docs/story/tests.json). Nothing was re-run to draw it. */
+:root { --paper:#f2f4f6; --card:#fff; --ink:#15212c; --ink-2:#4a5866; --muted:#7d8a96; --hair:#d5dbe2; --accent:#0f6e8c; --accent-soft:#e2f0f4;
+  --c-data:#2a78d6; --c-core:#eb6834; --c-ft:#1baf7a; --c-rec:#6250d6; --c-model:#c98500; --c-res:#d55181; --best:#b7791f; --dim:.12;
+  --f-display:"IBM Plex Sans Condensed","Arial Narrow",system-ui,sans-serif; --f-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,Consolas,monospace; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --paper:#0f151b; --card:#16202a; --ink:#e8eef3; --ink-2:#b5c1cc; --muted:#8796a3; --hair:#2a3743;
+  --accent:#4fb3d1; --accent-soft:#15303a; --c-data:#3987e5; --c-core:#d95926; --c-ft:#199e70; --c-rec:#9085e9; --c-model:#d29a1a; --c-res:#e06c98; --best:#e0a548; color-scheme:dark; } }
+:root[data-theme="dark"] { --paper:#0f151b; --card:#16202a; --ink:#e8eef3; --ink-2:#b5c1cc; --muted:#8796a3; --hair:#2a3743; --accent:#4fb3d1; --accent-soft:#15303a;
+  --c-data:#3987e5; --c-core:#d95926; --c-ft:#199e70; --c-rec:#9085e9; --c-model:#d29a1a; --c-res:#e06c98; --best:#e0a548; color-scheme:dark; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--paper); color:var(--ink); font:15px/1.55 var(--f-body); padding:0 16px; }
+header { max-width:1500px; margin:0 auto; padding:28px 0 8px; }
+h1 { font:700 40px/1.05 var(--f-display); margin:0 0 8px; }
+h2 { font:700 22px/1.15 var(--f-display); margin:0 0 6px; }
+p { margin:0 0 10px; max-width:84ch; color:var(--ink-2); }
+.eyebrow { font:600 12px var(--f-mono); letter-spacing:.08em; color:var(--muted); text-transform:uppercase; margin-bottom:6px; }
+.layout { max-width:1500px; margin:0 auto; display:grid; grid-template-columns:minmax(0,1fr) 360px; gap:16px; align-items:start; }
+.panel { background:var(--card); border:1px solid var(--hair); border-radius:12px; padding:14px 16px; }
+.mapwrap { position:relative; overflow:hidden; padding:0; }
+svg#map { display:block; width:100%; height:78vh; min-height:420px; cursor:grab; touch-action:none; user-select:none; }
+svg#map.dragging { cursor:grabbing; }
+.zoombar { position:absolute; top:10px; left:10px; z-index:2; display:flex; gap:6px; align-items:center; }
+.zoombar button { font:600 15px var(--f-body); width:32px; height:32px; border:1px solid var(--hair); background:var(--card); color:var(--ink); border-radius:8px; cursor:pointer; }
+.zoombar button.wide { width:auto; padding:0 10px; font-size:12px; }
+.zoombar span { font:12px var(--f-body); color:var(--muted); background:var(--card); padding:4px 8px; border-radius:6px; border:1px solid var(--hair); }
+.col-title { font:600 12px var(--f-mono); letter-spacing:.06em; text-transform:uppercase; fill:var(--muted); }
+.node rect { fill:var(--card); stroke:var(--hair); stroke-width:1.2; rx:8; }
+.node .bar { rx:3; }
+.node text { font:600 12.5px var(--f-body); fill:var(--ink); pointer-events:none; }
+.node text.s { font:400 11px var(--f-body); fill:var(--ink-2); }
+.node { cursor:pointer; transition:opacity .15s; }
+.node.sel rect { stroke:var(--accent); stroke-width:2.6; }
+.edge { fill:none; stroke:var(--muted); stroke-opacity:.35; stroke-width:1.2; transition:opacity .15s, stroke-width .15s; }
+.edge.best { stroke:var(--best); stroke-opacity:.8; }
+.elab { font:600 11px var(--f-mono); fill:var(--ink); paint-order:stroke; stroke:var(--card); stroke-width:3px; pointer-events:none; display:none; }
+svg.focus .node:not(.on) { opacity:var(--dim); }
+svg.focus .edge:not(.on) { opacity:.05; }
+svg.focus .edge.on { stroke-opacity:.9; stroke-width:2.2; stroke:var(--accent); }
+svg.focus .edge.on.best { stroke:var(--best); }
+svg.focus .elab.on { display:block; }
+.side { position:sticky; top:12px; display:flex; flex-direction:column; gap:12px; max-height:calc(100vh - 24px); overflow-y:auto; }
+.want button { display:block; width:100%; text-align:left; border:1px solid var(--hair); background:var(--paper); color:var(--ink); border-radius:8px; padding:6px 10px; margin:4px 0; font:500 13px var(--f-body); cursor:pointer; }
+.want button:hover, .want button.on { border-color:var(--accent); background:var(--accent-soft); }
+table { border-collapse:collapse; width:100%; font-size:13px; margin:6px 0; }
+td, th { text-align:left; padding:4px 6px; border-bottom:1px solid var(--hair); vertical-align:top; }
+th { font-size:11px; text-transform:uppercase; letter-spacing:.05em; color:var(--muted); }
+td.n { font-family:var(--f-mono); white-space:nowrap; }
+tr.best td { color:var(--best); font-weight:600; }
+.legend { display:flex; flex-wrap:wrap; gap:12px; font-size:12.5px; color:var(--ink-2); margin:6px 0 10px; }
+.sw { display:inline-flex; gap:6px; align-items:center; } .sw i { width:12px; height:12px; border-radius:3px; display:inline-block; }
+.tag { display:inline-block; font:600 11px var(--f-mono); padding:2px 7px; border-radius:6px; background:var(--accent-soft); color:var(--accent); margin:2px 4px 2px 0; text-decoration:none; }
+.note { font-size:12.5px; color:var(--muted); }
+.toggle { position:fixed; top:10px; right:12px; z-index:5; font:600 12px var(--f-body); border:1px solid var(--hair); background:var(--card); color:var(--ink); border-radius:8px; padding:5px 10px; cursor:pointer; }
+@media (max-width: 1100px) { .layout { grid-template-columns:1fr; } .side { position:static; max-height:none; } }
+</style>
+</head>
+<body>
+<button class="toggle" id="theme">Light / dark</button>
+<header>
+  <div class="eyebrow">Text Research Model · training map · 16 October 2026</div>
+  <h1>How each model was trained, and what it can do</h1>
+  <p>Read left to right. Text trains a <b>core</b>. A <b>recipe</b> fine-tunes the core on a mix of training data, and each run of a recipe is one <b>model</b> (a seed). Each model has measured <b>results</b>. Click or hover on anything to light up everything connected to it, upstream and downstream. Pick a capability under <b>“I want a model that…”</b> to see which model does it best, and the recipe, data and core behind it.</p>
+  <div class="legend">
+    <span class="sw"><i style="background:var(--c-data)"></i>core training text</span><span class="sw"><i style="background:var(--c-core)"></i>cores</span>
+    <span class="sw"><i style="background:var(--c-ft)"></i>fine-tuning data</span><span class="sw"><i style="background:var(--c-rec)"></i>recipes</span>
+    <span class="sw"><i style="background:var(--c-model)"></i>models (seeds)</span><span class="sw"><i style="background:var(--c-res)"></i>results</span>
+    <span class="sw"><i style="background:var(--best)"></i>best on that result</span>
+  </div>
+</header>
+<div class="layout">
+  <div class="panel mapwrap">
+    <div class="zoombar"><button id="zin" title="Zoom in">+</button><button id="zout" title="Zoom out">&minus;</button><button id="zfit" class="wide" title="Show the whole map">Fit</button>
+      <span>scroll to zoom · drag to move · click a box</span></div>
+    <svg id="map" viewBox="0 0 1540 1000" role="img" aria-label="Training map"></svg>
+  </div>
+  <div class="side">
+    <div class="panel want"><h2>I want a model that…</h2><div id="wants"></div></div>
+    <div class="panel" id="detail"><h2>Details</h2><p class="note">Click a box to see its numbers here.</p></div>
+  </div>
+</div>
+<script>
+// ---------------------------------------------------------------- the records
+// col: 0 core text, 1 cores, 2 fine-tuning data, 3 recipes, 4 models, 5 results
+const N = [
+ // core training text
+ {id:'d_web', col:0, t:'Web text', s:'FineWeb'},
+ {id:'d_wiki', col:0, t:'Wikipedia', s:'clean articles'},
+ {id:'d_books', col:0, t:'Books', s:'Gutenberg, whole books'},
+ {id:'d_conv', col:0, t:'Conversation text', s:'UltraChat, OpenAssistant'},
+ {id:'d_evid', col:0, t:'Evidence pairs', s:'related passage pairs'},
+ {id:'d_qqp', col:0, t:'Question pairs', s:'Quora duplicates'},
+ {id:'d_math', col:0, t:'Worked maths', s:'MetaMath (maths now paused)'},
+ // cores
+ {id:'c_d3', col:1, t:'5M core, D3s', s:'legacy block, window 512', d:'The first strong 5M core (session 7). Clean Wikipedia 1.555 bits/byte. Trained 42,538 steps of 64 at lr 1e-3, bf16, random windows with document separators.', tests:['D1-D3r','D3s512']},
+ {id:'c_mt', col:1, t:'5M core, modern', s:'Muon + WSD, window 1,024', d:'The current 5M core (session 31): modern block (rotary positions, RMS norm, gated feed-forward), 256 wide x 6 layers x 8 heads, Muon + warmup-stable-decay, P100 mix, 5 GB seen. Clean Wikipedia 1.260 bits/byte (old 5M core 1.555).', tests:['S31','RECIPE']},
+ {id:'c_50', col:1, t:'50M core', s:'640 x 10, window 1,024', d:'55.1M total, 30,500 steps of 32, 999M codes, 8,564 s. Clean Wikipedia 1.134 bits/byte. Later found: trained on only the first 2.15 GB of its mix (2 GiB encoder bug).', tests:['50M-core','ENC2GB']},
+ {id:'c_100', col:1, t:'100M core', s:'1,024 x 8, window 1,024', d:'109M parameters, modern block, Muon + WSD, 61,035 steps = 2B codes, 18 h, 6.6 kWh. Clean Wikipedia 1.028 bits/byte (the best text core).', tests:['S27-CORE']},
+ // fine-tuning data
+ {id:'f_qa', col:2, t:'Alpaca Q&A', s:'51k exchanges'},
+ {id:'f_reh', col:2, t:'Plain-text rehearsal', s:'core text, keeps fluency', d:'Chat v2, A/B/D and v2.1 used a 15 MB sample by mistake (dataset audit, 16 Oct); v2.2 uses 555 MB of whole documents.'},
+ {id:'f_skv3', col:2, t:'Skills v3', s:'100k invented-fact windows'},
+ {id:'f_skv4', col:2, t:'Skills v4', s:'130k, with rewriting'},
+ {id:'f_conv', col:2, t:'Real conversations', s:'209k threads'},
+ {id:'f_rec', col:2, t:'Long recall', s:'generated, facts in earlier turns'},
+ {id:'f_rec2', col:2, t:'Recall v2', s:'any depth, distractors, two-step, never told'},
+ {id:'f_bur', col:2, t:'Buried evidence', s:'a fact inside a long document'},
+ {id:'f_doc', col:2, t:'Document reading', s:'sentences from real documents'},
+ {id:'f_story', col:2, t:'Stories', s:'book continuation + story worlds'},
+ {id:'f_self', col:2, t:'Own verified answers', s:'self-training'},
+ {id:'f_squad', col:2, t:'SQuAD passages', s:'reading comprehension'},
+ // recipes
+ {id:'r_qa5', col:3, t:'Q&A stage (session 23)', s:'copy head, reworded copies', d:'From the 5M D3s core: copy head over the retrieved exchange, dense retrieval in training, 30% of own-exchange windows reworded, answer-only loss, end-of-answer code; 15,565 steps of 32, lr 1e-4, heads 1e-3, window 512.', tests:['S23','S25','RETR']},
+ {id:'r_qa50', col:3, t:'Q&A stage on 50M', s:'S2b recipe, capped', d:'S2b recipe on the 50M core, window 1,024; stopped by its 2-hour cap at 9,247 of 15,565 steps.', tests:['50M-QA']},
+ {id:'r_sq50', col:3, t:'Reading stage on 50M', s:'SQuAD, answer-only loss', d:'Passage in the question, answer-only loss, end code, 10,000 steps.', tests:['50M-SQuAD']},
+ {id:'r_qa100', col:3, t:'Q&A stage on 100M', s:'the session 23 recipe', d:'The adopted 5M recipe on the 100M core: 15,565 steps of 32 (accumulated), dense retrieval in training, reworded copies 30%, rehearsal 30%, 6.5 h.', tests:['S27-QA']},
+ {id:'r_sk3', col:3, t:'Skills arm v3', s:'7 min on top of the 5M chat model', d:'From the old best 5M chat model: 9,000 steps of 32, skill windows 35% (skill-p 0.35), the rest the Q&A recipe.', tests:['SKILLS-100K']},
+ {id:'r_sk4', col:3, t:'Skills arm v4', s:'rewriting in the form asked', d:'As v3 with skills v4: 11,600 steps of 32 (543 s), skill-p 0.35.', tests:['S34-SKV4']},
+ {id:'r_mtM', col:3, t:'Multi-turn: one mixed stage', s:'session 31/33, arm M', d:'From the modern 5M core: the Q&A recipe with 20% conversation windows (mt-p 0.2), 23,565 steps of 32. Adopted as the structure for chat models.', tests:['S31','S33']},
+ {id:'r_v2', col:3, t:'Chat v2 mixed stage (A)', s:'window 2,048, 30,000 steps', d:'From the modern 5M core: one mixed stage, batch 16, lr 1e-4 / heads 1e-3, 63 min. Copy head over memory and earlier turns.', tests:['S35-A','S35-AUDIT']},
+ {id:'r_v2b', col:3, t:'B: A + intermediate targets', s:'which fact, which words', d:'Same windows in the same order as A, plus a loss telling the copy head which stored fact or turn to point at (--aux 0.5).', tests:['S35-B']},
+ {id:'r_v2d', col:3, t:'D: B + self-training', s:'4,000 steps on its own answers', d:'B answered 2,500 training questions 4 times; correct, supported answers became 30% of 4,000 further steps at a lower rate.', tests:['S35-D']},
+ {id:'r_v21', col:3, t:'v2.1 long-context stage', s:'buried evidence, recall v2, pointer', d:'From the modern 5M core: 30,000 steps of 16, window 2,048, intermediate targets plus a "nothing here" pointer (--aux 0.5 --point 0.5).', tests:['V21-BUILD','V21-FULL']},
+ {id:'r_v22', col:3, t:'v2.2 (chat22 package)', s:'training now; stops on a plateau', d:'The clean package: memory block with [fact] / [turn N] items (newest nearest the message), the rebuilt 555 MB rehearsal, document reading and stories added; stops when the held-out score levels off (10,000 to 60,000 steps).', tests:['CHAT22-TRAINER','CHAT22-DATA']},
+ // models (seeds)
+ {id:'m_old1', col:4, t:'Old best 5M chat, seed 1', s:'models/qa_best_5M_dense.pt', tests:['S23']},
+ {id:'m_old2', col:4, t:'Old best 5M chat, seed 2', s:'', tests:['S25']},
+ {id:'m_50', col:4, t:'50M Q&A', s:'', tests:['50M-QA']},
+ {id:'m_50sq', col:4, t:'50M reading (SQuAD)', s:'', tests:['50M-SQuAD']},
+ {id:'m_100', col:4, t:'100M Q&A', s:'best overall so far', tests:['S27-QA']},
+ {id:'m_sk3', col:4, t:'Skills arm v3', s:'', tests:['SKILLS-100K']},
+ {id:'m_sk4', col:4, t:'Skills arm v4', s:'', tests:['S34-SKV4']},
+ {id:'m_M1', col:4, t:'Multi-turn M, seed 1', s:'', tests:['S31']},
+ {id:'m_M2', col:4, t:'Multi-turn M, seed 2', s:'', tests:['S33']},
+ {id:'m_A', col:4, t:'Chat v2 A', s:'most balanced v2', tests:['S35-A']},
+ {id:'m_B', col:4, t:'Chat v2 B', s:'', tests:['S35-B']},
+ {id:'m_C', col:4, t:'Chat v2 C (= B + verifier)', s:'checks 5 replies at answer time', tests:['S35-C']},
+ {id:'m_D', col:4, t:'Chat v2 D', s:'', tests:['S35-D']},
+ {id:'m_211', col:4, t:'v2.1 seed 1', s:'', tests:['V21-FULL']},
+ {id:'m_212', col:4, t:'v2.1 seed 2', s:'', tests:['V21-FULL']},
+ {id:'m_221', col:4, t:'v2.2 seed 1', s:'training now', tests:[]},
+ {id:'m_222', col:4, t:'v2.2 seed 2', s:'queued', tests:[]},
+ // results (higher is better unless lower:true)
+ {id:'x_stored', col:5, t:'Answers from stored memory', s:'stored questions, F1'},
+ {id:'x_new', col:5, t:'New questions', s:'held-out questions, F1'},
+ {id:'x_probe', col:5, t:'Everyday chat probe', s:'of 32'},
+ {id:'x_skill', col:5, t:'Skills test', s:'of 100 (invented facts)'},
+ {id:'x_held', col:5, t:'Held-out skills', s:'of 200 (unseen names)'},
+ {id:'x_rew', col:5, t:'Answers in the form asked', s:'rewriting, of 40'},
+ {id:'x_idk', col:5, t:'Says "I don’t know"', s:'when not told, of 20'},
+ {id:'x_clar', col:5, t:'Asks which one', s:'clarify, of 10'},
+ {id:'x_conv', col:5, t:'Holds a conversation', s:'probe v2, of 120'},
+ {id:'x_hist', col:5, t:'Uses earlier turns', s:'history gain, real conversations'},
+ {id:'x_two', col:5, t:'Two-step questions', s:'long-context grid'},
+ {id:'x_abs', col:5, t:'Never told: abstains', s:'long-context grid'},
+ {id:'x_docr', col:5, t:'Finds a fact in a document', s:'long-context grid'},
+ {id:'x_rec40', col:5, t:'Recalls from memory at 40 turns', s:'of 15'},
+ {id:'x_squad', col:5, t:'Reading comprehension', s:'SQuAD exact match'},
+ {id:'x_fluent', col:5, t:'Clean text', s:'wiki bits/byte, lower is better', lower:true},
+ {id:'x_speed', col:5, t:'Answer time', s:'seconds per answer, GPU', lower:true},
+];
+// edges: [from, to, label, value for ranking]
+const E = [];
+const mix = (to, parts) => parts.forEach(([f, pct]) => E.push([f, to, pct + '%', null]));
+mix('c_d3', [['d_wiki',30],['d_web',22],['d_books',8],['d_conv',12],['d_evid','18 planned, 3 actual'.replace('%','')],['d_math',5],['d_qqp',5]]);
+E.forEach(e => { if (e[2] === '18 planned, 3 actual%') e[2] = '18 planned (3 actual)'; });
+mix('c_mt', [['d_web',44],['d_wiki',18.5],['d_conv',17],['d_evid',10],['d_books',7],['d_qqp',0.5]]);
+mix('c_100', [['d_web',44],['d_wiki',18.5],['d_conv',17],['d_evid',10],['d_books',7],['d_qqp',0.5]]);
+mix('c_50', [['d_web',32],['d_wiki',25],['d_conv',12],['d_evid',12],['d_math',8],['d_books',7],['d_qqp',0.8]]);
+const ft = (rec, core, parts) => { if (core) E.push([core, rec, 'fine-tuned from', null]); mix(rec, parts); };
+ft('r_qa5', 'c_d3', [['f_qa',70],['f_reh',30]]);
+ft('r_qa50', 'c_50', [['f_qa',70],['f_reh',30]]);
+ft('r_sq50', 'c_50', [['f_squad',100]]);
+ft('r_qa100', 'c_100', [['f_qa',70],['f_reh',30]]);
+ft('r_sk3', null, [['f_skv3',35],['f_qa',65]]); E.push(['m_old1','r_sk3','started from',null]);
+ft('r_sk4', null, [['f_skv4',35],['f_qa',65]]); E.push(['m_old1','r_sk4','started from',null]);
+ft('r_mtM', 'c_mt', [['f_conv',20],['f_qa',80]]);
+ft('r_v2', 'c_mt', [['f_qa',30],['f_skv4',25],['f_conv',15],['f_rec',10],['f_reh',20]]);
+ft('r_v2b', 'c_mt', [['f_qa',30],['f_skv4',25],['f_conv',15],['f_rec',10],['f_reh',20]]);
+ft('r_v2d', null, [['f_self',30]]); E.push(['m_B','r_v2d','started from',null]);
+ft('r_v21', 'c_mt', [['f_qa',25],['f_skv4',20],['f_conv',15],['f_rec2',10],['f_bur',15],['f_reh',15]]);
+ft('r_v22', 'c_mt', [['f_qa',20],['f_skv4',15],['f_conv',13],['f_rec2',12],['f_bur',10],['f_doc',7],['f_story',10],['f_reh',13]]);
+[['r_qa5','m_old1'],['r_qa5','m_old2'],['r_qa50','m_50'],['r_sq50','m_50sq'],['r_qa100','m_100'],['r_sk3','m_sk3'],['r_sk4','m_sk4'],['r_mtM','m_M1'],['r_mtM','m_M2'],
+ ['r_v2','m_A'],['r_v2b','m_B'],['r_v2d','m_D'],['r_v21','m_211'],['r_v21','m_212'],['r_v22','m_221'],['r_v22','m_222']].forEach(([a,b]) => E.push([a,b,'seed',null]));
+E.push(['m_B','m_C','+ verifier at answer time',null]);
+const R = (m, x, label, v) => E.push([m, x, label, v]);
+// results, copied from the records
+R('m_old1','x_stored','0.901',0.901); R('m_old2','x_stored','0.867',0.867); R('m_50','x_stored','0.893',0.893); R('m_100','x_stored','0.906',0.906);
+R('m_old1','x_new','0.311',0.311); R('m_old2','x_new','0.293',0.293); R('m_50','x_new','0.332',0.332); R('m_100','x_new','0.358',0.358);
+[['m_old1',24],['m_old2',23],['m_50',21],['m_100',25],['m_sk3',24],['m_sk4',24],['m_M1',23],['m_M2',22],['m_A',26],['m_B',24],['m_C',25],['m_D',24],['m_211',27],['m_212',26]].forEach(([m,v]) => R(m,'x_probe',v+'/32',v));
+[['m_old1',33,'33'],['m_sk3',58,'58 (65 with 3 candidates)'],['m_sk4',61,'61 (69 with 3)'],['m_A',72,'72'],['m_B',72,'72'],['m_C',75,'75'],['m_D',73,'73'],['m_211',67,'67'],['m_212',70,'70']].forEach(([m,v,l]) => R(m,'x_skill',l,v));
+[['m_old1',77,'75-77'],['m_sk3',112,'112 (128 with 3)'],['m_sk4',112,'112 (132 with 3)'],['m_A',119,'119'],['m_B',121,'121'],['m_C',121,'121'],['m_D',122,'122'],['m_211',118,'118'],['m_212',120,'120']].forEach(([m,v,l]) => R(m,'x_held',l,v));
+[['m_old1',4,'4'],['m_sk3',3,'3'],['m_sk4',26,'26 (29 with 3)'],['m_A',32,'32'],['m_B',31,'31'],['m_C',32,'32'],['m_D',31,'31'],['m_211',32,'32'],['m_212',32,'32']].forEach(([m,v,l]) => R(m,'x_rew',l,v));
+[['m_A',15],['m_B',12],['m_D',13],['m_211',14],['m_212',13]].forEach(([m,v]) => R(m,'x_idk',v+'/20',v));
+[['m_A',7],['m_B',4],['m_D',4],['m_211',4],['m_212',3]].forEach(([m,v]) => R(m,'x_clar',v+'/10',v));
+[['m_old1',36],['m_M1',26],['m_M2',29],['m_A',110],['m_B',112],['m_D',110],['m_211',108],['m_212',109]].forEach(([m,v]) => R(m,'x_conv',v+'/120',v));
+R('m_M1','x_hist','11.3%',11.3); R('m_M2','x_hist','11.2%',11.2);
+[['m_A',2],['m_B',2],['m_211',85],['m_212',84]].forEach(([m,v]) => R(m,'x_two',v+'%',v));
+[['m_A',1],['m_B',2],['m_211',96],['m_212',99]].forEach(([m,v]) => R(m,'x_abs',v+'%',v));
+[['m_A',50],['m_B',55],['m_211',71],['m_212',69]].forEach(([m,v]) => R(m,'x_docr',v+'%',v));
+[['m_A',14],['m_B',14],['m_211',5],['m_212',4]].forEach(([m,v]) => R(m,'x_rec40',v+'/15',v));
+R('m_50sq','x_squad','28.1% (5M: 1.0%)',28.1);
+[['m_A',1.354],['m_B',1.352],['m_D',1.358],['m_211',1.340],['m_212',1.340]].forEach(([m,v]) => R(m,'x_fluent',String(v),v));
+R('m_old1','x_speed','0.08 s, 10 J',0.08); R('m_50','x_speed','0.15 s, 24 J',0.15); R('m_100','x_speed','0.28 s, 55 J',0.28); R('m_A','x_speed','0.29 s (suite)',0.29);
+
+const WANTS = [['x_probe','answers everyday questions well'],['x_stored','answers from stored facts'],['x_new','answers questions it never saw'],
+ ['x_skill','handles invented facts, updates and near misses'],['x_held','does that with names it never saw'],['x_rew','answers in the form asked'],
+ ['x_idk','says "I don’t know" when it was not told'],['x_clar','asks which one when two facts fit'],['x_conv','holds a conversation'],
+ ['x_two','answers two-step questions'],['x_docr','finds a fact inside a long document'],['x_rec40','remembers a fact 40 turns later'],
+ ['x_squad','reads a passage and answers'],['x_fluent','writes the most fluent text'],['x_speed','answers fastest']];
+
+// ---------------------------------------------------------------- layout
+const svg = document.getElementById('map'), NS = 'http://www.w3.org/2000/svg';
+const COLX = [10, 245, 505, 765, 1050, 1315], W = [205, 225, 225, 250, 230, 215], COLS = ['Core training text', 'Cores', 'Fine-tuning data', 'Recipes', 'Models (each seed is one model)', 'Results'];
+const COLOR = ['--c-data','--c-core','--c-ft','--c-rec','--c-model','--c-res'], H = 44, GAP = 10, TOP = 40;
+const byId = {}; N.forEach(n => byId[n.id] = n);
+const cols = [0,1,2,3,4,5].map(c => N.filter(n => n.col === c));
+const maxH = Math.max(...cols.map(c => c.length)) * (H + GAP);
+cols.forEach((c, ci) => { const off = (maxH - c.length * (H + GAP)) / 2; c.forEach((n, k) => { n.x = COLX[ci]; n.w = W[ci]; n.y = TOP + off + k * (H + GAP); }); });
+svg.setAttribute('viewBox', `0 0 1540 ${TOP + maxH + 10}`);
+const mk = (tag, attrs, parent) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); (parent || svg).appendChild(e); return e; };
+COLS.forEach((t, i) => mk('text', {x: COLX[i] + 4, y: 22, class: 'col-title'}).textContent = t);
+// best per result
+const best = {};
+N.filter(n => n.col === 5).forEach(x => {
+  const ins = E.filter(e => e[1] === x.id && e[3] !== null);
+  if (ins.length) { const v = x.lower ? Math.min(...ins.map(e => e[3])) : Math.max(...ins.map(e => e[3])); best[x.id] = ins.filter(e => e[3] === v).map(e => e[0]); }
+});
+const gE = mk('g', {}), gL = mk('g', {}), gN = mk('g', {});
+E.forEach((e, i) => {
+  const a = byId[e[0]], b = byId[e[1]];
+  const back = a.col >= b.col;                 // e.g. a model that a recipe started from
+  const x1 = a.x + a.w, y1 = a.y + H / 2, x2 = b.x, y2 = b.y + H / 2;
+  const d = back ? `M${a.x + a.w / 2},${a.y + H} C${a.x + a.w / 2},${a.y + H + 60} ${b.x + b.w / 2},${b.y + H + 60} ${b.x + b.w / 2},${b.y + H}`
+                 : `M${x1},${y1} C${(x1 + x2) / 2},${y1} ${(x1 + x2) / 2},${y2} ${x2},${y2}`;
+  e.path = mk('path', {d, class: 'edge' + (best[e[1]] && best[e[1]].includes(e[0]) ? ' best' : '')}, gE);
+  const lx = back ? (a.x + b.x + b.w) / 2 : x2 - 6, ly = back ? Math.max(a.y, b.y) + H + 46 : y2 - 5;
+  e.lab = mk('text', {x: lx, y: ly, class: 'elab', 'text-anchor': back ? 'middle' : 'end'}, gL); e.lab.textContent = e[2];
+});
+N.forEach(n => {
+  const g = mk('g', {class: 'node', tabindex: 0}, gN); n.g = g;
+  mk('rect', {x: n.x, y: n.y, width: n.w, height: H}, g);
+  mk('rect', {x: n.x, y: n.y + 6, width: 4, height: H - 12, class: 'bar', fill: `var(${COLOR[n.col]})`}, g);
+  const t = mk('text', {x: n.x + 12, y: n.y + 18}, g); t.textContent = n.t;
+  if (n.s) { const s = mk('text', {x: n.x + 12, y: n.y + 34, class: 's'}, g); s.textContent = n.s; }
+  g.addEventListener('mouseenter', () => { if (!locked) focus(n.id, false); });
+  g.addEventListener('mouseleave', () => { if (!locked) clear(); });
+  g.addEventListener('click', ev => { ev.stopPropagation(); if (justDragged) return; locked = n.id; focus(n.id, true); });
+  g.addEventListener('keydown', ev => { if (ev.key === 'Enter') { locked = n.id; focus(n.id, true); } });
+});
+svg.addEventListener('click', () => { if (justDragged) return; locked = null; clear(); document.querySelectorAll('.want button').forEach(b => b.classList.remove('on')); });
+let locked = null;
+
+// ---------------------------------------------------------------- zoom (mouse wheel, buttons) and pan (drag)
+const FULL = {w: 1540, h: TOP + maxH + 10};
+let vb = {x: 0, y: 0, w: FULL.w, h: FULL.h}, justDragged = false;
+function setVB() { svg.setAttribute('viewBox', `${vb.x} ${vb.y} ${vb.w} ${vb.h}`); }
+function fit() {                                         // the whole map, centred, keeping the screen's shape
+  const r = svg.getBoundingClientRect(), aspect = r.width / Math.max(1, r.height);
+  if (FULL.w / FULL.h > aspect) { vb.w = FULL.w; vb.h = FULL.w / aspect; } else { vb.h = FULL.h; vb.w = FULL.h * aspect; }
+  vb.x = (FULL.w - vb.w) / 2; vb.y = (FULL.h - vb.h) / 2; setVB();
+}
+function zoomAt(factor, cx, cy) {                        // factor < 1 zooms in; (cx, cy) stays under the cursor
+  const r = svg.getBoundingClientRect();
+  const px = vb.x + (cx - r.left) / r.width * vb.w, py = vb.y + (cy - r.top) / r.height * vb.h;
+  const nw = Math.min(Math.max(vb.w * factor, FULL.w / 10), FULL.w * 3);
+  const f = nw / vb.w;
+  vb.x = px - (px - vb.x) * f; vb.y = py - (py - vb.y) * f; vb.w = nw; vb.h *= f; setVB();
+}
+svg.addEventListener('wheel', ev => { ev.preventDefault(); zoomAt(Math.exp(ev.deltaY * 0.0015), ev.clientX, ev.clientY); }, {passive: false});
+let drag = null;
+svg.addEventListener('pointerdown', ev => { if (ev.button !== 0) return; drag = {x: ev.clientX, y: ev.clientY, vx: vb.x, vy: vb.y, moved: false}; justDragged = false; });
+window.addEventListener('pointermove', ev => {
+  if (!drag) return;
+  const dx = ev.clientX - drag.x, dy = ev.clientY - drag.y;
+  if (!drag.moved && Math.hypot(dx, dy) < 5) return;    // a click, not a drag, until the pointer really moves
+  drag.moved = true; svg.classList.add('dragging');
+  const r = svg.getBoundingClientRect();
+  vb.x = drag.vx - dx * vb.w / r.width; vb.y = drag.vy - dy * vb.h / r.height; setVB();
+});
+window.addEventListener('pointerup', () => { if (drag && drag.moved) { justDragged = true; setTimeout(() => justDragged = false, 0); } drag = null; svg.classList.remove('dragging'); });
+const btnZoom = f => { const r = svg.getBoundingClientRect(); zoomAt(f, r.left + r.width / 2, r.top + r.height / 2); };
+document.getElementById('zin').onclick = () => btnZoom(0.7);
+document.getElementById('zout').onclick = () => btnZoom(1 / 0.7);
+document.getElementById('zfit').onclick = fit;
+window.addEventListener('keydown', ev => { if (ev.target.tagName === 'INPUT') return; if (ev.key === '+' || ev.key === '=') btnZoom(0.8); if (ev.key === '-') btnZoom(1.25); if (ev.key === '0') fit(); });
+window.addEventListener('resize', fit);
+fit();
+
+// ---------------------------------------------------------------- highlighting: everything upstream and downstream
+function reach(id) {
+  const on = new Set([id]), eOn = new Set();
+  const walk = (start, dir) => { const st = [start]; while (st.length) { const v = st.pop();
+    E.forEach((e, i) => { const [a, b] = dir > 0 ? [e[0], e[1]] : [e[1], e[0]];
+      if (a === v && !(dir > 0 && byId[e[1]].col <= byId[e[0]].col && e[2] !== 'started from' && e[2] !== '+ verifier at answer time')) {
+        eOn.add(i); if (!on.has(b)) { on.add(b); st.push(b); } } }); } };
+  walk(id, +1); walk(id, -1);
+  return [on, eOn];
+}
+function focus(id, show) {
+  const [on, eOn] = reach(id);
+  svg.classList.add('focus');
+  N.forEach(n => { n.g.classList.toggle('on', on.has(n.id)); n.g.classList.toggle('sel', n.id === id); });
+  E.forEach((e, i) => { e.path.classList.toggle('on', eOn.has(i)); e.lab.classList.toggle('on', eOn.has(i) && (e[1] === id || e[0] === id || byId[e[1]].col <= 3)); });
+  if (show !== false) detail(id);
+}
+function clear() { svg.classList.remove('focus'); N.forEach(n => { n.g.classList.remove('on'); n.g.classList.remove('sel'); }); E.forEach(e => { e.path.classList.remove('on'); e.lab.classList.remove('on'); }); }
+
+// ---------------------------------------------------------------- details panel
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const links = ids => (ids || []).map(i => `<a class="tag" href="RESEARCH_STORY.html#test/${encodeURIComponent(i)}">${esc(i)}</a>`).join('');
+function detail(id) {
+  const n = byId[id]; let h = `<div class="eyebrow">${esc(COLS[n.col])}</div><h2>${esc(n.t)}</h2>` + (n.s ? `<p>${esc(n.s)}</p>` : '') + (n.d ? `<p>${esc(n.d)}</p>` : '');
+  const ins = E.filter(e => e[1] === id), outs = E.filter(e => e[0] === id);
+  if (n.col === 5) {
+    const rows = ins.filter(e => e[3] !== null).sort((a, b) => n.lower ? a[3] - b[3] : b[3] - a[3]);
+    h += `<table><tr><th>model</th><th>result</th></tr>` + rows.map(e => `<tr class="${best[id] && best[id].includes(e[0]) ? 'best' : ''}"><td>${esc(byId[e[0]].t)}</td><td class="n">${esc(e[2])}</td></tr>`).join('') + `</table>`;
+    if (best[id]) {
+      const m = byId[best[id][0]];
+      const recIn = E.filter(e => e[1] === m.id && byId[e[0]].col === 3).map(e => byId[e[0]]);
+      recIn.forEach(r => {
+        const parts = E.filter(e => e[1] === r.id);
+        h += `<p><b>How the best was made:</b> ${esc(m.t)} ← ${esc(r.t)}</p><table><tr><th>from</th><th>share / link</th></tr>` +
+          parts.map(e => `<tr><td>${esc(byId[e[0]].t)}</td><td class="n">${esc(e[2])}</td></tr>`).join('') + `</table>`;
+      });
+      if (m.id === 'm_C') h += `<p class="note">C is B plus a verifier at answer time (five candidate replies, the best supported is shown), at about 3.4 times the answer time.</p>`;
+    }
+  } else if (n.col === 4) {
+    h += `<table><tr><th>result</th><th>value</th></tr>` + outs.filter(e => byId[e[1]].col === 5).map(e => `<tr class="${best[e[1]] && best[e[1]].includes(id) ? 'best' : ''}"><td>${esc(byId[e[1]].t)}</td><td class="n">${esc(e[2])}</td></tr>`).join('') + `</table>`;
+    const rec = ins.filter(e => byId[e[0]].col === 3).map(e => byId[e[0]].t);
+    if (rec.length) h += `<p class="note">Trained by: ${esc(rec.join(', '))}. Rows in gold are the best of any model on that result.</p>`;
+    if (!outs.some(e => byId[e[1]].col === 5)) h += `<p class="note">No results yet.</p>`;
+  } else if (n.col === 1 || n.col === 3) {
+    const parts = ins.filter(e => byId[e[0]].col === (n.col === 1 ? 0 : 2));
+    if (parts.length) h += `<table><tr><th>${n.col === 1 ? 'core text' : 'training data'}</th><th>share</th></tr>` + parts.map(e => `<tr><td>${esc(byId[e[0]].t)}</td><td class="n">${esc(e[2])}</td></tr>`).join('') + `</table>`;
+    const from = ins.filter(e => byId[e[0]].col === 1 || e[2] === 'started from').map(e => byId[e[0]].t);
+    if (from.length) h += `<p class="note">Starts from: ${esc(from.join(', '))}.</p>`;
+    const down = outs.filter(e => byId[e[1]].col > n.col).map(e => byId[e[1]].t);
+    if (down.length) h += `<p class="note">Leads to: ${esc(down.join(', '))}.</p>`;
+  } else {
+    const down = outs.map(e => `${byId[e[1]].t} (${e[2]})`);
+    h += `<p class="note">Used by: ${esc(down.join('; '))}.</p>`;
+  }
+  if (n.tests && n.tests.length) h += `<div class="note" style="margin-top:8px">In the research story:</div>` + links(n.tests);
+  document.getElementById('detail').innerHTML = h;
+}
+
+// ---------------------------------------------------------------- "I want a model that..."
+const wants = document.getElementById('wants');
+WANTS.forEach(([id, label]) => { const b = document.createElement('button'); b.textContent = '…' + label; b.onclick = () => {
+  document.querySelectorAll('.want button').forEach(x => x.classList.remove('on')); b.classList.add('on'); locked = id; focus(id, true); }; wants.appendChild(b); });
+
+const tg = document.getElementById('theme');
+tg.onclick = () => { const r = document.documentElement; const dark = r.dataset.theme ? r.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+  r.dataset.theme = dark ? 'light' : 'dark'; try { localStorage.setItem('map-theme', r.dataset.theme); } catch (e) {} };
+try { const s = localStorage.getItem('map-theme'); if (s) document.documentElement.dataset.theme = s; } catch (e) {}
+</script>
+</body>
+</html>

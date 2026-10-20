@@ -1,0 +1,129 @@
+{
+ "model": "chat5m_v21_s1",
+ "all_fronts_hold": false,
+ "fronts": [
+  {
+   "front": "language: clean wiki bits/byte (lower)",
+   "value": 1.3404,
+   "best_5M": 1.354,
+   "floor": 1.368,
+   "holds": true
+  },
+  {
+   "front": "language: clean books bits/byte (lower)",
+   "value": 1.4704,
+   "best_5M": 1.485,
+   "floor": 1.5,
+   "holds": true
+  },
+  {
+   "front": "Q&A: chat probe /32",
+   "value": 27,
+   "best_5M": 26,
+   "floor": 24,
+   "holds": true
+  },
+  {
+   "front": "skills test v1 /100",
+   "value": 67,
+   "best_5M": 73,
+   "floor": 71,
+   "holds": false
+  },
+  {
+   "front": "held-out skills v2 /200",
+   "value": 118,
+   "best_5M": 122,
+   "floor": 120,
+   "holds": false
+  },
+  {
+   "front": "rewriting /40",
+   "value": 32,
+   "best_5M": 32,
+   "floor": 30,
+   "holds": true
+  },
+  {
+   "front": "'I don't know' when unknown /20",
+   "value": 14,
+   "best_5M": 15,
+   "floor": 13,
+   "holds": true
+  },
+  {
+   "front": "asks which one (clarify) /10",
+   "value": 4,
+   "best_5M": 7,
+   "floor": 5,
+   "holds": false
+  },
+  {
+   "front": "wrong refusals v1 (lower)",
+   "value": 8,
+   "best_5M": 4,
+   "floor": 6,
+   "holds": false
+  },
+  {
+   "front": "conversation probe v2 /120",
+   "value": 108,
+   "best_5M": 112,
+   "floor": 110,
+   "holds": false
+  },
+  {
+   "front": "recall with memory, worst of 2-40 turns /15",
+   "value": 5,
+   "best_5M": 14,
+   "floor": 13,
+   "holds": false
+  },
+  {
+   "front": "answer seconds (engine, lower)",
+   "value": 0.337,
+   "best_5M": 0.293,
+   "floor": 0.352,
+   "holds": true
+  }
+ ],
+ "long_context_vs_base": [
+  {
+   "task": "one",
+   "value": 0.833,
+   "base": 0.854,
+   "gain": -0.021
+  },
+  {
+   "task": "two",
+   "value": 0.865,
+   "base": 0.016,
+   "gain": 0.849
+  },
+  {
+   "task": "distractor",
+   "value": 0.797,
+   "base": 0.818,
+   "gain": -0.021
+  },
+  {
+   "task": "absent",
+   "value": 0.885,
+   "base": 0.005,
+   "gain": 0.88
+  },
+  {
+   "task": "correction",
+   "value": 0.88,
+   "base": 0.911,
+   "gain": -0.031
+  },
+  {
+   "task": "doc",
+   "value": 0.688,
+   "base": 0.328,
+   "gain": 0.36
+  }
+ ],
+ "missing": []
+}

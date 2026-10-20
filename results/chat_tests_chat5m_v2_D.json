@@ -1,0 +1,391 @@
+{
+ "model": "runs/chat5m_v2/chat5m_v2_D.pt",
+ "window": 2048,
+ "date": "2026-10-15 20:09",
+ "abc": {
+  "verify_off": {
+   "v1": {
+    "total": "73/100",
+    "taught": "16/20",
+    "update": "13/20",
+    "nearmiss": "18/20",
+    "unknown": "13/20",
+    "followup": "9/10",
+    "clarify": "4/10",
+    "wrong_refusals": 5,
+    "invented_on_unknown": 7,
+    "grounded_share": 0.982,
+    "s_per_answer": 0.302
+   },
+   "v2": {
+    "total": "122/200",
+    "taught": "30/40",
+    "update": "23/40",
+    "nearmiss": "32/40",
+    "unknown": "18/40",
+    "followup": "9/20",
+    "clarify": "10/20",
+    "wrong_refusals": 10,
+    "invented_on_unknown": 22,
+    "grounded_share": 1.0,
+    "s_per_answer": 0.296
+   },
+   "rewrite": {
+    "total": "31/40",
+    "short": "13/15",
+    "yesno": "14/15",
+    "list": "4/10",
+    "wrong_refusals": 0,
+    "invented_on_unknown": 0,
+    "grounded_share": 0.9,
+    "s_per_answer": 0.288
+   },
+   "chat_probe": {
+    "total": "24/32",
+    "refused": 3
+   }
+  },
+  "verify_5": {
+   "v1": {
+    "total": "73/100",
+    "taught": "16/20",
+    "update": "13/20",
+    "nearmiss": "18/20",
+    "unknown": "13/20",
+    "followup": "9/10",
+    "clarify": "4/10",
+    "wrong_refusals": 5,
+    "invented_on_unknown": 7,
+    "grounded_share": 0.982,
+    "s_per_answer": 1.12
+   },
+   "v2": {
+    "total": "121/200",
+    "taught": "29/40",
+    "update": "23/40",
+    "nearmiss": "32/40",
+    "unknown": "18/40",
+    "followup": "9/20",
+    "clarify": "10/20",
+    "wrong_refusals": 10,
+    "invented_on_unknown": 22,
+    "grounded_share": 1.0,
+    "s_per_answer": 1.022
+   },
+   "rewrite": {
+    "total": "32/40",
+    "short": "13/15",
+    "yesno": "15/15",
+    "list": "4/10",
+    "wrong_refusals": 0,
+    "invented_on_unknown": 0,
+    "grounded_share": 0.95,
+    "s_per_answer": 1.109
+   },
+   "chat_probe": {
+    "total": "25/32",
+    "refused": 2
+   }
+  }
+ },
+ "speed": [
+  {
+   "device": "cuda",
+   "window_codes": 18,
+   "first_code_ms": 20,
+   "ms_per_code": 19.33,
+   "codes": 16
+  },
+  {
+   "device": "cuda",
+   "window_codes": 321,
+   "first_code_ms": 21,
+   "ms_per_code": 20.6,
+   "codes": 16
+  },
+  {
+   "device": "cuda",
+   "window_codes": 1008,
+   "first_code_ms": 18,
+   "ms_per_code": 18.13,
+   "codes": 16
+  },
+  {
+   "device": "cuda",
+   "window_codes": 1546,
+   "first_code_ms": 18,
+   "ms_per_code": 18.8,
+   "codes": 16
+  },
+  {
+   "device": "cuda",
+   "window_codes": 1777,
+   "first_code_ms": 19,
+   "ms_per_code": 18.07,
+   "codes": 16
+  },
+  {
+   "device": "cpu-16",
+   "window_codes": 18,
+   "first_code_ms": 17,
+   "ms_per_code": 10.87,
+   "codes": 16
+  },
+  {
+   "device": "cpu-16",
+   "window_codes": 321,
+   "first_code_ms": 29,
+   "ms_per_code": 11.4,
+   "codes": 16
+  },
+  {
+   "device": "cpu-16",
+   "window_codes": 1008,
+   "first_code_ms": 66,
+   "ms_per_code": 12.27,
+   "codes": 16
+  },
+  {
+   "device": "cpu-16",
+   "window_codes": 1546,
+   "first_code_ms": 134,
+   "ms_per_code": 13.07,
+   "codes": 16
+  },
+  {
+   "device": "cpu-16",
+   "window_codes": 1777,
+   "first_code_ms": 173,
+   "ms_per_code": 15.13,
+   "codes": 16
+  }
+ ],
+ "position": [
+  {
+   "positions": "0-256",
+   "bits_per_code": 5.526,
+   "beyond_trained_window": false
+  },
+  {
+   "positions": "256-512",
+   "bits_per_code": 5.217,
+   "beyond_trained_window": false
+  },
+  {
+   "positions": "512-1024",
+   "bits_per_code": 5.273,
+   "beyond_trained_window": false
+  },
+  {
+   "positions": "1024-1536",
+   "bits_per_code": 5.133,
+   "beyond_trained_window": false
+  },
+  {
+   "positions": "1536-2048",
+   "bits_per_code": 5.24,
+   "beyond_trained_window": false
+  },
+  {
+   "positions": "2048-2560",
+   "bits_per_code": 5.353,
+   "beyond_trained_window": true
+  },
+  {
+   "positions": "2560-3072",
+   "bits_per_code": 5.986,
+   "beyond_trained_window": true
+  },
+  {
+   "positions": "3072-3584",
+   "bits_per_code": 7.496,
+   "beyond_trained_window": true
+  },
+  {
+   "positions": "3584-4096",
+   "bits_per_code": 7.769,
+   "beyond_trained_window": true
+  }
+ ],
+ "recall": [
+  {
+   "filler_turns": 2,
+   "session_memory": true,
+   "recalled": "15/15",
+   "share": 1.0,
+   "fact_in_window": true
+  },
+  {
+   "filler_turns": 2,
+   "session_memory": false,
+   "recalled": "14/15",
+   "share": 0.933,
+   "fact_in_window": true
+  },
+  {
+   "filler_turns": 5,
+   "session_memory": true,
+   "recalled": "14/15",
+   "share": 0.933,
+   "fact_in_window": true
+  },
+  {
+   "filler_turns": 5,
+   "session_memory": false,
+   "recalled": "13/15",
+   "share": 0.867,
+   "fact_in_window": true
+  },
+  {
+   "filler_turns": 10,
+   "session_memory": true,
+   "recalled": "0/15",
+   "share": 0.0,
+   "fact_in_window": false
+  },
+  {
+   "filler_turns": 10,
+   "session_memory": false,
+   "recalled": "0/15",
+   "share": 0.0,
+   "fact_in_window": false
+  },
+  {
+   "filler_turns": 20,
+   "session_memory": true,
+   "recalled": "15/15",
+   "share": 1.0,
+   "fact_in_window": false
+  },
+  {
+   "filler_turns": 20,
+   "session_memory": false,
+   "recalled": "0/15",
+   "share": 0.0,
+   "fact_in_window": false
+  },
+  {
+   "filler_turns": 40,
+   "session_memory": true,
+   "recalled": "14/15",
+   "share": 0.933,
+   "fact_in_window": false
+  },
+  {
+   "filler_turns": 40,
+   "session_memory": false,
+   "recalled": "0/15",
+   "share": 0.0,
+   "fact_in_window": false
+  }
+ ],
+ "stories": [
+  {
+   "prompt": "Write a short story about a lighthouse keeper named Ada who finds a message in a bottle.",
+   "chars": 336,
+   "words": 72,
+   "codes": 81,
+   "stopped": "end",
+   "distinct_3grams": 0.971,
+   "name_in_second_half": false,
+   "seconds": 1.44,
+   "ms_per_code": 17.8
+  },
+  {
+   "prompt": "Write a short story about a boy named Theo who builds a robot out of old bicycle parts.",
+   "chars": 252,
+   "words": 53,
+   "codes": 63,
+   "stopped": "end",
+   "distinct_3grams": 1.0,
+   "name_in_second_half": false,
+   "seconds": 1.07,
+   "ms_per_code": 17.0
+  },
+  {
+   "prompt": "Tell me a story about a dragon named Ember who is afraid of the dark.",
+   "chars": 302,
+   "words": 59,
+   "codes": 74,
+   "stopped": "end",
+   "distinct_3grams": 0.982,
+   "name_in_second_half": false,
+   "seconds": 1.25,
+   "ms_per_code": 16.9
+  },
+  {
+   "prompt": "Write a short story about two friends, Mira and Jonas, who get lost in a forest.",
+   "chars": 249,
+   "words": 51,
+   "codes": 59,
+   "stopped": "end",
+   "distinct_3grams": 0.959,
+   "name_in_second_half": false,
+   "seconds": 1.0,
+   "ms_per_code": 16.9
+  },
+  {
+   "prompt": "Write a story about a baker named Lucia who bakes a cake that grants wishes.",
+   "chars": 238,
+   "words": 51,
+   "codes": 65,
+   "stopped": "end",
+   "distinct_3grams": 0.98,
+   "name_in_second_half": false,
+   "seconds": 1.1,
+   "ms_per_code": 16.9
+  },
+  {
+   "prompt": "Write a short story about an old cat named Biscuit who travels across the city.",
+   "chars": 288,
+   "words": 60,
+   "codes": 73,
+   "stopped": "end",
+   "distinct_3grams": 0.966,
+   "name_in_second_half": false,
+   "seconds": 1.24,
+   "ms_per_code": 17.0
+  },
+  {
+   "prompt": "Tell me a short story about a girl named Nora who learns to sail.",
+   "chars": 182,
+   "words": 39,
+   "codes": 49,
+   "stopped": "end",
+   "distinct_3grams": 1.0,
+   "name_in_second_half": false,
+   "seconds": 0.84,
+   "ms_per_code": 17.1
+  },
+  {
+   "prompt": "Write a story about a detective named Hale who solves a mystery at a train station.",
+   "chars": 349,
+   "words": 73,
+   "codes": 88,
+   "stopped": "end",
+   "distinct_3grams": 0.972,
+   "name_in_second_half": false,
+   "seconds": 1.52,
+   "ms_per_code": 17.3
+  }
+ ],
+ "probes": {
+  "mt_probe": {
+   "total": "9/27",
+   "recall": "4/6",
+   "reference": "2/5",
+   "followup": "0/4",
+   "correction": "1/4",
+   "return": "2/3",
+   "multipart": "0/5"
+  },
+  "mt_probe2": {
+   "total": "110/120",
+   "recall": "28/30",
+   "correction": "29/30",
+   "select": "26/30",
+   "return": "27/30"
+  }
+ },
+ "seconds": 1038
+}

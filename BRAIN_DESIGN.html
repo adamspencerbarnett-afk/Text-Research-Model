@@ -84,13 +84,13 @@ dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
 </head>
 <body>
 <div class="wrap">
-<p class="eyebrow">Research proposal · Text Research Model · updated 11 October 2026</p>
+<p class="eyebrow">Research proposal · Text Research Model · updated 11 October 2026 · revised 17 October 2026 for stability</p>
 <h1>A brain-inspired version of the model: fast memory, a slow learner, skill circuits and sleep</h1>
 <p class="lede">Research concept and direction by Adam Barnett. This is a design for a follow-on project, to begin once the current research has finished. It is theory built on measured results: every number below comes from runs logged in <code>docs/RUN_LEDGER.md</code> and <code>docs/ENCODER_RESEARCH_PLAN.md</code>, and every proposed change has a test that can prove it wrong. Section 9 is a reconstruction specification of the current best model, written from the code, so the model can be rebuilt from this page.</p>
 <div class="status">
   <span class="pill"><b>Status</b> proposal, not started</span>
-  <span class="pill"><b>Best model</b> models/qa_best_5M_512.pt</span>
-  <span class="pill"><b>Next scale</b> 50M core trained, Q&amp;A stage running</span>
+  <span class="pill"><b>Best model</b> chat22 variant A (runs/chat22/v24a_s1.pt), 17 Oct</span>
+  <span class="pill"><b>Before this starts</b> the 5M study and the merged model; 50M / 100M cores kept</span>
   <span class="pill"><b>Hardware</b> one RTX 3090, 64 GB</span>
 </div>
 
@@ -162,31 +162,66 @@ dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
   <tr><td>Measurement hygiene</td><td>Two report cards overwritten by file-name collisions; a target leak in the copy head; a data bug that cut 6.6% of answers</td><td>Every run names its outputs by what it measured; the probe battery and the run ledger are read, not only scored.</td></tr>
 </table></div>
 
+<h3>Lessons from the week of 12-17 October, and what they change here</h3>
+<p>A week of chat-model work (sessions 31-44: the multi-turn structure study, the clean chat22 package, v2.1-v2.3, the any-length memory study, search engine v2, the repair variants) tested several of this design's assumptions directly. The design below is revised to follow them.</p>
+<div class="tablewrap"><table>
+  <tr><th>Lesson</th><th>Evidence</th><th>Consequence for this design</th></tr>
+  <tr><td><b>Small adapters on a frozen 5M core lost general ability</b></td><td>Session 31: LoRA arms L1 / L2 dropped the network-alone answers from 0.207 to 0.116-0.114 (more than 40% lost); one mixed stage won on both seeds (session 33)</td><td>Skill circuits are no longer the default. A circuit must beat the mixed stage on the full test suite before it is kept, and the first attempt waits for the 50M / 100M core, where there is more to freeze.</td></tr>
+  <tr><td><b>What leaves the training mix fades</b></td><td>v2.3 cut short recall 12% → 2%: never told in the window 99% → 45-72%; restored in variant A: 99%. Plain text never improves in a chat stage; it only holds while it stays in the mix</td><td>Every later training (sleep, circuits, practice) replays the whole proven mix at its measured shares, not only stage-1 text.</td></tr>
+  <tr><td><b>One mixed stage beats stacked stages</b></td><td>Session 33: one mixed stage kept more Q&amp;A detail than Q&amp;A-then-multi-turn (stored F1 0.862-0.904 vs 0.842-0.887); variant A (one mix with every kind) is best or tied-best on 26 of 39 test fronts</td><td>Consolidation is done as a mixed run on a copy, with every skill present, not as a sequence of single-skill fine-tunes.</td></tr>
+  <tr><td><b>Memory works at any length</b></td><td>Recall of 30 planted facts flat from 100 to 10,000 turns (variant A: 25 / 24 / 25 of 30); a fact from turn 1 recalled 10/10 after 5,000 turns; reply time about 0.26 s at every length</td><td>The hippocampus analogue is proven at scale: conversation memory, not a longer window, carries long-term context.</td></tr>
+  <tr><td><b>Choosing beats finding</b></td><td>The search found the right fact 100% of the time but handed the model 11.8 items, with the outdated value 99% and a look-alike 49% of the time; letting less in raised single facts 43% → 74% and never told 20% → 76% with no retraining (step 1)</td><td>Recall must be precise, not generous: a short, clean memory block, an empty block when nothing qualifies.</td></tr>
+  <tr><td><b>Structured records solve corrections and links</b></td><td>Engine v2's fact table (who, attribute, value, turn, history): outdated value in the block 100% → 0-8%, two-step 72% → 100%, at about 0.1 ms per search</td><td>Memory keeps episodes <i>and</i> structured facts extracted from them: newest wins, the old value is kept as history, "my sister is called Kim" is a link.</td></tr>
+  <tr><td><b>Two memories, kept apart</b></td><td>The stored pool once held 20,001 invented personal facts; replacing it with real Wikipedia facts raised two-step 78 → 84% and stored skills 42 → 61% (Adam's rule, 16-17 October)</td><td>Episodic memory (the conversation, anything goes, deletable) and a semantic store (real facts only) are separate systems with separate rules.</td></tr>
+  <tr><td><b>A short clean input keeps a small model grounded</b></td><td>Memory-only side test: correct "I don't know" 11/12 from retrieved items alone vs 0/12 with a long window of filler</td><td>The model reads a compact working set; long raw context pulls a small model into inventing.</td></tr>
+  <tr><td><b>Rules first, learned parts only when calibrated</b></td><td>The learned judge (2 core blocks) ranked well (AUC 0.94) but at 95% precision kept only 26% of right items; the rule-based fact table and decide step worked at once</td><td>Every learned router or gate must reach a precision bar on held-out data before it may filter anything; until then, rules decide.</td></tr>
+  <tr><td><b>Refusing and inventing are one balance</b></td><td>v2.3 refused told facts 72-81 times (30% of its any-length windows ended in "I don't have that"); v2.2 refused none but said "I don't know" correctly only 3/40; variant A: 30/40 correct "I don't know", 38 refusals</td><td>The gap detector tracks both errors (grounding score: right / wrong memory / refused / invented); practice is aimed at the balance, with auto-graded answer pairs.</td></tr>
+  <tr><td><b>A matching training score can hide broad losses</b></td><td>Learning rate 2e-4 reached v2.3's held-out score in 65% of the time but lost fluency (1.340 vs 1.309), conversations (88 vs 110/120) and memory (5 vs 8/12)</td><td>No candidate goes live on a training curve: only on the full test suite against the best earlier model, front by front.</td></tr>
+  <tr><td><b>Change one thing at a time</b></td><td>v2.3 changed ten things at once; it took a morning of diagnosis and three variants to find which change caused which loss</td><td>Each sleep or circuit cycle changes one thing; the gate can then say what helped.</td></tr>
+  <tr><td><b>Stopping too early, and background jobs that stall</b></td><td>v2.3 seed 2 stopped at 14,400 steps on noisy checks (seed 1 kept improving to 31,800); three trainings side by side overflowed GPU memory and stalled; an unwatched job froze for 9.5 hours</td><td>Training floors, a GPU memory cap on every background job, one background training at a time, a stall watch on everything that runs unattended.</td></tr>
+</table></div>
+
 <h2>3. The brain, mapped onto the model</h2>
 <div class="tablewrap"><table>
   <tr><th>Brain system</th><th>What it does</th><th>Our part</th><th>State</th></tr>
-  <tr><td>Hippocampus</td><td>Records an experience in one exposure; recalls it from a partial cue</td><td>Exchange memory</td><td>Records and recalls exactly; partial-cue recall (rewording, synonyms) still weak</td></tr>
+  <tr><td>Hippocampus (episodic)</td><td>Records an experience in one exposure; recalls it from a partial cue</td><td>Conversation memory: every turn stored, searched by words + meaning, structured into fact records (engine v2)</td><td>Works at any length (10,000 turns tested); corrections and links handled by the fact table</td></tr>
+  <tr><td>Semantic memory</td><td>Lasting, general knowledge about the world</td><td>Permanent fact store: real facts only (Wikipedia, 94,276 facts; science corpora next)</td><td>Built; separate from the conversation memory by rule</td></tr>
   <tr><td>Neocortex</td><td>Slow, general learning spread over many connections</td><td>Network core</td><td>Works; 50M core much better than 5M at the network level</td></tr>
-  <tr><td>Working memory and attention</td><td>Holds the relevant memory "in mind" while acting</td><td>Retrieved exchange in a 512-1,024 window, read by the copy head</td><td>Works</td></tr>
-  <tr><td>Specialised circuits</td><td>Dedicated machinery for number sense, language, faces</td><td>None (one core for everything)</td><td>Missing: <b>skill adapters</b></td></tr>
-  <tr><td>Neuromodulation</td><td>Decides which circuits to engage</td><td>Trust head</td><td>Works for three sources; to be extended to choose adapters</td></tr>
-  <tr><td>Prediction error and surprise</td><td>Marks what was not expected, so it gets learned</td><td>Calculator rejections (1,188 of 1,612 stated answers in the last GSM8K run), low trust, empty retrievals</td><td>Signals exist, logged in results; not yet driving training automatically</td></tr>
+  <tr><td>Working memory and attention</td><td>Holds a small relevant set "in mind" while acting</td><td>The 2,048-code window: recent turns + a short, clean memory block, read by the copy head</td><td>Works; precision of the block matters more than its size</td></tr>
+  <tr><td>Specialised circuits</td><td>Dedicated machinery for number sense, language, faces</td><td>One core trained on a mixture of skill data (the shares are the circuits); adapters tested</td><td>Mixture works; small adapters on a frozen 5M core lost 40%+ of general ability: retest at 50M+</td></tr>
+  <tr><td>Neuromodulation</td><td>Decides which circuits and memories to engage</td><td>Memory gate + engine v2 decide step (rules) + trust head (learned, per word)</td><td>Works; a learned relevance judge not yet precise enough</td></tr>
+  <tr><td>Prediction error and surprise</td><td>Marks what was not expected, so it gets learned</td><td>Grounding score per answer (right / wrong memory / refused / invented), low trust, empty or conflicting retrievals, calculator rejections</td><td>Signals measured in every suite; not yet driving training automatically</td></tr>
   <tr><td>Practice with feedback</td><td>Skill improves by trying and being corrected</td><td>Verified self-training (STaR)</td><td>Works at 5M, slowly (two rounds)</td></tr>
-  <tr><td>Sleep and consolidation</td><td>Replays memories so the cortex absorbs them; protects old skills</td><td>Rehearsal of stage-1 text in fine-tuning</td><td>Replay half works (it protects the core); folding memories into weights not built</td></tr>
+  <tr><td>Sleep and consolidation</td><td>Replays memories so the cortex absorbs them; protects old skills</td><td>Mixed training on a copy that replays every skill at its proven share</td><td>Replay proven (what leaves the mix fades, what stays holds); folding memories into weights not built</td></tr>
   <tr><td>Tools beyond the brain</td><td>Paper, calculators</td><td>The calculator, exact and deterministic</td><td>Works</td></tr>
 </table></div>
 <p>The point of the mapping is not to copy biology. Two properties of the brain explain most of its efficiency, and both are achievable here. First, <b>most knowledge is looked up or computed only when needed</b>, not pushed through every connection for every thought. Second, <b>learning happens at two speeds</b>, so new information is usable at once and becomes general skill later, without the cost of retraining everything.</p>
 
 <h2>4. The adaptations, each with its reason and test</h2>
 
+<div class="note">
+<p><b>Stability rules (added 17 October).</b> Every adaptation below obeys these, because each one answers a failure we have seen:</p>
+<ol>
+  <li><b>The live model never trains.</b> All learning happens on a copy; the copy goes live only through the gate.</li>
+  <li><b>The gate is the full test suite</b>, front by front against the best earlier model (within two standard errors), on two seeds where training is involved; never a training curve alone.</li>
+  <li><b>Replay the whole mix.</b> Any training (sleep, practice, a circuit) includes every proven kind at its measured share; nothing is trained alone.</li>
+  <li><b>One change per cycle</b>, so the gate can say what helped and what hurt.</li>
+  <li><b>Precise memory over generous memory:</b> a short block of items that pass a calibrated bar, newest value first, an empty block when nothing passes.</li>
+  <li><b>Real facts only in the semantic store and in the weights;</b> personal and invented material stays in conversation memory (deletable, never consolidated into shared weights).</li>
+  <li><b>Rules first; a learned gate filters only after it meets its precision bar</b> on held-out data.</li>
+  <li><b>Resource guards on everything unattended:</b> a GPU memory cap per job, one background training at a time, a stall watch, training floors so nothing stops on noise.</li>
+</ol>
+</div>
+
 <div class="part mem">
 <h3>4.1 Memory that recalls from a partial cue</h3>
 <dl class="kv">
   <dt>Brain role</dt><dd>Hippocampal pattern completion: a fragment of a memory brings back the whole.</dd>
-  <dt>Change</dt><dd>A learned key beside the literal one: the frozen core's mean state over the question, through a small trained head, as a unit vector; retrieval ranks by literal + learned similarity. Built (K1, <code>--key-head</code>).</dd>
+  <dt>Change</dt><dd>A learned key beside the literal one: the frozen core's mean state over the question, through a small trained head, as a unit vector; retrieval ranks by literal + learned similarity. Built (K1, <code>--key-head</code>; K2 in session 32).</dd>
+  <dt>Revised 17 Oct</dt><dd>Finding is solved (100% on single facts, distractors and corrections in the retrieval study); <b>choosing</b> is the hard part. The memory is now three layers: (1) conversation memory (episodes, any length), (2) a fact table built from statements (who, attribute, value, turn, history; links between names and relations), (3) the permanent store of real facts. A question is read first (who and what is asked), answered from the fact table when the match is exact, and otherwise from candidates that pass a calibrated bar; nothing passes, nothing is shown. The learned key remains the way to improve candidates (K2 in place of MiniLM), not the way to choose.</dd>
   <dt>Why</dt><dd>The chat probe: the right memory existed for "graphics card" and "GPU" but was not found.</dd>
   <dt>Evidence so far</dt><dd>Trained on 134k Quora rewordings: 75.2% at rank 1 alone and 77.7% combined, against 74.3% for the literal key; on our Alpaca Q&amp;A, no gain (out-of-domain training pairs). The 50M core's own state already finds 58% of rewordings (5M: 51%).</dd>
-  <dt>Test</dt><dd>Retrain the head on in-domain pairs (rewordings of our own stored questions) on the 50M core; reworded and synonym sections of the probe from 2/5 to at least 4/5, no loss on verbatim questions.</dd>
+  <dt>Test</dt><dd>Retrain the head on in-domain pairs (rewordings of our own stored questions) on the 50M core; reworded and synonym sections of the probe from 2/5 to at least 4/5, no loss on verbatim questions. Engine-level pass (retrieval study): right item in the block at least 99% (one fact, distractor, correction), look-alike and outdated values under 5%, never-told blocks clean above 90%, 1-4 items per block.</dd>
 </dl>
 </div>
 
@@ -196,7 +231,8 @@ dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
   <dt>Brain role</dt><dd>Specialised circuits that share the same cortex: number sense, conversation, reading.</dd>
   <dt>Change</dt><dd>Small extra weight sets (1-5% of the core each) attached beside each layer and trained for one skill while the core stays frozen. One for arithmetic set-up, one for conversation, one for reading comprehension, one per domain as needed. Each is a separate file: versioned, testable, removable.</dd>
   <dt>Why</dt><dd>Full fine-tuning at a normal rate erased what stage 1 built (S2a series); every core size scored low on choosing arithmetic steps; a skill needs its own circuit and data.</dd>
-  <dt>Test</dt><dd>A math adapter on the frozen 50M core beats the full-fine-tune baseline on GSM8K new problems while the conversation probe stays within one point; adapter under 5% of core size.</dd>
+  <dt>Revised 17 Oct</dt><dd>Measured at 5M (session 31): LoRA adapters on the frozen core lost more than 40% of the network-alone answers, and one mixed stage won. So the default is the mixture, and a circuit is an <i>option</i> that must earn its place: tried first on the 50M / 100M core, trained with the whole mix replayed beside it, and kept only if the full suite holds on every front. Maths is paused (12 October), so the first circuit is <b>reading documents</b>, the largest open gap (about 30% since v2.2 against 80% in v2.1).</dd>
+  <dt>Test</dt><dd>A reading adapter on the frozen 50M core beats the mixed-stage baseline on document questions (window and memory) with no suite front lower than the baseline by more than two standard errors; adapter under 5% of core size. If it fails, the skill goes back into the mixture at a higher share.</dd>
 </dl>
 </div>
 
@@ -206,7 +242,8 @@ dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
   <dt>Brain role</dt><dd>Neuromodulation and attention: engaging the right circuits for the task.</dd>
   <dt>Change</dt><dd>The trust head already weighs network, tables and memory per word. Extend it to weigh adapters too, from the question's representation and each adapter's confidence. Only the chosen adapters run.</dd>
   <dt>Why</dt><dd>Without routing, every adapter runs on every question and they interfere.</dd>
-  <dt>Test</dt><dd>On a mixed question set, the router picks the adapter a human would pick at least 90% of the time, and mixed-set accuracy is within two points of hand routing.</dd>
+  <dt>Revised 17 Oct</dt><dd>The first router to build is the memory gate, not an adapter router: whether to use memory at all, and which items. Measured: a stricter gate raised single facts 43% → 74% with no retraining; the rule-based fact table beat a learned judge that was not yet precise. Learned routing comes after rules, behind a precision bar.</dd>
+  <dt>Test</dt><dd>On a mixed question set, the router picks the adapter a human would pick at least 90% of the time, and mixed-set accuracy is within two points of hand routing. Any learned filter: at least 95% precision on held-out pairs at a recall that loses no suite front.</dd>
 </dl>
 </div>
 
@@ -216,7 +253,8 @@ dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
   <dt>Brain role</dt><dd>Prediction error, and practice with feedback.</dd>
   <dt>Change</dt><dd>Every answer logs the signals we have: trust-head confidence, retrieval similarity, calculator rejection, check failures. Failures are grouped by kind; where an exact checker exists, the kind is practised by verified self-training (built: <code>star.py</code>); elsewhere an adapter is proposed with the data to train it.</dd>
   <dt>Why</dt><dd>The calculator replaced 1,188 wrong stated answers in one GSM8K run: a gap signal. Practising on checked self-solutions raised new-problem accuracy 2.5% → 4.0% in two rounds.</dd>
-  <dt>Test</dt><dd>Gap detection agrees with hand grading on the probe battery at least 80% of the time; practice on detected failures beats practice on a random sample of equal size.</dd>
+  <dt>Revised 17 Oct</dt><dd>The strongest gap signal is now the grounding score: for every answer, right, copied a wrong memory, refused although told, or invented. The two failure directions (refusing and inventing) trade against each other, so practice targets the balance: auto-graded answer pairs (answer over refusal when the fact was told; "I don't know" over invention when it was not; the newest value over the old one), trained on a copy with the whole mix replayed. This is the merged model's planned grounding stage.</dd>
+  <dt>Test</dt><dd>Gap detection agrees with hand grading on the probe battery at least 80% of the time; practice on detected failures beats practice on a random sample of equal size; refusals of told facts fall without invented answers rising.</dd>
 </dl>
 </div>
 
@@ -226,7 +264,8 @@ dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
   <dt>Brain role</dt><dd>Consolidation during sleep: replay strengthens what matters; the rest fades.</dd>
   <dt>Change</dt><dd>In idle time, a copy of the live model trains on the memories used most often (and their rewordings), mixed with stage-1 text so old skills are rehearsed (30% rehearsal is measured to protect the core). Facts answered without memory afterwards may be marked consolidated; one-off facts stay in memory only. A pruning policy retires unused memories within a size budget.</dd>
   <dt>Why</dt><dd>Memory answers exact wording well and rewording badly; the network generalises over wording.</dd>
-  <dt>Test</dt><dd>After sleep on 500 added facts: at least 70% answered correctly with memory switched off, rewordings improved, old-knowledge probe not lower.</dd>
+  <dt>Revised 17 Oct</dt><dd>Replay is the whole mix at its proven shares, not only stage-1 text: anything left out fades (v2.3). Only <b>real facts from the permanent store</b> are consolidated; personal and invented conversation facts stay in conversation memory, where they can be corrected and deleted. The cycle runs to a floor of steps (no stopping on noisy checks), changes one thing, and goes live only through the full suite. A fact counts as consolidated only if answered with memory off <i>and</i> memory answers do not get worse.</dd>
+  <dt>Test</dt><dd>After sleep on 500 added real facts: at least 70% answered correctly with memory switched off, rewordings improved, no suite front lower than before (two standard errors), conversation-memory recall unchanged.</dd>
 </dl>
 </div>
 
@@ -235,7 +274,8 @@ dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
 <dl class="kv">
   <dt>Brain role</dt><dd>None needed; this is engineering. A service must never stall.</dd>
   <dt>Change</dt><dd>The live model is a fixed version. New facts go into memory instantly. Adapters and sleep train on copies. A candidate goes live only after gates (no probe section worse, consolidated facts answered without memory, speed and size within limits); the switch is a pointer change, current conversations finish on the old version, rollback is the same switch.</dd>
-  <dt>Test</dt><dd>A continuous chat session through a sleep cycle and an adapter publish: no reply fails or slows by more than 10%; rollback restores the previous answers exactly.</dd>
+  <dt>Revised 17 Oct</dt><dd>Background training shares the GPU with serving, so every background job runs under a hard GPU memory cap (an error, never paging), one at a time, with a stall watch. Measured: one 5M training needs about 11 GB of GPU cache; three side by side stalled the card within minutes.</dd>
+  <dt>Test</dt><dd>A continuous chat session through a sleep cycle and an adapter publish: no reply fails or slows by more than 10%; rollback restores the previous answers exactly; GPU memory never above its cap.</dd>
 </dl>
 </div>
 
@@ -243,28 +283,28 @@ dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
 <svg class="diagram" viewBox="0 0 860 320" role="img" aria-label="Proposed architecture: the compiler feeds the exchange memory with literal and learned keys, the shared core, and a router; the router selects skill adapters; the trust head mixes; a gap log feeds an adapter trainer, practice and a sleep cycle that train candidate versions behind a gate before going live.">
   <rect class="box" x="10" y="120" width="105" height="50" rx="5"/><text x="62" y="141" text-anchor="middle">Question</text><text class="s" x="62" y="157" text-anchor="middle">via compiler</text>
   <path class="ln" d="M115,145 L140,145"/>
-  <rect class="box" x="140" y="20" width="190" height="56" rx="5"/><text x="235" y="42" text-anchor="middle" style="fill:var(--mem)">Memory (hippocampus)</text><text class="s" x="235" y="60" text-anchor="middle">literal key + learned key</text>
+  <rect class="box" x="140" y="20" width="190" height="56" rx="5"/><text x="235" y="42" text-anchor="middle" style="fill:var(--mem)">Memory (hippocampus)</text><text class="s" x="235" y="60" text-anchor="middle">conversation · fact table · real facts</text>
   <rect class="box" x="140" y="118" width="190" height="56" rx="5"/><text x="235" y="140" text-anchor="middle" style="fill:var(--core)">Shared core (cortex)</text><text class="s" x="235" y="158" text-anchor="middle">frozen between sleeps</text>
-  <rect class="box" x="140" y="216" width="190" height="56" rx="5"/><text x="235" y="238" text-anchor="middle" style="fill:var(--core)">Skill adapters</text><text class="s" x="235" y="256" text-anchor="middle">math · chat · reading · domains</text>
+  <rect class="box" x="140" y="216" width="190" height="56" rx="5"/><text x="235" y="238" text-anchor="middle" style="fill:var(--core)">Skill circuits (optional)</text><text class="s" x="235" y="256" text-anchor="middle">only if they beat the mixture</text>
   <path class="ln" d="M140,145 C125,145 125,48 140,48"/><path class="ln" d="M140,145 C125,145 125,244 140,244"/>
   <path class="ln" d="M330,48 C370,48 370,130 410,130"/><path class="ln" d="M330,146 L410,146"/><path class="ln" d="M330,244 C370,244 370,162 410,162"/>
-  <rect class="box" x="410" y="118" width="150" height="56" rx="5"/><text x="485" y="140" text-anchor="middle" style="fill:var(--gate)">Trust head / router</text><text class="s" x="485" y="158" text-anchor="middle">engages what is needed</text>
+  <rect class="box" x="410" y="118" width="150" height="56" rx="5"/><text x="485" y="140" text-anchor="middle" style="fill:var(--gate)">Memory gate + trust head</text><text class="s" x="485" y="158" text-anchor="middle">rules first, then learned</text>
   <path class="ln" d="M560,146 L590,146"/>
   <rect class="box" x="590" y="118" width="110" height="56" rx="5"/><text x="645" y="140" text-anchor="middle">Reply</text><text class="s" x="645" y="158" text-anchor="middle">+ calculator, checks</text>
   <path class="ln a dash" d="M645,174 L645,214"/>
   <rect class="box" x="590" y="214" width="110" height="50" rx="5"/><text x="645" y="235" text-anchor="middle" style="fill:var(--accent)">Gap log</text><text class="s" x="645" y="251" text-anchor="middle">surprise signal</text>
   <path class="ln a" d="M700,239 L730,239"/>
-  <rect class="box" x="730" y="196" width="120" height="86" rx="5"/><text x="790" y="218" text-anchor="middle">Background</text><text class="s" x="790" y="236" text-anchor="middle">adapters, practice</text><text class="s" x="790" y="252" text-anchor="middle">sleep cycle</text><text class="s" x="790" y="268" text-anchor="middle">on copies only</text>
+  <rect class="box" x="730" y="196" width="120" height="86" rx="5"/><text x="790" y="218" text-anchor="middle">Background</text><text class="s" x="790" y="236" text-anchor="middle">adapters, practice</text><text class="s" x="790" y="252" text-anchor="middle">sleep cycle</text><text class="s" x="790" y="268" text-anchor="middle">copies, whole-mix replay</text>
   <path class="ln g" d="M790,196 L790,60 L700,60"/>
-  <rect class="box" x="590" y="34" width="110" height="52" rx="5"/><text x="645" y="55" text-anchor="middle" style="fill:var(--gate)">Gate</text><text class="s" x="645" y="72" text-anchor="middle">tests, then swap</text>
+  <rect class="box" x="590" y="34" width="110" height="52" rx="5"/><text x="645" y="55" text-anchor="middle" style="fill:var(--gate)">Gate</text><text class="s" x="645" y="72" text-anchor="middle">full suite, then swap</text>
   <path class="ln g dash" d="M590,60 C560,60 560,96 500,118"/>
 </svg>
 
 <h2>5. Goals and objectives</h2>
 <p>The project goal: <b>a model that runs on one consumer GPU, answers what it knows as reliably as a much larger model, learns a new fact in seconds and a new skill in minutes, improves from its own use without retraining from scratch, and never interrupts the person using it.</b> Each stage has a pass condition measurable with the tools already in the repository (probe battery, run ledger, Q&amp;A scorers, core report card).</p>
-<div class="stage"><div class="id">B0</div><div class="body"><b>Baseline frozen.</b> Done at 5M: <code>models/qa_best_5M_512.pt</code> (stored 0.89 F1 / 56-63% exact, added 0.86-0.88, reworded 0.26-0.30, new 0.27-0.29, network alone 0.23-0.24, probe 20-23/32, two seeds). At 50M (first Q&amp;A stage, 60% of its steps): stored 0.89 / 60%, new 0.33, network alone 0.27, probe 21/32 with memory and 24/32 with the similarity gate; full-length run with the similarity as a trust-head input: stored 0.91 / 68% exact, new 0.33, network alone 0.29 (the best Q&amp;A numbers), chat probe 21/32; the short run with the hard 0.5 gate stays the best chat configuration (24/32).<div class="done">Pass: one checkpoint and one result file every later stage compares against.</div></div></div>
+<div class="stage"><div class="id">B0</div><div class="body"><b>Baseline frozen.</b> <i>Revised 17 Oct:</i> the baseline becomes the merged chat model (one mixed stage + grounding stage, two seeds) with search engine v2 and the real-facts store, measured on the full chat22 suite (39 fronts). Today's best single model: variant A, best or tied-best on 26 of 39 fronts. Earlier baseline, kept for history: Done at 5M: <code>models/qa_best_5M_512.pt</code> (stored 0.89 F1 / 56-63% exact, added 0.86-0.88, reworded 0.26-0.30, new 0.27-0.29, network alone 0.23-0.24, probe 20-23/32, two seeds). At 50M (first Q&amp;A stage, 60% of its steps): stored 0.89 / 60%, new 0.33, network alone 0.27, probe 21/32 with memory and 24/32 with the similarity gate; full-length run with the similarity as a trust-head input: stored 0.91 / 68% exact, new 0.33, network alone 0.29 (the best Q&amp;A numbers), chat probe 21/32; the short run with the hard 0.5 gate stays the best chat configuration (24/32).<div class="done">Pass: one checkpoint and one result file every later stage compares against.</div></div></div>
 <div class="stage"><div class="id">B1</div><div class="body"><b>Partial-cue recall.</b> Learned key built; needs in-domain training pairs.<div class="done">Pass: probe reworded + synonym sections at least 4/5 each; verbatim unchanged.</div></div></div>
-<div class="stage"><div class="id">B2</div><div class="body"><b>First skill circuit.</b> An arithmetic set-up adapter on the frozen core, trained on GSM8K, SVAMP and MetaMath, with verified practice.<div class="done">Pass: new-problem accuracy at least double the full-fine-tune baseline of the same core; conversation probe within one point; adapter under 5% of core size.</div></div></div>
+<div class="stage"><div class="id">B2</div><div class="body"><b>First skill circuit.</b> <i>Revised 17 Oct:</i> a reading-documents adapter on the frozen 50M / 100M core (maths paused; documents are the largest open gap), trained with the whole mix replayed, against the mixed-stage baseline at equal steps.<div class="done">Pass: document questions above the mixed baseline; no suite front lower by more than two standard errors; adapter under 5% of core size. Fail: the skill returns to the mixture at a higher share (the measured fallback).</div></div></div>
 <div class="stage"><div class="id">B3</div><div class="body"><b>Router.</b> Three adapters (arithmetic, conversation, reading) chosen by the trust head.<div class="done">Pass: router agrees with hand choice at least 90%; mixed-set accuracy within two points of hand routing; reply cost up less than 20%.</div></div></div>
 <div class="stage"><div class="id">B4</div><div class="body"><b>Gap detector and practice loop.</b> Failure log with grouping, and verified practice where a checker exists.<div class="done">Pass: at least 80% agreement with hand grading; practice on detected failures beats a random sample of equal size.</div></div></div>
 <div class="stage"><div class="id">B5</div><div class="body"><b>Sleep.</b> Consolidation of used memories with rehearsal, plus pruning to a size budget.<div class="done">Pass: at least 70% of 500 added facts answered with memory off after one sleep; rewordings improved; old-knowledge probe not lower.</div></div></div>
@@ -296,10 +336,17 @@ dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
   <tr><td>Outputs that do not end</td><td>Replies run on into invented text (seen before the end code)</td><td>Every output format ends with an end code trained in the loss</td></tr>
   <tr><td>Memory grows too large for a device</td><td>Lookup time or size over budget</td><td>Pruning policy; consolidate before evicting</td></tr>
   <tr><td>Gap detector chases noise</td><td>Adapters trained on detected gaps do no better than random ones</td><td>Minimum count per gap kind; human review at first</td></tr>
+  <tr><td>Memory floods the window (look-alikes, outdated values)</td><td>Single-fact and never-told scores fall when memory is switched on (v2.2: 20-40 points)</td><td>Calibrated bar, fact table, newest wins, empty block when nothing passes</td></tr>
+  <tr><td>The model refuses what it was told, or invents what it was not</td><td>Grounding score: refusals of told facts or invented share rising</td><td>Balance the training targets; auto-graded answer pairs; the gate checks both</td></tr>
+  <tr><td>A skill fades when its share is cut</td><td>A front drops after a mix change (v2.3: never told 99% → 45-72%)</td><td>Whole-mix replay; one change per cycle; the gate rejects</td></tr>
+  <tr><td>Training stops on noise</td><td>Seeds stop thousands of steps apart (v2.3: 14,400 vs 31,800)</td><td>Training floor and longer patience; two seeds</td></tr>
+  <tr><td>Background training starves the live model</td><td>GPU memory near the card's limit; logs stop</td><td>Hard memory cap per job, one training at a time, stall watch</td></tr>
+  <tr><td>Made-up facts treated as knowledge</td><td>Invented items in the permanent store or consolidated into weights</td><td>Real facts only in the store and in sleep; personal and invented material stays in conversation memory</td></tr>
   <tr><td>Measurements that mislead</td><td>Results identical where they should differ; scores that jump without a cause</td><td>Name outputs by what they measured; read transcripts; two seeds before building on a result</td></tr>
 </table></div>
 
 <h2>8. What must finish first, in the current research</h2>
+<p><b>17 October:</b> the 5M chat study and the merged model come first (Adam: no 100M training until the 5M study is complete). In order: the repair variants B-F (running), the merged chat stage on two seeds, the grounding stage, the window-removed and "lots of information" tests, the 16k window study, then the 100M with the merged recipe. B0 for this project is the merged model with engine v2 and the real-facts store; B1 builds on engine v2 and K2; B2 is the reading circuit on the 50M / 100M core. The list below is the state of 11 October, kept for history.</p>
 <ul>
   <li>Done: the data recipe (clean modern text, conversation, evidence pairs, worked math), the Q&amp;A recipe, the window size, the end code, two-seed confirmation at 5M, the verified self-training loop.</li>
   <li>Running: the full-length 50M Q&amp;A stage with the similarity as a trust-head input (the first, shorter one gave new questions 0.33 against 0.27-0.29 at 5M and the network alone 11/32 on the probe); then 50M math with verified practice, and reading comprehension at 50M.</li>
@@ -308,6 +355,7 @@ dialog.specdialog::backdrop { background: rgba(10, 12, 14, .45); }
 <p>When those are in, B0 at 50M is a matter of freezing the winner, and the project can start with B1 and B2.</p>
 
 <h2 id="reconstruction">9. Reconstruction specification of the current model</h2>
+<div class="note"><p><b>17 October:</b> this section specifies the 11 October Q&amp;A model. The current chat model is specified by its code: the <code>chat22/</code> package (window layout, two memories, engine and search engine v2, trainer with its switches) and <code>docs/V22_CLEAN_DESIGN.md</code>; its training plan is in <code>docs/CHAT5M_V2_DESIGN.html#v24</code>.</p></div>
 <p>Everything needed to rebuild the current best Q&amp;A model, <code>models/qa_best_5M_512.pt</code> (S2b-512, seed 2), and the 50M core: what each part computes, with its exact parameters, as pseudocode written from the code (branch <code>local-gpu-phase2</code>, 11 October 2026). File and function names point at the reference implementation; each part ends with a check that proves a rebuilt part matches the original.</p>
 <div class="specindex">
   <a class="spec" href="#spec-data" data-spec="spec-data">data</a>

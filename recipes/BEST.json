@@ -1,0 +1,261 @@
+{
+ "rule": "BEST = the model that lost no front beyond noise against the previous best and won more fronts than it lost, on two seeds. BASE = the recipe new rounds build on (it may carry gains the best lacks). A candidate that beats BEST becomes both.",
+ "best": {
+  "version": 2,
+  "name": "round 5: A + real memory, sessions on the mixed pool",
+  "date": "2026-10-19",
+  "model": "runs/chat22/mix_5m_s2.pt",
+  "seeds_confirmed": [
+   "mix_5m_s1",
+   "mix_5m_s2"
+  ],
+  "train": {
+   "core": "runs/core_mt5m/scale_custom_v0_8k.pt",
+   "data_dir": "data_real/5m_mixed",
+   "mix": "v22",
+   "parts": "longconv,longdocs,alpacaqa",
+   "shares": {
+    "qa": 0.17,
+    "skills": 0.135,
+    "convo": 0.11,
+    "recall": 0.12,
+    "buried": 0.11,
+    "docqa": 0.06,
+    "story": 0.085,
+    "rehearse": 0.1,
+    "longconv": 0.11
+   },
+   "memory_opts": {
+    "gate": [
+     0.3,
+     0.6
+    ],
+    "gate_facts": [
+     0.5,
+     0.8
+    ],
+    "k_facts": 2,
+    "k_session": 4
+   },
+   "min_steps": 30000,
+   "max_steps": 48000,
+   "patience": 10,
+   "lr": 0.0001,
+   "batch": 16,
+   "gpu_frac": 0.6
+  },
+  "vs_previous_best": "two seeds vs variant A's two seeds, engine v2, fixed suite (story metric fixed 19 Oct): 7 significant wins (story contradictions 0.00 vs 0.06 pooled; right with memory 2,378 vs 2,271/2,688; correction memory 381 vs 363; distractor memory 374 vs 342 and window 304 vs 275; documents memory 223 vs 185 and window 168 vs 122 of 408), 0 losses",
+  "model_note": "seed 2 chosen for use: same recipe, fewer wrong refusals of told facts (41 vs 71 of 180 told-skills questions); seed 1 refuses never-told questions better (39 vs 30 of 40)"
+ },
+ "base": {
+  "name": "round 5 (= best v2)",
+  "model": "runs/chat22/mix_5m_s1.pt",
+  "seeds": [
+   "mix_5m_s1",
+   "mix_5m_s2"
+  ],
+  "train": {
+   "core": "runs/core_mt5m/scale_custom_v0_8k.pt",
+   "data_dir": "data_real/5m_mixed",
+   "mix": "v22",
+   "parts": "longconv,longdocs,alpacaqa",
+   "shares": {
+    "qa": 0.17,
+    "skills": 0.135,
+    "convo": 0.11,
+    "recall": 0.12,
+    "buried": 0.11,
+    "docqa": 0.06,
+    "story": 0.085,
+    "rehearse": 0.1,
+    "longconv": 0.11
+   },
+   "memory_opts": {
+    "gate": [
+     0.3,
+     0.6
+    ],
+    "gate_facts": [
+     0.5,
+     0.8
+    ],
+    "k_facts": 2,
+    "k_session": 4
+   },
+   "min_steps": 30000,
+   "max_steps": 48000,
+   "patience": 10,
+   "lr": 0.0001,
+   "batch": 16,
+   "gpu_frac": 0.6
+  }
+ },
+ "data": {
+  "qa": "data_qa/train/qa_train.txt (Alpaca instruction style; the n-gram tables too)",
+  "skills": "data_skills/train_v4c.jsonl (generated personal facts, told in conversation; held-out 2,000 never trained)",
+  "conversations": "data_chat22/dialogues_train.jsonl (real dialogues, de-duplicated)",
+  "plain_text": "data_chat22/rehearse_P100_whole_554MB_seed1.txt (Wikipedia, web, novels, conversations, evidence pairs)",
+  "story_continuation": "data_core/mix_P100/train/books.txt (novels over 60k characters) + generated story worlds",
+  "any_length_sessions": "data_real/shared/longconv_mixed/ (sessions on facts_pool_mixed: 212,947 real facts + 20,001 generated personal facts as stored facts; training signal only, the deployed store stays real)",
+  "look_alikes": "data_real/shared/look/facts_pool_real.jsonl (real facts only)",
+  "permanent_store_at_answer_time": "data_real/shared/knowledge/knowledge_real.jsonl (311,010 real facts: Wikipedia leads and pieces, science facts, real memory-fact Q&A)"
+ },
+ "answer_time": {
+  "search": "v2",
+  "store": "the model's saved store (knowledge_real)",
+  "memory_setting": "stricter (saved with the model)"
+ },
+ "test": {
+  "suite": "python -m chat22.tests.run_suite <model> --tier full --engine-opts '{\"search\": \"v2\"}' --tag _ev2full",
+  "compare": "two seeds vs the previous best's two seeds, front by front, 2 standard errors; a new best must not lose any front beyond noise and must win more fronts than it loses"
+ },
+ "adopted_lessons": [
+  {
+   "what": "one mixed chat stage from the core; every kind trained together",
+   "evidence": "sessions 31-33: one mixed stage beat sequential stages; v2.3: a kind cut from the mix fades (never told 99% -> 45-72% when short recall went 12% -> 2%)"
+  },
+  {
+   "what": "short recall at 10-12%, buried evidence ~11%, document reading 6%, stories 8.5%, plain text 10%",
+   "evidence": "variants A-F (17 Oct): A's shares held every window front; D/F showed recall and Q&A help documents and long windows; E (buried 15% from Q&A/text) lost skills and stories"
+  },
+  {
+   "what": "any-length sessions (12%) built with the real engine search",
+   "evidence": "v2.3 and A: recall of planted facts flat from 100 to 10,000 turns (A 25/24/25 of 30; best earlier 15); reply time ~0.3 s at every length"
+  },
+  {
+   "what": "sessions on the real pool (round 4)",
+   "evidence": "round 4 vs A, two seeds: distractors from memory 368 vs 342, near-miss 59 vs 46, story questions 117 vs 100, told skills 169 vs 151"
+  },
+  {
+   "what": "Q&A kind in instruction style (Alpaca), not passage-reading short answers",
+   "evidence": "round 3 (real Q&A -> Alpaca): documents 69/38 -> 75/51, unknown 20 -> 32/40, invented 0.097 -> 0.076; 67% of real Q&A was passage-reading"
+  },
+  {
+   "what": "stricter memory selection at answer time",
+   "evidence": "step 1 (16 Oct), two seeds: single fact 43 -> 74%, never told 20 -> 76% with no retraining"
+  },
+  {
+   "what": "search engine v2 (fact table, fast lane, decide) at answer time",
+   "evidence": "every memory line up vs the old search (two-step 84 -> 96%, wrong values halved); 0.1 ms per search; the store no longer matters (A on the 311k store = A on its own)"
+  },
+  {
+   "what": "permanent store = real facts only",
+   "evidence": "Adam's rule (16-17 Oct); the invented pool had 57 'my sisters'; real store raised two-step 78 -> 84% and stored skills 42 -> 61% on v2.3"
+  },
+  {
+   "what": "training floors: min 30,000 steps, patience 10, every kind still improving at 26-33k",
+   "evidence": "v2.3 seed 2 stopped at 14,400 on noisy checks while seed 1 improved to 31,800"
+  },
+  {
+   "what": "one training at a time, GPU memory cap",
+   "evidence": "three side by side overflowed the card (17 Oct); session 36 froze 9.5 h"
+  },
+  {
+   "what": "the suite rebuilds the engine after stored skills",
+   "evidence": "18 Oct bug: 180 test facts leaked into every later section since 16 Oct"
+  },
+  {
+   "what": "decide by the full suite, never the training curve",
+   "evidence": "lr 2e-4 matched the held-out score and lost fluency, conversations and memory"
+  },
+  {
+   "what": "sessions whose stored facts include facts about named people (mixed pool)",
+   "evidence": "round 5 vs round 4: skills unknown 46 -> 69/80, documents 168/100 -> 223/168 of 408; vs A: 6 significant wins, 1 loss (story contradictions)"
+  },
+  {
+   "what": "judge story consistency per sentence, for the character named in it",
+   "evidence": "19 Oct: the old count charged characters with the other character's items; A 0.68 -> 0.12, round 5 1.32 -> 0.00"
+  }
+ ],
+ "rejected_changes": [
+  {
+   "what": "look-alike stored facts in half the windows, varied memory budget, 1,024-code memory block (v2.3, B, C)",
+   "evidence": "B: stored skills 113 -> 44, unknown 30 -> 10; C: 9 fronts worse"
+  },
+  {
+   "what": "half the skills windows as stored facts (v2.3, C)",
+   "evidence": "C: told skills 79 -> 47"
+  },
+  {
+   "what": "grounding stage (DPO on auto-graded pairs)",
+   "evidence": "worse on 12 and 8 fronts on two seeds; pairs too easy (97% before training)"
+  },
+  {
+   "what": "memory-first Q&A (answer only from a memory item, 30% abstain)",
+   "evidence": "no effect on unknown; documents 69/38 -> 50/29, story questions 54 -> 29"
+  },
+  {
+   "what": "buried evidence from real passage sentences",
+   "evidence": "told skills 84 -> 42 (runaway copying of memory text)"
+  },
+  {
+   "what": "real Q&A (292k, passage-reading) as the Q&A kind",
+   "evidence": "documents, unknown and invented share lost on two seeds; fixed by round 3"
+  },
+  {
+   "what": "real plain text / long documents in place of A's (no novels)",
+   "evidence": "books fluency 1.46 -> 1.54; story questions 36/27 in round 3"
+  },
+  {
+   "what": "learning rate 2e-4",
+   "evidence": "same held-out score in 65% of the time, worse on the suite"
+  },
+  {
+   "what": "a learned judge (2 blocks) filtering memory items",
+   "evidence": "26% recall at the 95% precision bar; stored skills 63 -> 24%"
+  }
+ ],
+ "open_fronts": [
+  {
+   "front": "story contradictions (metric fixed 19 Oct: per-sentence attribution)",
+   "best": "0.00",
+   "now": "0.00 (round 5)",
+   "plan": "closed; round 6 may still improve prose form (rewrite 17 vs 28/80, not significant)"
+  },
+  {
+   "front": "reading a long pasted document",
+   "best": "v2.1 ~80% (old suite); A/round 4 ~41-47%",
+   "now": "55% memory / 41% window (round 5; A 45% / 30%)",
+   "plan": "improved by round 5; the 16k window study next"
+  },
+  {
+   "front": "stored personal facts",
+   "best": "68%",
+   "now": "68%",
+   "plan": "engine v2 part 2 (a judge that meets its precision bar) or more stored-fact training"
+  }
+ ],
+ "history": [
+  {
+   "version": 1,
+   "date": "2026-10-17",
+   "model": "runs/chat22/v24a_s1.pt",
+   "name": "variant A",
+   "status": "replaced by 2"
+  },
+  {
+   "date": "2026-10-19",
+   "model": "runs/chat22/hyb_5m_s1.pt",
+   "name": "round 4: A + real memory",
+   "status": "base (candidate)"
+  },
+  {
+   "version": 2,
+   "date": "2026-10-19",
+   "model": "runs/chat22/mix_5m_s1.pt",
+   "name": "round 5: A + real memory, sessions on the mixed pool",
+   "status": "best"
+  },
+  {
+   "date": "2026-10-19",
+   "model": "runs/chat22/mix2_5m_s1.pt",
+   "name": "round 6: sessions on mixed2 (+ Alpaca stored Q&A)",
+   "status": "parked: told skills +12 pts, documents in window -10 pts (one seed)"
+  },
+  {
+   "date": "2026-10-19",
+   "name": "round 7: sessions with natural rewordings (mixedv)",
+   "status": "training (session 57); judged vs best v2"
+  }
+ ]
+}

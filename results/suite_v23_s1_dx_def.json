@@ -1,0 +1,120 @@
+{
+ "model": "runs/chat22/v23_s1.pt",
+ "engine": "chat22",
+ "tier": "full",
+ "date": "2026-10-17 07:41",
+ "retrieval": "word key + MiniLM dense key (outside reference)",
+ "engine_opts": "{\"gate\": [0.15, 0.55], \"gate_facts\": null, \"k_facts\": 6, \"k_session\": 8}",
+ "skills": {
+  "heldout_v2": {
+   "total": {
+    "k": 43,
+    "n": 180,
+    "share": 0.239,
+    "ci95": [
+     0.182,
+     0.306
+    ]
+   },
+   "groups": {
+    "taught": {
+     "k": 2,
+     "n": 40,
+     "share": 0.05,
+     "ci95": [
+      0.014,
+      0.165
+     ]
+    },
+    "update": {
+     "k": 7,
+     "n": 40,
+     "share": 0.175,
+     "ci95": [
+      0.087,
+      0.32
+     ]
+    },
+    "nearmiss": {
+     "k": 8,
+     "n": 40,
+     "share": 0.2,
+     "ci95": [
+      0.105,
+      0.348
+     ]
+    },
+    "unknown": {
+     "k": 26,
+     "n": 40,
+     "share": 0.65,
+     "ci95": [
+      0.495,
+      0.779
+     ]
+    },
+    "followup": {
+     "k": 2,
+     "n": 20,
+     "share": 0.1,
+     "ci95": [
+      0.028,
+      0.301
+     ]
+    },
+    "clarify": {
+     "k": 0,
+     "n": 20,
+     "share": 0.0,
+     "ci95": [
+      0,
+      0.161
+     ]
+    }
+   },
+   "wrong_refusals": 79
+  },
+  "rewrite": {
+   "total": {
+    "k": 11,
+    "n": 40,
+    "share": 0.275,
+    "ci95": [
+     0.161,
+     0.428
+    ]
+   },
+   "groups": {
+    "short": {
+     "k": 5,
+     "n": 15,
+     "share": 0.333,
+     "ci95": [
+      0.152,
+      0.583
+     ]
+    },
+    "yesno": {
+     "k": 6,
+     "n": 15,
+     "share": 0.4,
+     "ci95": [
+      0.198,
+      0.643
+     ]
+    },
+    "list": {
+     "k": 0,
+     "n": 10,
+     "share": 0.0,
+     "ci95": [
+      0,
+      0.278
+     ]
+    }
+   },
+   "wrong_refusals": 0
+  }
+ },
+ "seconds": 120
+}
