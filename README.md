@@ -157,8 +157,9 @@ The training data is in the repository but not in a normal clone (Git LFS skips 
 MB compressed, 2.75 GB unpacked; details in [`datasets/README.md`](datasets/README.md)):
 
 ```bash
-git lfs pull --include="datasets/c2b_5m/*"
+git lfs pull --include="datasets/c2b_5m/*" --exclude=""
 tar -xJf datasets/c2b_5m/c2b_5m_training_data.tar.xz        # from the repo root: files land where the trainer reads them
+mkdir -p data && g++ -O2 -std=c++17 -static -o data/cv0.exe compiler/native/cv0.cpp   # the native encoder (once; drop -static on Linux/macOS)
 bash compiler/experiments/chains/train_best.sh 1 c2b_repro_s1  # trains the BEST recipe (~2 h on an RTX 3090) and runs the full suite
 ```
 

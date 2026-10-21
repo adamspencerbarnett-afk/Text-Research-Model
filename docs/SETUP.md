@@ -19,10 +19,11 @@ python -m venv .venv
 Verified with Python 3.12, PyTorch 2.11 (CUDA 12.8 build), NumPy 2.5. PyTorch 2.11 or later is needed (torch.optim.Muon).
 `bitsandbytes` is only for the int8 kernel experiments.
 
-For training a core or encoding large corpora, build the native encoder:
+**Required for training** (the chat stage encodes its training text with it; chatting does not need it), build the native
+encoder once (Windows: `winget install BrechtSanders.WinLibs.POSIX.UCRT` gives g++):
 
 ```bash
-g++ -O2 -std=c++17 -o data/cv0.exe compiler/native/cv0.cpp     # pass its ABSOLUTE path to --native
+mkdir -p data && g++ -O2 -std=c++17 -static -o data/cv0.exe compiler/native/cv0.cpp   # Windows: keep -static (a dynamic build crashes); Linux/macOS: drop it
 ```
 
 ## 2. What the repository carries
@@ -45,7 +46,7 @@ and the 100M core are in `datasets/` (Git LFS, fetched on request; `datasets/REA
 files (each training log prints the resolved list as "data sources"); 2.75 GB in all, in one bundle:
 
 ```bash
-git lfs pull --include="datasets/c2b_5m/*"
+git lfs pull --include="datasets/c2b_5m/*" --exclude=""
 tar -xJf datasets/c2b_5m/c2b_5m_training_data.tar.xz      # from the repo root
 ```
 

@@ -19,6 +19,12 @@ MEM_HEAD = b"Memory:\n"      # heading of the memory block; its last code is the
 
 
 def load(dict_path: str, native: str | None = NATIVE):
+    """The dictionary; large files (training text) are encoded by the native encoder data/cv0.exe when it is built
+    (g++ -O2 -std=c++17 -static -o data/cv0.exe compiler/native/cv0.cpp, docs/SETUP.md); without it, in Python (much slower)."""
+    if native and not Path(native).exists():
+        print(f"note: native encoder {native} not built; large files are encoded in Python (slow). Build it with: "
+              "g++ -O2 -std=c++17 -static -o data/cv0.exe compiler/native/cv0.cpp (drop -static on Linux/macOS)", flush=True)
+        native = None
     return LE.V0Dict(str(dict_path), native)
 
 

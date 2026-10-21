@@ -26,10 +26,15 @@ the position scaling and the batch split change.
 ## 1. Get the data and the core (two bundles)
 
 ```bash
-git lfs pull --include="datasets/c2b_5m/*,datasets/100m/*"
+git lfs pull --include="datasets/c2b_5m/*,datasets/100m/*" --exclude=""
 tar -xJf datasets/c2b_5m/c2b_5m_training_data.tar.xz    # the C2b training data (2.75 GB), from the repo root
 tar -xJf datasets/100m/core_P100_109M.tar.xz            # runs/core_P100/scale_custom_v0_8k.pt + its dictionary
+mkdir -p data && g++ -O2 -std=c++17 -static -o data/cv0.exe compiler/native/cv0.cpp   # the native encoder (drop -static on Linux/macOS)
 ```
+
+The native encoder is required for training (the trainer encodes the 555 MB rehearsal text and the Q&A file with it;
+without it the encoding falls back to Python and is much slower). On Windows, `winget install BrechtSanders.WinLibs.POSIX.UCRT`
+provides g++; keep `-static` there.
 
 Check the downloads against `datasets/SHA256SUMS` (`sha256sum -c datasets/SHA256SUMS` from inside `datasets/`).
 

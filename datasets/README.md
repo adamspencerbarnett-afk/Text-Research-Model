@@ -1,7 +1,8 @@
 # Datasets (Git LFS, fetched on request)
 
 A normal `git clone` skips this folder (`.lfsconfig`: `fetchexclude = datasets/**`), so trying the model costs nobody
-gigabytes. Fetch a bundle when you want to train, then unpack it **from the repository root**: every file lands at the
+gigabytes. Fetch a bundle when you want to train (`--exclude=""` lifts that rule for one command), then unpack it
+**from the repository root**: every file lands at the
 path the trainer reads.
 
 | bundle | size | unpacked | what it is for |
@@ -10,7 +11,7 @@ path the trainer reads.
 | `100m/core_P100_109M.tar.xz` | 405 MB | 436 MB | the 109M pre-trained core and its dictionary, for the 100M |
 
 ```bash
-git lfs pull --include="datasets/c2b_5m/*"                 # or "datasets/c2b_5m/*,datasets/100m/*" for the 100M
+git lfs pull --include="datasets/c2b_5m/*" --exclude=""                 # or "datasets/c2b_5m/*,datasets/100m/*" for the 100M
 tar -xJf datasets/c2b_5m/c2b_5m_training_data.tar.xz
 tar -xJf datasets/100m/core_P100_109M.tar.xz              # 100M only
 cd datasets && sha256sum -c SHA256SUMS                     # check the downloads
