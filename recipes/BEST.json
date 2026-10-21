@@ -1,19 +1,18 @@
 {
- "rule": "BEST = the model that lost no front beyond noise against the previous best and won more fronts than it lost, on two seeds. BASE = the recipe new rounds build on (it may carry gains the best lacks). A candidate that beats BEST becomes both.",
+ "rule": "Strongest-model rule (Adam, 20 Oct): BEST is the strongest model we have; a model that is stronger overall replaces it. The test rule stays the evidence: front by front against BEST, 2 standard errors, two seeds when a choice is close; a candidate with no front lost and at least one won is adopted automatically by the loop, a mixed result is decided by Adam. BASE = the recipe new runs build on.",
  "best": {
-  "version": 2,
-  "name": "round 5: A + real memory, sessions on the mixed pool",
-  "date": "2026-10-19",
-  "model": "runs/chat22/mix_5m_s2.pt",
+  "version": 3,
+  "name": "C2b: multi-part messages (multi2) on round 5's recipe",
+  "date": "2026-10-20",
+  "model": "runs/chat22/combo2b_5m_s1.pt",
   "seeds_confirmed": [
-   "mix_5m_s1",
-   "mix_5m_s2"
+   "combo2b_5m_s1"
   ],
   "train": {
    "core": "runs/core_mt5m/scale_custom_v0_8k.pt",
    "data_dir": "data_real/5m_mixed",
    "mix": "v22",
-   "parts": "longconv,longdocs,alpacaqa",
+   "parts": "longconv,longdocs,alpacaqa,multi2",
    "shares": {
     "qa": 0.17,
     "skills": 0.135,
@@ -44,21 +43,20 @@
    "batch": 16,
    "gpu_frac": 0.6
   },
-  "vs_previous_best": "two seeds vs variant A's two seeds, engine v2, fixed suite (story metric fixed 19 Oct): 7 significant wins (story contradictions 0.00 vs 0.06 pooled; right with memory 2,378 vs 2,271/2,688; correction memory 381 vs 363; distractor memory 374 vs 342 and window 304 vs 275; documents memory 223 vs 185 and window 168 vs 122 of 408), 0 losses",
-  "model_note": "seed 2 chosen for use: same recipe, fewer wrong refusals of told facts (41 vs 71 of 180 told-skills questions); seed 1 refuses never-told questions better (39 vs 30 of 40)"
+  "vs_previous_best": "one seed vs round 5 (hop2 references): 5 significant wins (multi-part messages 92/120 = 77% vs 27%; natural wording 180/200 = 90% vs 80%; generated conversation 118/120 = 98% vs 92%; near-miss skills 28/40 = 70% vs 48%; story questions 65/75 = 87% vs 76%), 2 losses (story contradictions 0.08 per scene = 2 in 25 scenes vs 0.00; told fact + stored fact 5/48 = 10% vs 32%); everything else held (right with memory 89%, documents 57/39%, recall and never told at every length, direct store questions 100%)",
+  "model_note": "adopted by Adam (strongest-model rule) on one seed; answer with search v2 + hop2 + split (answer_time.engine_opts)"
  },
  "base": {
-  "name": "round 5 (= best v2)",
-  "model": "runs/chat22/mix_5m_s1.pt",
+  "name": "C2b (= best v3)",
+  "model": "runs/chat22/combo2b_5m_s1.pt",
   "seeds": [
-   "mix_5m_s1",
-   "mix_5m_s2"
+   "combo2b_5m_s1"
   ],
   "train": {
    "core": "runs/core_mt5m/scale_custom_v0_8k.pt",
    "data_dir": "data_real/5m_mixed",
    "mix": "v22",
-   "parts": "longconv,longdocs,alpacaqa",
+   "parts": "longconv,longdocs,alpacaqa,multi2",
    "shares": {
     "qa": 0.17,
     "skills": 0.135,
@@ -103,11 +101,40 @@
  "answer_time": {
   "search": "v2",
   "store": "the model's saved store (knowledge_real)",
-  "memory_setting": "stricter (saved with the model)"
+  "memory_setting": "stricter (saved with the model)",
+  "engine_opts": {
+   "search": "v2",
+   "hop2": true,
+   "split": true
+  },
+  "options_under_test": {
+   "hop2": "ADOPTED 20 Oct (e1): on the best's two seeds told fact + stored fact 0/96 -> 31/96, every other front identical",
+   "split": "ADOPTED with C2b (20 Oct): one search per question; it is what lets the multi-part training answer every part (two stored facts in the block 10/12 vs 0/12)"
+  }
  },
  "test": {
   "suite": "python -m chat22.tests.run_suite <model> --tier full --engine-opts '{\"search\": \"v2\"}' --tag _ev2full",
-  "compare": "two seeds vs the previous best's two seeds, front by front, 2 standard errors; a new best must not lose any front beyond noise and must win more fronts than it loses"
+  "compare": "two seeds vs the previous best's two seeds, front by front, 2 standard errors; a new best must not lose any front beyond noise and must win more fronts than it loses",
+  "new_tests": "python -m chat22.tests.run_suite <model> --tier full --engine-opts '{\"search\": \"v2\"}' --sections afterno,phrasing,probe2,reason,twomem,open,multi --tag _ev2new (chat22/tests/suite_v2.py; held-out wordings, test-reserved names, the store's test split md5 % 10 == 0)",
+  "compare_merges": "compare_two_seeds.py merges _ev2new into _ev2full; a front counts only when every model compared has it",
+  "best_baselines_20oct": {
+   "answered right after a refusal": "300/320 (control with no refusal 307/320; never told refused 317/320)",
+   "natural phrasing (200 held-out wordings per seed)": "318/400",
+   "probe v2 store questions / other": "19/26 / 19/38",
+   "counting what was told / first thing told / summary": "3/60 / 0/60 / 0/40",
+   "told personal fact + stored real fact": "0/96 (direct store question 96/96)",
+   "open-ended answers good (F1 >= 0.15, complete, no repetition, >= 12 words)": "24/80",
+   "multi-part messages": "seed 2 CPU smoke: 5/18 (one of three told facts asked 3/3; two asked at once 0/3; known + unknown 0/3; two stored facts 0/3)"
+  },
+  "best_baselines_c2b": {
+   "multi-part messages": "92/120 (three told 19/20, two asked 16/20, known + unknown 14/20, statement + question 18/20, two stored facts 13/20, quoted note 12/20)",
+   "natural wording": "180/200",
+   "answered right after a refusal / with none": "151/160 / 154/160",
+   "probe v2 store / other": "9/13 / 8/19",
+   "counting / first told / summary": "0/30 / 0/30 / 0/20",
+   "told fact + stored fact (hop2)": "5/48 (direct store question 48/48)",
+   "open-ended good": "14/40"
+  }
  },
  "adopted_lessons": [
   {
@@ -165,6 +192,22 @@
   {
    "what": "judge story consistency per sentence, for the character named in it",
    "evidence": "19 Oct: the old count charged characters with the other character's items; A 0.68 -> 0.12, round 5 1.32 -> 0.00"
+  },
+  {
+   "what": "two-hop search at answer time (engine hop2): a stored fact reached through what the user said",
+   "evidence": "e1, best's two seeds, full suite + new tests: told fact + stored fact 0/96 -> 31/96; all 49 other fronts identical (it only fires on bridge questions)"
+  },
+  {
+   "what": "multi-part messages in training (multi2): several facts told at once, two asked at once, known + unknown, statement + question, quoted notes, two stored facts with look-alike decoys",
+   "evidence": "C2b vs round 5: multi-part 77% vs 27% (two asked at once 16/20 from 0/40, known + unknown 14/20 from 0, two stored facts 13/20 from 0, notes 12/20 from 0), natural wording 90% vs 80%, conversation 98% vs 92%, near-miss 70% vs 48%, story questions 87% vs 76%; the decoys fixed c2's slip on direct store questions (44/48 -> 48/48)"
+  },
+  {
+   "what": "question splitting at answer time (engine split)",
+   "evidence": "alone no effect (e2); with multi training it lets every part be answered"
+  },
+  {
+   "what": "dose and form decide whether a new skill helps (c1-c1d)",
+   "evidence": "counting / first told / summary were learned to 90-100% at 15-30% of recall windows but cost documents and near-miss; every two-memory window form taught answering from stored facts over the conversation and cost story questions (76% -> 25-41%)"
   }
  ],
  "rejected_changes": [
@@ -203,26 +246,67 @@
   {
    "what": "a learned judge (2 blocks) filtering memory items",
    "evidence": "26% recall at the 95% precision bar; stored skills 63 -> 24%"
+  },
+  {
+   "what": "any-length sessions with natural rewordings of 40% of the questions (round 7, mixedv)",
+   "evidence": "one seed vs round 5: 0 wins, 1 loss (near-miss skills 11/40 vs 38/80); natural phrasing 165/200 vs 318/400, real phrasing 8/27 vs 13/54 (not significant); parked"
+  },
+  {
+   "what": "sessions on facts_pool_mixed2 (+ all 50,937 Alpaca stored Q&A) (round 6)",
+   "evidence": "one seed vs round 5: told skills 91/180 vs 39% (win), documents in window 63/204 vs 41% and story contradictions 0.04 (losses); retried at half strength in c2"
+  },
+  {
+   "what": "afterno windows (earlier refusals before answerable questions)",
+   "evidence": "c1: its own test got worse (87% vs 94%) and so did the no-refusal control (84% vs 96%); refusal text in 16% of windows is copyable"
+  },
+  {
+   "what": "twomem / twomem1 / twomem2 training (told fact + stored fact windows)",
+   "evidence": "c1, c1b, c1d: 69% / 69% / 56% on their test but story questions 31/31/25 of 75 (best 114/150) and told/stored answers lower; hop2 alone gives 32% with nothing lost"
+  },
+  {
+   "what": "reason / reason15 (counting, first told, recap) as tried",
+   "evidence": "c1c, c1d: 90-100% on their tests, but documents (38-46% vs 55%), near-miss (20-23% vs 48%) and updates fell; next try reasoncr (no 'first thing told')"
+  },
+  {
+   "what": "sessions on facts_pool_mixed3 (round 6's idea at half strength)",
+   "evidence": "c2: story contradictions 0.04 again, told skills only 42% vs 39%"
   }
  ],
  "open_fronts": [
   {
-   "front": "story contradictions (metric fixed 19 Oct: per-sentence attribution)",
-   "best": "0.00",
-   "now": "0.00 (round 5)",
-   "plan": "closed; round 6 may still improve prose form (rewrite 17 vs 28/80, not significant)"
+   "front": "counting, first thing told, summary",
+   "now": "0% (learnable to 100%: c1c)",
+   "plan": "reasoncr (counting + recaps, no 'first thing told') at 15% of recall on C2b's recipe (round c4)"
+  },
+  {
+   "front": "story contradictions",
+   "now": "0.08 per scene (2 in 25)",
+   "plan": "confirm on a second seed; if real, add character-consistency repair windows (the story kind already has repairs)"
+  },
+  {
+   "front": "told fact + stored fact",
+   "now": "10% (round 5 + hop2: 32%)",
+   "plan": "answer-time only for now; a training form that does not teach answering from stored facts over the conversation"
   },
   {
    "front": "reading a long pasted document",
-   "best": "v2.1 ~80% (old suite); A/round 4 ~41-47%",
-   "now": "55% memory / 41% window (round 5; A 45% / 30%)",
-   "plan": "improved by round 5; the 16k window study next"
+   "now": "57% memory / 39% window",
+   "plan": "the 16k window extension; the 100M"
   },
   {
-   "front": "stored personal facts",
-   "best": "68%",
-   "now": "68%",
-   "plan": "engine v2 part 2 (a judge that meets its precision bar) or more stored-fact training"
+   "front": "told personal facts / updates / clarifying",
+   "now": "47% / 20% / 5%",
+   "plan": "the 100M (the 5M fits the training patterns, not new wordings)"
+  },
+  {
+   "front": "real human phrasing",
+   "now": "33% (natural wording 90%)",
+   "plan": "more varied real phrasings; the 100M"
+  },
+  {
+   "front": "open-ended answers",
+   "now": "35% good",
+   "plan": "watch; reason windows raised it to 42-50% in c1b/c1c"
   }
  ],
  "history": [
@@ -255,7 +339,64 @@
   {
    "date": "2026-10-19",
    "name": "round 7: sessions with natural rewordings (mixedv)",
-   "status": "training (session 57); judged vs best v2"
+   "status": "parked: 0 wins, 1 loss (near-miss skills), one seed",
+   "model": "runs/chat22/mixv_5m_s1.pt"
+  },
+  {
+   "date": "2026-10-19",
+   "name": "round 10: reason windows alone",
+   "status": "stopped after ~20 min on Adam's go (combined approach); folded into c1"
+  },
+  {
+   "date": "2026-10-19",
+   "name": "c1: afterno + twomem + reason (recall 0.21), tested with hop2",
+   "status": "training (loop_5m.py)"
+  },
+  {
+   "date": "2026-10-20",
+   "name": "c2: c1's result + multi + sessions on facts_pool_mixed3, tested with split + hop2",
+   "status": "queued"
+  },
+  {
+   "date": "2026-10-20",
+   "name": "e1: two-hop search (answer time, no training)",
+   "status": "adopted into answer_time; best references re-run with it"
+  },
+  {
+   "date": "2026-10-20",
+   "version": 3,
+   "model": "runs/chat22/combo2b_5m_s1.pt",
+   "name": "C2b: multi2 on round 5's recipe, split + hop2",
+   "status": "best (Adam, strongest-model rule)",
+   "replaced": {
+    "version": 2,
+    "name": "round 5: A + real memory, sessions on the mixed pool",
+    "model": "runs/chat22/mix_5m_s2.pt",
+    "seeds_confirmed": [
+     "mix_5m_s1",
+     "mix_5m_s2"
+    ]
+   }
   }
- ]
+ ],
+ "how_gains_are_kept": "Every candidate retrains the one chat stage from the same 5M core with BASE plus its changes; an adopted change is written into BASE, so later runs carry it. New abilities are --parts switches that leave older recipes byte-identical (checked on 320 windows per change) and each has its own held-out test before training.",
+ "findings_20oct": [
+  {
+   "what": "what the search puts in the block limits what the model can combine",
+   "evidence": "told fact + stored fact: the stored fact was never retrieved (0/48) because the question lacks its words; two questions in one message: both stored facts in the block 0/12 (one query for the whole message). hop2 and split fix retrieval (41/48, 10/12); the untrained model then answers 9/48 and ~1 part of 2, so training must follow"
+  },
+  {
+   "what": "memory facts were always told one per message and asked one per message",
+   "evidence": "audit: skills told turns 0% multi-fact, any-length asking messages 0% multi-question; real dialogues 14% multi-question but only as general chat; real-phrasing 'multipart' test 0/5"
+  },
+  {
+   "what": "the refusal chain is small in general",
+   "evidence": "answers directly after a correct refusal 300/320 vs 307/320 with no refusal; Adam's case ('brother's name' -> '12 plus 30' refused) is a rarer pattern on seed 2"
+  },
+  {
+   "what": "the 5M learns its training patterns but not new wordings",
+   "evidence": "skills held-out windows 92% in training vs 39% on the suite's held-out wordings; clarify 0% despite 10,410 training examples; the case for the 100M"
+  }
+ ],
+ "plan": "Handoff 20 Oct (docs/TRAIN_100M.md, datasets/README.md): the friend continues from C2b. 5M: c4 = C2b + reasoncr (counting and recaps), then fixes for story contradictions and told fact + stored fact. 100M: the C2b recipe on runs/core_P100 (109M) with --rope-scale 2 and gradient accumulation; same training data; expected to lift the fronts where the 5M learns patterns, not new wordings."
 }

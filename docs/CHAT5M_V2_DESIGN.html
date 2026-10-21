@@ -95,7 +95,7 @@ code { font-family: var(--f-mono); font-size: 13px; background: var(--accent-sof
 <main>
 
 <header>
-  <div class="eyebrow">Design sheet · 15 October 2026 · session 35 · revised through 17 October</div>
+  <div class="eyebrow">Design sheet · 15 October 2026 · session 35 · revised through 20 October (C2b)</div>
   <h1>5M Chat Model v2</h1>
   <p class="lede">A 5M model built from every result that held up this week: the best 5M core, the Q&amp;A recipe, the 100,000-example skills data with rewriting, real conversations, and a new kind of training for remembering a whole conversation, all at a window twice as long. It answers from memory, says when it doesn't know, asks which one you mean, and streams long replies such as short stories.</p>
   <div class="status">
@@ -106,8 +106,110 @@ code { font-family: var(--f-mono); font-size: 13px; background: var(--accent-sof
     <span class="pill p-run">Revised 16 October: roadmap, guard, long-context plan to 32k (cap 65k)</span>
     <span class="pill p-run">Revised 16 October, evening: v2.2 results, v2.3 design (memory first, any-length); 8k dropped; 100M on hold</span>
     <span class="pill p-good">Revised 17 October: v2.3 diagnosis, variant A best so far, merged-model plan (three stages), real-facts datasets</span>
+    <span class="pill p-good">Revised 19 October: best = round 5 (A + real memory, sessions on the mixed pool); cumulative recipe file</span>
+    <span class="pill p-run">Revised 20 October: new tests, the combined 5M loop (c1, c2), two-hop search and question splitting, then the 100M</span>
+    <span class="pill p-good">Revised 20 October, evening: C2b is the best model; its recipe and methods; how to add or strengthen reasoning skills; the 100M handoff</span>
   </div>
 </header>
+
+<section id="c2b">
+  <div class="eyebrow">The current model · C2b · 20 October 2026</div>
+  <h2>C2b: how it was built, and how to add more reasoning</h2>
+  <p><b>C2b</b> is round 5's recipe plus training on messages with several parts, answered with two search options: question splitting (one search per question) and the two-hop search (a stored fact reached through something the user said). Against round 5 it won 5 fronts and lost 2 small ones; Adam adopted it as the strongest model. This section records exactly how it was made, the methods that held up over 13 runs, and how to add or strengthen reasoning skills.</p>
+
+  <h3 style="margin-top:20px">What C2b does (one seed; round 5 = two seeds pooled)</h3>
+  <div class="panel scroll" style="margin-top:8px"><table>
+    <tr><th>test</th><th>round 5</th><th>C2b</th></tr>
+    <tr><td>multi-part messages, every part right (two asked · known + unknown · two stored facts · quoted note)</td><td class="num">27% (0 · 0 · 0 · 0%)</td><td class="num"><b>77%</b> (80 · 70 · 65 · 60%)</td></tr>
+    <tr><td>casual wording of told facts · conversation tasks · near-miss facts · story questions</td><td class="num">80 · 92 · 48 · 76%</td><td class="num"><b>90 · 98 · 70 · 87%</b></td></tr>
+    <tr><td>right with memory · invented · recall at 100 / 1k / 10k turns · never told</td><td class="num">88% · 5.8% · 85/93/87% · 90-100%</td><td class="num">89% · 6.1% · 87/90/90% · 90-100%</td></tr>
+    <tr><td>documents (memory / window) · told skills · stored skills · direct store question</td><td class="num">55/41% · 39% · 67% · 100%</td><td class="num">57/39% · 47% · 69% · 100%</td></tr>
+    <tr><td>losses: story contradictions per scene · told fact + stored fact</td><td class="num">0.00 · 32%</td><td class="num">0.08 · 10%</td></tr>
+  </table></div>
+
+  <h3 style="margin-top:20px">The recipe (recipes/BEST.json)</h3>
+  <div class="panel scroll" style="margin-top:8px"><table>
+    <tr><th>part</th><th>setting</th></tr>
+    <tr><td>core</td><td>runs/core_mt5m/scale_custom_v0_8k.pt: 5M modern block (width 256, 6 layers, 8 heads), Muon + warmup-stable-decay, bf16, P100 mix, 1,024 codes</td></tr>
+    <tr><td>chat stage</td><td>one stage, every kind together, window 2,048 codes, memory block 512, reply room 300; lr 1e-4, batch 16; held-out plateau stop, 30,000-48,000 steps, patience 10 (C2b: 36,000 steps, 2.0 h on an RTX 3090)</td></tr>
+    <tr><td>kinds and shares</td><td>Q&amp;A 17% · skills 13.5% · recall 12% · buried evidence 11% · any-length sessions 11% · conversations 11% · plain text 10% · stories 8.5% · document reading 6%</td></tr>
+    <tr><td>switches</td><td>--parts longconv (any-length sessions built with the real search), longdocs (buried documents up to the full window), alpacaqa (instruction Q&amp;A), <b>multi2</b> (35% of skills windows multi-part; 15% of Q&amp;A windows two stored facts with look-alike decoys)</td></tr>
+    <tr><td>data</td><td>--data-dir data_real/5m_mixed: sessions on real facts + 20,001 generated personal facts; Alpaca Q&amp;A; skills v4c; real dialogues; P100 rehearsal text; long documents (datasets/c2b_5m bundle)</td></tr>
+    <tr><td>memory settings</td><td>gate (0.3, 0.6), facts gate (0.5, 0.8), 2 stored facts and 4 turns per block</td></tr>
+    <tr><td>answering</td><td>search engine v2 (fact table, fast lane, decide) + hop2 + split; permanent store knowledge_real.jsonl (311,010 real facts); MiniLM meaning key beside the word key</td></tr>
+  </table></div>
+
+  <h3 style="margin-top:20px">How we got here (18-20 October)</h3>
+  <div class="panel scroll" style="margin-top:8px"><table>
+    <tr><th>run</th><th>change</th><th>verdict</th></tr>
+    <tr><td>round 5</td><td>sessions on real + generated personal facts</td><td>best v2: 7 wins, 0 losses vs variant A</td></tr>
+    <tr><td>rounds 6, 7</td><td>all Alpaca stored Q&amp;A in sessions · natural rewordings in sessions</td><td>parked (documents, story · near-miss)</td></tr>
+    <tr><td>e1</td><td>two-hop search (no training)</td><td>adopted: told fact + stored fact 0 → 32%, nothing else changed</td></tr>
+    <tr><td>c1, c1b</td><td>refusal-chain + two-memory + counting/summary windows</td><td>parked: skills learned (90-100%), but answers came from stored facts over the conversation</td></tr>
+    <tr><td>c1c, c1d</td><td>counting/summary alone · lower doses</td><td>parked: documents and near-miss fell; every two-memory form cost story questions</td></tr>
+    <tr><td>e2</td><td>question splitting (no training)</td><td>harmless, no gain alone</td></tr>
+    <tr><td>c2</td><td>multi-part windows + round 6 at half strength</td><td>2 wins, 2 small losses (contradictions, decoy-free store pairs)</td></tr>
+    <tr><td><b>c2b</b></td><td>multi-part windows with look-alike decoys, no round 6</td><td><b>best v3</b>: 5 wins, 2 small losses</td></tr>
+  </table></div>
+
+  <div class="grid2" style="margin-top:12px">
+    <div class="panel"><h3>Methods that held up</h3><p>One chat stage from a pre-trained core, every kind trained together (stacked stages fade earlier skills). Training windows built by the same code that builds the answering window. A held-out plateau stop with a step floor. Decisions by the full suite plus the new tests, front by front at 2 standard errors, never by the training curve. A second seed for close calls. Every new ability as a switch that leaves older recipes byte-identical (checked on 320 windows each time).</p></div>
+    <div class="panel"><h3>What the last 13 runs taught</h3><p><b>Retrieval first:</b> the model can only use what reaches its window; two abilities needed a search change before training could help. <b>Dose:</b> a skill learned to 100% at 30% of its host kind still cost other skills; start low. <b>Form:</b> the target must come from the right source; windows whose answer always came from a stored fact taught the model to prefer stored facts over the conversation. <b>Attribution:</b> combine pieces only after each is clean, and read the answers behind a lost front.</p></div>
+  </div>
+
+  <h3 style="margin-top:20px">How to add a new reasoning skill</h3>
+  <div class="panel" style="margin-top:8px"><ol style="margin:0 0 0 18px;line-height:1.6">
+    <li><b>Write the test first</b> (chat22/tests/suite_v2.py): held-out wordings, test-reserved names, the store's test split; run it on the best model for a baseline. A skill nobody tested cannot be judged.</li>
+    <li><b>Check retrieval:</b> print what reaches the window (the reply info's items). If the needed facts are missing, add an answer-time search option (off by default) and judge it on the best's seeds with no training, as hop2 and split were.</li>
+    <li><b>Build a training switch</b> (chat22/windows_train.py): windows in the answering layout; the target copied from the right source (a told turn, a stored fact, or both joined); "I don't have that" only when the information is truly absent from window and memory; wordings other than the test's. Verify byte-identity for old recipes and run a smoke training.</li>
+    <li><b>Choose a dose:</b> 10-15% of the host kind first; raise only if the skill's own test stays low.</li>
+    <li><b>Train seed 1 and read the losses:</b> a lost front has a mechanism in the answers (wrong source, copied refusals, the newest value lost). Fix the form or the dose, not the test.</li>
+    <li><b>Combine</b> only clean pieces, then a second seed, then write the winner into recipes/BEST.json.</li>
+  </ol></div>
+
+  <div class="grid2" style="margin-top:12px">
+    <div class="panel"><h3>Strengthening a skill that exists</h3><p>More varied wordings (new families, not more of the same templates); harder decoys (look-alike facts, near-miss names); combinations (the skill inside multi-part messages); longer distances (the fact far back in an any-length session); and size: the 100M generalizes from the same data where the 5M learns patterns (skills 92% on training-style questions vs 39-47% on new wordings).</p></div>
+    <div class="panel"><h3>Signs of interference to watch</h3><p>Refusals rising (grounding "refused", wrong refusals of told facts): copyable refusal text or abstain targets with the answer present. Story questions falling: answers taken from stored facts over the conversation. Documents falling: recap or "first thing told" habits. Near-miss falling: facts of different people mixed. Story contradictions: several people's facts in one message.</p></div>
+    <div class="panel"><h3>Next skills, ready to build</h3><p>Counting and recaps (switch reasoncr, queued as c4). Comparisons from told facts ("Who is older, my sister or my brother?"). Order in time ("What did I tell you before the trip?"). Store-to-store chains ("Who leads the country the Eiffel Tower is in?": a second hop inside the store). Pronouns across split questions. Clarifying questions (5%). Arithmetic over told facts with the calculator tool.</p></div>
+    <div class="panel"><h3>Continuing at 100M</h3><p>docs/TRAIN_100M.md: the C2b recipe on the 109M core with positions scaled to 2,048 codes and gradient accumulation (measured 0.83 s per step, 11.5 GB); about 10-11 hours per seed on an RTX 3090; the same data bundle plus the core bundle.</p></div>
+  </div>
+</section>
+
+<section id="v25">
+  <div class="eyebrow">Now · the combined 5M loop (v2.5) · 20 October 2026</div>
+  <h2>Lining every missing ability up in one chat stage</h2>
+  <p>The best model is <b>round 5</b>: variant A's recipe, real memory facts, and any-length practice conversations built on a pool of real facts plus invented personal facts (two seeds; 7 significant wins and no losses against A). New tests written on 20 October showed what it still cannot do at all: combine something you told it with a stored fact, count or summarize what you said, or handle a message with several questions. Adam's direction: line every missing ability up in one chat stage, loop the 5M to its best, then build the 100M from the final recipe. The model's purpose at this size is simple chat (a game character) and fast fact finding; harmful-request handling is left to a deterministic filter.</p>
+
+  <h3 style="margin-top:20px">New tests and the best model's starting point (both seeds pooled)</h3>
+  <div class="panel scroll" style="margin-top:8px"><table>
+    <tr><th>test</th><th>what it asks</th><th>best now</th></tr>
+    <tr><td>told fact + stored fact</td><td>"My favorite song is X." ... "Who wrote my favorite song?" (answer only in the real store)</td><td class="num"><b>0/96</b> (asked directly: 96/96)</td></tr>
+    <tr><td>reasoning over the chat</td><td>how many pets did I mention · what did I tell you first · summarize</td><td class="num"><b>3/60 · 0/60 · 0/40</b></td></tr>
+    <tr><td>multi-part messages</td><td>three facts told at once · two asked at once · known + unknown · two stored facts · a quoted note</td><td class="num">one of three told: 3/3; the rest about 0</td></tr>
+    <tr><td>natural wording</td><td>200 facts told and asked in casual chat wording the training never uses</td><td class="num">318/400</td></tr>
+    <tr><td>answers after a refusal</td><td>arithmetic, a told fact, a stored fact right after a correct "I don't have that"</td><td class="num">300/320 (no refusal: 307/320)</td></tr>
+    <tr><td>probe v2</td><td>the 32-question probe with stored questions rewritten for the real store</td><td class="num">19/26 store · 19/38 other</td></tr>
+    <tr><td>open-ended answers</td><td>explain / describe / how-to against reference answers</td><td class="num">24/80 good</td></tr>
+  </table></div>
+
+  <div class="grid2" style="margin-top:12px">
+    <div class="panel"><h3>Why the search had to change first</h3><p>The model can only use what reaches its window. "Who wrote my favorite song?" does not contain the song's name, so the stored fact was never found (0/48). A message with two questions was searched as one query: both stored facts reached the window 0/12 times. Two answer-time options fix retrieval: the <b>two-hop search</b> searches the store again with the words of what you said (41/48), and <b>question splitting</b> searches each question separately (10/12). The untrained model still answers only some of these, so training follows.</p></div>
+    <div class="panel"><h3>How every gain is kept</h3><p>A candidate never trains on top of the previous model: it retrains the one chat stage from the same 5M core with the best recipe plus its additions (about 3 hours). It becomes the best only if no test falls beyond noise and at least one rises, on two seeds; its additions are then written into the recipe (recipes/BEST.json) so every later run carries them. Each new ability is a switch that leaves older recipes byte-identical, with its own test first.</p></div>
+    <div class="panel"><h3>c1: training now</h3><p>The best recipe plus earlier correct refusals before answerable questions, told-fact-plus-stored-fact windows, and counting / first-told / recap windows. The short-recall share rises from 12% to 21% so the original recall practice keeps its windows. Tested with the two-hop search on.</p></div>
+    <div class="panel"><h3>c2: next</h3><p>c1's result plus multi-part messages (several facts told at once, two asked at once, a known and an unknown, a statement with a question, quoted notes, two real stored facts at once) and round 6's told-skills lesson at half strength. Tested with question splitting and the two-hop search on.</p></div>
+    <div class="panel"><h3>Rounds 6 and 7: parked</h3><p>Round 6 (sessions with all 51k Alpaca stored Q&amp;A): told skills 39% → 51%, but documents in the window 41% → 31% and story contradictions 0.04. Round 7 (sessions with natural rewordings): no wins, near-miss skills lost. One change per round made each cause clear; combined runs now make the loop faster, and a lost front is fixed by adjusting that one piece.</p></div>
+    <div class="panel"><h3>Then the 100M, and why it waits</h3><p>A wasted 100M run costs 30+ hours; a behaviour fix costs about 4 at 5M. The 100M (109M parameters, core trained at 1,024 codes) is built from the final recipe: gradient accumulation is ready, positions stretched to the 2,048 window, a short speed and memory run first. It should lift what the 5M learns only as patterns (skills 92% on training-style questions vs 39% on new wordings; clarifying 0% despite 10,410 examples). A 16k window comes later as a short extension stage.</p></div>
+  </div>
+
+  <h3 style="margin-top:20px">What each addition trains</h3>
+  <div class="panel scroll" style="margin-top:8px"><table>
+    <tr><th>switch</th><th>windows</th><th>share</th></tr>
+    <tr><td>afterno</td><td>1-2 earlier correct refusals of never-told questions, then a question that should be answered</td><td class="num">30% of Q&amp;A, skills, recall, any-length</td></tr>
+    <tr><td>twomem</td><td>a told personal fact + the stored real fact it leads to (store's train split); 30% with one missing → "I don't have that"</td><td class="num">20% of recall</td></tr>
+    <tr><td>reason</td><td>counting 1-5 told items, the first thing told, a recap of 3-4 facts</td><td class="num">30% of recall</td></tr>
+    <tr><td>multi</td><td>multi-part messages (five types) · two real stored facts asked at once</td><td class="num">35% of skills · 15% of Q&amp;A</td></tr>
+  </table></div>
+</section>
 
 <section id="v24">
   <div class="eyebrow">Next training · the merged model (v2.4) · revised 17 October 2026</div>

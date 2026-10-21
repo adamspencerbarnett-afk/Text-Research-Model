@@ -49,7 +49,9 @@ class Chat22Adapter:
         opts = dict(opts or {})
         search, judge, facts = opts.pop("search", "v1"), opts.pop("judge", None), opts.pop("facts", None)
         self.verify = int(opts.pop("verify", 0))
-        self.e = Engine(path, device, log=lambda *x: None, memory_opts=opts, search=search, judge_path=judge, facts_path=facts)
+        hop2, split = bool(opts.pop("hop2", False)), bool(opts.pop("split", False))
+        self.e = Engine(path, device, log=lambda *x: None, memory_opts=opts, search=search, judge_path=judge, facts_path=facts, hop2=hop2,
+                        split=split)
         self.enc, self.ctx, self.kind = self.e.enc, self.e.ctx, "chat22"
 
     def reply(self, msg: str, n=80, mem=True):
@@ -379,8 +381,10 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("model"); ap.add_argument("--tier", default="full", choices=["quick", "full"]); ap.add_argument("--device", default="cuda")
     ap.add_argument("--engine-opts", default="", help='chat22 memory options as JSON, e.g. {"gate_facts": [0.35, 0.7], "k_facts": 2}')
-    ap.add_argument("--sections", default="", help="comma list to run only some sections (text,skills,skills_stored,probe,convo,long,memory,story,cache)")
+    ap.add_argument("--sections", default="", help="comma list to run only some sections (text,skills,skills_stored,probe,convo,long,memory,story,cache); "
+                    "the 20 Oct sections run only when named: afterno,phrasing,probe2,reason,twomem,open,multi (chat22/tests/suite_v2.py)")
     ap.add_argument("--tag", default="", help="suffix of the result file")
+    ap.add_argument("--merge", action="store_true", help="update the sections run in an existing result file instead of replacing it")
     a = ap.parse_args()
     path = ROOT / a.model if not Path(a.model).is_absolute() else Path(a.model)
     t0 = time.time()
@@ -422,8 +426,16 @@ def main() -> int:
         res["story"] = story_section(ad, 6 if quick else 25); print("story", res["story"], flush=True)
     if run("cache"):
         res["cache"] = cache_section(ad); print("cache", res["cache"], flush=True)
+    if want:                                              # 20 Oct sections: only when named, so the full tier is unchanged
+        from chat22.tests import suite_v2 as V2
+        for name, fn in V2.SECTIONS.items():
+            if name in want:
+                res[name] = fn(ad)
     res["seconds"] = round(time.time() - t0)
     out = ROOT / "results" / f"suite_{path.stem}{'_quick' if quick else ''}{a.tag}.json"
+    if a.merge and out.exists():
+        old = json.loads(out.read_text())
+        res = {**old, **{k: v for k, v in res.items() if k not in ("seconds", "date")}, "merged": sorted(want or [])}
     out.write_text(json.dumps(res, indent=1))
     print("saved", out, f"({res['seconds']} s)")
     return 0

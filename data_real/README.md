@@ -90,3 +90,26 @@ real Q&A (download approval), skills v5 and more any-length sessions for variety
 `chat22/train.py --data-dir data_real/5m` reads each file from the size folder, then from `shared/` (defaults unchanged
 and verified byte-identical). The exact command is in each `plan.json`. A test compares the model front by front with
 variant A on the same suite.
+
+## Updates 18-20 October: the store and the session pools the recipes use
+
+The permanent store `shared/knowledge/knowledge_real.jsonl` now holds **311,010** real facts: Wikipedia leads 17,175 and
+pieces 77,101, ARC science statements 120,000, OpenBookQA facts 1,326, and real Q&A memory facts 95,408 (from the approved
+downloads). The 215,602-fact version is kept as `knowledge_real_v1_215k.jsonl`. Tests that need stored facts use its test
+split (md5 of the question % 10 == 0, `chat22/tests/suite_v2.store_split`); training that reads the store (the twomem and
+multi switches) uses only the other rows.
+
+Any-length session pools (`chat22.data.build_v23 --only longconv --sessions 1250 --shard 0-3 --facts POOL --out-dir
+shared/longconv_X --dialogues shared/convo/dialogues_train.jsonl [--vary]`), each copied into a recipe folder:
+
+| folder | facts pool behind the sessions | used by | verdict |
+| --- | --- | --- | --- |
+| `5m_hybrid` | `shared/look/facts_pool_real.jsonl` (212,947 real facts) | round 4 | base for round 5 |
+| `5m_mixed` | `facts_pool_mixed.jsonl` = real + 20,001 generated personal facts | round 5 and **C2b = BEST** | adopted (in `datasets/c2b_5m`) |
+| `5m_mixed2` | `facts_pool_mixed2.jsonl` = mixed + all 50,937 Alpaca stored Q&A | round 6 | parked (told skills up, documents and story down) |
+| `5m_mixedv` | mixed, with natural rewordings of 40% of the questions (`--vary`) | round 7 | parked (no wins, near-miss lost) |
+| `5m_mixed3` | `facts_pool_mixed3.jsonl` = mixed + half of the Alpaca stored Q&A (25,648) | c2 (combined loop) | parked (story contradictions again) |
+
+The generated personal facts are a training signal only: the store used for answering stays real-only.
+
+The 100M plan in `100m/plan.json` was rewritten on 20 October for the C2b recipe (`docs/TRAIN_100M.md`); the `5m/` and `100m/` text and long-document folders belong to the real-data recipe that lost at 5M and are not used by C2b.

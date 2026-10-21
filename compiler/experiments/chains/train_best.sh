@@ -1,5 +1,5 @@
 #!/bin/bash
-# Train and test the BASE recipe of recipes/BEST.json on one seed (plus any extra args = one change), then compare
+# Train and test the BASE recipe of recipes/BEST.json (C2b since 20 Oct) on one seed (plus any extra args = one change), then compare
 # it with the current BEST (two seeds).
 #   bash compiler/experiments/chains/train_best.sh SEED [NAME] [EXTRA TRAIN ARGS...]
 # With no extra args it reproduces the best recipe (same data, switches, shares, floors). Extra args (e.g. --parts ...,
@@ -16,11 +16,13 @@ import json; t=json.load(open('recipes/BEST.json'))['base']['train']
 print(t['core'], t['data_dir'], t['mix'], t['parts'], t['min_steps'], t['max_steps'], t['patience'], t['gpu_frac'])")"
 SH=$($PY -c "import json; print(json.dumps(json.load(open('recipes/BEST.json'))['base']['train']['shares']))")
 MO=$($PY -c "import json; print(json.dumps(json.load(open('recipes/BEST.json'))['base']['train']['memory_opts']))")
+EO=$($PY -c "import json; print(json.dumps(json.load(open('recipes/BEST.json'))['answer_time'].get('engine_opts', {'search': 'v2'})))")
 until ! pgrep -f "chat22.train" > /dev/null 2>&1; do sleep 60; done
 echo "$(date +%H:%M:%S) train_best: $NAME seed $SEED from recipes/BEST.json (base recipe) extra: $*"
 DD=""; [ "$DATA" != "None" ] && DD="--data-dir $DATA"
 [ -f results/chat22_train_$NAME.json ] || $PY -B -m chat22.train --name $NAME --core $CORE $DD --mix $MIX --parts $PARTS \
     --shares "$SH" --seed $SEED --min-steps $MINS --max-steps $MAXS --patience $PAT --memory-opts "$MO" --gpu-frac $FRAC "$@" > runs/chat22_train_$NAME.log 2>&1
-[ -f results/suite_${NAME}_ev2full.json ] || $PY -B -m chat22.tests.run_suite runs/chat22/$NAME.pt --tier full --engine-opts '{"search": "v2"}' --tag _ev2full > runs/suite_${NAME}_ev2full.log 2>&1
+[ -f results/suite_${NAME}_ev2full.json ] || $PY -B -m chat22.tests.run_suite runs/chat22/$NAME.pt --tier full --engine-opts "$EO" --tag _ev2full > runs/suite_${NAME}_ev2full.log 2>&1
+[ -f results/suite_${NAME}_ev2new.json ] || $PY -B -m chat22.tests.run_suite runs/chat22/$NAME.pt --tier full --engine-opts "$EO"     --sections afterno,phrasing,probe2,reason,twomem,open,multi --tag _ev2new > runs/suite_${NAME}_ev2new.log 2>&1
 $PY research_side/compare_two_seeds.py $NAME > runs/compare_$NAME.log 2>&1 || true
 echo "$(date +%H:%M:%S) train_best: $NAME done; see runs/compare_$NAME.log"

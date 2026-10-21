@@ -16,6 +16,25 @@ Kinds (16 October design; v2.1's kinds plus the story and document kinds):
              memory) and generated story worlds (next scene with bible facts, questions about earlier scenes, repairs).
   rehearse   whole-document text from the rebuilt rehearsal sample.
 
+Parts added 20 Oct (the 5M loop, recipes/LOOP.json): afterno = 30% of qa / skills / recall / any-length windows have
+1-2 earlier exchanges where a never-told personal question was rightly answered "I don't have that"; the target is
+unchanged (an answer when the window or memory holds it), so one refusal does not make the next reply refuse.
+twomem = 20% of recall windows: a told personal fact plus the stored real fact it leads to (as the two-hop search
+brings it: "My favorite song is X." + [fact] "Who wrote the song X?" -> "Who wrote my favorite song?"); 15% without
+the stored fact and 15% without the told fact, both answered "I don't have that". twomem1 = the same without the
+"told fact missing" case (it taught refusing while the right stored fact was in the block; c1 refused more).
+twomem2 = 10% of recall windows, no "not told" case, and the answer joins both sources ('"X" was written by Dottie
+Rambo.', 'The current leader of Saudi Arabia is ...'): c1/c1b answered story questions from unrelated stored facts
+after twomem windows whose answer was always the stored fact's own text. Store rows of the train split only
+(chat22/tests/suite_v2.store_split), statement and question wordings other than the test's.
+reason = 30% of recall windows (reason15: 15%; reasoncr: 15%, counting and recaps only): counting what was told (1-5 items), the first thing told, a recap of 3-4 facts, with
+wordings other than the test's.
+multi = messages with several parts (multi2: the same, with look-alike stored facts as decoys in the two-fact windows) (20 Oct audit: memory facts were always told one per message and asked one per
+message): 35% of skills windows become one of: several facts told in one message then one asked; two told facts asked
+in one message; one told and one never told (answer the first, say the second is not known); a new statement plus a
+question in one message; a quoted note with two facts and two questions. 15% of qa windows ask two real stored facts
+(knowledge_real, train split) in one message, both facts in the memory block, answered in order.
+
 Each maker returns a Window: codes (inputs + targets, at most ctx + 1), prompt_len (targets start here), copy_end,
 gold spans (the evidence the reply copies), point spans ('nothing here' / 'ask which'), loo (table leave-one-out)."""
 from __future__ import annotations
@@ -259,6 +278,7 @@ class Windows:
         items = [W.Item(B(q), B(a), src, int(t)) for q, a, src, t in r["items"]]
         turns = [(B(u), B(a)) for u, a in r["turns"]]
         target, absent = r["target"], r["absent"]
+        turns = self._afterno(turns, B(r["q"]) + b" " + b" ".join(it.q + b" " + it.a for it in items))
         c, ce, pl, kept, sp = self._win(items, turns, r["q"], target)
         val = (r.get("value") or "").lower()
         tw = words(target)
@@ -296,6 +316,23 @@ class Windows:
                 self._mem_idx = [i for i in self.usable if not READING_RX.search(self.qa[i][0][:400])] or self.usable
             return self.qa[self._mem_idx[int(self.rng.integers(len(self._mem_idx)))]]
         return self.qa[self._rand_i()]
+
+    def _afterno(self, turns: list, avoid: bytes = b"") -> list:
+        """afterno (20 Oct): with p 0.3, 1-2 earlier refusals of never-told personal questions as the latest turns. The
+        asked entity appears nowhere in the window, so "I don't have that" was the right reply there."""
+        rng = self.rng
+        if "afterno" not in self.parts or rng.random() >= 0.3:
+            return turns
+        seen = b" ".join([avoid] + [u + b" " + a for u, a in turns]).lower()
+        out = list(turns)
+        for _ in range(1 if rng.random() < 0.7 else 2):
+            for _ in range(10):
+                f = G.Fact(rng)
+                name = f.ent["id"].split()[-1].lower().encode()
+                if name not in seen:
+                    out.append((f.ask().encode(), G.pick(rng, G.ABSTAIN).encode()))
+                    break
+        return out
 
     def _alpaca_evidence(self):
         """alpacabury (18 Oct): the buried-evidence Q&A taken from the Alpaca exchanges variant A trained on (full-sentence
@@ -379,6 +416,8 @@ class Windows:
     # ------------------------------------------------------------------ kinds
     def qa_(self):
         rng, qa = self.rng, self.qa
+        if ("multi" in self.parts or "multi2" in self.parts) and rng.random() < 0.15:
+            return self._store_pair()
         i = self._rand_i(); q, ans = qa[i]
         if "memqa" in self.parts and not READING_RX.search(q[:400]):
             return self._qa_from_memory(i, q, ans)
@@ -397,7 +436,7 @@ class Windows:
             if rng.random() < 0.3:                       # the right fact is not always ranked first
                 rng.shuffle(items)
         items = self._crowd(items, q, ans)
-        c, ce, pl, _, sp = self._win(items, [], q, ans)
+        c, ce, pl, _, sp = self._win(items, self._afterno([], q + b" " + b" ".join(it.q + b" " + it.a for it in items)), q, ans)
         gold = [sp["items"][j] for j, it in enumerate(items) if own and it.a == B(ans)]
         return self._done(c, ce, pl, gold, loo=1.0)
 
@@ -426,6 +465,8 @@ class Windows:
 
     def skills_(self, w=None):
         rng = self.rng
+        if w is None and ("multi" in self.parts or "multi2" in self.parts) and rng.random() < 0.35:
+            return self._multi()
         w = w or self.skills[int(rng.integers(len(self.skills)))]
         t0 = int(rng.integers(1, 40)); items = []
         stored = "stored" in self.parts and w["kind"] not in ("update", "update_earlier") and rng.random() < 0.5   # v2.3: half uploaded
@@ -434,6 +475,8 @@ class Windows:
         order = list(range(len(items))); rng.shuffle(order)   # relevance order is not the told order
         ranked = self._crowd([items[j] for j in order], w["q"], w["target"])
         turns = [(B(t[0]), B(t[1])) for t in w["turns"]]
+        if w["kind"] not in ("followup", "clarify", "combo"):     # these read the latest turn: a refusal there would change them
+            turns = self._afterno(turns, B(w["q"]) + b" " + b" ".join(it.q + b" " + it.a for it in items))
         c, ce, pl, _, sp = self._win(ranked, turns, w["q"], w["target"])
         gold, point = [], []
         tw = words(w["target"])
@@ -470,8 +513,317 @@ class Windows:
         c, ce, pl, _, _ = self._win(items, pairs[:k], pairs[k][0][-1200:], pairs[k][1])
         return self._done(c, ce, pl)
 
+    # ------------------------------------------------------------------ 20 Oct: two memories, reasoning over the chat
+    TM_TRAIN = [   # (store question pattern, statements, chained questions): wordings the test (suite_v2.TWOMEM) never uses
+        (r"^who wrote the song (.+?)\??$", ['I love the song "{x}".', 'The song "{x}" is stuck in my head.', 'My go-to song is "{x}".'],
+         ["Who wrote the song I love?", "Who is the writer of the song stuck in my head?", "Who wrote my go-to song?"]),
+        (r"^who sings the song (.+?)\??$", ['I keep humming "{x}".', 'My favourite tune is "{x}".', 'I just heard "{x}" on the radio.'],
+         ["Who sings the song I keep humming?", "Who is the singer of my favourite tune?", "Who sings the song I heard on the radio?"]),
+        (r"^where was the movie (.+?) filmed\??$", ["I just rewatched {X}.", "We're watching {X} tonight.", "{X} is my all-time favourite film."],
+         ["Where was the movie I rewatched filmed?", "Where did they film the movie we're watching tonight?", "Where was my all-time favourite film shot?"]),
+        (r"^when did the movie (.+?) come out\??$", ["My kids love {X}.", "I saw {X} at the cinema.", "{X} is the movie my dad likes."],
+         ["When did the movie my kids love come out?", "When was the movie I saw at the cinema released?", "What year did my dad's movie come out?"]),
+        (r"^what is the meaning of the name (.+?)\??$", ["We named our son {X}.", "My best friend is called {X}.", "My grandmother's name was {X}."],
+         ["What does our son's name mean?", "What is the meaning of my best friend's name?", "What did my grandmother's name mean?"]),
+        (r"^where does the last name (.+?) come from\??$", ["My surname is {X}.", "My wife's maiden name is {X}.", "Our family name is {X}."],
+         ["Where does my surname come from?", "What is the origin of my wife's maiden name?", "Where does our family name come from?"]),
+        (r"^who is the current leader of (.+?)\??$", ["My parents live in {X}.", "I was born in {X}.", "I'm visiting {X} this summer."],
+         ["Who leads the country my parents live in?", "Who is the current leader of the country I was born in?", "Who is in charge of the country I'm visiting?"]),
+        (r"^what is the name of the biggest city in (.+?)\??$", ["My aunt moved to {X}.", "I'm studying in {X}.", "My pen pal is from {X}."],
+         ["What is the biggest city in the country my aunt moved to?", "Which is the largest city in the country I'm studying in?", "What's the biggest city where my pen pal is from?"]),
+    ]
+
+    def _tm_rows(self):
+        if not hasattr(self, "_tm"):
+            from .tests.suite_v2 import store_split
+            rx = [re.compile(p, re.I) for p, _, _ in self.TM_TRAIN]
+            self._tm = []
+            store = self.paths.find("knowledge/knowledge_real.jsonl", ROOT / "data_real" / "shared" / "knowledge" / "knowledge_real.jsonl")
+            want = "train" if self.split == "train" else "test"
+            for line in open(store, encoding="utf-8"):
+                r = json.loads(line)
+                if r.get("source") != "qa_memory":
+                    continue
+                q, a = r["q"].strip(), r["a"].replace("\xa0", " ").strip()
+                if not a or len(a.rstrip(".").split()) > 3 or store_split(q) != want:
+                    continue
+                for j, x in enumerate(rx):
+                    m = x.match(q)
+                    if m:
+                        self._tm.append((j, m.group(1).strip(), q, a))
+                        break
+        return self._tm
+
+    TM_JOIN = ['"{x}" was written by {a}.', '"{x}" is sung by {a}.', "{X} was filmed in {a}.", "{X} came out {a3}.",
+               "The name {X} means {a}.", "The name {X} comes from {a5}.", "The current leader of {X} is {a}.",
+               "The biggest city in {X} is {a}."]
+
+    def _tm_join(self, j, x, a):
+        a0 = a.rstrip(".")
+        X = x.title() if x.islower() else x
+        a3 = a0[0].lower() + a0[1:] if a0.lower().startswith(("in ", "on ", "circa")) else (("in " if a0.isdigit() else "on ") + a0)
+        a5 = a0[3:] if a0.lower().startswith("in ") else a0
+        return self.TM_JOIN[j].format(x=x, X=X, a=a0, a3=a3, a5=a5)
+
+    def _twomem(self, joined: bool = False):
+        rng = self.rng
+        rows = self._tm_rows()
+        j, x, q, a = rows[int(rng.integers(len(rows)))]
+        _, stms, asks = self.TM_TRAIN[j]
+        k = int(rng.integers(len(stms)))
+        stm = stms[k].format(x=x, X=x.title() if x.islower() else x)
+        ask = asks[k]
+        r = rng.random()
+        no_fact, no_told = r < 0.15, 0.15 <= r < 0.30 and not ({"twomem1", "twomem2"} & self.parts)   # twomem1/2: never "not told"
+        turns = self._filler(int(rng.integers(0, 4)))
+        if not no_told:
+            turns.insert(int(rng.integers(0, len(turns) + 1)), (B(stm), G.pick(rng, ACKS).encode()))
+        same = [rw for rw in rows if rw[0] == j and rw[2] != q]
+        n_look = min(len(same), int(rng.integers(0, 3)))
+        items = [W.Item(B(same[int(i)][2][0].upper() + same[int(i)][2][1:]), B(same[int(i)][3]), "fact")
+                 for i in (rng.choice(len(same), n_look, replace=False) if n_look else [])]
+        if not no_fact:
+            items.insert(int(rng.integers(0, len(items) + 1)), W.Item(B(q[0].upper() + q[1:]), B(a), "fact"))
+        target = G.pick(rng, G.ABSTAIN) if (no_fact or no_told) else (self._tm_join(j, x, a) if joined else a)
+        c, ce, pl, kept, sp = self._win(items, turns, ask, target)
+        if no_fact or no_told:
+            return self._done(c, ce, pl, [], [sp["sink"]])
+        gold = [sp["items"][i] for i, it in enumerate(items) if it.a == B(a)]
+        gold += [sp["turns"][i] for i, t in enumerate(turns) if t[0] == B(stm) and i in sp["turns"]]
+        return self._done(c, ce, pl, gold)
+
+    COUNT_CATS = [  # (statement templates, category, ask wordings): wordings the test (suite_v2.reason) never uses
+        (["I've got a {v} called {n}.", "We also have a {v} named {n}.", "There's our {v}, {n}."], "pets",
+         ["How many pets have I mentioned?", "Count the pets I told you about.", "How many animals do I have?"]),
+        (["I drive a {v} to work.", "We also keep an old {v}.", "My other car is a {v}."], "cars",
+         ["How many cars have I mentioned?", "How many vehicles do I have?"]),
+        (["My kid {n} just turned {a}.", "{n}, my youngest, is {a}.", "Our child {n} is {a} now."], "kids",
+         ["How many kids have I mentioned?", "How many children did I say I have?"]),
+        (["I play the {v}.", "I'm also learning the {v}.", "I can play the {v} a little."], "instruments",
+         ["How many instruments do I play?", "How many instruments have I mentioned?"]),
+        (["I speak {v}.", "I'm fluent in {v}.", "I also know some {v}."], "languages",
+         ["How many languages do I speak?", "How many languages did I mention?"]),
+        (["Last year I visited {v}.", "I've been to {v} too.", "I once spent a week in {v}."], "cities",
+         ["How many cities have I visited?", "How many places did I say I've been to?"]),
+    ]
+    COUNT_POOLS = {"instruments": ["violin", "piano", "guitar", "drums", "flute", "cello", "trumpet", "harp", "banjo", "saxophone"],
+                   "languages": ["Spanish", "French", "German", "Italian", "Japanese", "Portuguese", "Hindi", "Arabic", "Korean", "Dutch"]}
+    NUM_WORDS = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five"}
+
+    @staticmethod
+    def _lc(s: str) -> str:
+        """Lower-case the first word only when it is not a name ("Your sister ..." -> "your sister ...", "Kim ..." stays)."""
+        w = s.split(" ", 1)[0]
+        return s[0].lower() + s[1:] if w in ("Your", "The", "Parking", "My", "Our") else s
+
+    def _reason(self):
+        rng = self.rng
+        r = rng.random()
+        if r < 0.45:                                     # counting
+            stms_t, cat, asks = self.COUNT_CATS[int(rng.integers(len(self.COUNT_CATS)))]
+            k = int(rng.integers(1, 6))
+            if cat == "pets":
+                vals = [str(v) for v in rng.choice(G.PETS, k, replace=False)]
+            elif cat == "cars":
+                vals = [f"{c} {m}" for c, m in zip(rng.choice(G.COLOURS, k, replace=False), rng.choice(G.CARS, k, replace=False))]
+            elif cat == "cities":
+                vals = [str(v) for v in rng.choice(G.CITIES, k, replace=False)]
+            elif cat == "kids":
+                vals = [str(v) for v in rng.choice(G.NAMES, k, replace=False)]
+            else:
+                vals = [str(v) for v in rng.choice(self.COUNT_POOLS[cat], k, replace=False)]
+            names = [str(v) for v in rng.choice(G.PETNAMES, k, replace=False)]
+            stm = [G.pick(rng, stms_t).format(v=v, n=(v if cat == "kids" else n), a=int(rng.integers(2, 17))) for v, n in zip(vals, names)]
+            listed = ", ".join(vals[:-1]) + (" and " if k > 1 else "") + vals[-1]
+            noun = cat if k > 1 else {"kids": "kid", "cities": "city"}.get(cat, cat[:-1])
+            target = f"You mentioned {self.NUM_WORDS[k]} {noun}: {listed}."
+            ask = G.pick(rng, asks)
+        elif r < 0.75 and "reasoncr" in self.parts:      # reasoncr: a recap instead of 'the first thing told'
+            r = 0.8
+        if 0.45 <= r < 0.75:                             # the first thing told
+            a = G.Fact(rng)
+            b = G._other(rng, {a.ent["id"]}, (a.field,))
+            stm = [a.stored()[1], b.stored()[1]]
+            if rng.random() < 0.4:
+                stm.append(G._other(rng, {a.ent["id"], b.ent["id"]}).stored()[1])
+            first = G4.your(a.stored()[1])
+            target = "The first thing you told me was that " + self._lc(first)
+            ask = G.pick(rng, ["What's the first thing I mentioned?", "What did I say first?", "Which fact did I give you first?"])
+        elif r >= 0.75:                                  # a recap
+            fs = [G.Fact(rng)]
+            want_n = int(rng.integers(3, 5))
+            while len(fs) < want_n:
+                fs.append(G._other(rng, {f.ent["id"] for f in fs}))
+            stm = [f.stored()[1] for f in fs]
+            parts = [G4.your(x).rstrip(".") for x in stm]
+            target = "You told me that " + "; ".join(self._lc(x) for x in parts) + "."
+            ask = G.pick(rng, ["Give me a recap of what I've said.", "What do you know about me so far?", "Recap what I told you, please."])
+        told = {B(x) for x in stm}
+        for n_fill in (2, 1, 0):
+            turns = []
+            for x in stm:
+                turns.append((B(x), G.pick(rng, ACKS).encode()))
+                turns += self._filler(int(rng.integers(0, n_fill + 1)))
+            c, ce, pl, kept, sp = self._win([], turns, ask, target)
+            if kept == len(turns):
+                break
+        gold = [sp["turns"][i] for i, t in enumerate(turns) if t[0] in told and i in sp["turns"]]
+        return self._done(c, ce, pl, gold)
+
+    # ------------------------------------------------------------------ 20 Oct: messages with several parts (multi)
+    FIELD_NOUN = {"city": "home town", "job": "job", "food": "favourite food", "colour": "favourite colour", "sport": "favourite sport",
+                  "band": "favourite band", "drink": "favourite drink", "car": "car", "phone": "phone number", "birthday": "birthday",
+                  "pet": "pet's name", "age": "age", "allergy": "allergy", "hobby": "hobby", "work": "workplace", "surname": "last name",
+                  "book": "favourite book", "school": "school", "language": "language", "instrument": "instrument", "address": "address",
+                  "email": "email address"}
+    TH_NOUN = {"when": "time", "where": "place", "code": "code", "price": "price", "opens": "opening time", "wifi": "wifi password",
+               "parking": "parking spot", "deadline": "deadline"}
+    JOIN2 = ["{A} Also, {b}", "{A} Oh, and {b}", "{A} And {b}", "Two things: {A} {B}", "Quick update: {A} {B}", "{A} Another thing: {b}"]
+    JOIN3 = ["A few things about me: {A} {B} {C}", "{A} {B} Also, {c}", "Let me catch you up. {A} {B} {C}", "So, {a} {B} And {c}"]
+    ASK2 = ["{Q1} And {q2}", "Two questions: {Q1} {Q2}", "{Q1n}, and {q2}", "{Q1} Also, {q2}", "Can you tell me two things? {Q1} {Q2}"]
+    STORE2 = ["{Q1} Also, {q2}", "Quick quiz: {Q1} {Q2}", "{Q1} And {q2}", "Two questions for you. {Q1} {Q2}"]
+    WITHQ = ["{S} Anyway, {q}", "{S} By the way, {q}", "{S} {Q}", "{S} Oh, and {q}"]
+    SENDERS = ["landlord", "coach", "manager", "neighbour", "kid's school", "dentist's office", "team lead"]
+    NOTE = ["Here's a text from my {who}: \"{A} {B}\" {Q1n} and {q2}", "My {who} sent this: \"{A} {B}\" Can you tell me {q1i} and {q2i}"]
+
+    @staticmethod
+    def _lcw(s: str) -> str:
+        """Lower-case a leading 'My / The / Our / Your / Parking / What / When ...' (sentence glue), never a name."""
+        w = s.split(" ", 1)[0]
+        lead = {"My", "The", "Our", "Your", "Parking", "What", "When", "Where", "Which", "Who", "How", "Can", "Is", "Do", "Does"}
+        return s[0].lower() + s[1:] if w in lead else s
+
+    def _topic(self, f) -> str:
+        if f.kind == "p":
+            own = G4.your(f.ent["e"])
+            return f"{own}'s {self.FIELD_NOUN.get(f.field, f.field)}"
+        return f"the {f.ent['t']} {self.TH_NOUN.get(f.field, 'details')}"
+
+    def _told(self, stmts: list):
+        """Told statements as turns in the window (60%) or, as if they scrolled out, as [turn N] memory items (40%)."""
+        rng = self.rng
+        if rng.random() < 0.4:
+            t0 = int(rng.integers(1, 30))
+            items = [W.Item(B(x), G.pick(rng, ACKS).encode(), "turn", t0 + 3 * j) for j, x in enumerate(stmts)]
+            return self._filler(int(rng.integers(0, 3))), items
+        turns = []
+        for x in stmts:
+            turns += self._filler(int(rng.integers(0, 2)))
+            turns.append((B(x), G.pick(rng, ACKS).encode()))
+        return turns + self._filler(int(rng.integers(0, 2))), []
+
+    def _gold_for(self, sp, items, turns, values):
+        vals = [v.lower().encode() for v in values]
+        hit = lambda t: any(v in t.lower() for v in vals)
+        g = [sp["items"][k] for k, it in enumerate(items) if sp["items"][k] and hit(it.q + b" " + it.a)]
+        return g + [sp["turns"][i] for i in sp["turns"] if hit(turns[i][0] + b" " + turns[i][1])]
+
+    def _multi(self):
+        rng = self.rng
+        r = rng.random()
+        fs = [G.Fact(rng)]
+        while len(fs) < 3:
+            fs.append(G._other(rng, {f.ent["id"] for f in fs}))
+        st = [f.stored()[1] for f in fs]
+        if r < 0.25:                                     # several facts in one message, one asked later
+            k = 2 if rng.random() < 0.5 else 3
+            msg = (G.pick(rng, self.JOIN2).format(A=st[0], B=st[1], b=self._lcw(st[1])) if k == 2 else
+                   G.pick(rng, self.JOIN3).format(A=st[0], a=self._lcw(st[0]), B=st[1], C=st[2], c=self._lcw(st[2])))
+            ask = fs[int(rng.integers(k))]
+            turns, items = self._told([msg])
+            q, target, vals = ask.ask(), G4.your(ask.stored()[1]), [ask.value]
+        elif r < 0.50:                                   # two told facts asked in one message
+            turns, items = self._told(st[:2] if rng.random() < 0.6 else [G.pick(rng, self.JOIN2).format(A=st[0], B=st[1], b=self._lcw(st[1]))])
+            q1, q2 = fs[0].ask(), fs[1].ask()
+            if rng.random() < 0.5:
+                q1, q2 = q2, q1; fs[0], fs[1] = fs[1], fs[0]
+            q = G.pick(rng, self.ASK2).format(Q1=q1, Q2=q2, q2=self._lcw(q2), Q1n=q1.rstrip("?"))
+            target = G4.your(fs[0].stored()[1]) + " " + G4.your(fs[1].stored()[1])
+            vals = [fs[0].value, fs[1].value]
+        elif r < 0.70:                                   # one told, one never told
+            turns, items = self._told([st[0]])
+            known, unknown = fs[0], fs[1]
+            first_known = rng.random() < 0.5
+            q1, q2 = (known.ask(), unknown.ask()) if first_known else (unknown.ask(), known.ask())
+            q = G.pick(rng, self.ASK2).format(Q1=q1, Q2=q2, q2=self._lcw(q2), Q1n=q1.rstrip("?"))
+            ans = G4.your(known.stored()[1])
+            target = (f"{ans} But I don't have {self._topic(unknown)} in my memory." if first_known else
+                      f"I don't have {self._topic(unknown)} in my memory. {ans}")
+            vals = [known.value]
+        elif r < 0.85:                                   # a new statement and a question in one message
+            turns, items = self._told([st[0]])
+            q = G.pick(rng, self.WITHQ).format(S=st[1], Q=fs[0].ask(), q=self._lcw(fs[0].ask()))
+            target = G.pick(rng, ["Noted.", "Got it.", "Thanks, noted."]) + " " + G4.your(fs[0].stored()[1])
+            vals = [fs[0].value]
+        else:                                            # a quoted note with two facts, both asked
+            ev = [G.Fact(rng, "t")]
+            ev.append(G._other(rng, {ev[0].ent["id"]}))
+            while ev[1].kind != "t":
+                ev[1] = G.Fact(rng, "t")
+            sa, sb = ev[0].stored()[1], ev[1].stored()[1]
+            q1, q2 = ev[0].ask(), ev[1].ask()
+            q = G.pick(rng, self.NOTE).format(who=G.pick(rng, self.SENDERS), A=sa, B=sb, Q1n=q1.rstrip("?"), q2=self._lcw(q2),
+                                              q1i=self._lcw(ev[0].stored()[0]).rstrip("?"), q2i=self._lcw(ev[1].stored()[0]).rstrip("?") + "?")
+            turns, items = self._filler(int(rng.integers(0, 3))), []
+            target, vals = f"{sa} {sb}", [ev[0].value, ev[1].value]
+            c, ce, pl, _, sp = self._win(items, turns, q, target)
+            return self._done(c, ce, pl)                 # the facts are in the message itself
+        c, ce, pl, _, sp = self._win(items, turns, q, target)
+        return self._done(c, ce, pl, self._gold_for(sp, items, turns, vals))
+
+    def _store_rows(self):
+        if not hasattr(self, "_st2"):
+            from .tests.suite_v2 import store_split
+            want = "train" if self.split == "train" else "test"
+            store = self.paths.find("knowledge/knowledge_real.jsonl", ROOT / "data_real" / "shared" / "knowledge" / "knowledge_real.jsonl")
+            self._st2 = []
+            for line in open(store, encoding="utf-8"):
+                r = json.loads(line)
+                if r.get("source") != "qa_memory":
+                    continue
+                q, a = r["q"].strip(), r["a"].replace("\xa0", " ").strip()
+                if q.endswith("?") and 0 < len(a.rstrip(".").split()) <= 4 and len(q) < 90 and store_split(q) == want:
+                    self._st2.append((q[0].upper() + q[1:], a if a.endswith(".") else a + "."))
+        return self._st2
+
+    def _store_pair(self):
+        rng = self.rng
+        rows = self._store_rows()
+        (q1, a1), (q2, a2) = [rows[int(i)] for i in rng.choice(len(rows), 2, replace=False)]
+        items = [W.Item(B(q1), B(a1), "fact"), W.Item(B(q2), B(a2), "fact")]
+        if "multi2" in self.parts:                       # 20 Oct: decoys that look like one of the asked facts (c2 picked the
+            if not hasattr(self, "_st2_pre"):            # wrong one of two similar stored facts on 4 of 48 direct questions)
+                self._st2_pre = {}
+                for r_ in rows:
+                    self._st2_pre.setdefault(" ".join(r_[0].lower().split()[:4]), []).append(r_)
+            for qq in (q1, q2):
+                if rng.random() < 0.5:
+                    same = [r_ for r_ in self._st2_pre.get(" ".join(qq.lower().split()[:4]), []) if r_[0] not in (q1, q2)]
+                    if same:
+                        o = same[int(rng.integers(len(same)))]
+                        items.append(W.Item(B(o[0]), B(o[1]), "fact"))
+        elif rng.random() < 0.4:
+            o = rows[int(rng.integers(len(rows)))]
+            items.append(W.Item(B(o[0]), B(o[1]), "fact"))
+        rng.shuffle(items)
+        q = G.pick(rng, self.STORE2).format(Q1=q1, Q2=q2, q2=self._lcw(q2))
+        target = f"To your first question: {a1} To your second: {a2}"
+        c, ce, pl, _, sp = self._win(items, [], q, target)
+        gold = [sp["items"][k] for k, it in enumerate(items) if sp["items"][k] and it.a in (B(a1), B(a2))]
+        return self._done(c, ce, pl, gold)
+
     def recall_(self):
         rng = self.rng
+        if ("twomem" in self.parts or "twomem1" in self.parts) and rng.random() < 0.2:
+            return self._twomem()
+        if "twomem2" in self.parts and rng.random() < 0.1:
+            return self._twomem(joined=True)
+        if "reason" in self.parts and rng.random() < 0.3:
+            return self._reason()
+        if "reason15" in self.parts and rng.random() < 0.15:  # 20 Oct: half the dose (c1c: 100% on its tests, but documents and updates fell)
+            return self._reason()
+        if "reasoncr" in self.parts and rng.random() < 0.15:  # 20 Oct: counting and recaps only (no 'first thing told')
+            return self._reason()
         tgt = G.Fact(rng)
         nm = tgt.ent["id"].split()[-1] if tgt.kind == "p" and tgt.ent["id"].split()[-1] in G.NAMES else None
         name_fmt = lambda n: {"e": n, "E": n, "ep": n + "'s", "Ep": n + "'s"}
@@ -522,6 +874,7 @@ class Windows:
             own = next(j for j, t in enumerate(turns) if t[0] == tgt.stored()[1].encode())
             turns.insert(int(rng.integers(own + 1, len(turns) + 1)), (corr.encode(), G.pick(rng, ACKS).encode()))
             gold_txt.add(corr.encode()); all_txt.add(corr.encode())
+        turns = self._afterno(turns, B(q) + b" " + b" ".join(all_txt))
         # which turns scrolled out decides what the memory returns (only those; the engine skips in-window turns)
         items, kept = [], self._win([], turns, q, ans)[3]
         for _ in range(2):

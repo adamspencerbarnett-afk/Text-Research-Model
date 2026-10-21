@@ -1,7 +1,9 @@
 """Compare candidate models with the current best (recipes/BEST.json), front by front, pooling seeds; 2 standard errors.
     python research_side/compare_two_seeds.py CAND_s1 [CAND_s2 ...] [--best v24a_s1,v24a_s2]
-Reads results/suite_<name>_ev2full.json. Prints every front, marks significant wins (+) and losses (-), and the verdict
-under the rule: a new best must not lose any front beyond noise and must win more fronts than it loses."""
+Reads results/suite_<name>_ev2full.json and, when present, results/suite_<name>_ev2new.json (the tests added 19-20 Oct:
+two memories, conversation reasoning, refusal chain, real phrasing, probe v2, open-ended answers; a front counts only when
+every model compared has it). Prints every front, marks significant wins (+) and losses (-), and the verdict under the
+rule: a new best must not lose any front beyond noise and must win more fronts than it loses."""
 from __future__ import annotations
 
 import argparse
@@ -17,9 +19,15 @@ from chat22.tests.gate22 import fronts  # noqa: E402
 SKIP = ("latency", "cache", "probe lookup")     # probe lookup asks about A's Alpaca store: store-bound, not a model front
 
 
-def load(n):
-    p = ROOT / "results" / f"suite_{n}_ev2full.json"
-    return fronts(json.loads(p.read_text())) if p.exists() else None
+def load(n, tags=("_ev2full", "_ev2new")):
+    p = ROOT / "results" / f"suite_{n}{tags[0]}.json"
+    if not p.exists():
+        return None
+    f = fronts(json.loads(p.read_text()))
+    q = ROOT / "results" / f"suite_{n}{tags[1]}.json"
+    if q.exists():
+        f.update(fronts(json.loads(q.read_text())))
+    return f
 
 
 def pool(xs):
@@ -42,9 +50,10 @@ def fmt(x):
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("cands", nargs="+"); ap.add_argument("--best", default=None)
+    ap.add_argument("--cand-tags", default="_ev2full,_ev2new", help="result tags of the candidates (an answer-time change: the best's seeds under other tags)")
     a = ap.parse_args()
     best = (a.best or ",".join(json.loads((ROOT / "recipes" / "BEST.json").read_text())["best"]["seeds_confirmed"])).split(",")
-    B = [f for f in (load(n) for n in best) if f]; C = [f for f in (load(n) for n in a.cands) if f]
+    B = [f for f in (load(n) for n in best) if f]; C = [f for f in (load(n, tuple(a.cand_tags.split(","))) for n in a.cands) if f]
     if not B or not C:
         print("missing suite results"); return 1
     wins = losses = 0; rows = []

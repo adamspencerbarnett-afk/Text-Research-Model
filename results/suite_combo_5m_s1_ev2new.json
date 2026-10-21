@@ -1,0 +1,324 @@
+{
+ "model": "runs/chat22/combo_5m_s1.pt",
+ "engine": "chat22",
+ "tier": "full",
+ "date": "2026-10-20 01:55",
+ "retrieval": "word key + MiniLM dense key (outside reference)",
+ "engine_opts": "{\"search\": \"v2\", \"hop2\": true}",
+ "clean_store_after_stored_skills": true,
+ "afterno": {
+  "answered_after_refusal": {
+   "k": 139,
+   "n": 160,
+   "share": 0.869,
+   "ci95": [
+    0.808,
+    0.913
+   ]
+  },
+  "control_no_refusal": {
+   "k": 135,
+   "n": 160,
+   "share": 0.844,
+   "ci95": [
+    0.78,
+    0.892
+   ]
+  },
+  "never_told_refused": {
+   "k": 159,
+   "n": 160,
+   "share": 0.994,
+   "ci95": [
+    0.965,
+    0.999
+   ]
+  },
+  "after_by_type": {
+   "arithmetic": {
+    "k": 40,
+    "n": 40,
+    "share": 1.0,
+    "ci95": [
+     0.912,
+     1
+    ]
+   },
+   "told fact": {
+    "k": 33,
+    "n": 40,
+    "share": 0.825,
+    "ci95": [
+     0.68,
+     0.913
+    ]
+   },
+   "stored fact": {
+    "k": 28,
+    "n": 40,
+    "share": 0.7,
+    "ci95": [
+     0.546,
+     0.819
+    ]
+   },
+   "after two refusals": {
+    "k": 38,
+    "n": 40,
+    "share": 0.95,
+    "ci95": [
+     0.835,
+     0.986
+    ]
+   }
+  },
+  "control_by_type": {
+   "arithmetic": {
+    "k": 40,
+    "n": 40,
+    "share": 1.0,
+    "ci95": [
+     0.912,
+     1
+    ]
+   },
+   "told fact": {
+    "k": 34,
+    "n": 40,
+    "share": 0.85,
+    "ci95": [
+     0.709,
+     0.929
+    ]
+   },
+   "stored fact": {
+    "k": 25,
+    "n": 40,
+    "share": 0.625,
+    "ci95": [
+     0.47,
+     0.758
+    ]
+   },
+   "after two refusals": {
+    "k": 36,
+    "n": 40,
+    "share": 0.9,
+    "ci95": [
+     0.769,
+     0.96
+    ]
+   }
+  }
+ },
+ "phrasing": {
+  "total": {
+   "k": 125,
+   "n": 200,
+   "share": 0.625,
+   "ci95": [
+    0.556,
+    0.689
+   ]
+  },
+  "wrong_refusals": 32,
+  "groups": {
+   "plain_case": {
+    "k": 97,
+    "n": 144,
+    "share": 0.674,
+    "ci95": [
+     0.593,
+     0.745
+    ]
+   },
+   "lower_case": {
+    "k": 28,
+    "n": 56,
+    "share": 0.5,
+    "ci95": [
+     0.373,
+     0.627
+    ]
+   },
+   "with_chat_between": {
+    "k": 111,
+    "n": 170,
+    "share": 0.653,
+    "ci95": [
+     0.579,
+     0.72
+    ]
+   },
+   "no_chat_between": {
+    "k": 14,
+    "n": 30,
+    "share": 0.467,
+    "ci95": [
+     0.302,
+     0.639
+    ]
+   }
+  }
+ },
+ "probe2": {
+  "lookup": {
+   "k": 10,
+   "n": 13,
+   "share": 0.769,
+   "ci95": [
+    0.497,
+    0.918
+   ]
+  },
+  "not_lookup": {
+   "k": 13,
+   "n": 19,
+   "share": 0.684,
+   "ci95": [
+    0.46,
+    0.846
+   ]
+  },
+  "by_section": {
+   "stored": {
+    "k": 5,
+    "n": 5,
+    "share": 1.0,
+    "ci95": [
+     0.566,
+     1
+    ]
+   },
+   "reworded": {
+    "k": 3,
+    "n": 5,
+    "share": 0.6,
+    "ci95": [
+     0.231,
+     0.882
+    ]
+   },
+   "knowledge": {
+    "k": 2,
+    "n": 5,
+    "share": 0.4,
+    "ci95": [
+     0.118,
+     0.769
+    ]
+   },
+   "heldout": {
+    "k": 4,
+    "n": 5,
+    "share": 0.8,
+    "ci95": [
+     0.376,
+     0.964
+    ]
+   },
+   "taught": {
+    "k": 4,
+    "n": 6,
+    "share": 0.667,
+    "ci95": [
+     0.3,
+     0.903
+    ]
+   },
+   "arithmetic": {
+    "k": 3,
+    "n": 3,
+    "share": 1.0,
+    "ci95": [
+     0.438,
+     1
+    ]
+   },
+   "chat": {
+    "k": 2,
+    "n": 3,
+    "share": 0.667,
+    "ci95": [
+     0.208,
+     0.939
+    ]
+   }
+  }
+ },
+ "reason": {
+  "count": {
+   "k": 27,
+   "n": 30,
+   "share": 0.9,
+   "ci95": [
+    0.744,
+    0.965
+   ]
+  },
+  "first_told": {
+   "k": 30,
+   "n": 30,
+   "share": 1.0,
+   "ci95": [
+    0.886,
+    1
+   ]
+  },
+  "summary": {
+   "k": 20,
+   "n": 20,
+   "share": 1.0,
+   "ci95": [
+    0.839,
+    1
+   ]
+  },
+  "summary_mean_coverage": 0.988
+ },
+ "twomem": {
+  "combined": {
+   "k": 33,
+   "n": 48,
+   "share": 0.688,
+   "ci95": [
+    0.547,
+    0.801
+   ]
+  },
+  "direct_store_question": {
+   "k": 35,
+   "n": 48,
+   "share": 0.729,
+   "ci95": [
+    0.59,
+    0.834
+   ]
+  },
+  "patterns": 8
+ },
+ "open": {
+  "good": {
+   "k": 14,
+   "n": 40,
+   "share": 0.35,
+   "ci95": [
+    0.221,
+    0.505
+   ]
+  },
+  "mean_f1": 0.149,
+  "complete": {
+   "k": 35,
+   "n": 40,
+   "share": 0.875,
+   "ci95": [
+    0.739,
+    0.945
+   ]
+  },
+  "mean_repetition": 0.007,
+  "mean_words": 51.6
+ },
+ "seconds": 524
+}

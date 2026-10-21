@@ -1,6 +1,6 @@
 # Setup, training data and the full pipeline
 
-*Current as of 19 October 2026 (the chat22 line, best recipe in `recipes/BEST.json`). Replaces the 13 October version.*
+*Current as of 20 October 2026: the best model is C2b (recipe in `recipes/BEST.json`). The 100M has its own guide: `docs/TRAIN_100M.md`.*
 
 Everything runs on one machine with an NVIDIA GPU (the research uses an RTX 3090, 24 GB, Windows 10). Commands use the
 Windows paths (`.venv/Scripts/python.exe`) in bash (Git Bash); on Linux or macOS use `.venv/bin/python`, and for the chain
@@ -29,20 +29,25 @@ g++ -O2 -std=c++17 -o data/cv0.exe compiler/native/cv0.cpp     # pass its ABSOLU
 
 | file | what | size |
 | --- | --- | --- |
-| `runs/chat22/mix_5m_s2.pt` + `.tables.npz` | the best chat model (round 5, seed 2) and its n-gram tables (LFS) | 28 + 92 MB |
+| `runs/chat22/combo2b_5m_s1.pt` + `.tables.npz` | the best chat model (C2b) and its n-gram tables (LFS) | 28 + 92 MB |
 | `runs/core_mt5m/scale_custom_v0_8k.pt` | the 5M core every chat model starts from (LFS) | 27 MB |
 | `runs/core_mt5m/v0_8k_plain.cv0d` | the 8,192-entry dictionary of the compiler | 66 KB |
 | `data_real/shared/knowledge/knowledge_real.jsonl` | the permanent store: 311,010 real facts (LFS) | 87 MB |
 | `data_chat22/eval_clean/`, `data_core/eval_clean/heldout/`, `data_mt/heldout/` | held-out text and dialogues the suite and training's held-out windows read | 16 MB |
 | `data_skills/test_v2.json`, `test_v4_rewrite.json` | the skills test sets | 61 KB |
 
-That is enough to chat with the best model (`run_model.py`, option 3) and to run the full suite on it.
+That is enough to chat with the best model (`run_model.py`, option 3) and to run the full suite on it. The training data
+and the 100M core are in `datasets/` (Git LFS, fetched on request; `datasets/README.md`).
 
-## 3. Training data for the best recipe (not in git)
+## 3. Training data for the best recipe
 
-`chat22.train` with the base recipe (`--data-dir data_real/5m_mixed --parts longconv,longdocs,alpacaqa`) reads these
-files. Each training log prints the resolved list as "data sources". About 2.7 GB in all; the quickest way is to copy
-them from Adam's machine to the same paths.
+`chat22.train` with the C2b recipe (`--data-dir data_real/5m_mixed --parts longconv,longdocs,alpacaqa,multi2`) reads these
+files (each training log prints the resolved list as "data sources"); 2.75 GB in all, in one bundle:
+
+```bash
+git lfs pull --include="datasets/c2b_5m/*"
+tar -xJf datasets/c2b_5m/c2b_5m_training_data.tar.xz      # from the repo root
+```
 
 | path | size | what | built by |
 | --- | ---: | --- | --- |
@@ -53,6 +58,7 @@ them from Adam's machine to the same paths.
 | `data_chat22/rehearse_P100_whole_554MB_seed1.txt` | 555 MB | plain-text rehearsal (Wikipedia, web, books, conversations, evidence pairs) | `chat22/data/build_data.py --only rehearse` (from `data_core/mix_P100`) |
 | `data_core/mix_P100/train/books.txt` | 224 MB | long documents for story continuation and reading | `compiler/experiments/prepare_core_mix.py mix ... --recipe P100` |
 | `data_real/shared/look/facts_pool_real.jsonl` | 61 MB | real look-alike facts for the search in training | `python -m chat22.data.build_real` |
+| `data_real/shared/look/facts_pool_mixed.jsonl` | 65 MB | the pool behind the sessions (to build more) | real pool + the skills data's 20,001 personal facts |
 | `data_real/5m_mixed/longconv/longconv_s1_[0-3].jsonl` | 593 MB | any-length sessions on the mixed pool (real facts + generated personal facts) | `chat22.data.build_v23`, below |
 
 The any-length sessions of the best recipe (4 shards in parallel on the CPU, about 1.5 hours):
@@ -76,15 +82,17 @@ bash compiler/experiments/chains/train_best.sh 1 idea_s1 --parts ...      # the 
 ```
 
 `train_best.sh` reads `recipes/BEST.json` (core, data folder, mix, parts, shares, step floor and ceiling, patience,
-memory settings, GPU share), trains (about 3 hours), runs the full suite (35 minutes) and compares with the best's two
-seeds. The underlying commands:
+memory settings, GPU share, answer-time engine options), trains (about 2 hours), runs the full suite and the new tests
+(about 50 minutes) and compares with the best. The underlying commands:
 
 ```bash
 .venv/Scripts/python.exe -B -m chat22.train --name NAME --core runs/core_mt5m/scale_custom_v0_8k.pt --data-dir data_real/5m_mixed \
-    --mix v22 --parts longconv,longdocs,alpacaqa --shares "$(python -c "import json;print(json.dumps(json.load(open('recipes/BEST.json'))['base']['train']['shares']))")" \
+    --mix v22 --parts longconv,longdocs,alpacaqa,multi2 --shares "$(python -c "import json;print(json.dumps(json.load(open('recipes/BEST.json'))['base']['train']['shares']))")" \
     --seed 1 --min-steps 30000 --max-steps 48000 --patience 10 \
     --memory-opts '{"gate": [0.3, 0.6], "gate_facts": [0.5, 0.8], "k_facts": 2, "k_session": 4}' --gpu-frac 0.6
-.venv/Scripts/python.exe -B -m chat22.tests.run_suite runs/chat22/NAME.pt --tier full --engine-opts '{"search": "v2"}' --tag _ev2full
+EO='{"search": "v2", "hop2": true, "split": true}'
+.venv/Scripts/python.exe -B -m chat22.tests.run_suite runs/chat22/NAME.pt --tier full --engine-opts "$EO" --tag _ev2full
+.venv/Scripts/python.exe -B -m chat22.tests.run_suite runs/chat22/NAME.pt --tier full --engine-opts "$EO"     --sections afterno,phrasing,probe2,reason,twomem,open,multi --tag _ev2new
 ```
 
 `--shares` must name every kind (the trainer logs the effective shares). The model, its tables and a resume state go to
@@ -92,7 +100,39 @@ seeds. The underlying commands:
 `results/suite_NAME_ev2full.json`.
 
 Side tests used on candidates: `research_side/natural_rewording_test.py` (the same facts asked the way people talk),
-`research_side/fresh_facts_test.py` (facts added after training), `research_side/engine_v2_study.py` (search quality).
+`research_side/fresh_facts_test.py` (facts added after training).
+
+### The 20 October additions: new tests, training switches, answer-time options, the loop
+
+```bash
+# the new tests (chat22/tests/suite_v2.py), merged by compare_two_seeds.py
+.venv/Scripts/python.exe -B -m chat22.tests.run_suite runs/chat22/NAME.pt --tier full --engine-opts '{"search": "v2"}' \
+    --sections afterno,phrasing,probe2,reason,twomem,open,multi --tag _ev2new      # add --merge to re-run one section
+```
+
+| test | what it checks |
+| --- | --- |
+| `afterno` | answers directly after a correct refusal (arithmetic, told fact, stored fact, after two refusals) vs the same with no refusal |
+| `phrasing` | 200 told-and-asked facts in natural chat wording the training never uses |
+| `probe2` | the 32-question chat probe with stored / reworded questions rewritten for the real store |
+| `reason` | counting what was told, the first thing told, a summary |
+| `twomem` | a told personal fact plus a stored real fact ("My favorite song is X." -> "Who wrote my favorite song?"); control: the store question asked directly |
+| `open` | open-ended requests vs held-out Alpaca references (overlap, complete last sentence, repetition, length) |
+| `multi` | several facts told at once, two asked at once, known + unknown, statement + question, two stored facts, a quoted note |
+
+Training switches (`--parts`, each leaves older recipes byte-identical): `afterno` (30% of qa / skills / recall /
+any-length windows get 1-2 earlier correct refusals), `twomem` (20% of recall windows: told fact + stored fact from the
+store's train split), `reason` (30% of recall windows: counting, first told, recap), `multi` (35% of skills windows:
+multi-part messages; 15% of qa windows: two stored facts asked at once). `--accum N` runs a batch in N parts (for the 100M).
+
+Answer-time options (engine and suite `--engine-opts`, off by default): `"hop2": true` (two-hop search through what the
+user said), `"split": true` (one search per question of a message; each sentence of a statement parsed).
+
+The loop: `recipes/LOOP.json` lists the candidates (BASE + changes, optional `engine_opts`); `research_side/loop_5m.py`
+trains seed 1, runs the full suite and the new tests, compares, trains seed 2 only for a win with no front lost, and
+writes a two-seed winner into `recipes/BEST.json`. Start it with
+`nohup .venv/Scripts/python.exe -u research_side/loop_5m.py >> runs/loop_5m.log 2>&1 &`; mark a round `"ready": true`
+when its code is smoke-tested.
 
 ## 5. Rebuilding the data from the sources
 

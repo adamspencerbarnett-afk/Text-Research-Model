@@ -62,6 +62,33 @@ def fronts(r: dict) -> dict:
         f["story contradictions per scene"] = ("lower_abs", v, 0.1)
     if used:
         f["story character facts used"] = ("share", used["k"], used["n"])
+    # 20 Oct sections (chat22/tests/suite_v2.py)
+    for key, name in (("answered_after_refusal", "afterno answered after a refusal"), ("never_told_refused", "afterno never told refused"),
+                      ("control_no_refusal", "afterno control (no refusal)")):
+        t = get("afterno", key)
+        if t:
+            f[name] = ("share", t["k"], t["n"])
+    t = get("phrasing", "total")
+    if t:
+        f["phrasing natural wording"] = ("share", t["k"], t["n"])
+    for s_ in ("lookup", "not_lookup"):
+        t = get("probe2", s_)
+        if t:
+            f[f"probe2 {s_}"] = ("share", t["k"], t["n"])
+    for key in ("count", "first_told", "summary"):
+        t = get("reason", key)
+        if t:
+            f[f"reason {key.replace('_', ' ')}"] = ("share", t["k"], t["n"])
+    for key, name in (("combined", "twomem personal + stored fact"), ("direct_store_question", "twomem direct store question")):
+        t = get("twomem", key)
+        if t:
+            f[name] = ("share", t["k"], t["n"])
+    t = get("multi", "all_parts_right")
+    if t:
+        f["multi-part messages all parts right"] = ("share", t["k"], t["n"])
+    t = get("open", "good")
+    if t:
+        f["open-ended answers good"] = ("share", t["k"], t["n"])
     v = get("latency", "first_code_ms_p95")
     if v is not None:
         f["latency first code p95 ms"] = ("lower", v, 0.2)

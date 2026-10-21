@@ -249,6 +249,28 @@ Flags: `copy` learned copy head over the retrieved exchange; `evid` bigram table
 - The exact-table gain reverses with core size: +10% at 0.8M, 0 at 4.7M, -1% at 19M (equal time), and 9-12% worse on Wikipedia. The tables are a crutch for a small core; the trust head does not reject them off-domain.
 - The tables stay as the store that learns by reading; they are not the mechanism for 'lighter and faster at equal quality'. The memory and the copy head are.
 
+**20 Oct, the combined runs and C2b (best v3)**
+
+- e1 two-hop search adopted (told fact + stored fact 0/96 -> 31/96, every other front identical); e2 question splitting harmless, no gain alone.
+- c1 (afterno + twomem + reason, recall 0.21): counting 27/30, first told 30/30, summary 20/20, told fact + stored fact 33/48, but 9 losses in the refusal direction (direct store questions 35/48, story questions 31/75). c1b (no afterno, twomem1): 5 wins, 7 losses. c1c (reason only): restored story and store answers, lost documents, near-miss, updates. c1d (reason15 + twomem2): story questions 25/75. Every twomem form taught answering from stored facts over the conversation; reason at 15-30% of recall cost documents and near-miss.
+- c2 (multi + mixed3 sessions): multi-part 86/120 vs 64/240, natural wording 175/200; losses: story contradictions 0.04, direct store 44/48 (wrong one of two look-alikes). c3 stopped (would inherit the c1d losses).
+- c2b (multi2 with look-alike decoys, round 5's sessions; split + hop2): 5 wins (multi-part 92/120 = 77%, natural wording 90%, conversation 98%, near-miss 70%, story questions 87%), 2 losses (story contradictions 0.08, told fact + stored fact 5/48); adopted by Adam as the strongest model (best v3). 100M check: the C2b recipe on the 109M core runs at 0.83 s/step with --accum 2 (11.5 GB peak).
+
+**20 Oct, the combined 5M loop (recipes/LOOP.json)**
+
+- New tests (chat22/tests/suite_v2.py, tag _ev2new) on BEST's two seeds: told fact + stored fact 0/96 (the same store questions asked directly 96/96); counting 3/60, first thing told 0/60, summary 0/40; natural wording 318/400; answers right after a refusal 300/320 vs 307/320 with none; probe v2 19/26 store, 19/38 other; open-ended 24/80 good; multi-part about 0 except one of three told facts (3/3).
+- Retrieval limits combination: the stored fact behind 'Who wrote my favorite song?' was never retrieved (0/48) and a two-question message was searched as one query (both stored facts in the block 0/12). Engine options hop2 (two-hop search: 41/48) and split (one search per question: 10/12), off by default, judged on BEST's seeds without training.
+- Audit: memory facts were told one per message and asked one per message in every memory kind; real dialogues are multi-part (14% two+ questions, 52% statement + question) but only train general chat. Training switches added (each byte-identical when off, 320/320 windows): afterno, twomem, reason, multi; --accum for the 100M.
+- Adam: line the missing abilities up in combined runs instead of one round each; c1 (afterno + twomem + reason, recall 0.21, tested with hop2) training; c2 (c1's result + multi + round 6's lesson at half strength, tested with split + hop2) queued.
+
+**18-19 Oct, sessions 45-57 (real data, the improvement rounds, BEST v2)**
+
+- Real-data recipe vs A: lost on documents, never told and invented share (real Q&A is mostly passage reading; encyclopedic sessions); fixed in rounds: Alpaca Q&A kind back (round 3), sessions on the real pool (round 4).
+- Round 5 = BEST v2 (sessions on the mixed pool: 212,947 real facts + 20,001 generated personal facts; deployed store real-only): vs A two seeds 7 significant wins, 0 losses (right with memory 2,378 vs 2,271/2,688; corrections, distractors; documents 223/168 vs 185/122 of 408; story contradictions 0.00).
+- Suite fixes: the engine is rebuilt after the stored-skills section (180 test facts had leaked into later sections since 16 Oct); story contradictions judged per sentence for the character named in it.
+- Round 6 (all 51k Alpaca stored Q&A in the sessions): told skills 51% vs 39%, documents in window 31% vs 41%, story contradictions 0.04: parked. Round 7 (natural rewordings in 40% of session questions): 0 wins, near-miss skills lost: parked.
+- recipes/BEST.json became the single cumulative record (best, base, data, answer time, tests, lessons, rejected changes, open fronts, history); train_best.sh and compare_two_seeds.py read it.
+
 **17 Oct, sessions 42-43 (v2.3 results, diagnosis, variant A)**
 
 - v2.3 (two seeds): recall of 30 facts flat to 10,000 turns (22-25/30 vs best earlier 15); with engine v2 83-90%; reply time ~0.26 s at every length. Lost: never told in the window 99% -> 45-72%, documents, skill updates 5/40, told facts refused 72-81 times. Seed 2 stopped early (plateau at 12,000 on noisy checks).

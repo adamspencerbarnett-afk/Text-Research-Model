@@ -30,7 +30,8 @@ ABSTAIN = (b"don't have that", b"do not have that", b"don't know", b"not in my m
 
 class Engine:
     def __init__(self, checkpoint: str, device: str = "cuda", dense: bool | None = None, gate=(0.15, 0.55), log=print, memory_opts: dict | None = None,
-                 search: str = "v1", judge_path: str | None = None, facts_path: str | None = None):
+                 search: str = "v1", judge_path: str | None = None, facts_path: str | None = None, hop2: bool = False,
+                 split: bool = False):
         ck = torch.load(checkpoint, map_location="cpu", weights_only=False)
         self.cfg = cfg = ck["config"]
         self.dev = torch.device(device if (device != "cuda" or torch.cuda.is_available()) else "cpu")
@@ -72,6 +73,10 @@ class Engine:
             from .search_v2 import JudgeScorer, SearchV2
             judge = JudgeScorer(ROOT / judge_path, str(self.dev)) if judge_path else None
             self.search = SearchV2(self.memory, judge)
+        self.hop2 = hop2                                  # two-hop search (20 Oct, off by default): see _hop2
+        self.split = split                                # one search per question of the message (20 Oct, off by default): see _questions
+        if split and self.search is not None:
+            self.search.split_statements = True           # a message telling several facts gives one fact-table record each
         self.history: list[tuple[bytes, bytes]] = []
         self.first_kept = 0                               # turns before this index are out of the window
         self._pc = None                                   # (codes, cache, states) of the last reply
@@ -118,6 +123,69 @@ class Engine:
         first_in = len(self.history) - kept + (2 if kept else 1)
         return codes, copy_end, kept, first_in
 
+    def _hop2(self, msg: bytes, items: list) -> list:
+        """Two-hop search (20 Oct, recipes/LOOP.json e1): a stored fact reached through something the user said. "Who
+        wrote my favorite song?" shares words with the earlier statement 'My favorite song is "X".'; the store is searched
+        again with that statement, and its best stored fact is added only if it names the statement's new words (X) AND
+        a stem of the question's other words ("wrote"). Personal fact questions (the fast lane's) are left alone."""
+        from .memory import key_of
+        if self.search is not None:
+            from .search_v2 import parse_question
+            if parse_question(msg.decode("utf-8", "replace")) is not None:
+                return items
+        qk = key_of(msg)
+        cands = [it.q for it in items if it.source == "turn"] + [u for u, _ in self.history[self.first_kept:][-8:]]
+        best, ov = None, 0
+        for t in cands:
+            if t.rstrip().endswith(b"?"):
+                continue
+            k = key_of(t)
+            if len(k & qk) > ov and k - qk:
+                best, ov = t, len(k & qk)
+        if best is None:
+            return items
+        new, rest = key_of(best) - qk, qk - key_of(best)
+        stems = {w[:4] for w in rest if len(w) > 2}
+        found, _ = self.memory.search(msg + b" " + best, (), None, k_facts=3, k_session=0)
+        have = {id(it) for it in items}
+        for it in found:
+            hk = key_of(it.q + b" " + it.a)
+            if it.source == "fact" and id(it) not in have and hk & new and {w[:4] for w in hk} & stems:
+                return items[:1] + [it] + items[1:]
+        return items
+
+    @staticmethod
+    def _questions(msg: bytes) -> list:
+        """The questions of a message (20 Oct, recipes/LOOP.json): its sentences that end in '?', and a question joined to
+        another by ', and' / ' and' before a question word. A message with no question is searched whole."""
+        text = msg.decode("utf-8", "replace")
+        sents = [x.strip() for x in re.split(r"(?<=[.!?])\s+", text) if x.strip()]
+        qs = []
+        for x in sents:
+            if not x.endswith("?"):
+                continue
+            parts = re.split(r",?\s+(?:and|also|plus)\s+(?=(?:what|where|when|who|whom|which|how|is|are|does|do|did|can|could)\b)", x, flags=re.I)
+            qs += [y.strip().rstrip("?,") + "?" for y in parts if len(y.split()) >= 3]
+        return [q.encode("utf-8") for q in qs] or [msg]
+
+    def _search(self, msg: bytes, first_in) -> tuple[list, dict]:
+        S = self.search or self.memory
+        recent = [t[0] for t in self.history[-2:]]
+        qs = self._questions(msg) if self.split else [msg]
+        if len(qs) == 1:
+            items, found = S.search(qs[0], recent, first_in)
+            return (self._hop2(qs[0], items) if self.hop2 else items), found
+        lists = []
+        for q in qs:
+            it, _ = S.search(q, recent, first_in)
+            lists.append(self._hop2(q, it) if self.hop2 else it)
+        merged, seen = [], set()
+        for rank in range(max(len(x) for x in lists)):  # the best item of every question first, then the second best...
+            for x in lists:
+                if rank < len(x) and id(x[rank]) not in seen:
+                    seen.add(id(x[rank])); merged.append(x[rank])
+        return merged, {"path": f"split into {len(qs)} questions"}
+
     @torch.no_grad()
     def reply(self, msg: bytes, max_codes: int = 300, use_memory: bool = True, use_tools: bool = True, verify: int = 0,
               stream=None) -> tuple[bytes, dict]:
@@ -126,12 +194,12 @@ class Engine:
         _, _, kept0, first_in = self._window([], msg, max_codes)
         items, found = [], {}
         if use_memory:
-            items, found = (self.search or self.memory).search(msg, [t[0] for t in self.history[-2:]], first_in)
+            items, found = self._search(msg, first_in)
         if tool:
             items = [W.Item(tool[0], tool[1], "fact")] + items
         prompt, copy_end, kept, first_in2 = self._window(items, msg, max_codes)
         if use_memory and first_in2 != first_in:               # the memory block pushed turns out: search again
-            items, found = (self.search or self.memory).search(msg, [t[0] for t in self.history[-2:]], first_in2)
+            items, found = self._search(msg, first_in2)
             if tool:
                 items = [W.Item(tool[0], tool[1], "fact")] + items
             prompt, copy_end, kept, _ = self._window(items, msg, max_codes)

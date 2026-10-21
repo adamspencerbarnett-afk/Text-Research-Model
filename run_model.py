@@ -1,6 +1,7 @@
-"""Train a model on a folder of text files, or chat with a saved model. Menu driven.
+"""Chat with the best model (C2b, menu option 3), train on a folder of text files, or chat with a saved model.
 
-    python run_model.py              # menu: train on a folder, or chat with a model
+    python run_model.py              # menu (option 3 = chat with the best model)
+    python run_model.py --chat runs/chat22/combo2b_5m_s1.pt   # chat with C2b directly
     python run_model.py --train DIR  # skip the menu
     python run_model.py --chat MODEL.pt
 
@@ -80,9 +81,11 @@ SETTINGS = dict(
                             # answers alone. 0.0 for the 5M model (gate 0.5 drops the probe 21 -> 19/32);
                             # 0.5 for the 50M models (21 -> 24/32), whose network alone is good enough
     # --- places
-    BEST_CHAT_MODEL="runs/chat22/mix_5m_s2.pt",   # the best chat model (menu option 3, 19 Oct): round 5 "A + real memory, sessions on the mixed pool" (recipes/BEST.json v2); seed 2 refuses told facts less often than seed 1 (41 vs 71 wrong refusals)
+    BEST_CHAT_MODEL="runs/chat22/combo2b_5m_s1.pt",   # the best chat model (menu option 3, 20 Oct): C2b = round 5's recipe + multi-part messages (recipes/BEST.json v3)
     CHAT22_SEARCH="v2",     # chat22 models: "v2" = search engine v2 (fact table, fast lane, decide); "v1" = the word + meaning search
     CHAT22_FACTS=None,      # chat22 models: another permanent store (.jsonl / .txt) instead of the one saved with the model
+    CHAT22_HOP2=True,       # chat22 models: two-hop search ("Who wrote my favorite song?" -> the stored fact about that song); adopted 20 Oct (recipes/BEST.json)
+    CHAT22_SPLIT=True,      # chat22 models: one memory search per question of a message ("Where does Kim live and what does she do?"); adopted with C2b
     CHAT_INFO="short",      # chat22 models: the line under each reply: "off", "short" (where the answer came from, window fill,
                             #   time) or "full" (also the search path, items, codes, first-word wait)
     BEST_MODEL="models/qa_best_5M_dense.pt",   # the best Q&A model in git (menu option 5): probe 24/32; needs sentence-transformers; the 50M models are local in runs/
@@ -713,7 +716,7 @@ def chat_chat22(path: str) -> None:
     dev = device()
     if dev == "auto":
         dev = "cuda" if torch.cuda.is_available() else "cpu"
-    eng = Engine(path, dev, log=say, search=S["CHAT22_SEARCH"], facts_path=S["CHAT22_FACTS"])
+    eng = Engine(path, dev, log=say, search=S["CHAT22_SEARCH"], facts_path=S["CHAT22_FACTS"], hop2=S["CHAT22_HOP2"], split=S["CHAT22_SPLIT"])
     n_codes = S["CHAT_REPLY_CODES"]; use_mem = True; level = S["CHAT_INFO"]
     print(f"\nChat with {Path(path).stem} (window {eng.ctx:,} codes, search {S['CHAT22_SEARCH']}, {len(eng.memory.facts.items):,} stored facts)\n"
           "  /add question || answer   store a permanent fact        /load [file.txt]   store many (User:/Assistant: pairs)\n"

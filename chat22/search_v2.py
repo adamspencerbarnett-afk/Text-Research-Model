@@ -211,6 +211,7 @@ class SearchV2:
         self.uploaded = FactTable()
         self.last_who = None
         self.judge = judge                              # part 2: scores (question, item); None = rules only
+        self.split_statements = False                   # 20 Oct (engine split=True): each sentence of a message is parsed
         self.index_existing_facts()
 
     def index_existing_facts(self):
@@ -245,14 +246,19 @@ class SearchV2:
         n0 = len(self.mem.session.items)
         self.mem.add_turn(user, reply, turn, vecs)
         item = self.mem.session.items[n0] if len(self.mem.session.items) > n0 else Item(user, reply, "turn", turn)
-        p = parse_statement(user.decode("utf-8", "replace"))
-        if p is None:
-            return
-        if p[0] == "link":
-            self.conv.link(p[1], p[2], item)
-        else:
-            self.conv.put(p[2], p[1], p[3], turn, item, p[4])
-            self.last_who = norm_who(p[2])[1]
+        text = user.decode("utf-8", "replace")
+        parts = [text]
+        if self.split_statements:                       # "My sister Kim is a nurse. She lives in Oslo." -> one record per sentence
+            parts = [x for x in re.split(r"(?<=[.!])\s+", text.strip()) if x] or [text]
+        for part in parts:
+            p = parse_statement(part)
+            if p is None:
+                continue
+            if p[0] == "link":
+                self.conv.link(p[1], p[2], item)
+            else:
+                self.conv.put(p[2], p[1], p[3], turn, item, p[4])
+                self.last_who = norm_who(p[2])[1]
 
     def forget_session(self):
         self.mem.forget_session(); self.conv = FactTable(); self.last_who = None

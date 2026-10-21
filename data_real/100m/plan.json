@@ -1,81 +1,15 @@
 {
  "size": "100m",
- "core": "runs/core_P100/scale_custom_v0_8k.pt",
- "batch": 16,
- "min_steps": 25000,
- "max_steps": 40000,
- "lr": 0.0001,
- "speed": "estimate: 2.5-3 s/step at 2,048 codes (the 100M Q&A stage ran 1.45 s/step at 1,024) -> 40k steps ~28-33 h; measure on the first run",
- "why": "compute-bound on one RTX 3090 (about two nights); a larger model memorizes faster, so real data near 1 pass",
- "shares": {
-  "qa": 0.13,
-  "skills": 0.13,
-  "convo": 0.1,
-  "recall": 0.14,
-  "buried": 0.14,
-  "docqa": 0.06,
-  "story": 0.08,
-  "rehearse": 0.11,
-  "longconv": 0.11
- },
- "windows_at_max_steps": 640000,
- "files": {
-  "qa": "shared/qa/qa_train.txt (+ dense_top4.npy)",
-  "qa_heldout": "shared/eval/qa_heldout.txt",
-  "skills": "shared/skills/train_v4c.jsonl",
-  "dialogues": "shared/convo/dialogues_train.jsonl",
-  "rehearsal": "100m/text/rehearse_REAL_whole_915MB_seed1.txt",
-  "long_and_story": "100m/long/long_over8k_real.txt",
-  "look_alikes": "shared/look/facts_pool_real.jsonl",
-  "any_length": "shared/longconv/longconv_*.jsonl",
-  "fact_store_at_answer_time": "shared/knowledge/knowledge_real.jsonl"
- },
- "data": {
-  "qa": 292675,
-  "skills": 127635,
-  "dialogues": 205623,
-  "longconv_rows": 65757,
-  "rehearsal_codes": 254277904,
-  "long_docs": 25059,
-  "long_codes": 216561284
- },
- "passes_at_max_steps": {
-  "Q&A (qa + 60% of buried)": {
-   "uses": 136960,
-   "have": 292675,
-   "passes": 0.47
-  },
-  "skills (skills + 40% of buried)": {
-   "uses": 119040,
-   "have": 127635,
-   "passes": 0.93
-  },
-  "conversations (convo)": {
-   "uses": 64000,
-   "have": 205623,
-   "passes": 0.31
-  },
-  "any-length conversations": {
-   "uses": 70400,
-   "have": 65757,
-   "passes": 1.07
-  },
-  "plain text (windows of 2,049 codes)": {
-   "uses": 144249600,
-   "have": 254277904,
-   "passes": 0.57
-  },
-  "long documents (story continuation half)": {
-   "uses": 52454400,
-   "have": 216561284,
-   "passes": 0.24
-  }
- },
- "train_command": "python -m chat22.train --name real_100m_s1 --data-dir data_real/100m --core runs/core_P100/scale_custom_v0_8k.pt --mix v22 --parts longconv,longdocs --shares '{\"qa\": 0.13, \"skills\": 0.13, \"convo\": 0.1, \"recall\": 0.14, \"buried\": 0.14, \"docqa\": 0.06, \"story\": 0.08, \"rehearse\": 0.11, \"longconv\": 0.11}' --min-steps 25000 --max-steps 40000 --patience 10 --gpu-frac 0.6",
- "before_training": [
-  "gradient accumulation in chat22/train.py (batch 16 x 2,049 codes will not fit 24 GB at 100M)",
-  "rope scale for 2,048 codes if the 100M core was trained at 1,024",
-  "Q&A near 1 pass needs ~140k real exchanges: Natural Questions / TriviaQA / HotpotQA / SciQ (download approval)",
-  "skills v5 for variety; more any-length sessions (8 shards) for variety"
- ]
+ "date": "2026-10-20",
+ "note": "Replaces the 17 Oct plan (a real-data recipe that lost at 5M). The 100M trains the C2b recipe (recipes/BEST.json) on the 109M core; full instructions in docs/TRAIN_100M.md.",
+ "core": "runs/core_P100/scale_custom_v0_8k.pt (datasets/100m/core_P100_109M.tar.xz)",
+ "data": "the C2b training data (datasets/c2b_5m/c2b_5m_training_data.tar.xz), --data-dir data_real/5m_mixed",
+ "parts": "longconv,longdocs,alpacaqa,multi2",
+ "shares": {"qa": 0.17, "skills": 0.135, "convo": 0.11, "recall": 0.12, "buried": 0.11, "docqa": 0.06, "story": 0.085, "rehearse": 0.1, "longconv": 0.11},
+ "rope_scale": 2.0, "ctx": 2048, "batch": 16, "accum": 2, "lr": 0.0001,
+ "min_steps": 25000, "max_steps": 40000, "patience": 10, "gpu_frac": 0.75,
+ "memory_opts": {"gate": [0.3, 0.6], "gate_facts": [0.5, 0.8], "k_facts": 2, "k_session": 4},
+ "answer_engine_opts": {"search": "v2", "hop2": true, "split": true},
+ "measured_20oct": {"accum_2": {"gpu_peak_gb": 11.54, "s_per_step": 0.83}, "accum_4": {"gpu_peak_gb": 6.85, "s_per_step": 0.93},
+                    "estimate": "about 10-11 h per seed at 40,000 steps on an RTX 3090"}
 }

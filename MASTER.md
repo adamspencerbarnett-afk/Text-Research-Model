@@ -1,75 +1,78 @@
 # MASTER: Text Research Model
 
-*Owner and research direction: Adam Barnett. Working branch `local-gpu-phase2`, pushed to `main` at each publish.*
+*Owner and research direction: Adam Barnett. Working branch `local-gpu-phase2`, pushed to `main` at each publish. Updated 20 Oct 2026 (handoff).*
 
 ## Goal
 
-The most intelligent chat model that fits a small size and one consumer GPU (RTX 3090): knowledge
-kept in memory outside the weights, a small network trained to read and copy from it, exact tools
-where exactness is possible, measured honestly (answer accuracy on held-out questions, equal steps
-and text, two seeds before building on a win, cost per run).
+The most capable chat model that fits a small size and one consumer GPU (RTX 3090): knowledge kept in memory outside
+the weights (a conversation memory of every turn and a permanent store of real facts), a small network trained to read
+and copy from it, exact tools where exactness is possible, measured honestly (answer accuracy on held-out questions,
+equal steps and data, two seeds when a choice is close, cost per run). Intended use at this size (Adam, 20 Oct): simple
+chat such as a game character, and finding facts quickly for someone.
 
 ## Standing rules
 
+- Strongest-model rule (Adam, 20 Oct): BEST is the strongest model we have; a model that is stronger overall replaces it.
+  A candidate with no front lost and at least one won is adopted automatically by the loop; a mixed result is Adam's call.
 - Precision: train in bf16; answer with bf16 weights and check int8. No fp32 or int4 runs (12 Oct).
-- Math paused (12 Oct): no GSM8K stages and no worked maths in new mixes; its own line later (archive/math_line).
-- Focus: text, Q&A and conversation, using the best current methods.
-- Git (19 Oct, for collaborators): code, research record (LOG, results, docs, recipes) and the current best model only. The best chat model, its core and the permanent store go through Git LFS (`git add -f`, see `.gitignore`); everything else in `runs/`, `data_*/`, `models/` and `archive/` stays local. Legacy kept local only is listed in `.git/info/exclude`. A new best replaces the shipped model.
-- Every run writes `results/*.json` with cost; findings go into `compiler/experiments/run_ledger.py`.
-- Queue runs automatically as chain scripts in `compiler/experiments/chains/`, with `watch.sh` wake-ups.
+- Math paused (12 Oct); focus on text, Q&A and conversation with the best current methods.
+- Permanent store = real facts only; invented names and stories only in conversation-memory training kinds (16-17 Oct).
+- Training data that works is not changed without a stated reason; one training at a time with `--gpu-frac`, at most 3/4 of the GPU and RAM.
+- No model above 100M parameters without Adam; the 100M training starts on Adam's (or the collaborator's) go.
+- Harmful-request handling is not a research target (a deterministic filter later, 20 Oct).
+- Every run writes `results/*.json` with cost; findings go into LOG.md and `compiler/experiments/run_ledger.py`.
+- Git (for collaborators): code, research record, the best model (LFS) and the training data bundles (`datasets/`, LFS,
+  fetched on request); everything else in `runs/`, `data_*/`, `models/`, `archive/` stays local (`.git/info/exclude`
+  lists legacy kept local). Push only when Adam asks.
 
-## The best recipe, cumulative (19 Oct)
+## The best model and recipe
 
-`recipes/BEST.json` is the single record of everything that works: BEST (the model to beat: variant A, two seeds), BASE (the recipe new rounds build on: round 4, A + real memory), the data every kind reads, the answer-time settings, every adopted lesson with its evidence, every rejected change with its evidence, and the open fronts with their plan. `bash compiler/experiments/chains/train_best.sh SEED NAME [one change]` trains the base recipe (plus one change) and tests it; `python research_side/compare_two_seeds.py NAME_s1 NAME_s2` gives the verdict against BEST (no front lost beyond noise, more wins than losses, two seeds). A winner becomes the new BEST and BASE in the file; the history stays.
+**BEST = BASE = C2b** (`runs/chat22/combo2b_5m_s1.pt`, best v3, 20 Oct; `run_model.py` option 3): round 5's recipe +
+multi-part messages. `recipes/BEST.json` holds the recipe, the answer-time settings, the tests and baselines, every adopted
+lesson and rejected change with evidence, the open fronts and the history. A model improves by improving this recipe:
+every candidate retrains the one chat stage from the same 5M core with BASE plus its changes (about 2 hours), so adopted
+pieces are in every later run.
 
-## Best results now (19 Oct)
+- Train: core `runs/core_mt5m/scale_custom_v0_8k.pt`; `chat22.train --data-dir data_real/5m_mixed --mix v22 --parts
+  longconv,longdocs,alpacaqa,multi2 --shares <BEST.json> --min-steps 30000 --max-steps 48000 --patience 10 --memory-opts
+  <stricter> --gpu-frac 0.6` (`bash compiler/experiments/chains/train_best.sh SEED NAME`).
+- Answer: engine search v2 + `hop2` + `split`; store `data_real/shared/knowledge/knowledge_real.jsonl` (311,010 real facts).
+- Data: `datasets/c2b_5m/c2b_5m_training_data.tar.xz` (590 MB, 2.75 GB unpacked; `datasets/README.md`).
 
-- Best chat model: **round 5, BEST v2** (`runs/chat22/mix_5m_s1.pt` / `mix_5m_s2.pt`, two seeds; seed 2 is the one used and shipped in git; `run_model.py` option 3; recipe = recipes/BEST.json): A's data + real sessions on the mixed pool. vs A's two seeds: 6 significant wins (right with memory 88% vs 84%, corrections and distractors from memory, documents 55%/41% vs 45%/30%), 0 losses; story contradictions 0.00 under the fixed metric. Earlier line: Two seeds vs A's two seeds (engine v2, fixed suite): better on distractors from memory 368 vs 342/408, near-miss skills 59 vs 46/80, story questions 117 vs 100/150, told skills 169 vs 151; level on never told, two-step, recall (flat 100 -> 10,000 turns), fluency; worse on skills "unknown" 46 vs 65/80 and story contradictions 1.62 vs 0.38 (round 5 targets these).
-- **To reproduce round 4:** `bash compiler/experiments/chains/session52_hybrid.sh` (seed 1) / `session53_hybrid_s2.sh` (seed 2): `chat22.train --data-dir data_real/5m_hybrid --mix v22 --parts longconv,longdocs,alpacaqa --shares <data_real/5m/recipe.json> --min-steps 30000 --max-steps 48000 --patience 10 --memory-opts <stricter> --gpu-frac 0.6`. Data: Alpaca Q&A (data_qa), P100 rehearsal + novels (data_chat22, data_core), skills v4c, dialogues; real parts from data_real/shared: longconv (sessions on the real pool), look (facts_pool_real), knowledge (knowledge_real.jsonl, 311k, the deployed store). The training log prints the resolved "data sources" and "effective shares". Tests: `run_suite --tier full --engine-opts '{"search": "v2"}' --tag _ev2full` (the suite rebuilds the engine after stored skills since 18 Oct).
-- The improvement loop (18-19 Oct): one change per round as a `--parts` switch (old recipes verified byte-identical), one seed, full suite vs A with a 2-SE check, second seed only for a win; LOG.md holds every round's numbers and verdict.
+## Results (C2b, one seed, vs round 5)
 
-## Earlier best (17 Oct)
+- Wins: multi-part messages 77% (27%); casual wording 90% (80%); conversation tasks 98% (92%); near-miss facts 70% (48%);
+  story questions 87% (76%). Losses: story contradictions 0.08 per scene (0.00); told fact + stored fact 10% (32%).
+- Held: right with memory 89%, invented 6.1%; recall 87/90/90% at 100/1k/10k turns; never told 90-100%; documents 57/39%;
+  direct store questions 100%; told skills 47%, stored 69%; first word 20 ms.
+- Not in C2b yet: counting / first thing told / summary (0%; learned to 90-100% in c1c, with costs).
 
-- Best chat model: **variant A** (`runs/chat22/v24a_s1.pt`, one seed): v2.2's recipe + any-length conversations 12% + full-length documents. Best or tied-best on 26 of 39 suite fronts. Memory on: one fact 87%, never told 98%, two-step 90%; recall of 30 facts 25/24/25 at 100/1k/10k turns; told skills 79/180; grounding 79% right, 10% invented. Open: documents ~30% (v2.1: 80%), skill updates 8/40, story consistency.
-- Answer path: chat22 engine; search engine v2 rules (`search="v2"`) beat today's search on every memory line at ~0.1 ms; permanent fact store = real facts only (`data_chat22/knowledge_wiki.jsonl`, Wikipedia, `facts_path`); memory setting: step 1's stricter.
-- Core: 5M modern block, Muon + WSD, P100 mix (`runs/core_mt5m`); 50M and 100M cores kept (`runs/core_P50`, `runs/core_P100`) for after the 5M study.
+## Where it stands (20 Oct, evening)
 
-## Scope now (17 Oct)
-
-The merged model (design: `docs/CHAT5M_V2_DESIGN.html#v24`): three training stages instead of the labs' five: (1) core, have it; (2) one merged chat stage with every specialised kind at its evidence-based share; (3) a grounding stage of auto-graded answer pairs on top. At answer time: engine v2 + the Wikipedia fact store. Later: 16k window stage on the winner; reinforcement learning only at the 100M.
-Running: session 43 (variants B, C) and session 44 (D, E documents; F long windows); then weight-merge test, learning-rate decision, merged recipe, stage 2 overnight (2 seeds).
-Rules: permanent knowledge is real facts only (invented material only in conversation memory kinds); training data that works is not changed without a stated reason and Adam's approval; no 100M training until the 5M study is complete; no new downloads until the 100M (real datasets already on disk in `data_uploads/`); one training at a time with `--gpu-frac`; long context capped at 65,536 codes.
-Pending decisions (Adam): rebalance any-length never-told endings 30% -> 15%; grounding stage; SQuAD (on disk) for evidence reading.
+- The 5M loop (`recipes/LOOP.json`, `research_side/loop_5m.py`) is **paused** at C2b for Adam's review and the handoff.
+  Next candidate: c4 = C2b + `reasoncr` (counting and recaps, no "first thing told") at 15% of recall.
+- The 100M is ready to train: `docs/TRAIN_100M.md` (C2b recipe on the 109M core, `--rope-scale 2 --accum 2`; measured
+  0.83 s/step, 11.5 GB peak; about 10-11 hours per seed; core in `datasets/100m/`).
+- Lessons of 13 runs (design page #c2b): retrieval first (hop2, split), dose and form decide whether a skill helps, combine
+  only clean pieces, read the answers behind a lost front.
+- Later: a 16k window as a short extension stage; store-to-store chains; comparisons and time order over told facts.
 
 ## File map
 
 | path | what |
 | --- | --- |
-| `run_model.py` | user entry: train on a folder, chat with a model (`/add`, `/load`), option 3 = best model, option 4 = device and threads; core chat KV-cached and streamed |
-| `compiler/experiments/k2_question_key.py` | K2, our own learned retrieval key (session 32); uses `gen_skills.py` and `testset.py` (copies of the lab's) |
-| `compiler/experiments/chat_engine.py`, `train_chat.py`, `chat_tests.py`, `plan_structure.py` | 5M chat model v2 (session 35): shared window layout + conversation engine (session memory, streaming), trainer (`--stage v21`: recall v2, buried evidence, pointer target), tests, structure picker; design in `docs/CHAT5M_V2_DESIGN.html` |
-| `chat22/` | the chat package (16-17 Oct; `train.py --parts` switches longconv,crowd,stored,budget,longdocs,mem1024 and `--gpu-frac`; `search_v2.py` engine v2 + JudgeScorer; `judge.py`; `data/build_v23.py`, `data/build_search_data.py`, `data/build_knowledge.py` -> the Wikipedia fact store): `encoder.py`, `blocks.py`, `tables.py`, `model.py` (ChatLM), `window.py` (the one layout), `memory.py` (two pools), `engine.py`, `tools.py`, `windows_train.py` (all kinds incl. story, docqa), `train.py` (held-out plateau), `data/build_data.py` -> `data_chat22/`, `data/story_world.py`, `tests/` (`test_equivalence`, `test_engine`, `audit_windows`, `run_suite`, `scoring`, `gate22`) |
-| `compiler/experiments/long_grid.py` | long-context grid: 6 tasks x length x evidence depth x session memory, through the chat engine (session 37) |
-| `docs/RESEARCH_STORY.html` | the research story (local page): the journey from September to 17 October, 158 tests with settings, data, results and lessons; built by `docs/story/build.py` from `docs/story/tests.json` + `story.json` (`story_src.py`; 17 Oct additions in `story_update_17oct.py`) |
-| `docs/TRAINING_MAP.html` | training map (local page): core text % -> cores -> fine-tuning data % -> recipes -> models (seeds) -> results; hover/click highlights everything connected; "I want a model that..." picks the best model and its recipe |
-| `docs/REASONING_MAP.html` | interactive map of the reasoning research (local page) |
-| `inference_lab/` | inference speed lab (own copies of the scripts in `lib/`): `bench.py`, `bench_gpu.py`, `chain_gpu.sh`, `RESULTS.md`; local only since 19 Oct (finished; the result lives in `fast_decode.py`) |
-| `compiler/` | compiler v0, native encoder, tests |
-| `compiler/experiments/train_lm.py`, `scale_run.py` | core training (blocks, optimisers, schedules, bf16, resume) |
-| `compiler/experiments/m2_qa.py` | Q&A stage, memory, retrieval, training-window options, engine (`QAEngine`) |
-| `compiler/experiments/fast_decode.py` | CUDA-graph answer step |
-| `compiler/experiments/dense_keys.py`, `precision.py`, `cost.py` | dense retrieval key; weight rounding and kernels; cost meter |
-| `compiler/experiments/core_eval.py`, `chat_probe.py`, `run_ledger.py` | report card, chat probe, ledger generator |
-| `compiler/experiments/prepare_core_mix.py`, `evidence_parallel.py`, `prepare_qa.py` | data: mixes (D3, P50, P100), evidence pairs, Q&A data |
-| `compiler/experiments/chains/` | running and recent sessions (42-44, step 1, longconv generation) and `watch.sh`; finished sessions 19-41 in `archive/experiments_oct2026/chains/` |
-| `docs/SETUP.md` | environment, what git carries, the training data of the best recipe (paths, sizes, builders), train and test commands (19 Oct) |
-| `docs/RUN_LEDGER.md` | every run, the queue, findings by session |
-| `docs/ENCODER_RESEARCH_PLAN.md` | dated research log (section 8) |
-| `HYBRID_DESIGN.html` | the next system's design, research plan, pseudocode, revision log |
-| `README.md` | collaborator entry: quickstart (clone with LFS, chat with the best model, check the suite), best results, the improvement loop, reading order |
-| `recipes/BEST.json` | the cumulative best recipe; `compiler/experiments/chains/train_best.sh` and `research_side/compare_two_seeds.py` use it |
-| `research_side/` | side studies: memory-only answering, retrieval study, engine v2 speed and study |
-| `data_chat22/` | chat22 data: rehearsal sample, long pools, dialogues, facts_pool (training look-alikes only), knowledge_wiki (permanent store), longconv sessions, search_v2 sets |
-| `data_real/` | test folder of real, non-fiction datasets (17 Oct; `chat22/data/build_real.py`; audit and contents in its README): real Q&A 95,886 (replaces Alpaca for tests), fact store 215,602, non-fiction text 555 MB and long documents 9,090 (no novels), real look-alikes, human OASST threads, held-out sets |
-| `data_uploads/`, `data_qa_squad/` | downloaded real datasets (SQuAD, ARC, OpenBookQA, CommonsenseQA, UltraChat, OASST, Dolly, FineWeb-Edu) for the merged model and the 100M |
-| `archive/` | September research, Version 1, finished October experiments (cleanup of 17 Oct: 96.7 GB, list in `archive/experiments_oct2026/MOVED_17OCT2026.md`), the maths line |
+| `README.md` | handoff entry: what C2b does, quickstart, the two memories and how they are trained, reproduce, continue, 100M |
+| `run_model.py` | chat with C2b (option 3; hop2 and split on), train on a folder, device; `/add`, `/load`, `/forget`, `/memory`, `/info`, `/codes` |
+| `recipes/BEST.json`, `recipes/LOOP.json` | the best recipe and all evidence; the loop's candidates and statuses |
+| `research_side/loop_5m.py`, `compare_two_seeds.py` | the loop driver (pause options); the verdict against BEST (merges `_ev2new`) |
+| `compiler/experiments/chains/train_best.sh`, `watch.sh` | train + test BEST's recipe (plus one change) on one seed; wake-up watcher |
+| `chat22/` | the chat package: `engine.py` (memories, search v2, `hop2`, `split`, window, streaming), `memory.py`, `search_v2.py`, `window.py`, `model.py`, `tables.py`, `train.py` (`--parts`, `--accum`, `--rope-scale`, `--gpu-frac`), `windows_train.py` (every kind; switches incl. multi2, reasoncr, twomem2), `data/` builders, `tests/run_suite.py` + `tests/suite_v2.py` (the 20 Oct tests) + `tests/gate22.py` |
+| `compiler/` | the lossless text compiler, core training (`experiments/train_lm.py`, `scale_run.py`), data preparation, probes |
+| `datasets/` | `c2b_5m/` training data and `100m/` the 109M core (LFS, excluded from a normal clone; `datasets/README.md`) |
+| `docs/SETUP.md`, `docs/TRAIN_100M.md` | 5M commands (environment, data, train, tests, loop); the 100M guide |
+| `docs/CHAT5M_V2_DESIGN.html` | design and revision log; #c2b = C2b's recipe, methods, how to add reasoning skills |
+| `docs/RUN_LEDGER.md`, `docs/RESEARCH_STORY.html`, `docs/TRAINING_MAP.html` | every run; the research story; the training map |
+| `BRAIN_DESIGN.html`, `HYBRID_DESIGN.html`, `Traditional_Hybrid.html`, `COMPILER_AND_MODERN_METHODS.html`, `MODEL_EXPLAINED.html` | Adam's designs and forward ideas |
+| `data_real/` | the permanent store (LFS), data notes (README), the 100M plan (`100m/plan.json`) |
+| `data_chat22/`, `data_core/`, `data_mt/`, `data_skills/` | the held-out test files the suite reads (training data comes from the bundle) |
+| `archive/`, `inference_lab/` | earlier research, local only |

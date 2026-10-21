@@ -1,0 +1,313 @@
+{
+ "about": "The 5M improvement loop (Adam, 20 Oct 2026): keep every current gain, add the missing chat abilities, loop the 5M to its best before the 100M. research_side/loop_5m.py runs the rounds in order: BASE of recipes/BEST.json + ONE change, seed 1 -> full suite + new tests -> compare with the best's two seeds; seed 2 only for a win with no front lost; a two-seed NEW BEST is adopted into BEST.json and later rounds build on it. A round runs when ready (code written and smoke-tested).",
+ "new_tests": [
+  "afterno",
+  "phrasing",
+  "probe2",
+  "reason",
+  "twomem",
+  "open",
+  "multi"
+ ],
+ "new_tests_plan": "suite sections, run with --tag _ev2new on every candidate and on the best's seeds (baselines): twomem (told personal fact + stored real fact), reason (count, order, summary over the conversation), afterno (answers after a refusal), phrasing (200 real-phrasing cases, held out from training phrasings), probe2 (the 32-question probe rewritten for the real store), open (open-ended answers vs references: overlap, completeness, repetition)",
+ "rounds": [
+  {
+   "id": "r7",
+   "name": "mixv_5m",
+   "what": "practice conversations with natural rewordings (round 7)",
+   "change": {
+    "data_dir": "data_real/5m_mixedv"
+   },
+   "external_seed1": "session57",
+   "ready": true,
+   "status": "parked",
+   "seed1": "significant wins 0, losses 1  ->  not a new best  (one seed: confirm with a second)",
+   "verdict": "significant wins 0, losses 1  ->  not a new best  (one seed: confirm with a second)"
+  },
+  {
+   "id": "r10",
+   "name": "reason_5m",
+   "what": "reasoning over the conversation: counting, ordering and summarizing what was told (reason windows)",
+   "change": {
+    "parts_add": [
+     "reason"
+    ]
+   },
+   "ready": true,
+   "status": "skipped",
+   "note": "stopped after ~20 min on Adam's go (20 Oct): folded into c1; partial files in runs/stopped/"
+  },
+  {
+   "id": "c1",
+   "name": "combo_5m",
+   "what": "combined (Adam, 20 Oct: line everything up in one chat stage): refusal-chain windows (afterno) + two memories (twomem) + counting / first told / recap (reason) on the best recipe, tested with the two-hop search on; recall share 0.12 -> 0.21 so plain recall keeps its windows (half of recall goes to the new kinds)",
+   "change": {
+    "parts_add": [
+     "afterno",
+     "twomem",
+     "reason"
+    ],
+    "shares": {
+     "qa": 0.17,
+     "skills": 0.135,
+     "convo": 0.11,
+     "recall": 0.21,
+     "buried": 0.11,
+     "docqa": 0.06,
+     "story": 0.085,
+     "rehearse": 0.1,
+     "longconv": 0.11
+    }
+   },
+   "engine_opts": {
+    "search": "v2",
+    "hop2": true
+   },
+   "ready": true,
+   "status": "parked",
+   "seed1": "significant wins 4, losses 9  ->  not a new best  (one seed: confirm with a second)",
+   "verdict": "significant wins 4, losses 9  ->  not a new best  (one seed: confirm with a second)"
+  },
+  {
+   "id": "r8",
+   "name": "nochain_5m",
+   "what": "refusal chain fix: 1-2 earlier refusals before questions that should be answered (afterno)",
+   "change": {
+    "parts_add": [
+     "afterno"
+    ]
+   },
+   "ready": true,
+   "status": "skipped",
+   "note": "folded into c1 (combined run)"
+  },
+  {
+   "id": "r9",
+   "name": "twomem_5m",
+   "what": "two memories in one answer: a told personal fact plus a stored real fact (twomem windows), after the two-hop search is tested at answer time",
+   "change": {
+    "parts_add": [
+     "twomem"
+    ]
+   },
+   "ready": false,
+   "status": "skipped",
+   "note": "folded into c1 (combined run)"
+  },
+  {
+   "id": "c1b",
+   "name": "combo1b_5m",
+   "what": "c1 adjusted (c1 seed 1 lost 5 fronts with more refusals everywhere): no afterno (16% of windows carried copyable refusal text; its own test got worse, 87% vs 94%, and the no-refusal control too, 84% vs 96%); twomem1 (twomem without the 'told fact missing -> refuse' case); reason kept; recall share 0.21; tested with hop2",
+   "change": {
+    "parts_add": [
+     "twomem1",
+     "reason"
+    ],
+    "shares": {
+     "qa": 0.17,
+     "skills": 0.135,
+     "convo": 0.11,
+     "recall": 0.21,
+     "buried": 0.11,
+     "docqa": 0.06,
+     "story": 0.085,
+     "rehearse": 0.1,
+     "longconv": 0.11
+    }
+   },
+   "engine_opts": {
+    "search": "v2",
+    "hop2": true
+   },
+   "ready": true,
+   "status": "parked",
+   "seed1": "significant wins 5, losses 7  ->  not a new best  (one seed: confirm with a second)",
+   "verdict": "significant wins 5, losses 7  ->  not a new best  (one seed: confirm with a second)"
+  },
+  {
+   "id": "c1c",
+   "name": "combo1c_5m",
+   "what": "reason windows only (counting, first told, recap: learned to 90-100% in c1 and c1b), recall share 0.17 so plain recall keeps ~its windows with less dilution of the other kinds; tested with hop2. Why: c1 and c1b both lost story questions (31/75) and documents; the story answers show the twomem windows (answer always copied from a stored [fact]) taught copying store facts over conversation turns ('Where does Lux come from?' -> the SI unit lux)",
+   "change": {
+    "parts_add": [
+     "reason"
+    ],
+    "shares": {
+     "qa": 0.17,
+     "skills": 0.135,
+     "convo": 0.11,
+     "recall": 0.17,
+     "buried": 0.11,
+     "docqa": 0.06,
+     "story": 0.085,
+     "rehearse": 0.1,
+     "longconv": 0.11
+    }
+   },
+   "engine_opts": {
+    "search": "v2",
+    "hop2": true
+   },
+   "ready": true,
+   "status": "parked",
+   "seed1": "significant wins 5, losses 8  ->  not a new best  (one seed: confirm with a second)",
+   "verdict": "significant wins 5, losses 8  ->  not a new best  (one seed: confirm with a second)"
+  },
+  {
+   "id": "c2",
+   "name": "combo2_5m",
+   "what": "the next combined step on top of c1's result: multi-part messages (multi: several facts told at once, two asked at once, known + unknown, statement + question, quoted notes, two real stored facts) + round 6's told-skills lesson at half strength (sessions on facts_pool_mixed3); tested with question splitting and the two-hop search on",
+   "change": {
+    "parts_add": [
+     "multi"
+    ],
+    "data_dir": "data_real/5m_mixed3"
+   },
+   "engine_opts": {
+    "search": "v2",
+    "hop2": true,
+    "split": true
+   },
+   "ready": true,
+   "status": "parked",
+   "seed1": "significant wins 2, losses 2  ->  not a new best  (one seed: confirm with a second)",
+   "verdict": "2 wins (multi-part 71/120 vs 64/240, natural wording 175/200 vs 318/400), 2 losses (story contradictions 0.04, direct store question 44/48: the wrong one of two look-alike stored facts); documents, memory, conversation held; known + unknown answered right but missed by the scorer (fixed, rescored)"
+  },
+  {
+   "id": "c1d",
+   "name": "combo1d_5m",
+   "what": "both new kinds at lower doses and in their safer form: reason15 (counting / first told / recap, 15% of recall instead of 30%: c1c learned them to 100% but lost documents, near-miss, updates, natural wording) + twomem2 (10% of recall; answers join the told fact and the stored fact; no not-told case: c1/c1b's twomem made answers come from stored facts over the conversation); recall share 0.15 (plain recall ~0.11); tested with hop2",
+   "change": {
+    "parts_add": [
+     "reason15",
+     "twomem2"
+    ],
+    "shares": {
+     "qa": 0.17,
+     "skills": 0.135,
+     "convo": 0.11,
+     "recall": 0.15,
+     "buried": 0.11,
+     "docqa": 0.06,
+     "story": 0.085,
+     "rehearse": 0.1,
+     "longconv": 0.11
+    }
+   },
+   "engine_opts": {
+    "search": "v2",
+    "hop2": true
+   },
+   "ready": true,
+   "status": "parked",
+   "seed1": "significant wins 5, losses 6  ->  not a new best  (one seed: confirm with a second)",
+   "verdict": "5 wins (counting 27/30, first told 30/30, summary 19/20, unknown 39/40, told fact + stored fact 27/48), 6 losses (afterno 125/160 and control 133/160, documents 91/63 of 204, near-miss 9/40, story questions 25/75); direct store question restored 48/48 by twomem2's joined answers"
+  },
+  {
+   "id": "c3",
+   "name": "combo3_5m",
+   "what": "the combination: multi2 (c2's multi-part windows with look-alike decoys in the two-stored-fact windows) + reason15 + twomem2 (c1d's lower doses) on round 5's sessions (no mixed3: round 6's idea brought story contradictions back in c2 and round 6, and its told-skills gain was small, 42% vs 39%); recall 0.15; tested with split + hop2",
+   "change": {
+    "parts_add": [
+     "multi2",
+     "reason15",
+     "twomem2"
+    ],
+    "shares": {
+     "qa": 0.17,
+     "skills": 0.135,
+     "convo": 0.11,
+     "recall": 0.15,
+     "buried": 0.11,
+     "docqa": 0.06,
+     "story": 0.085,
+     "rehearse": 0.1,
+     "longconv": 0.11
+    }
+   },
+   "engine_opts": {
+    "search": "v2",
+    "hop2": true,
+    "split": true
+   },
+   "ready": true,
+   "status": "skipped",
+   "note": "stopped at step ~28,000 on Adam's go (20 Oct 16:10): c1d showed twomem2 and reason15 cost story questions and documents; partial files in runs/stopped/"
+  },
+  {
+   "id": "c2b",
+   "name": "combo2b_5m",
+   "what": "the clean part of c2: multi2 (multi-part windows, look-alike decoys in the two-stored-fact windows) on round 5's sessions (no mixed3, which brought story contradictions back); recall 0.12; tested with split + hop2. Why: every twomem form cost story questions (c1, c1b, c1d: 25-31/75 vs 114/150) and reason cost documents and near-miss (c1c, c1d); c2's multi pieces held everything except two small slips",
+   "change": {
+    "parts_add": [
+     "multi2"
+    ],
+    "shares": {
+     "qa": 0.17,
+     "skills": 0.135,
+     "convo": 0.11,
+     "recall": 0.12,
+     "buried": 0.11,
+     "docqa": 0.06,
+     "story": 0.085,
+     "rehearse": 0.1,
+     "longconv": 0.11
+    }
+   },
+   "engine_opts": {
+    "search": "v2",
+    "hop2": true,
+    "split": true
+   },
+   "ready": true,
+   "status": "adopted",
+   "seed1": "significant wins 5, losses 2  ->  not a new best  (one seed: confirm with a second)",
+   "verdict": "significant wins 5, losses 2  ->  not a new best  (one seed: confirm with a second)",
+   "note": "adopted by Adam on 20 Oct (strongest-model rule) after seed 1: 5 wins, 2 small losses"
+  },
+  {
+   "id": "c4",
+   "name": "combo4_5m",
+   "what": "c2b + reasoncr (counting and recaps only, 15% of recall: 'first thing told' is the likely clash with documents and near-miss), no twomem training (hop2 alone keeps told fact + stored fact at 32%); recall 0.14; split + hop2",
+   "change": {
+    "parts_add": [
+     "multi2",
+     "reasoncr"
+    ],
+    "shares": {
+     "qa": 0.17,
+     "skills": 0.135,
+     "convo": 0.11,
+     "recall": 0.14,
+     "buried": 0.11,
+     "docqa": 0.06,
+     "story": 0.085,
+     "rehearse": 0.1,
+     "longconv": 0.11
+    }
+   },
+   "engine_opts": {
+    "search": "v2",
+    "hop2": true,
+    "split": true
+   },
+   "ready": false,
+   "status": "next (held until the loop is unpaused)"
+  }
+ ],
+ "answer_time_rounds": [
+  {
+   "id": "e1",
+   "what": "two-hop search: a stored fact found through a told personal fact (\"Who wrote my favorite song?\")",
+   "status": "ADOPTED 20 Oct: 1 win (told fact + stored fact 0/96 -> 31/96), 0 losses, every other front identical; runs/compare_e1_hop2.log"
+  },
+  {
+   "id": "e2",
+   "what": "question splitting (one search per question of a message; each sentence of a statement parsed) + two-hop search",
+   "status": "smoke on seed 2: both stored facts of a two-question message in the block 10/12 (0/12 without); judged on the best's two seeds by runs/e2_split.sh -> runs/compare_e2_split.log"
+  }
+ ],
+ "after_loop": "100M preparation: gradient accumulation in chat22/train.py, rope scaling 1,024 -> 2,048, a short run measuring speed and GPU memory within 3/4, the 100M data plan rebuilt from BEST.json (same kinds and shares, sized for about one pass). The 100M training itself starts when Adam says go.",
+ "pause_after_seed1": true,
+ "paused": true
+}

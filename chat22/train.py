@@ -101,12 +101,14 @@ def main() -> int:
     ap.add_argument("--core", default="runs/core_mt5m/scale_custom_v0_8k.pt"); ap.add_argument("--ctx", type=int, default=2048)
     ap.add_argument("--rope-scale", type=float, default=1.0); ap.add_argument("--seed", type=int, default=1)
     ap.add_argument("--batch", type=int, default=16); ap.add_argument("--lr", type=float, default=1e-4); ap.add_argument("--head-lr", type=float, default=1e-3)
+    ap.add_argument("--accum", type=int, default=1, help="gradient accumulation (20 Oct, for the 100M): the batch is run in this many "
+                    "parts before one update; same windows and update, less GPU memory (1 = unchanged)")
     ap.add_argument("--aux", type=float, default=0.5); ap.add_argument("--point", type=float, default=0.5)
     ap.add_argument("--min-steps", type=int, default=10000); ap.add_argument("--max-steps", type=int, default=60000)
     ap.add_argument("--eval-every", type=int, default=500); ap.add_argument("--patience", type=int, default=6)
     ap.add_argument("--held-per-kind", type=int, default=96); ap.add_argument("--shares", default="")
     ap.add_argument("--mix", default="v22", choices=["v22", "v23"], help="v23: the any-length kind, look-alike facts, facts told and stored, varied memory budget")
-    ap.add_argument("--parts", default=None, help="v2.3 changes to use, comma list of longconv,crowd,stored,budget,longdocs,mem1024,memqa,realev,alpacabury,alpacaqa (default: all for --mix v23, none for v22)")
+    ap.add_argument("--parts", default=None, help="v2.3 changes to use, comma list of longconv,crowd,stored,budget,longdocs,mem1024,memqa,realev,alpacabury,alpacaqa,afterno,twomem,twomem1,twomem2,reason,reason15,reasoncr,multi,multi2 (default: all for --mix v23, none for v22)")
     ap.add_argument("--data-dir", default=None, help="a size folder such as data_real/5m (files there, then in its shared/ folder); default: the folders used so far")
     ap.add_argument("--memory-opts", default="", help="engine memory settings saved with the model (JSON), e.g. step 1's winner")
     ap.add_argument("--gpu-frac", type=float, default=0.0, help="cap this run's GPU memory (share of the card); over it = an error, never paging")
@@ -125,7 +127,7 @@ def main() -> int:
             if getattr(a, k) == getattr(dflt, k):
                 setattr(a, k, v)
     core = torch.load(ROOT / a.core, map_location="cpu", weights_only=False)
-    dict_path = core["encoding"]["dictionary"]
+    dict_path = core["encoding"]["dictionary"].replace("\\", "/")   # saved on Windows; also opens on Linux and macOS
     enc = E.load(ROOT / dict_path)
     v23 = a.mix == "v23"
     parts = set(a.parts.split(",")) - {""} if a.parts is not None else ({"longconv", "crowd", "stored", "budget", "mem1024"} if v23 else set())
@@ -184,10 +186,23 @@ def main() -> int:
             g["lr"] = g["peak"] * f
         kind = kinds[int(rng.choice(len(kinds), p=probs))]
         ws = [train_w.make(kind) for _ in range(a.batch)]
-        nll, aux, pt, _, _ = losses(model, ws, dev, a.aux, a.point, amp)
-        loss = nll + a.aux * aux + a.point * pt
-        opt.zero_grad(set_to_none=True); loss.backward(); torch.nn.utils.clip_grad_norm_(params, 1.0); opt.step()
-        run[kind][0] += float(nll.detach()); run[kind][1] += 1
+        if a.accum <= 1:
+            nll, aux, pt, _, _ = losses(model, ws, dev, a.aux, a.point, amp)
+            loss = nll + a.aux * aux + a.point * pt
+            opt.zero_grad(set_to_none=True); loss.backward(); torch.nn.utils.clip_grad_norm_(params, 1.0); opt.step()
+            run[kind][0] += float(nll.detach()); run[kind][1] += 1
+        else:                                             # the same windows in a.accum parts, one update
+            opt.zero_grad(set_to_none=True); part_nll = 0.0
+            n = len(ws)
+            for j in range(a.accum):
+                part = ws[j * n // a.accum:(j + 1) * n // a.accum]
+                if not part:
+                    continue
+                nll, aux, pt, _, _ = losses(model, part, dev, a.aux, a.point, amp)
+                ((nll + a.aux * aux + a.point * pt) * (len(part) / n)).backward()
+                part_nll += float(nll.detach()) * len(part) / n
+            torch.nn.utils.clip_grad_norm_(params, 1.0); opt.step()
+            run[kind][0] += part_nll; run[kind][1] += 1
         st["step"] = step = step + 1
         done = st["decay_from"] is not None and step >= st["decay_from"] + st["decay_len"]
         if step % a.eval_every == 0 or done or step >= a.max_steps:

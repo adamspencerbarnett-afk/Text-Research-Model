@@ -1,0 +1,391 @@
+{
+ "model": "runs/chat22/combo2b_5m_s1.pt",
+ "engine": "chat22",
+ "tier": "full",
+ "date": "2026-10-20 18:50",
+ "retrieval": "word key + MiniLM dense key (outside reference)",
+ "engine_opts": "{\"search\": \"v2\", \"hop2\": true, \"split\": true}",
+ "clean_store_after_stored_skills": true,
+ "afterno": {
+  "answered_after_refusal": {
+   "k": 151,
+   "n": 160,
+   "share": 0.944,
+   "ci95": [
+    0.897,
+    0.97
+   ]
+  },
+  "control_no_refusal": {
+   "k": 154,
+   "n": 160,
+   "share": 0.963,
+   "ci95": [
+    0.921,
+    0.983
+   ]
+  },
+  "never_told_refused": {
+   "k": 156,
+   "n": 160,
+   "share": 0.975,
+   "ci95": [
+    0.937,
+    0.99
+   ]
+  },
+  "after_by_type": {
+   "arithmetic": {
+    "k": 40,
+    "n": 40,
+    "share": 1.0,
+    "ci95": [
+     0.912,
+     1
+    ]
+   },
+   "told fact": {
+    "k": 37,
+    "n": 40,
+    "share": 0.925,
+    "ci95": [
+     0.801,
+     0.974
+    ]
+   },
+   "stored fact": {
+    "k": 37,
+    "n": 40,
+    "share": 0.925,
+    "ci95": [
+     0.801,
+     0.974
+    ]
+   },
+   "after two refusals": {
+    "k": 37,
+    "n": 40,
+    "share": 0.925,
+    "ci95": [
+     0.801,
+     0.974
+    ]
+   }
+  },
+  "control_by_type": {
+   "arithmetic": {
+    "k": 40,
+    "n": 40,
+    "share": 1.0,
+    "ci95": [
+     0.912,
+     1
+    ]
+   },
+   "told fact": {
+    "k": 38,
+    "n": 40,
+    "share": 0.95,
+    "ci95": [
+     0.835,
+     0.986
+    ]
+   },
+   "stored fact": {
+    "k": 38,
+    "n": 40,
+    "share": 0.95,
+    "ci95": [
+     0.835,
+     0.986
+    ]
+   },
+   "after two refusals": {
+    "k": 38,
+    "n": 40,
+    "share": 0.95,
+    "ci95": [
+     0.835,
+     0.986
+    ]
+   }
+  }
+ },
+ "phrasing": {
+  "total": {
+   "k": 180,
+   "n": 200,
+   "share": 0.9,
+   "ci95": [
+    0.851,
+    0.934
+   ]
+  },
+  "wrong_refusals": 5,
+  "groups": {
+   "plain_case": {
+    "k": 128,
+    "n": 144,
+    "share": 0.889,
+    "ci95": [
+     0.827,
+     0.93
+    ]
+   },
+   "lower_case": {
+    "k": 52,
+    "n": 56,
+    "share": 0.929,
+    "ci95": [
+     0.83,
+     0.972
+    ]
+   },
+   "with_chat_between": {
+    "k": 153,
+    "n": 170,
+    "share": 0.9,
+    "ci95": [
+     0.846,
+     0.937
+    ]
+   },
+   "no_chat_between": {
+    "k": 27,
+    "n": 30,
+    "share": 0.9,
+    "ci95": [
+     0.744,
+     0.965
+    ]
+   }
+  }
+ },
+ "probe2": {
+  "lookup": {
+   "k": 9,
+   "n": 13,
+   "share": 0.692,
+   "ci95": [
+    0.424,
+    0.873
+   ]
+  },
+  "not_lookup": {
+   "k": 8,
+   "n": 19,
+   "share": 0.421,
+   "ci95": [
+    0.231,
+    0.637
+   ]
+  },
+  "by_section": {
+   "stored": {
+    "k": 5,
+    "n": 5,
+    "share": 1.0,
+    "ci95": [
+     0.566,
+     1
+    ]
+   },
+   "reworded": {
+    "k": 2,
+    "n": 5,
+    "share": 0.4,
+    "ci95": [
+     0.118,
+     0.769
+    ]
+   },
+   "knowledge": {
+    "k": 1,
+    "n": 5,
+    "share": 0.2,
+    "ci95": [
+     0.036,
+     0.624
+    ]
+   },
+   "heldout": {
+    "k": 2,
+    "n": 5,
+    "share": 0.4,
+    "ci95": [
+     0.118,
+     0.769
+    ]
+   },
+   "taught": {
+    "k": 4,
+    "n": 6,
+    "share": 0.667,
+    "ci95": [
+     0.3,
+     0.903
+    ]
+   },
+   "arithmetic": {
+    "k": 3,
+    "n": 3,
+    "share": 1.0,
+    "ci95": [
+     0.438,
+     1
+    ]
+   },
+   "chat": {
+    "k": 0,
+    "n": 3,
+    "share": 0.0,
+    "ci95": [
+     0,
+     0.562
+    ]
+   }
+  }
+ },
+ "reason": {
+  "count": {
+   "k": 0,
+   "n": 30,
+   "share": 0.0,
+   "ci95": [
+    0,
+    0.114
+   ]
+  },
+  "first_told": {
+   "k": 0,
+   "n": 30,
+   "share": 0.0,
+   "ci95": [
+    0,
+    0.114
+   ]
+  },
+  "summary": {
+   "k": 0,
+   "n": 20,
+   "share": 0.0,
+   "ci95": [
+    0,
+    0.161
+   ]
+  },
+  "summary_mean_coverage": 0.0
+ },
+ "twomem": {
+  "combined": {
+   "k": 5,
+   "n": 48,
+   "share": 0.104,
+   "ci95": [
+    0.045,
+    0.222
+   ]
+  },
+  "direct_store_question": {
+   "k": 48,
+   "n": 48,
+   "share": 1.0,
+   "ci95": [
+    0.926,
+    1.0
+   ]
+  },
+  "patterns": 8
+ },
+ "open": {
+  "good": {
+   "k": 14,
+   "n": 40,
+   "share": 0.35,
+   "ci95": [
+    0.221,
+    0.505
+   ]
+  },
+  "mean_f1": 0.139,
+  "complete": {
+   "k": 32,
+   "n": 40,
+   "share": 0.8,
+   "ci95": [
+    0.652,
+    0.895
+   ]
+  },
+  "mean_repetition": 0.007,
+  "mean_words": 57.1
+ },
+ "multi": {
+  "all_parts_right": {
+   "k": 92,
+   "n": 120,
+   "share": 0.767,
+   "ci95": [
+    0.683,
+    0.833
+   ]
+  },
+  "by_type": {
+   "tell3": {
+    "k": 19,
+    "n": 20,
+    "share": 0.95,
+    "ci95": [
+     0.764,
+     0.991
+    ]
+   },
+   "ask2": {
+    "k": 16,
+    "n": 20,
+    "share": 0.8,
+    "ci95": [
+     0.584,
+     0.919
+    ]
+   },
+   "partial": {
+    "k": 14,
+    "n": 20,
+    "share": 0.7,
+    "ci95": [
+     0.481,
+     0.855
+    ]
+   },
+   "with_statement": {
+    "k": 18,
+    "n": 20,
+    "share": 0.9,
+    "ci95": [
+     0.699,
+     0.972
+    ]
+   },
+   "store2": {
+    "k": 13,
+    "n": 20,
+    "share": 0.65,
+    "ci95": [
+     0.433,
+     0.819
+    ]
+   },
+   "note2": {
+    "k": 12,
+    "n": 20,
+    "share": 0.6,
+    "ci95": [
+     0.387,
+     0.781
+    ]
+   }
+  }
+ },
+ "seconds": 569
+}
